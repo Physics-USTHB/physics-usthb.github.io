@@ -9,6 +9,7 @@ const compiler = read('./compiler.js');
 const css = read('./styles.css');
 const home = read('../index.html');
 const rootCss = read('../assets/home.css');
+const privacy = read('../privacy.html');
 
 new Script(js, {filename: 'latex/app.js'});
 new Script(compiler.replace(/^export /gm, ''), {filename: 'latex/compiler.js'});
@@ -55,10 +56,21 @@ for (const n of ['e01','e02','e03','e04','e05']) {
  assert.ok(home.includes('href="electricity/' + n + '/"'), 'Missing direct TP link ' + n);
 }
 assert.ok(home.includes('href="assets/home.css"'), 'Homepage must use isolated stylesheet');
+assert.ok(home.includes('href="privacy.html"'), 'Homepage must link privacy page');
+assert.ok(privacy.includes('Many students can therefore use'), 'Privacy page must explain simultaneous independent use');
+assert.ok(privacy.includes('not persisted'), 'Privacy page must explain identity persistence policy');
 
 for (const n of ['e01','e02','e03','e04','e05']) {
-  const path = new URL('../electricity/' + n + '/index.html', import.meta.url);
-  assert.ok(existsSync(path), 'Existing physics practical missing: ' + n);
+  const htmlPath = new URL('../electricity/' + n + '/index.html', import.meta.url);
+  assert.ok(existsSync(htmlPath), 'Existing physics practical missing: ' + n);
+  const labHtml = read('../electricity/' + n + '/index.html');
+  assert.ok(labHtml.includes('id="clearLocalProgress"'), n + ' must offer clear-local-data control');
+  assert.ok(labHtml.includes('name and group stay only in this open page'), n + ' must disclose identity policy');
+  const scriptName = n === 'e03' ? 'official.js' : 'lab.js';
+  const labJs = read('../electricity/' + n + '/' + scriptName);
+  new Script(labJs, {filename: n + '/' + scriptName});
+  assert.doesNotMatch(labJs, /const ids=\['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'\]/, n + ' must not persist identity fields');
+  assert.match(labJs, /localStorage\.removeItem\(STORAGE\)/, n + ' must clear its own local progress');
 }
 const e01 = read('../electricity/e01/lab.js');
 assert.match(e01, /x\?\.version===2/, 'TP1 must reload the same state version it saves');
