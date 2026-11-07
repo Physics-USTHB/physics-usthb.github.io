@@ -6,7 +6,7 @@ const E = 12.0;
 const RG = 0.35;
 const RV = 10_000_000;
 const RA = 0.55;
-const STORAGE = 'PhysicsUSTHB_E03_official_v3';
+const STORAGE = 'PhysicsUSTHB_E03_official_v4';
 const REQUIRED = {
   resistor:[1,3,5,7,9,11],
   lamp:[0,1,2,3,4,5,6,7,8,9,10,11],
@@ -26,7 +26,8 @@ const mean = a => a.length ? a.reduce((s,x)=>s+x,0)/a.length : NaN;
 const quantize = (x,step) => Math.round(x/step)*step;
 
 let state = {
-  version:3, mode:'learn', selector:1, task:'resistor', verified:false,
+  version:4, mode:'learn', selector:1, task:'resistor', verified:false,
+  wiring:{source:'',use:'',ammeter:'',voltmeter:''},
   data:{resistor:{},lamp:{},series:{},parallel:{}},
   run:null, advanced:null, assessment:null,
   text:{}, report:{}
@@ -58,7 +59,7 @@ function save(){
 function load(){
   try{
     const s=JSON.parse(localStorage.getItem(STORAGE)||'null');
-    if(s?.version===3) state={...state,...s};
+    if(s?.version===4) state={...state,...s};
   }catch(_){}
 }
 function collectText(){
@@ -216,11 +217,21 @@ function updateLiveMeters(){
   $('#vmeter').textContent=`${x.v.toFixed(2)} V`;
   $('#imeter').textContent=`${(x.im*1000).toFixed(1)} mA`;
 }
+
+function e03WiringOK(){const w=state.wiring||{};return w.source==='AC'&&w.use==='AB'&&w.ammeter==='total'&&w.voltmeter==='load'}
+function updateE03Wiring(){
+  state.wiring={source:$('#e03SourcePair').value,use:$('#e03UsePair').value,ammeter:$('#e03AmmeterTopo').value,voltmeter:$('#e03VoltmeterTopo').value};
+  state.verified=false;const w=state.wiring,el=$('#e03WiringStatus');
+  if(!w.source||!w.use||!w.ammeter||!w.voltmeter){el.className='e03-wiring-status';el.textContent='Complete all four wiring choices before verification.';return false;}
+  if(w.source==='AB'){el.className='e03-wiring-status bad';el.textContent='DANGEROUS: the official sheet explicitly forbids connecting the generator across A–B of the low-resistance box.';return false;}
+  const ok=e03WiringOK();el.className=ok?'e03-wiring-status ok':'e03-wiring-status bad';el.textContent=ok?'Correct TP3 wiring: generator A–C, utilisation A–B, ammeter reads I_m, voltmeter across the tested dipole/network.':'This connection does not reproduce the official TP3 topology.';return ok;
+}
+
 function updateWiring(){
   const s=$('#wiringState');
   s.textContent=state.verified?'Wiring verified':'Wiring not verified';
   s.classList.toggle('ok',state.verified);
-  $('#recordReading').disabled=!state.verified||!prereq(state.task)||!REQUIRED[state.task].includes(state.selector);
+  $('#recordReading').disabled=!state.verified||!e03WiringOK()||!prereq(state.task)||!REQUIRED[state.task].includes(state.selector);
 }
 function updateBenchMessage(){
   const msg=$('#benchMessage');
@@ -257,6 +268,7 @@ function renderAllBench(){
 
 function verifyWiring(){
   if(!prereq(state.task)){updateBenchMessage();return;}
+  if(!updateE03Wiring()){updateWiring();updateBenchMessage();return;}
   state.verified=true;updateWiring();updateBenchMessage();save();
 }
 function changeTask(task){
@@ -277,7 +289,7 @@ function recordReading(){
 }
 function newSpecimen(){
   if(totalReadings()&& !confirm('Start a new specimen? All measurements and analysis for this run will be cleared.'))return;
-  state.run=newRunObject();state.selector=1;state.task='resistor';state.verified=false;
+  state.run=newRunObject();state.selector=1;state.task='resistor';state.verified=false;state.wiring={source:'',use:'',ammeter:'',voltmeter:''};
   state.data={resistor:{},lamp:{},series:{},parallel:{}};state.advanced=null;state.assessment=null;
   renderEverything();renderAllBench();save();
 }
@@ -474,8 +486,8 @@ function setupTabs(){
 }
 function init(){
   load();if(!state.run)state.run=newRunObject();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
-  $('#taskSelect').value=state.task;
-  $('#taskSelect').addEventListener('change',e=>changeTask(e.target.value));
+  $('#taskSelect').value=state.task;$('#e03SourcePair').value=state.wiring?.source||'';$('#e03UsePair').value=state.wiring?.use||'';$('#e03AmmeterTopo').value=state.wiring?.ammeter||'';$('#e03VoltmeterTopo').value=state.wiring?.voltmeter||'';updateE03Wiring();
+  $('#taskSelect').addEventListener('change',e=>changeTask(e.target.value));['e03SourcePair','e03UsePair','e03AmmeterTopo','e03VoltmeterTopo'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateE03Wiring();renderAllBench();save();}));
   $('#verifyWiring').addEventListener('click',verifyWiring);$('#recordReading').addEventListener('click',recordReading);$('#newRun').addEventListener('click',newSpecimen);
   $('#runAdvancedFit').addEventListener('click',runAdvanced);$('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print();});
   $$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
