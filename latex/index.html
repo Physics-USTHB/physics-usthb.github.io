@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Physics USTHB LaTeX Studio: private local-first scientific writing, project management, Prism ZIP import and PDF compilation.">
+  <meta name="theme-color" content="#101b31">
+  <title>LaTeX Studio — Physics USTHB</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="masthead">
+    <a class="identity" href="../index.html"><span class="mark">Φ</span><span><b>Physics USTHB</b><small>Scientific workspace</small></span></a>
+    <div class="headline"><span class="dot"></span> LaTeX Studio <span class="beta">FIRST RELEASE</span></div>
+    <nav aria-label="Site navigation">
+      <a href="../index.html">Home</a>
+      <a href="../electricity/index.html">Physics labs</a>
+      <a href="#help">Help</a>
+    </nav>
+  </header>
+
+  <main class="workspace">
+    <aside class="sidebar" aria-label="Projects and files">
+      <div class="section-title"><span>WORKSPACE</span><button id="new-project" class="icon-btn" title="New project" aria-label="New project">＋</button></div>
+      <label class="sr-only" for="project-select">Current project</label>
+      <select id="project-select" title="Switch projects"></select>
+      <div class="project-actions">
+        <button id="rename-project" title="Rename project">Rename</button>
+        <button id="duplicate-project" title="Duplicate project">Duplicate</button>
+        <button id="delete-project" class="danger" title="Delete project">Delete</button>
+      </div>
+      <div class="section-title files-head"><span>PROJECT FILES</span><button id="new-file" class="icon-btn" title="New file" aria-label="Add new file">＋</button></div>
+      <div class="file-help">Select a .tex file and use ★ to make it the main file.</div>
+      <ul id="file-list" class="file-list" aria-label="Project files"></ul>
+      <div class="file-actions"><button id="rename-file">Rename file</button><button id="delete-file" class="danger">Delete file</button></div>
+      <div class="sidefoot">
+        <p><b>Private by default.</b> Projects autosave in this browser only. Export ZIPs regularly.</p>
+        <button id="import-project">Import ZIP / files</button>
+        <button id="export-project">Export project ZIP</button>
+        <input id="import-input" type="file" accept=".zip,.tex,.bib,.sty,.cls,.bst,.png,.jpg,.jpeg,.pdf,.txt" multiple hidden>
+      </div>
+    </aside>
+
+    <section class="main-panel" aria-label="LaTeX editor">
+      <div class="toolbar">
+        <div class="tab"><span class="tab-icon">{ }</span><span id="active-file-label">main.tex</span><span id="dirty-indicator" aria-label="Save status">Saved locally</span></div>
+        <div class="actions">
+          <button id="insert-equation" title="Insert display equation">∑ Equation</button>
+          <button id="insert-section" title="Insert section">§ Section</button>
+          <button id="download-file" title="Download selected file">↓ File</button>
+          <button id="save-project" class="primary-muted">Save</button>
+          <button id="compile" class="primary">Compile PDF ↗</button>
+        </div>
+      </div>
+      <div class="editor-info">
+        <span id="editor-mode">LaTeX source</span>
+        <span id="editor-count">0 lines</span>
+      </div>
+      <div class="editor-shell">
+        <div id="line-numbers" class="line-numbers" aria-hidden="true">1</div>
+        <label class="sr-only" for="source">LaTeX source</label>
+        <textarea id="source" spellcheck="false" wrap="off" aria-label="LaTeX source editor" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+        <div id="binary-message" class="binary-message" hidden>This is a binary asset. You can keep it in your project, export it in the ZIP, or replace it by importing a new file; it cannot be edited as text.</div>
+      </div>
+      <div class="statusbar">
+        <span id="status" role="status" aria-live="polite">Preparing workspace…</span>
+        <span>Ctrl/⌘ S: save · Ctrl/⌘ Enter: compile</span>
+      </div>
+    </section>
+
+    <aside class="preview" aria-label="Document tools">
+      <div class="preview-head"><h2>Document tools</h2><span class="pill">LOCAL-FIRST</span></div>
+      <div class="tool-section">
+        <h3>Quick math preview</h3>
+        <p>Shows the first display equation using KaTeX, not a compiled document.</p>
+        <div id="math-preview" class="math-preview"><span class="muted">Add a display equation using \[ ... \] or $$ ... $$.</span></div>
+      </div>
+      <div class="tool-section">
+        <h3>Compilation</h3>
+        <p>For the first release, PDF compilation opens <a href="https://latexonline.cc/" target="_blank" rel="noopener noreferrer">LaTeX.Online</a>. Your source is transmitted only after you agree. Only single-file source is supported here.</p>
+        <label for="engine">Engine</label>
+        <select id="engine"><option value="pdflatex">pdfLaTeX</option><option value="xelatex">XeLaTeX</option><option value="lualatex">LuaLaTeX</option></select>
+        <button id="compile-side" class="primary wide">Compile PDF ↗</button>
+        <p class="notice">Do not compile confidential or unpublished documents with this external service. For multi-file documents, use the advanced local-first editor linked below.</p>
+      </div>
+      <div class="tool-section">
+        <h3>Advanced tools</h3>
+        <p>Need browser-based WebAssembly compiling, multi-file builds, and collaboration now? TeXlyre provides these in a separate service.</p>
+        <a class="outlink" href="https://texlyre.github.io/texlyre/" target="_blank" rel="noopener noreferrer">Open TeXlyre ↗</a>
+      </div>
+      <div class="tool-section" id="help">
+        <h3>Prism migration</h3>
+        <ol>
+          <li>Export your Prism projects to ZIP before January 1, 2027.</li>
+          <li>Choose <b>Import ZIP / files</b> to restore a project here.</li>
+          <li>Check the main .tex file, edit and export a backup.</li>
+        </ol>
+        <p>ZIP import preserves source files, bibliography files and images; it does not restore Prism comments, history or collaborators.</p>
+      </div>
+    </aside>
+  </main>
+
+  <dialog id="new-dialog">
+    <form id="create-form" method="dialog">
+      <h2>Create a project</h2>
+      <label for="project-name">Project name</label>
+      <input id="project-name" maxlength="80" required value="Untitled document">
+      <label for="template-select">Starting template</label>
+      <select id="template-select">
+        <option value="article">Scientific article</option>
+        <option value="lab">Physics laboratory report</option>
+        <option value="beamer">Beamer presentation</option>
+        <option value="blank">Minimal document</option>
+      </select>
+      <div class="dialog-actions"><button type="button" id="cancel-create">Cancel</button><button class="primary" type="submit">Create project</button></div>
+    </form>
+  </dialog>
+  <dialog id="confirm-dialog">
+    <form id="confirm-form" method="dialog">
+      <h2 id="confirm-title">Confirm action</h2>
+      <p id="confirm-text"></p>
+      <div class="dialog-actions"><button type="button" id="confirm-cancel">Cancel</button><button class="primary" type="submit">Continue</button></div>
+    </form>
+  </dialog>
+  <footer class="legal">Independent educational project · Not an official USTHB service · <a href="https://github.com/Physics-USTHB/physics-usthb.github.io" target="_blank" rel="noopener noreferrer">View source</a> · <a href="README.md">About this release</a></footer>
+</body>
+</html>
