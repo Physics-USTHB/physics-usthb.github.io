@@ -6,7 +6,7 @@ const E = 12.0;
 const RG = 0.35;
 const RV = 10_000_000;
 const RA = 0.55;
-const STORAGE = 'PhysicsUSTHB_E03_official_v4';
+const STORAGE = 'PhysicsUSTHB_E03_official_v5';
 const REQUIRED = {
   resistor:[1,3,5,7,9,11],
   lamp:[0,1,2,3,4,5,6,7,8,9,10,11],
@@ -26,8 +26,9 @@ const mean = a => a.length ? a.reduce((s,x)=>s+x,0)/a.length : NaN;
 const quantize = (x,step) => Math.round(x/step)*step;
 
 let state = {
-  version:4, mode:'learn', selector:1, task:'resistor', verified:false,
+  version:5, mode:'learn', selector:1, task:'resistor', verified:false,
   wiring:{source:'',use:'',ammeter:'',voltmeter:''},
+  construction:{series:[],parallel:[]},
   data:{resistor:{},lamp:{},series:{},parallel:{}},
   run:null, advanced:null, assessment:null,
   text:{}, report:{}
@@ -143,10 +144,13 @@ function measure(n,task){
 }
 
 function taskComplete(task){return REQUIRED[task].every(n=>state.data[task]?.[n]);}
+function constructionReady(task){return (state.construction?.[task]||[]).length>=4}
 function prereq(task){
   if(task==='resistor')return true;
   if(task==='lamp')return taskComplete('resistor');
-  return taskComplete('resistor')&&taskComplete('lamp');
+  if(task==='series')return taskComplete('resistor')&&taskComplete('lamp')&&constructionReady('series');
+  if(task==='parallel')return taskComplete('resistor')&&taskComplete('lamp')&&constructionReady('parallel');
+  return false;
 }
 function nextMissing(task){return REQUIRED[task].find(n=>!state.data[task]?.[n]);}
 
@@ -237,7 +241,10 @@ function updateBenchMessage(){
   const msg=$('#benchMessage');
   if(!prereq(state.task)){
     msg.className='notice warn protocol-message';
-    msg.textContent=state.task==='lamp'?'Complete the six prescribed resistor readings before replacing the resistor by the lamp.':'Complete both resistor and lamp characteristics before testing their association.';
+    if(state.task==='lamp')msg.textContent='Complete the six prescribed resistor readings before replacing the resistor by the lamp.';
+    else if((state.task==='series'||state.task==='parallel')&&!(taskComplete('resistor')&&taskComplete('lamp')))msg.textContent='Complete both resistor and lamp characteristics before constructing their association.';
+    else if(state.task==='series')msg.textContent='Construct at least four series-addition points graphically before the experimental checks at positions 5 and 9.';
+    else if(state.task==='parallel')msg.textContent='Construct at least four parallel-addition points graphically before the experimental checks at positions 5 and 9.';
     return;
   }
   if(!state.verified){
@@ -289,7 +296,7 @@ function recordReading(){
 }
 function newSpecimen(){
   if(totalReadings()&& !confirm('Start a new specimen? All measurements and analysis for this run will be cleared.'))return;
-  state.run=newRunObject();state.selector=1;state.task='resistor';state.verified=false;state.wiring={source:'',use:'',ammeter:'',voltmeter:''};
+  state.run=newRunObject();state.selector=1;state.task='resistor';state.verified=false;state.wiring={source:'',use:'',ammeter:'',voltmeter:''};state.construction={series:[],parallel:[]};
   state.data={resistor:{},lamp:{},series:{},parallel:{}};state.advanced=null;state.assessment=null;
   renderEverything();renderAllBench();save();
 }
@@ -373,6 +380,43 @@ function drawCore(){
   plotSeries(ctx,rows('resistor'),X,Y,'#1f6fb8');plotSeries(ctx,rows('lamp'),X,Y,'#b26b16');
   ctx.font='12px system-ui';ctx.textAlign='left';ctx.fillStyle='#1f6fb8';ctx.fillText('● Resistor',w-185,25);ctx.fillStyle='#b26b16';ctx.fillText('● Lamp',w-95,25);
 }
+
+function componentVoltageAtCurrent(task,im){
+  const s=rows(task).map(d=>({x:d.im,y:d.vm})).sort((a,b)=>a.x-b.x);return interp(s,im);
+}
+function componentCurrentAtVoltage(task,v){
+  const s=rows(task).map(d=>({x:d.vm,y:d.im})).sort((a,b)=>a.x-b.x);return interp(s,v);
+}
+function addSeriesConstruction(){
+  if(!(taskComplete('resistor')&&taskComplete('lamp'))){$('#seriesConstructStatus').className='notice warn';$('#seriesConstructStatus').textContent='Complete the separate resistor and lamp characteristics first.';return;}
+  const im=+$('#seriesConstructI').value/1000,vr=+$('#seriesConstructVR').value,vl=+$('#seriesConstructVL').value;
+  if(!(im>0&&Number.isFinite(vr)&&Number.isFinite(vl))){$('#seriesConstructStatus').className='notice warn';$('#seriesConstructStatus').textContent='Enter a common current and the two voltages read from your graph.';return;}
+  const er=componentVoltageAtCurrent('resistor',im),el=componentVoltageAtCurrent('lamp',im);
+  if(!Number.isFinite(er)||!Number.isFinite(el)){$('#seriesConstructStatus').className='notice warn';$('#seriesConstructStatus').textContent='Choose a current inside the overlapping measured-current range of both component curves.';return;}
+  const tolR=Math.max(.18,.04*er),tolL=Math.max(.18,.04*el);
+  if(Math.abs(vr-er)>tolR||Math.abs(vl-el)>tolL){$('#seriesConstructStatus').className='notice warn';$('#seriesConstructStatus').textContent=state.mode==='learn'?'At least one graph reading is inconsistent with the measured component curves. Re-read V_Rx and V_L at the same current.':'Construction point rejected: graph readings are not consistent with the measured curves.';return;}
+  const p={im,vr,vl,vm:vr+vl};const arr=state.construction.series;const k=arr.findIndex(q=>Math.abs(q.im-im)<.0005);if(k>=0)arr[k]=p;else arr.push(p);arr.sort((a,b)=>a.im-b.im);
+  $('#seriesConstructStatus').className=constructionReady('series')?'notice ok':'notice';$('#seriesConstructStatus').textContent=constructionReady('series')?'Series graphical construction ready for experimental verification.':`Construction point stored (${arr.length}/4 minimum).`;renderConstruction();renderAssociationTables();drawSum();renderAllBench();save();
+}
+function addParallelConstruction(){
+  if(!(taskComplete('resistor')&&taskComplete('lamp'))){$('#parallelConstructStatus').className='notice warn';$('#parallelConstructStatus').textContent='Complete the separate resistor and lamp characteristics first.';return;}
+  const v=+$('#parallelConstructV').value,ir=+$('#parallelConstructIR').value/1000,il=+$('#parallelConstructIL').value/1000;
+  if(!(v>0&&Number.isFinite(ir)&&Number.isFinite(il)&&ir>=0&&il>=0)){$('#parallelConstructStatus').className='notice warn';$('#parallelConstructStatus').textContent='Enter a common voltage and the two currents read from your graph.';return;}
+  const er=componentCurrentAtVoltage('resistor',v),el=componentCurrentAtVoltage('lamp',v);
+  if(!Number.isFinite(er)||!Number.isFinite(el)){$('#parallelConstructStatus').className='notice warn';$('#parallelConstructStatus').textContent='Choose a voltage inside the overlapping measured-voltage range of both component curves.';return;}
+  const tolR=Math.max(.0015,.05*er),tolL=Math.max(.0015,.05*el);
+  if(Math.abs(ir-er)>tolR||Math.abs(il-el)>tolL){$('#parallelConstructStatus').className='notice warn';$('#parallelConstructStatus').textContent=state.mode==='learn'?'At least one graph reading is inconsistent with the measured curves. Re-read I_Rx and I_L at the same voltage.':'Construction point rejected: graph readings are not consistent with the measured curves.';return;}
+  const p={vm:v,ir,il,im:ir+il};const arr=state.construction.parallel;const k=arr.findIndex(q=>Math.abs(q.vm-v)<.05);if(k>=0)arr[k]=p;else arr.push(p);arr.sort((a,b)=>a.vm-b.vm);
+  $('#parallelConstructStatus').className=constructionReady('parallel')?'notice ok':'notice';$('#parallelConstructStatus').textContent=constructionReady('parallel')?'Parallel graphical construction ready for experimental verification.':`Construction point stored (${arr.length}/4 minimum).`;renderConstruction();renderAssociationTables();drawSum();renderAllBench();save();
+}
+function renderConstruction(){
+  const sb=$('#seriesConstructBody');sb.innerHTML='';(state.construction?.series||[]).forEach(p=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${(p.im*1000).toFixed(1)}</td><td>${p.vr.toFixed(2)}</td><td>${p.vl.toFixed(2)}</td><td>${p.vm.toFixed(2)}</td>`;sb.appendChild(tr);});
+  const pb=$('#parallelConstructBody');pb.innerHTML='';(state.construction?.parallel||[]).forEach(p=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${p.vm.toFixed(2)}</td><td>${(p.ir*1000).toFixed(1)}</td><td>${(p.il*1000).toFixed(1)}</td><td>${(p.im*1000).toFixed(1)}</td>`;pb.appendChild(tr);});
+  const sn=(state.construction?.series||[]).length,pn=(state.construction?.parallel||[]).length;
+  $('#seriesConstructStatus').className=sn>=4?'notice ok':'notice';$('#seriesConstructStatus').textContent=sn>=4?'Series graphical construction ready for experimental verification.':`Build at least four points from the measured component graph before experimental verification (${sn}/4).`;
+  $('#parallelConstructStatus').className=pn>=4?'notice ok':'notice';$('#parallelConstructStatus').textContent=pn>=4?'Parallel graphical construction ready for experimental verification.':`Build at least four points from the measured component graph before experimental verification (${pn}/4).`;
+}
+
 function componentSeries(){
   const r=rows('resistor').map(d=>({x:d.im,y:d.vm})).sort((a,b)=>a.x-b.x);
   const l=rows('lamp').map(d=>({x:d.im,y:d.vm})).sort((a,b)=>a.x-b.x);
@@ -391,15 +435,15 @@ function componentParallel(){
   for(let k=0;k<=40;k++){const V=lo+(hi-lo)*k/40;out.push({vm:V,im:interp(r,V)+interp(l,V)});}
   return out;
 }
-function predictedSeriesV(im){const s=componentSeries().map(d=>({x:d.im,y:d.vm}));return interp(s,im);}
-function predictedParallelI(v){const s=componentParallel().map(d=>({x:d.vm,y:d.im})).sort((a,b)=>a.x-b.x);return interp(s,v);}
+function predictedSeriesV(im){const s=(state.construction?.series||[]).map(d=>({x:d.im,y:d.vm})).sort((a,b)=>a.x-b.x);return interp(s,im);}
+function predictedParallelI(v){const s=(state.construction?.parallel||[]).map(d=>({x:d.vm,y:d.im})).sort((a,b)=>a.x-b.x);return interp(s,v);}
 function renderAssociationTables(){
   const sb=$('#seriesBody');sb.innerHTML='';REQUIRED.series.forEach(n=>{const d=state.data.series[n],pred=d?predictedSeriesV(d.im):NaN,tr=document.createElement('tr');tr.innerHTML=d?`<td>${n}</td><td>${d.vm.toFixed(2)}</td><td>${(d.im*1000).toFixed(1)}</td><td>${Number.isFinite(pred)?pred.toFixed(2):'—'}</td><td>${Number.isFinite(pred)?(d.vm-pred).toFixed(2):'—'}</td>`:`<td>${n}</td><td>—</td><td>—</td><td>—</td><td>—</td>`;sb.appendChild(tr);});
   const pb=$('#parallelBody');pb.innerHTML='';REQUIRED.parallel.forEach(n=>{const d=state.data.parallel[n],pred=d?predictedParallelI(d.vm):NaN,tr=document.createElement('tr');tr.innerHTML=d?`<td>${n}</td><td>${d.vm.toFixed(2)}</td><td>${(d.im*1000).toFixed(1)}</td><td>${Number.isFinite(pred)?(pred*1000).toFixed(1):'—'}</td><td>${Number.isFinite(pred)?((d.im-pred)*1000).toFixed(1):'—'}</td>`:`<td>${n}</td><td>—</td><td>—</td><td>—</td><td>—</td>`;pb.appendChild(tr);});
   badge('#seriesBadge','series');badge('#parallelBadge','parallel');
 }
 function drawSum(){
-  const c=$('#sumChart');if(!c)return;const{ctx,w,h}=canvasSetup(c);const series=componentSeries(),parallel=componentParallel(),ver=[...rows('series'),...rows('parallel')],all=[...series,...parallel,...ver];const maxI=Math.max(.22,...all.map(d=>d.im))*1.08,maxV=Math.max(12,...all.map(d=>d.vm))*1.05;const{X,Y}=axes(ctx,w,h,maxI,maxV);
+  const c=$('#sumChart');if(!c)return;const{ctx,w,h}=canvasSetup(c);const series=state.construction?.series||[],parallel=state.construction?.parallel||[],ver=[...rows('series'),...rows('parallel')],all=[...series,...parallel,...ver];const maxI=Math.max(.22,...all.map(d=>d.im))*1.08,maxV=Math.max(12,...all.map(d=>d.vm))*1.05;const{X,Y}=axes(ctx,w,h,maxI,maxV);
   if(series.length){ctx.strokeStyle='#7a3db8';ctx.lineWidth=2.3;ctx.beginPath();series.forEach((d,i)=>i?ctx.lineTo(X(d.im),Y(d.vm)):ctx.moveTo(X(d.im),Y(d.vm)));ctx.stroke();}
   if(parallel.length){ctx.strokeStyle='#168b78';ctx.lineWidth=2.3;ctx.beginPath();parallel.forEach((d,i)=>i?ctx.lineTo(X(d.im),Y(d.vm)):ctx.moveTo(X(d.im),Y(d.vm)));ctx.stroke();}
   plotSeries(ctx,rows('series'),X,Y,'#7a3db8',false,'open');plotSeries(ctx,rows('parallel'),X,Y,'#168b78',false,'square');
@@ -479,7 +523,7 @@ function buildReport(){
 }
 
 function renderEverything(){
-  renderCoreTables();updateInterpretationMetrics();renderAssociationTables();renderAdvancedTable();drawCore();drawSum();drawResidual();updateProgress();
+  renderCoreTables();updateInterpretationMetrics();renderConstruction();renderAssociationTables();renderAdvancedTable();drawCore();drawSum();drawResidual();updateProgress();
 }
 function setupTabs(){
   $$('.tabbtn').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.tab;$$('.tabbtn').forEach(x=>x.classList.toggle('active',x===b));$$('.tabpanel').forEach(p=>p.classList.toggle('active',p.id===id));if(id==='characteristics')drawCore();if(id==='associations')drawSum();if(id==='advanced')drawResidual();}));
@@ -489,7 +533,7 @@ function init(){
   $('#taskSelect').value=state.task;$('#e03SourcePair').value=state.wiring?.source||'';$('#e03UsePair').value=state.wiring?.use||'';$('#e03AmmeterTopo').value=state.wiring?.ammeter||'';$('#e03VoltmeterTopo').value=state.wiring?.voltmeter||'';updateE03Wiring();
   $('#taskSelect').addEventListener('change',e=>changeTask(e.target.value));['e03SourcePair','e03UsePair','e03AmmeterTopo','e03VoltmeterTopo'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateE03Wiring();renderAllBench();save();}));
   $('#verifyWiring').addEventListener('click',verifyWiring);$('#recordReading').addEventListener('click',recordReading);$('#newRun').addEventListener('click',newSpecimen);
-  $('#runAdvancedFit').addEventListener('click',runAdvanced);$('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print();});
+  $('#addSeriesConstruct').addEventListener('click',addSeriesConstruction);$('#addParallelConstruct').addEventListener('click',addParallelConstruction);$('#runAdvancedFit').addEventListener('click',runAdvanced);$('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print();});
   $$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
   ['shortJustification','resistorInterpretation','lampInterpretation','seriesJustification','parallelJustification','studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'].forEach(id=>document.getElementById(id)?.addEventListener('input',save));
   restoreAdvanced();restoreAssessment();renderEverything();renderAllBench();
