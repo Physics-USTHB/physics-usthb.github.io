@@ -505,7 +505,7 @@ function buildReport(){
   const advanced=state.advanced?`<p>Corrected-current effective-variance fit: R = ${state.advanced.m.toFixed(2)} ± ${state.advanced.sm.toFixed(2)} Ω; intercept = ${state.advanced.b.toFixed(3)} ± ${state.advanced.sb.toFixed(3)} V; reduced χ² = ${state.advanced.redChi.toFixed(2)}.</p>${resImg?`<img src="${resImg}" style="max-width:100%" alt="Advanced-fit residuals">`:''}`:'<p><em>Advanced extension not completed.</em></p>';
   const html=`<h2>Laboratory Report — E03</h2>
   <p><strong>Current–Voltage Characteristics of Electrical Dipoles</strong></p>
-  <p><strong>Student:</strong> ${escapeHtml(r.studentName||'—')} &nbsp; <strong>Group:</strong> ${escapeHtml(r.studentGroup||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(r.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
+  <p><strong>Student:</strong> ${escapeHtml($('#studentName')?.value||'—')} &nbsp; <strong>Group:</strong> ${escapeHtml($('#studentGroup')?.value||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(r.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
   <h3>Part A — USTHB TP3 core protocol</h3>
   <h4>Short-derivation justification</h4><p>${prose(state.text.shortJustification)}</p>
   <h4>Resistor measurements</h4>${tableHtml('resistor')}<p><strong>Resistance from official V=f(I_m) graph:</strong> ${o?o.m.toFixed(2)+' Ω':'not determined'}.</p>
