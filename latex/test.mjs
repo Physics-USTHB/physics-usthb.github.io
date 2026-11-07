@@ -12,7 +12,10 @@ const rootCss = read('../assets/home.css');
 const privacy = read('../privacy.html');
 
 new Script(js, {filename: 'latex/app.js'});
-new Script(compiler.replace(/^export /gm, ''), {filename: 'latex/compiler.js'});
+new Script(
+  compiler.replace(/^export /gm, '').replace(/import\\.meta\\.url/g, "'http://example.test/latex/compiler.js'"),
+  {filename: 'latex/compiler.js'}
+);
 assert.ok(html.startsWith('<!doctype html>'), 'LaTeX Studio must be an HTML page');
 assert.ok(home.includes('href="latex/"'), 'Homepage must link LaTeX Studio');
 assert.ok(html.includes('src="app.js"'), 'Studio must load application script');
@@ -21,8 +24,12 @@ assert.ok(html.includes('src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/ka
 assert.ok(html.includes('id="pdf-frame"'), 'Internal PDF preview missing');
 assert.ok(html.includes('id="storage-details"'), 'Storage diagnostics missing');
 assert.ok(!html.includes('latexonline.cc'), 'External compile service must not be used');
-assert.match(compiler, /texlyre-busytex@1\.4\.1/, 'Pinned browser compiler dependency missing');
+assert.equal((html.match(/<option value=\"pdflatex\"/g) || []).length, 1, 'Only verified pdfLaTeX engine should be offered');
+assert.ok(!html.includes('value="xelatex"') && !html.includes('value="lualatex"'), 'Unverified engines must not be advertised');
+assert.match(compiler, /f80f84659c9476e41ef7212f6d753e10f6bd4af5/, 'Pinned SwiftLaTeX asset revision missing');
 assert.match(compiler, /sourceUpload:\s*false/, 'Compiler privacy declaration missing');
+assert.match(compiler, /SwiftLaTeX pdfTeX WebAssembly/, 'Internal pdfTeX engine missing');
+assert.ok(!compiler.includes('TeXlyre/texlyre-busytex-build/releases'), 'Broken release-asset CORS path must be removed');
 
 const ids = new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(m => m[1]));
 const referenced = [...js.matchAll(/\$\('([^']+)'\)/g)].map(m => m[1]);
