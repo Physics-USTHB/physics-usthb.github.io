@@ -361,7 +361,7 @@ function axisSummary(axis){return `<table class="equip-table"><thead><tr><th>x /
 function buildReport(){
   drawPlaneCanvases();drawCylinderCanvases();drawAxisChart();drawCompare();state.report=collectReport();state.text=collectText();const e=fieldMetricsA(),mapAimg=$('#mapACanvas').toDataURL(),mapBimg=$('#cylCanvas').toDataURL(),axisImg=$('#compareChart').toDataURL();
   const html=`<h2>Laboratory Report — E02</h2><p><strong>Rheographic Tank — Electric Potential & Field Mapping</strong></p>
-  <p><strong>Student:</strong> ${escapeHtml(state.report.studentName||'—')} &nbsp; <strong>Group:</strong> ${escapeHtml(state.report.studentGroup||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(state.report.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
+  <p><strong>Student:</strong> ${escapeHtml($('#studentName')?.value||'—')} &nbsp; <strong>Group:</strong> ${escapeHtml($('#studentGroup')?.value||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(state.report.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
   <h3>A — Two plane electrodes</h3><p>V_A=${state.plane.va==null?'—':state.plane.va.toFixed(2)} V; V_B=${state.plane.vb==null?'—':state.plane.vb.toFixed(2)} V. Symmetry difference: ${state.plane.sym.plus&&state.plane.sym.minus?Math.abs(state.plane.sym.plus.v-state.plane.sym.minus.v).toFixed(2)+' V':'—'}.</p>
   <h4>Equipotential map</h4>${equipSummary(state.mapA)}<img src="${mapAimg}" style="max-width:100%" alt="Plane-electrode equipotential map">
   <h4>Mean fields</h4><p>${e?e.map((v,i)=>`E${i+1}=${v.toFixed(1)} V/m`).join('; '):'Not determined'}.</p><p>${prose(state.text.fieldConclusionA)}</p>
