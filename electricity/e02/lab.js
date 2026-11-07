@@ -121,13 +121,13 @@ function mapComplete(map){return pointCount(map)===TARGETS.length*YLINES.length}
 function axisComplete(axis){return AXIS_X.every(x=>axis.records?.[x])}
 function progress(){
   const setup=state.plane.va!=null&&state.plane.vb!=null&&state.plane.sym.plus&&state.plane.sym.minus;
-  const a=mapComplete(state.mapA)&&axisComplete(state.axisA);
-  const b=state.cyl.vc!=null&&mapComplete(state.mapB)&&axisComplete(state.axisB);
+  const a=mapComplete(state.mapA)&&axisComplete(state.axisA)&&state.mapA.lines.central&&state.mapA.lines.edge;
+  const b=state.cyl.vc!=null&&mapComplete(state.mapB)&&axisComplete(state.axisB)&&state.mapB.lines.M&&state.mapB.lines.N;
   const assess=!!state.assessment;
   const items=[
     ['A.2','Plane setup',setup,setup?'Complete':'Electrodes + symmetry'],
-    ['A.3–7','Plane mapping',a,`${pointCount(state.mapA)}/16 map · ${Object.keys(state.axisA.records||{}).length}/11 scan`],
-    ['B.1–5','Cylinder mapping',b,`${pointCount(state.mapB)}/16 map · ${Object.keys(state.axisB.records||{}).length}/11 scan`],
+    ['A.3–7','Plane mapping',a,`${pointCount(state.mapA)}/16 map · ${Object.keys(state.axisA.records||{}).length}/11 scan · lines ${state.mapA.lines.central&&state.mapA.lines.edge?'✓':'…'}`],
+    ['B.1–5','Cylinder mapping',b,`${pointCount(state.mapB)}/16 map · ${Object.keys(state.axisB.records||{}).length}/11 scan · lines ${state.mapB.lines.M&&state.mapB.lines.N?'✓':'…'}`],
     ['POST','Assessment',assess,assess?`${state.assessment.score}/6`:'Not submitted']
   ];
   const active=items.findIndex(x=>!x[2]);
@@ -303,6 +303,7 @@ function updateMapBControls(){
   state.mapB.target=+$('#targetBSelect').value;state.mapB.y=+$('#mapBYSelect').value;state.cyl.y=state.mapB.y;$('#cylYSlider').value=state.cyl.y;setupTargetButtons('#targetsB',state.mapB,'B');yProgress('#yProgressB',state.mapB);updateCylinder();
 }
 function markB(){
+  if(!axisComplete(state.axisA)){ $('#cylMessage').className='notice warn';$('#cylMessage').textContent='Complete Configuration A, including the axial scan, before mapping Configuration B.';return;}
   if(state.cyl.vc==null){$('#cylMessage').className='notice warn';$('#cylMessage').textContent='Record the conductor potential first.';return;}
   const t=+$('#targetBSelect').value,y=+$('#mapBYSelect').value,x=state.cyl.x,v=readPotential(fields.B,x,y),err=v-t;if(Math.abs(err)>.10){$('#cylMessage').className='notice warn';$('#cylMessage').textContent=state.mode==='learn'?`Reading differs from target by ${Math.abs(err).toFixed(2)} V. ${err<0?'Move right toward B.':'Move left toward A.'}`:'Current point is outside the ±0.10 V target band.';return;}
   mapPointStore(state.mapB,t,y,{x,y,v});$('#cylMessage').className='notice ok';$('#cylMessage').textContent=`${t} V point stored at y=+${y} cm.`;setupTargetButtons('#targetsB',state.mapB,'B');yProgress('#yProgressB',state.mapB);updateFieldM();drawCylinderCanvases();progress();save();
