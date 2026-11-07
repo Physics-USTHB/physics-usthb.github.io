@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="USTHB-aligned virtual laboratory for RC and RL transient circuits.">
+  <title>E05 — RC–RL Transients | Physics USTHB</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="stylesheet" href="e05.css">
+</head>
+<body class="lab-page">
+<header class="topbar"><div class="shell nav"><a class="brand" href="../../index.html"><span class="brandmark">Φ</span><span class="brandcopy"><strong>Physics USTHB</strong><small>Electricity laboratory</small></span></a><nav class="navlinks"><a href="../index.html">Electricity Lab</a><a href="../e04/index.html">E04</a><a href="../../index.html">Home</a></nav></div></header>
+
+<section class="labmast">
+  <div class="shell labmast-grid">
+    <div>
+      <div class="breadcrumbs">Virtual Laboratory / Electricity & Circuits / E05</div>
+      <h1>RC & RL Circuits in the Transient Regime</h1>
+      <div class="labmeta"><span class="pill">USTHB TP5 core</span><span class="pill">Step response</span><span class="pill">Time constant τ</span><span class="pill">RC / RL</span></div>
+    </div>
+    <div class="mode-card no-print"><div><strong>Guidance mode</strong><div class="mini" id="modeDescription">Protocol guidance and measurement diagnostics are visible.</div></div><div class="segmented"><button class="modebtn active" data-mode="learn" type="button">Learn</button><button class="modebtn" data-mode="lab" type="button">Lab</button></div></div>
+  </div>
+</section>
+
+<div class="tabs no-print"><div class="shell tabrow">
+  <button class="tabbtn active" data-tab="briefing">1. Briefing</button>
+  <button class="tabbtn" data-tab="bench">2. Virtual Bench</button>
+  <button class="tabbtn" data-tab="results">3. Results</button>
+  <button class="tabbtn" data-tab="analysis">4. Analysis</button>
+  <button class="tabbtn" data-tab="assessment">5. Assessment</button>
+  <button class="tabbtn" data-tab="report">6. Lab Report</button>
+</div></div>
+
+<main class="shell">
+<section class="tabpanel active" id="briefing">
+  <div class="protocol-banner">
+    <div><strong>USTHB RC–RL transient practical</strong><p>The core follows the Belhous–El‑Mehdaoui manipulation: first validate τ with known R and C, then determine an unknown resistance, an unknown capacitance and an unknown inductance from measured transient time constants.</p></div>
+    <a href="https://www.fphy.usthb.dz/cours%20en%20ligne/Cours-en-ligne" target="_blank" rel="noopener">USTHB course listing ↗</a>
+  </div>
+  <div class="transient-progress" id="progressBoard"></div>
+
+  <div class="grid two">
+    <article class="paper">
+      <h2>RC series circuit</h2>
+      <div class="formula-transient">τ<sub>RC</sub> = R<sub>T</sub>C, &nbsp;&nbsp; R<sub>T</sub> = R + r<sub>g</sub></div>
+      <div class="formula-transient">V<sub>C</sub>(t) = E(1 − e<sup>−t/τ</sup>) &nbsp; during charge</div>
+      <p>At (t=	au), (V_Capprox0.63E). By (5	au), the capacitor is practically fully charged. During the second half-period it discharges exponentially.</p>
+    </article>
+    <article class="paper">
+      <h2>RL series circuit</h2>
+      <div class="formula-transient">τ<sub>RL</sub> = L/R<sub>T</sub>, &nbsp;&nbsp; R<sub>T</sub> = R + r<sub>g</sub> + R<sub>b</sub></div>
+      <div class="formula-transient">V<sub>R</sub>(t) = V<sub>R,max</sub>(1 − e<sup>−t/τ</sup>)</div>
+      <p>The voltage across R is proportional to current, so its rising transient is used to measure the current-establishment time constant.</p>
+    </article>
+  </div>
+
+  <article class="paper" style="margin-top:18px">
+    <h2>The two graphical methods taught in the handout</h2>
+    <div class="grid two">
+      <div><h3>4-square method</h3><p>Adjust the final response to <strong>6 vertical divisions</strong>. Take <strong>4 divisions</strong> as the τ level. Since 4/6 ≈ 0.67 rather than 0.63, this method slightly overestimates τ.</p></div>
+      <div><h3>5-square method</h3><p>Adjust the final response to <strong>8 vertical divisions</strong>. Take <strong>5 divisions</strong> as the τ level. Since 5/8 = 0.625, this is much closer to the theoretical 0.63 level.</p></div>
+    </div>
+    <div class="notice learn-only"><strong>Measurement quality:</strong> the half-period must be long enough to show a complete transient (approximately (T/2ge5	au)), but τ must also occupy enough horizontal divisions to be read accurately.</div>
+  </article>
+</section>
+
+<section class="tabpanel" id="bench">
+  <div class="transient-layout">
+    <div class="transient-bench">
+      <div class="transient-head"><div><div class="transient-kicker" id="taskCode">4.1 — Known R, known C</div><h3 id="taskTitle">Validate the RC time constant</h3></div><span class="transient-state" id="benchState">Adjust settings</span></div>
+
+      <div class="transient-screen">
+        <canvas id="transientCanvas" width="900" height="560"></canvas>
+        <div class="transient-overlay"><span id="timeDivLabel">50 µs/div</span><span id="voltsDivLabel">1 V/div</span><span id="methodLabel">5-square method</span></div>
+      </div>
+
+      <div class="transient-controls">
+        <div class="transient-control"><label>Experiment</label><select id="taskSelect"><option value="knownRC">4.1 · known R, known C</option><option value="unknownR">4.2 · unknown R, known C</option><option value="unknownC">4.3 · known R, unknown C</option><option value="unknownL">4.4 · known R, unknown L</option></select></div>
+        <div class="transient-control"><label>Generator frequency</label><select id="frequency"><option value="100">100 Hz</option><option value="200">200 Hz</option><option value="500" selected>500 Hz</option><option value="1000">1 kHz</option><option value="2000">2 kHz</option><option value="5000">5 kHz</option></select></div>
+        <div class="transient-control"><label>Generator level E</label><input id="sourceAmp" type="range" min="2" max="10" step=".1" value="8"><strong id="sourceAmpLabel">8.0 V</strong></div>
+        <div class="transient-control"><label>TIME/DIV</label><select id="timeDiv"><option value=".00001">10 µs/div</option><option value=".00002">20 µs/div</option><option value=".00005" selected>50 µs/div</option><option value=".0001">0.1 ms/div</option><option value=".0002">0.2 ms/div</option><option value=".0005">0.5 ms/div</option><option value=".001">1 ms/div</option><option value=".002">2 ms/div</option></select></div>
+        <div class="transient-control"><label>VOLTS/DIV</label><select id="voltsDiv"><option value=".25">0.25 V/div</option><option value=".5">0.5 V/div</option><option value=".75">0.75 V/div</option><option value="1" selected>1 V/div</option><option value="1.5">1.5 V/div</option><option value="2">2 V/div</option></select></div>
+        <div class="transient-control"><label>Method</label><select id="tauMethod"><option value="5" selected>5 squares / 8 max</option><option value="4">4 squares / 6 max</option></select></div>
+      </div>
+
+      <div class="cursor-panel">
+        <label><span>Time cursor after rising edge</span><strong id="cursorTimeLabel">0 µs</strong></label>
+        <input id="cursorTime" type="range" min="0" max=".001" step=".000001" value="0">
+        <div class="cursor-values"><div><span>Response at cursor</span><strong id="cursorValue">— V</strong></div><div><span>Target level</span><strong id="targetValue">— V</strong></div><div><span>Level error</span><strong id="targetError">— div</strong></div></div>
+      </div>
+
+      <div class="transient-actions"><button class="btn" id="recordTau" type="button">Record τ from cursor</button><button class="btn secondary" id="autoCentre" type="button">Set recommended display</button><button class="btn secondary" id="newRun" type="button">New specimen</button></div>
+      <div class="notice" id="benchMessage">Adjust the display so the transient is complete and occupies 6 or 8 vertical divisions.</div>
+    </div>
+
+    <aside class="transient-side">
+      <article class="transient-card"><h4>Components in this task</h4><div class="component-grid"><div><span>R</span><strong id="compR">50 Ω</strong></div><div><span>C</span><strong id="compC">0.50 µF</strong></div><div><span>L / Rb</span><strong id="compL">—</strong></div></div><p style="margin-bottom:0">Generator internal resistance: <strong>r<sub>g</sub> = 50 Ω</strong>.</p></article>
+      <article class="transient-card"><h4>Display-quality diagnostics</h4><div class="quality-meter"><div><span>Completion</span><strong id="qualityComplete">—</strong></div><div><span>Horizontal span</span><strong id="qualityHorizontal">—</strong></div><div><span>Vertical span</span><strong id="qualityVertical">—</strong></div></div></article>
+      <article class="transient-card learn-only wide-side"><h4>How to proceed</h4><p id="taskHint">For 4.1, choose settings that make the charge essentially complete before the falling edge, then place the cursor where the response reaches the method's target level.</p></article>
+    </aside>
+  </div>
+</section>
+
+<section class="tabpanel" id="results">
+  <div class="grid two">
+    <article class="paper"><h2>4.1 — Known R and C</h2><div class="result-panel"><div><span>Measured τ</span><strong id="knownTau">—</strong></div><div><span>Theory R<sub>T</sub>C</span><strong id="knownTheory">50 µs</strong></div><div><span>Difference</span><strong id="knownError">—</strong></div><div><span>Method</span><strong id="knownMethod">—</strong></div></div></article>
+    <article class="paper"><h2>4.2 — Unknown R<sub>x</sub></h2><div class="result-panel"><div><span>Measured τ</span><strong id="rTau">—</strong></div><div><span>Known C</span><strong>0.50 µF</strong></div><div><span>Derived R<sub>x</sub></span><strong id="rDerived">— Ω</strong></div><div><span>Method</span><strong id="rMethod">—</strong></div></div></article>
+    <article class="paper"><h2>4.3 — Unknown C<sub>x</sub></h2><div class="result-panel"><div><span>Measured τ</span><strong id="cTau">—</strong></div><div><span>Known R</span><strong>150 Ω</strong></div><div><span>Derived C<sub>x</sub></span><strong id="cDerived">— µF</strong></div><div><span>Method</span><strong id="cMethod">—</strong></div></div></article>
+    <article class="paper"><h2>4.4 — Unknown L<sub>x</sub></h2><div class="result-panel"><div><span>Measured τ</span><strong id="lTau">—</strong></div><div><span>Known R / Rb</span><strong>150 Ω / 20 Ω</strong></div><div><span>Derived L<sub>x</sub></span><strong id="lDerived">— mH</strong></div><div><span>Method</span><strong id="lMethod">—</strong></div></div></article>
+  </div>
+</section>
+
+<section class="tabpanel" id="analysis">
+  <div class="grid two">
+    <article class="paper">
+      <h2>Method bias</h2>
+      <p>The graphical levels are approximations to the exact 63.2% time-constant level:</p>
+      <div class="formula-transient">t(4/6) = −τ ln(1−4/6) ≈ 1.099τ</div>
+      <div class="formula-transient">t(5/8) = −τ ln(1−5/8) ≈ 0.981τ</div>
+      <p>This explains why the handout describes the five-square method as more precise.</p>
+    </article>
+    <article class="paper">
+      <h2>Optional exponential-fit extension</h2>
+      <p>After completing a task, the simulator can fit the whole rising transient and compare the fitted τ with the graphical estimate.</p>
+      <button class="btn" id="runFit" type="button">Fit current task transient</button>
+      <div class="notice" id="fitMessage" style="margin-top:12px">Complete the selected task first.</div>
+      <div class="result-panel" style="margin-top:12px"><div><span>Graphical τ</span><strong id="fitGraphical">—</strong></div><div><span>Fit τ</span><strong id="fitTau">—</strong></div><div><span>Difference</span><strong id="fitDiff">—</strong></div><div><span>R²</span><strong id="fitR2">—</strong></div></div>
+    </article>
+  </div>
+  <article class="paper" style="margin-top:18px"><h2>Measured time constants</h2><div class="compare-chart"><canvas id="summaryChart" width="900" height="460"></canvas></div></article>
+</section>
+
+<section class="tabpanel" id="assessment">
+  <article class="paper">
+    <h2>Post-laboratory assessment</h2>
+    <form id="quiz">
+      <fieldset class="question"><legend>1. For an RC circuit, the time constant is:</legend><label class="choice"><input type="radio" name="q1" value="a"> R<sub>T</sub>C.</label><label class="choice"><input type="radio" name="q1" value="b"> L/R<sub>T</sub>.</label><label class="choice"><input type="radio" name="q1" value="c"> 1/(RC).</label></fieldset>
+      <fieldset class="question"><legend>2. At t=τ during capacitor charging, V<sub>C</sub> is approximately:</legend><label class="choice"><input type="radio" name="q2" value="a"> 0.63E.</label><label class="choice"><input type="radio" name="q2" value="b"> 0.10E.</label><label class="choice"><input type="radio" name="q2" value="c"> 2E.</label></fieldset>
+      <fieldset class="question"><legend>3. Why should T/2 be at least about 5τ?</legend><label class="choice"><input type="radio" name="q3" value="a"> So the transient is essentially complete before the next switching edge.</label><label class="choice"><input type="radio" name="q3" value="b"> To make τ equal to zero.</label><label class="choice"><input type="radio" name="q3" value="c"> To remove the generator resistance.</label></fieldset>
+      <fieldset class="question"><legend>4. The 5-square method uses:</legend><label class="choice"><input type="radio" name="q4" value="a"> 5/8 of the final amplitude.</label><label class="choice"><input type="radio" name="q4" value="b"> 5/6 of the final amplitude.</label><label class="choice"><input type="radio" name="q4" value="c"> 1/5 of the final amplitude.</label></fieldset>
+      <fieldset class="question"><legend>5. With known C, an unknown series resistance is obtained from:</legend><label class="choice"><input type="radio" name="q5" value="a"> R<sub>x</sub>=τ/C−r<sub>g</sub>.</label><label class="choice"><input type="radio" name="q5" value="b"> R<sub>x</sub>=C/τ.</label><label class="choice"><input type="radio" name="q5" value="c"> R<sub>x</sub>=τC.</label></fieldset>
+      <fieldset class="question"><legend>6. For an RL circuit:</legend><label class="choice"><input type="radio" name="q6" value="a"> L=τR<sub>T</sub>.</label><label class="choice"><input type="radio" name="q6" value="b"> L=τ/R<sub>T</sub>.</label><label class="choice"><input type="radio" name="q6" value="c"> L=1/(τR<sub>T</sub>).</label></fieldset>
+      <button class="btn" type="submit">Submit assessment</button>
+    </form><div id="quizResult" style="margin-top:14px"></div>
+  </article>
+</section>
+
+<section class="tabpanel" id="report">
+  <article class="paper no-print"><h2>Laboratory report</h2><div class="report-grid"><label>Student name<input id="studentName" type="text"></label><label>Group / section<input id="studentGroup" type="text"></label><label>Date<input id="reportDate" type="date"></label><label>Mode<input id="reportMode" type="text" readonly></label><label class="wide">Discussion<textarea id="reportDiscussion" placeholder="Discuss display-quality choices, the two graphical τ methods, known-RC validation and the extraction of Rx, Cx and Lx."></textarea></label><label class="wide">Conclusion<textarea id="reportConclusion" placeholder="Summarise the four measured/deduced results and comment on the accuracy of the graphical method."></textarea></label></div><div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button></div></article>
+  <div class="report-preview" id="reportPreview"><h2>Laboratory Report — E05</h2><p class="mini">Complete the four transient measurements and build the report.</p></div>
+</section>
+<section class="tabpanel" id="printable-report"><div class="report-preview" id="printOnlyPreview"></div></section>
+</main>
+
+<footer class="footer"><div class="shell">E05 • RC–RL Transients • Physics USTHB interactive laboratory</div></footer>
+<script src="lab.js"></script>
+</body>
+</html>
