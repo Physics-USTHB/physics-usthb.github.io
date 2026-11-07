@@ -1,15 +1,15 @@
 (() => {
 'use strict';
 
-const STORAGE='PhysicsUSTHB_E04_v1';
+const STORAGE='PhysicsUSTHB_E04_v2';
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const TAU=2*Math.PI;
 
 let state={
-  version:1,mode:'learn',run:null,
-  xy:{observed:{},centered:true},
+  version:2,mode:'learn',run:null,
+  xy:{observed:{},centered:false,intensity:.35,focus:.9,xPos:0,yPos:0,mode:'xy'},
   sweep:{cal:true,ch1Cal:true,xMag:false,calChecked:false,measurement:null},
   resistor:{xy:false,xyVerified:false,balance:null},
   capacitor:{xy:false,xyVerified:false,balance:null},
@@ -29,7 +29,7 @@ function save(){
   state.report=collectReport();
   try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}
 }
-function load(){try{const x=JSON.parse(localStorage.getItem(STORAGE)||'null');if(x?.version===1)state={...state,...x};}catch(_){}}
+function load(){try{const x=JSON.parse(localStorage.getItem(STORAGE)||'null');if(x?.version===2)state={...state,...x};}catch(_){}}
 function collectReport(){
   const ids=['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'];
   const o={};ids.forEach(id=>{const el=document.getElementById(id);if(el)o[id]=el.value;});return o;
@@ -85,15 +85,39 @@ function drawPath(ctx,pts,color,width=2,alpha=1){
   if(!pts.length)return;ctx.save();ctx.strokeStyle=color;ctx.globalAlpha=alpha;ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='round';ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();ctx.restore();
 }
 
+function xySetupOK(){
+  return state.xy.mode==='xy'&&state.xy.intensity>=.15&&state.xy.intensity<=.55&&state.xy.focus>=.75&&Math.abs(state.xy.xPos)<=.15&&Math.abs(state.xy.yPos)<=.15;
+}
+function updateXYSetup(){
+  state.xy.intensity=+$('#xyIntensity').value;state.xy.focus=+$('#xyFocus').value;state.xy.xPos=+$('#xyXPos').value;state.xy.yPos=+$('#xyYPos').value;state.xy.mode=$('#xyModeControl').value;
+  state.xy.centered=Math.abs(state.xy.xPos)<=.15&&Math.abs(state.xy.yPos)<=.15;
+  $('#xyIntensityLabel').textContent=`${Math.round(state.xy.intensity*100)}%`;$('#xyFocusLabel').textContent=state.xy.focus>=.75?'fine':'blurred';$('#xyXPosLabel').textContent=`${state.xy.xPos.toFixed(1)} div`;$('#xyYPosLabel').textContent=`${state.xy.yPos.toFixed(1)} div`;
+  const items=[
+    ['Command (12) set to XY',state.xy.mode==='xy'],
+    ['Spot intensity low, not excessive',state.xy.intensity>=.15&&state.xy.intensity<=.55],
+    ['Focus adjusted to a fine spot',state.xy.focus>=.75],
+    ['Horizontal position centred',Math.abs(state.xy.xPos)<=.15],
+    ['Vertical position (6B) centred',Math.abs(state.xy.yPos)<=.15]
+  ];
+  $('#xySetupChecklist').innerHTML=items.map(([t,ok])=>`<div class="setup-item ${ok?'ok':'warn'}"><i></i><span>${t}</span></div>`).join('');
+  $('#xyState').textContent=xySetupOK()?'XY setup ready':'Front panel not ready';$('#xyState').classList.toggle('ok',xySetupOK());
+}
 function drawXY(){
-  const c=$('#xyCanvas');if(!c)return;const{ctx,w,h}=setupCanvas(c),g=scopeGrid(ctx,w,h);
+  const c=$('#xyCanvas');if(!c)return;updateXYSetup();const{ctx,w,h}=setupCanvas(c),g=scopeGrid(ctx,w,h);
   const type=$('#xyWave').value,route=$('#xyRoute').value,amp=+$('#xyAmp').value,v1=+$('#xyVdiv1').value,v2=+$('#xyVdiv2').value;
   $('#xyAmpLabel').textContent=`${amp.toFixed(1)} V peak`;
-  const pts=[];for(let k=0;k<=600;k++){const ph=TAU*k/600,s=waveform(type,ph),xd=route==='y'?0:amp*s/v1,yd=route==='x'?0:amp*s/v2;pts.push({x:g.cx+xd*g.xdiv,y:g.cy-yd*g.ydiv});}
-  drawPath(ctx,pts,'#79ffc1',2.1,.48);
-  ctx.fillStyle='#a6ffd7';
-  for(let m=0;m<24;m++){const p=pts[Math.round(m*600/24)];ctx.beginPath();ctx.arc(p.x,p.y,type==='square'?4.2:2.8,0,TAU);ctx.fill();}
-  if(type==='square'){ctx.fillStyle='#e5fff3';for(const p of [pts[75],pts[225],pts[375],pts[525]]){ctx.beginPath();ctx.arc(p.x,p.y,4.8,0,TAU);ctx.fill();}}
+  const x0=g.cx+state.xy.xPos*g.xdiv,y0=g.cy-state.xy.yPos*g.ydiv,alpha=.18+.8*state.xy.intensity,width=.8+(1-state.xy.focus)*5;
+  const pts=[];
+  if(state.xy.mode!=='xy'){
+    for(let k=0;k<=600;k++){const ph=TAU*k/600,s=waveform(type,ph),yd=(route==='x'?amp*s/v1:route==='y'?amp*s/v2:amp*s/v2);pts.push({x:g.l+g.gw*k/600,y:y0-yd*g.ydiv});}
+    drawPath(ctx,pts,'#79ffc1',width,alpha);
+  }else{
+    for(let k=0;k<=600;k++){const ph=TAU*k/600,s=waveform(type,ph),xd=route==='y'?0:amp*s/v1,yd=route==='x'?0:amp*s/v2;pts.push({x:x0+xd*g.xdiv,y:y0-yd*g.ydiv});}
+    drawPath(ctx,pts,'#79ffc1',width,alpha);
+    ctx.fillStyle='#a6ffd7';ctx.globalAlpha=alpha;
+    for(let m=0;m<24;m++){const p=pts[Math.round(m*600/24)];ctx.beginPath();ctx.arc(p.x,p.y,type==='square'?4.2:2.8,0,TAU);ctx.fill();}
+    ctx.globalAlpha=1;
+  }
   $('#xyCH1Label').textContent=route==='y'?'CH1/X disconnected':`CH1/X · ${v1} V/div`;
   $('#xyCH2Label').textContent=route==='x'?'CH2/Y disconnected':`CH2/Y · ${v2} V/div`;
 }
@@ -102,6 +126,7 @@ function renderXYObs(){
   const waves=['sine','triangle','square'],routes=['x','y','both'];$('#xyObservations').innerHTML=waves.flatMap(w=>routes.map(r=>{const key=`${w}-${r}`,done=state.xy.observed?.[key];return `<div class="obs-card"><h4>${w[0].toUpperCase()+w.slice(1)} · ${r==='both'?'X+Y':r.toUpperCase()}</h4><p>${r==='x'?'Horizontal spot motion':r==='y'?'Vertical spot motion':'Same signal on both axes'}</p><span class="status ${done?'live':''}">${done?'Recorded':'Pending'}</span></div>`;})).join('');
 }
 function recordXY(){
+  if(!xySetupOK()){$('#xyMessage').className='notice warn';$('#xyMessage').textContent='Complete the front-panel setup required by the handout before recording an XY observation.';return;}
   const key=xyKey();state.xy.observed[key]={wave:$('#xyWave').value,route:$('#xyRoute').value,v1:+$('#xyVdiv1').value,v2:+$('#xyVdiv2').value,amp:+$('#xyAmp').value};
   const n=Object.keys(state.xy.observed).length;$('#xyMessage').className=n===9?'notice ok':'notice';$('#xyMessage').textContent=n===9?'All nine required XY observations have been recorded.':`Observation stored (${n}/9). Repeat for every waveform in X, Y and both channels.`;renderXYObs();progress();save();
 }
@@ -109,14 +134,16 @@ function recordXY(){
 function effectiveTimeDiv(){let t=+$('#timeDiv').value;if(!state.sweep.cal)t*=1.17;if(state.sweep.xMag)t/=10;return t;}
 function sweepStable(){
   const amp=2,level=+$('#triggerLevel').value;
-  return $('#triggerMode').value==='auto'&&Math.abs(level)<amp*.98;
+  return $('#triggerMode').value==='auto'&&$('#triggerSource').value==='ch1'&&Math.abs(level)<amp*.98;
 }
 function drawSweep(){
   const c=$('#sweepCanvas');if(!c)return;const{ctx,w,h}=setupCanvas(c),g=scopeGrid(ctx,w,h);
-  const type=$('#sweepWave').value,f=+$('#sweepFreq').value,vdiv=+$('#sweepVdiv').value,tdiv=effectiveTimeDiv(),amp=2*(state.sweep.ch1Cal?1:1.22),screenT=tdiv*10,stable=sweepStable();
-  $('#sweepFreqLabel').textContent=`${f} Hz`;$('#triggerLevelLabel').textContent=`${(+$('#triggerLevel').value).toFixed(1)} V`;$('#timeScaleLabel').textContent=`${formatTime(+$('#timeDiv').value)}/div`;$('#verticalScaleLabel').textContent=`${vdiv} V/div`;$('#triggerLabel').textContent=stable?'trigger locked':'trigger free-run';
+  const type=$('#sweepWave').value,f=+$('#sweepFreq').value,vdiv=+$('#sweepVdiv').value,tdiv=effectiveTimeDiv(),amp=2*(state.sweep.ch1Cal?1:1.22),screenT=tdiv*10,stable=sweepStable(),coupling=$('#sweepCoupling').value,display=$('#sweepDisplayMode').value;
+  $('#sweepFreqLabel').textContent=`${f} Hz`;$('#triggerLevelLabel').textContent=`${(+$('#triggerLevel').value).toFixed(1)} V`;$('#timeScaleLabel').textContent=`${formatTime(+$('#timeDiv').value)}/div`;$('#verticalScaleLabel').textContent=`${vdiv} V/div`;$('#triggerLabel').textContent=stable?'trigger CH1 locked':`trigger ${$('#triggerSource').value.toUpperCase()} free-run`;
   const phaseOffsets=stable?[0]:[0,.55,1.2,1.8];
-  phaseOffsets.forEach((off,oi)=>{const pts=[];for(let k=0;k<=800;k++){const t=screenT*k/800,vd=amp*waveform(type,TAU*f*t+off)/vdiv;pts.push({x:g.l+g.gw*k/800,y:g.cy-vd*g.ydiv});}drawPath(ctx,pts,'#74ffc0',stable?2.2:1.2,stable?.95:.22);});
+  if(coupling==='gnd'||display==='ch2'){drawPath(ctx,[{x:g.l,y:g.cy},{x:w-g.r,y:g.cy}],'#74ffc0',1.8,.8);}
+  else phaseOffsets.forEach((off)=>{const pts=[];for(let k=0;k<=800;k++){const t=screenT*k/800,vd=amp*waveform(type,TAU*f*t+off)/vdiv;pts.push({x:g.l+g.gw*k/800,y:g.cy-vd*g.ydiv});}drawPath(ctx,pts,'#74ffc0',stable?2.2:1.2,stable?.95:.22);});
+  if(display==='dual'){drawPath(ctx,[{x:g.l,y:g.cy+1.5*g.ydiv},{x:w-g.r,y:g.cy+1.5*g.ydiv}],'#69e7ff',1.2,.55);}
   const selected=+$('#timeDiv').value,screen=effectiveTimeDiv()*10;$('#screenTime').textContent=`${formatTime(screen)}`;
   $('#sweepCalLabel').textContent=state.sweep.cal?'CAL':'VAR';$('#ch1CalLabel').textContent=state.sweep.ch1Cal?'CAL':'VAR';$('#xMagLabel').textContent=state.sweep.xMag?'×10':'×1';
   const calOK=Math.abs(selected-.5)<1e-9&&state.sweep.cal&&!state.sweep.xMag;$('#calStatus').textContent=calOK?'5.0 s ✓':'not calibrated';
@@ -132,10 +159,43 @@ function recordSweep(){
   }
   const f=+$('#sweepFreq').value,pd=(1/f)/effectiveTimeDiv();
   if(!state.sweep.cal||!state.sweep.ch1Cal||state.sweep.xMag){$('#sweepMessage').className='notice warn';$('#sweepMessage').textContent='Return sweep and CH1 fine controls to CAL and X magnifier to X1 before making a quantitative measurement.';return;}
-  if(!sweepStable()){$('#sweepMessage').className='notice warn';$('#sweepMessage').textContent='The trace is not synchronised. Select AUTO/CH1 rising and set the trigger level within the waveform amplitude.';return;}
+  if($('#sweepCoupling').value==='gnd'||$('#sweepDisplayMode').value!=='ch1'){$('#sweepMessage').className='notice warn';$('#sweepMessage').textContent='For the frequency measurement, display CH1 with the signal connected rather than GND.';return;}
+  if(!sweepStable()){$('#sweepMessage').className='notice warn';$('#sweepMessage').textContent='The trace is not synchronised. Select AUTO triggering from CH1 and set LEVEL within the waveform amplitude.';return;}
   if(pd<1||pd>8){$('#sweepMessage').className='notice warn';$('#sweepMessage').textContent='Choose a TIME/DIV value that displays roughly one to several periods clearly.';return;}
   const readDiv=pd*(1+state.run.readingBias),T=readDiv*(+$('#timeDiv').value);state.sweep.measurement={generator:f,periodDiv:readDiv,T,f:1/T,timeDiv:+$('#timeDiv').value,wave:$('#sweepWave').value};
   $('#sweepMessage').className='notice ok';$('#sweepMessage').textContent=`Measurement stored: one period spans approximately ${readDiv.toFixed(2)} divisions.`;drawSweep();progress();save();
+}
+
+
+function cmul(a,s){return{re:a.re*s,im:a.im*s}}
+function csub(a,b){return{re:a.re-b.re,im:a.im-b.im}}
+function camp(a){return Math.hypot(a.re,a.im)}
+function cphase(a){return Math.atan2(a.im,a.re)}
+function phaseSetup(kind){
+  const p=kind==='r'?'r':'c';
+  return $('#'+p+'CH1Point').value==='A'&&$('#'+p+'CH2Point').value==='C'&&$('#'+p+'GroundPoint').value==='B'&&$('#'+p+'Coupling1').value==='ac'&&$('#'+p+'Coupling2').value==='ac'&&$('#'+p+'Invert2').value==='invert';
+}
+function updatePhaseConnection(kind){
+  const p=kind==='r'?'r':'c',ok=phaseSetup(kind),el=$('#'+p+'ConnectionStatus');
+  if(ok){el.className='connection-status';el.textContent=`Figure ${kind==='r'?'5':'6'} connection ready: CH1→A, CH2→C, ground→B, AC/AC, CH2 inverted.`;}
+  else{
+    el.className='connection-status bad';
+    if($('#'+p+'GroundPoint').value!=='B')el.textContent='Invalid common-ground point. The USTHB circuit requires the oscilloscope mass at B.';
+    else el.textContent=`Connection differs from Figure ${kind==='r'?'5':'6'}. Check CH1=A, CH2=C, AC coupling on both channels and CH2 INVERT.`;
+  }
+}
+function scopedChannels(kind,core){
+  const p=kind==='r'?'r':'c';
+  if($('#'+p+'GroundPoint').value!=='B')return{safe:false,a1:0,a2:0,p1:0,p2:0};
+  let nodes;
+  if(kind==='r')nodes={A:{re:core.a1,im:0},B:{re:0,im:0},C:{re:-core.a2,im:0}};
+  else nodes={A:{re:core.a1,im:0},B:{re:0,im:0},C:{re:0,im:core.a2}};
+  const g=nodes.B;
+  let z1=csub(nodes[$('#'+p+'CH1Point').value],g),z2=csub(nodes[$('#'+p+'CH2Point').value],g);
+  if($('#'+p+'Coupling1').value==='gnd')z1={re:0,im:0};
+  if($('#'+p+'Coupling2').value==='gnd')z2={re:0,im:0};
+  if($('#'+p+'Invert2').value==='invert')z2=cmul(z2,-1);
+  return{safe:true,a1:camp(z1),a2:camp(z2),p1:cphase(z1),p2:cphase(z2)};
 }
 
 function circuitResistor(){
@@ -148,31 +208,35 @@ function circuitCap(){
 }
 function drawDual(canvasId,kind){
   const c=$(canvasId);if(!c)return;const{ctx,w,h}=setupCanvas(c),g=scopeGrid(ctx,w,h);
-  const isR=kind==='r',x=isR?circuitResistor():circuitCap(),f=+(isR?$('#rFreq').value:$('#cFreq').value),vdiv=+(isR?$('#rVdiv').value:$('#cVdiv').value),tdiv=+(isR?$('#rTimeDiv').value:$('#cTimeDiv').value),xy=isR?state.resistor.xy:state.capacitor.xy;
+  const isR=kind==='r',x=isR?circuitResistor():circuitCap(),ch=scopedChannels(kind,x),f=+(isR?$('#rFreq').value:$('#cFreq').value),vdiv=+(isR?$('#rVdiv').value:$('#cVdiv').value),tdiv=+(isR?$('#rTimeDiv').value:$('#cTimeDiv').value),xy=isR?state.resistor.xy:state.capacitor.xy;
+  updatePhaseConnection(kind);
+  if(!ch.safe){ctx.fillStyle='#ff9daf';ctx.font='700 16px system-ui';ctx.textAlign='center';ctx.fillText('Unsafe/incorrect common-ground connection',w/2,h/2);return{...x,...ch};}
   if(xy){
-    const pts=[];for(let k=0;k<=700;k++){const ph=TAU*k/700,xx=x.a1*Math.sin(ph)/vdiv,yy=x.a2*Math.sin(ph+x.phi)/vdiv;pts.push({x:g.cx+xx*g.xdiv,y:g.cy-yy*g.ydiv});}drawPath(ctx,pts,'#7dffc2',2.3,.95);
+    const pts=[];for(let k=0;k<=700;k++){const ph=TAU*k/700,xx=ch.a1*Math.sin(ph+ch.p1)/vdiv,yy=ch.a2*Math.sin(ph+ch.p2)/vdiv;pts.push({x:g.cx+xx*g.xdiv,y:g.cy-yy*g.ydiv});}drawPath(ctx,pts,'#7dffc2',2.3,.95);
   }else{
-    const screenT=10*tdiv,p1=[],p2=[];for(let k=0;k<=900;k++){const t=screenT*k/900,ph=TAU*f*t;p1.push({x:g.l+g.gw*k/900,y:g.cy-x.a1*Math.sin(ph)/vdiv*g.ydiv});p2.push({x:g.l+g.gw*k/900,y:g.cy-x.a2*Math.sin(ph+x.phi)/vdiv*g.ydiv});}drawPath(ctx,p1,'#ffd166',2.2,.92);drawPath(ctx,p2,'#69e7ff',2.2,.92);
+    const screenT=10*tdiv,p1=[],p2=[];for(let k=0;k<=900;k++){const t=screenT*k/900,ph=TAU*f*t;p1.push({x:g.l+g.gw*k/900,y:g.cy-ch.a1*Math.sin(ph+ch.p1)/vdiv*g.ydiv});p2.push({x:g.l+g.gw*k/900,y:g.cy-ch.a2*Math.sin(ph+ch.p2)/vdiv*g.ydiv});}drawPath(ctx,p1,'#ffd166',2.2,.92);drawPath(ctx,p2,'#69e7ff',2.2,.92);
   }
-  return x;
+  return{...x,...ch};
 }
 function updateResistor(){
-  const x=drawDual('#resistorCanvas','r'),ratio=x.a2/x.a1;$('#rDecadeLabel').textContent=`${x.rd.toFixed(0)} Ω`;$('#rAmp1').textContent=`${x.a1.toFixed(2)} V`;$('#rAmp2').textContent=`${x.a2.toFixed(2)} V`;$('#rRatio').textContent=ratio.toFixed(3);
+  const x=drawDual('#resistorCanvas','r'),ratio=x.safe&&x.a1>0?x.a2/x.a1:NaN;$('#rDecadeLabel').textContent=`${x.rd.toFixed(0)} Ω`;$('#rAmp1').textContent=`${x.a1.toFixed(2)} V`;$('#rAmp2').textContent=`${x.a2.toFixed(2)} V`;$('#rRatio').textContent=ratio.toFixed(3);
   if(state.resistor.balance){const b=state.resistor.balance;$('#rxResult').textContent=`${b.rd.toFixed(0)} Ω`;$('#rDt').textContent=formatTime(b.dt);$('#rT').textContent=formatTime(b.T);$('#rPhiSweep').textContent=`${b.phiSweep.toFixed(1)}°`;$('#rPhiXY').textContent=state.resistor.xyVerified?`${b.phiXY.toFixed(1)}°`:'—°';}
   else{$('#rxResult').textContent='— Ω';$('#rDt').textContent='—';$('#rT').textContent='—';$('#rPhiSweep').textContent='—°';$('#rPhiXY').textContent='—°';}
-  $('#resistorMessage').className=Math.abs(ratio-1)<.03?'notice ok':'notice';$('#resistorMessage').textContent=Math.abs(ratio-1)<.03?'Amplitudes are balanced within 3%. You may record the condition.':state.mode==='learn'?(ratio>1?'CH2 is larger: increase the decade resistance.':'CH1 is larger: decrease the decade resistance.'):'Adjust until the two amplitudes are equal.';
+  if(!phaseSetup('r')){$('#resistorMessage').className='notice warn';$('#resistorMessage').textContent='Reproduce Figure 5 first: CH1→A, CH2→C, common ground→B, AC on both channels, CH2 inverted.';}
+  else{$('#resistorMessage').className=Math.abs(ratio-1)<.03?'notice ok':'notice';$('#resistorMessage').textContent=Math.abs(ratio-1)<.03?'Amplitudes are balanced within 3%. You may record the condition.':state.mode==='learn'?(ratio>1?'CH2 is larger: increase the decade resistance.':'CH1 is larger: decrease the decade resistance.'):'Adjust until the two amplitudes are equal.';}
 }
 function recordRBalance(){
-  const x=circuitResistor(),ratio=x.a2/x.a1;if(Math.abs(ratio-1)>=.03){updateResistor();return;}const f=+$('#rFreq').value,T=1/f,dt=0;state.resistor.balance={rd:x.rd,ratio,T,dt,phiSweep:0,phiXY:0,frequency:f,trueRx:state.run.rx};state.resistor.xyVerified=false;$('#resistorMessage').className='notice ok';$('#resistorMessage').textContent='Balanced condition stored. Now switch to XY mode and verify the straight-line Lissajous trace.';updateResistor();progress();save();
+  if(!phaseSetup('r')){updateResistor();return;}const x=circuitResistor(),ratio=x.a2/x.a1;if(Math.abs(ratio-1)>=.03){updateResistor();return;}const f=+$('#rFreq').value,T=1/f,dt=0;state.resistor.balance={rd:x.rd,ratio,T,dt,phiSweep:0,phiXY:0,frequency:f,trueRx:state.run.rx};state.resistor.xyVerified=false;$('#resistorMessage').className='notice ok';$('#resistorMessage').textContent='Balanced condition stored. Now switch to XY mode and verify the straight-line Lissajous trace.';updateResistor();progress();save();
 }
 function updateCap(){
-  const x=drawDual('#capacitorCanvas','c'),ratio=x.a2/x.a1;$('#cDecadeLabel').textContent=`${x.rd.toFixed(0)} Ω`;
+  const x=drawDual('#capacitorCanvas','c'),ratio=x.safe&&x.a1>0?x.a2/x.a1:NaN;$('#cDecadeLabel').textContent=`${x.rd.toFixed(0)} Ω`;
   if(state.capacitor.balance){const b=state.capacitor.balance;$('#zcResult').textContent=`${b.rd.toFixed(0)} Ω`;$('#cPhiSweep').textContent=`${b.phiSweep.toFixed(1)}°`;$('#cPhiXY').textContent=state.capacitor.xyVerified?`${b.phiXY.toFixed(1)}°`:'—°';$('#cResult').textContent=`${(b.Cderived*1e6).toFixed(3)} µF`;}
   else{$('#zcResult').textContent='— Ω';$('#cPhiSweep').textContent='—°';$('#cPhiXY').textContent='—°';$('#cResult').textContent='— µF';}
-  $('#capMessage').className=Math.abs(ratio-1)<.03?'notice ok':'notice';$('#capMessage').textContent=Math.abs(ratio-1)<.03?'Voltage amplitudes are balanced within 3%. Record the condition.':state.mode==='learn'?(ratio>1?'Capacitor voltage is larger: increase decade resistance.':'Resistor voltage is larger: decrease decade resistance.'):'Adjust the decade resistance until the two amplitudes are equal.';
+  if(!phaseSetup('c')){$('#capMessage').className='notice warn';$('#capMessage').textContent='Reproduce Figure 6 first: CH1→A, CH2→C, common ground→B, AC on both channels, CH2 inverted.';}
+  else{$('#capMessage').className=Math.abs(ratio-1)<.03?'notice ok':'notice';$('#capMessage').textContent=Math.abs(ratio-1)<.03?'Voltage amplitudes are balanced within 3%. Record the condition.':state.mode==='learn'?(ratio>1?'Capacitor voltage is larger: increase decade resistance.':'Resistor voltage is larger: decrease decade resistance.'):'Adjust the decade resistance until the two amplitudes are equal.';}
 }
 function recordCBalance(){
-  const x=circuitCap(),ratio=x.a2/x.a1;if(Math.abs(ratio-1)>=.03){updateCap();return;}const f=+$('#cFreq').value,T=1/f,dt=T/4,Cderived=1/(TAU*f*x.rd);state.capacitor.balance={rd:x.rd,zcTrue:x.zc,ratio,T,dt,phiSweep:90,phiXY:90,Cderived,trueC:state.run.C,frequency:f};state.capacitor.xyVerified=false;$('#capMessage').className='notice ok';$('#capMessage').textContent='Balanced impedance condition stored. Now switch to XY mode and verify the near-circular Lissajous figure.';updateCap();progress();save();
+  if(!phaseSetup('c')){updateCap();return;}const x=circuitCap(),ratio=x.a2/x.a1;if(Math.abs(ratio-1)>=.03){updateCap();return;}const f=+$('#cFreq').value,T=1/f,dt=T/4,Cderived=1/(TAU*f*x.rd);state.capacitor.balance={rd:x.rd,zcTrue:x.zc,ratio,T,dt,phiSweep:90,phiXY:90,Cderived,trueC:state.run.C,frequency:f};state.capacitor.xyVerified=false;$('#capMessage').className='notice ok';$('#capMessage').textContent='Balanced impedance condition stored. Now switch to XY mode and verify the near-circular Lissajous figure.';updateCap();progress();save();
 }
 
 function setupQuiz(){
@@ -199,13 +263,14 @@ function setupTabs(){
 }
 function init(){
   load();if(!state.run)state.run=makeRun();restoreReport();setupTabs();setupQuiz();applyMode(state.mode);renderXYObs();progress();restoreAssessment();
-  ['xyWave','xyFreq','xyRoute','xyVdiv1','xyVdiv2','xyAmp'].forEach(id=>$('#'+id).addEventListener('input',drawXY));$('#recordXYObservation').addEventListener('click',recordXY);$('#centerSpot').addEventListener('click',()=>{state.xy.centered=true;$('#xyMessage').className='notice ok';$('#xyMessage').textContent='Spot centred at the screen origin.';save();});
-  ['sweepWave','sweepFreq','timeDiv','sweepVdiv','triggerLevel','triggerMode'].forEach(id=>$('#'+id).addEventListener('input',drawSweep));$('#toggleSweepCal').addEventListener('click',()=>{state.sweep.cal=!state.sweep.cal;drawSweep();save();});$('#toggleCh1Cal').addEventListener('click',()=>{state.sweep.ch1Cal=!state.sweep.ch1Cal;drawSweep();save();});$('#toggleXMag').addEventListener('click',()=>{state.sweep.xMag=!state.sweep.xMag;drawSweep();save();});$('#recordSweep').addEventListener('click',recordSweep);
-  ['rFreq','rVdiv','rTimeDiv','rDecade'].forEach(id=>$('#'+id).addEventListener('input',updateResistor));$('#recordResistorBalance').addEventListener('click',recordRBalance);$('#switchResistorXY').addEventListener('click',()=>{state.resistor.xy=!state.resistor.xy;if(state.resistor.xy&&state.resistor.balance)state.resistor.xyVerified=true;updateResistor();progress();save();});
-  ['cFreq','cVdiv','cTimeDiv','cDecade'].forEach(id=>$('#'+id).addEventListener('input',updateCap));$('#recordCapBalance').addEventListener('click',recordCBalance);$('#switchCapXY').addEventListener('click',()=>{state.capacitor.xy=!state.capacitor.xy;if(state.capacitor.xy&&state.capacitor.balance)state.capacitor.xyVerified=true;updateCap();progress();save();});
+  ['xyWave','xyFreq','xyRoute','xyVdiv1','xyVdiv2','xyAmp','xyIntensity','xyFocus','xyXPos','xyYPos','xyModeControl'].forEach(id=>$('#'+id).addEventListener('input',()=>{drawXY();save();}));$('#recordXYObservation').addEventListener('click',recordXY);$('#centerSpot').addEventListener('click',()=>{state.xy.xPos=0;state.xy.yPos=0;$('#xyXPos').value=0;$('#xyYPos').value=0;drawXY();$('#xyMessage').className='notice ok';$('#xyMessage').textContent='Spot centred using commands (8) and (6B).';save();});
+  ['sweepWave','sweepFreq','timeDiv','sweepVdiv','triggerLevel','triggerMode','triggerSource','sweepCoupling','sweepDisplayMode'].forEach(id=>$('#'+id).addEventListener('input',drawSweep));$('#toggleSweepCal').addEventListener('click',()=>{state.sweep.cal=!state.sweep.cal;drawSweep();save();});$('#toggleCh1Cal').addEventListener('click',()=>{state.sweep.ch1Cal=!state.sweep.ch1Cal;drawSweep();save();});$('#toggleXMag').addEventListener('click',()=>{state.sweep.xMag=!state.sweep.xMag;drawSweep();save();});$('#recordSweep').addEventListener('click',recordSweep);
+  ['rFreq','rVdiv','rTimeDiv','rDecade','rCH1Point','rCH2Point','rGroundPoint','rCoupling1','rCoupling2','rInvert2'].forEach(id=>$('#'+id).addEventListener('input',updateResistor));$('#recordResistorBalance').addEventListener('click',recordRBalance);$('#switchResistorXY').addEventListener('click',()=>{state.resistor.xy=!state.resistor.xy;if(state.resistor.xy&&state.resistor.balance)state.resistor.xyVerified=true;updateResistor();progress();save();});
+  ['cFreq','cVdiv','cTimeDiv','cDecade','cCH1Point','cCH2Point','cGroundPoint','cCoupling1','cCoupling2','cInvert2'].forEach(id=>$('#'+id).addEventListener('input',updateCap));$('#recordCapBalance').addEventListener('click',recordCBalance);$('#switchCapXY').addEventListener('click',()=>{state.capacitor.xy=!state.capacitor.xy;if(state.capacitor.xy&&state.capacitor.balance)state.capacitor.xyVerified=true;updateCap();progress();save();});
   $('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
   ['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'].forEach(id=>$('#'+id).addEventListener('input',save));
   window.addEventListener('resize',()=>{drawXY();drawSweep();updateResistor();updateCap();});window.addEventListener('beforeunload',save);
+  $('#xyIntensity').value=state.xy.intensity;$('#xyFocus').value=state.xy.focus;$('#xyXPos').value=state.xy.xPos;$('#xyYPos').value=state.xy.yPos;$('#xyModeControl').value=state.xy.mode;
   drawXY();drawSweep();updateResistor();updateCap();
 }
 init();
