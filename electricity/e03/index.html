@@ -247,13 +247,31 @@
   <div class="grid two">
     <article class="paper">
       <div class="section-toolbar"><div><h2>Series verification</h2><div class="mini">Official experimental checks: selector positions 5 and 9.</div></div><span class="completion-badge" id="seriesBadge">0 / 2</span></div>
-      <p>At equal current, construct the sum graphically using</p><div class="formula">V<sub>S</sub>(I) = V<sub>Rx</sub>(I) + V<sub>L</sub>(I).</div>
+      <p>At equal current, read the two separate characteristics and construct the sum graphically using</p><div class="formula">V<sub>S</sub>(I) = V<sub>Rx</sub>(I) + V<sub>L</sub>(I).</div>
+      <div class="construction-entry">
+        <label>Common I / mA<input id="seriesConstructI" type="number" step="1" min="0"></label>
+        <label>Read V<sub>Rx</sub> / V<input id="seriesConstructVR" type="number" step="0.01" min="0"></label>
+        <label>Read V<sub>L</sub> / V<input id="seriesConstructVL" type="number" step="0.01" min="0"></label>
+        <button class="btn" id="addSeriesConstruct" type="button">Add construction point</button>
+      </div>
+      <div class="notice" id="seriesConstructStatus">Build at least four points from the measured component graph before experimental verification.</div>
+      <div class="core-table-wrap construction-table"><table class="core-table"><thead><tr><th>I / mA</th><th>V<sub>Rx</sub> / V</th><th>V<sub>L</sub> / V</th><th>V<sub>S</sub> / V</th></tr></thead><tbody id="seriesConstructBody"></tbody></table></div>
+      <h3 style="margin-top:18px">Experimental verification at selector 5 and 9</h3>
       <div class="core-table-wrap"><table class="core-table"><thead><tr><th>Selector</th><th>Measured V<sub>m</sub> / V</th><th>Measured I<sub>m</sub> / mA</th><th>Graphical V<sub>S</sub> / V</th><th>Difference / V</th></tr></thead><tbody id="seriesBody"></tbody></table></div>
       <div class="question-block"><label for="seriesJustification">Justify the series addition principle</label><textarea id="seriesJustification" placeholder="Explain why the current is common and the voltages add."></textarea></div>
     </article>
     <article class="paper">
       <div class="section-toolbar"><div><h2>Parallel verification</h2><div class="mini">Official experimental checks: selector positions 5 and 9.</div></div><span class="completion-badge" id="parallelBadge">0 / 2</span></div>
-      <p>At equal voltage, construct the sum graphically using</p><div class="formula">I<sub>P</sub>(V) = I<sub>Rx</sub>(V) + I<sub>L</sub>(V).</div>
+      <p>At equal voltage, read the two separate characteristics and construct the sum graphically using</p><div class="formula">I<sub>P</sub>(V) = I<sub>Rx</sub>(V) + I<sub>L</sub>(V).</div>
+      <div class="construction-entry">
+        <label>Common V / V<input id="parallelConstructV" type="number" step="0.1" min="0"></label>
+        <label>Read I<sub>Rx</sub> / mA<input id="parallelConstructIR" type="number" step="0.1" min="0"></label>
+        <label>Read I<sub>L</sub> / mA<input id="parallelConstructIL" type="number" step="0.1" min="0"></label>
+        <button class="btn" id="addParallelConstruct" type="button">Add construction point</button>
+      </div>
+      <div class="notice" id="parallelConstructStatus">Build at least four points from the measured component graph before experimental verification.</div>
+      <div class="core-table-wrap construction-table"><table class="core-table"><thead><tr><th>V / V</th><th>I<sub>Rx</sub> / mA</th><th>I<sub>L</sub> / mA</th><th>I<sub>P</sub> / mA</th></tr></thead><tbody id="parallelConstructBody"></tbody></table></div>
+      <h3 style="margin-top:18px">Experimental verification at selector 5 and 9</h3>
       <div class="core-table-wrap"><table class="core-table"><thead><tr><th>Selector</th><th>Measured V<sub>m</sub> / V</th><th>Measured I<sub>m</sub> / mA</th><th>Graphical I<sub>P</sub> / mA</th><th>Difference / mA</th></tr></thead><tbody id="parallelBody"></tbody></table></div>
       <div class="question-block"><label for="parallelJustification">Justify the parallel addition principle</label><textarea id="parallelJustification" placeholder="Explain why the voltage is common and the branch currents add."></textarea></div>
     </article>
@@ -262,7 +280,7 @@
   <article class="paper" style="margin-top:18px">
     <h2>Graphical addition and experimental verification</h2>
     <div class="core-chart"><canvas id="sumChart" width="900" height="520"></canvas></div>
-    <div class="graph-note">The constructed series curve and parallel curve are derived from the measured resistor and lamp characteristics. Experimental series points are shown as circles; parallel verification points are shown as squares.</div>
+    <div class="graph-note">Only the construction points entered from your readings of the resistor and lamp graph are used for the series/parallel curves. Experimental series points are circles; parallel verification points are squares.</div>
   </article>
 </section>
 
