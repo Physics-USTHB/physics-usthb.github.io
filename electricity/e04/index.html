@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="USTHB-aligned virtual oscilloscope laboratory for L1 ST/SM electricity.">
+  <title>E04 — The Oscilloscope | Physics USTHB</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="stylesheet" href="e04.css">
+</head>
+<body class="lab-page">
+<header class="topbar"><div class="shell nav"><a class="brand" href="../../index.html"><span class="brandmark">Φ</span><span class="brandcopy"><strong>Physics USTHB</strong><small>Electricity laboratory</small></span></a><nav class="navlinks"><a href="../index.html">Electricity Lab</a><a href="../e03/index.html">E03</a><a href="../../index.html">Home</a></nav></div></header>
+
+<section class="labmast">
+  <div class="shell labmast-grid">
+    <div>
+      <div class="breadcrumbs">Virtual Laboratory / Electricity & Circuits / E04</div>
+      <h1>The Oscilloscope</h1>
+      <div class="labmeta"><span class="pill">USTHB TP4 core</span><span class="pill">XY & sweep modes</span><span class="pill">Triggering</span><span class="pill">Phase & impedance</span></div>
+    </div>
+    <div class="mode-card no-print"><div><strong>Guidance mode</strong><div class="mini" id="modeDescription">Protocol guidance and diagnostic hints are visible.</div></div><div class="segmented"><button class="modebtn active" data-mode="learn" type="button">Learn</button><button class="modebtn" data-mode="lab" type="button">Lab</button></div></div>
+  </div>
+</section>
+
+<div class="tabs no-print"><div class="shell tabrow">
+  <button class="tabbtn active" data-tab="briefing">1. Briefing</button>
+  <button class="tabbtn" data-tab="xy">2. XY Familiarisation</button>
+  <button class="tabbtn" data-tab="sweep">3. Sweep & Trigger</button>
+  <button class="tabbtn" data-tab="resistor">4. Unknown Resistance</button>
+  <button class="tabbtn" data-tab="capacitor">5. Capacitor Impedance</button>
+  <button class="tabbtn" data-tab="assessment">6. Assessment</button>
+  <button class="tabbtn" data-tab="report">7. Lab Report</button>
+</div></div>
+
+<main class="shell">
+<section class="tabpanel active" id="briefing">
+  <div class="protocol-banner">
+    <div><strong>USTHB oscilloscope practical</strong><p>The core sequence follows the Belhous–El‑Mehdaoui L1 ST/SM handout: learn the front-panel controls, use XY mode, calibrate and synchronise the sweep, then measure phase and impedance in resistor and capacitor circuits.</p></div>
+    <a href="https://www.fphy.usthb.dz/cours%20en%20ligne/Cours-en-ligne" target="_blank" rel="noopener">USTHB course listing ↗</a>
+  </div>
+
+  <div class="osc-progress" id="progressBoard"></div>
+
+  <div class="grid two">
+    <article class="paper">
+      <h2>What the oscilloscope measures</h2>
+      <p>In sweep mode, horizontal position represents time and vertical deflection represents input voltage. In XY mode, CH1 drives horizontal deflection and CH2 drives vertical deflection.</p>
+      <div class="formula-scope">V = (vertical divisions) × (VOLTS/DIV)</div>
+      <div class="formula-scope">T = (horizontal divisions) × (TIME/DIV), &nbsp;&nbsp; f = 1/T</div>
+      <div class="formula-scope">φ = 2π Δt/T</div>
+    </article>
+    <article class="paper">
+      <h2>Required calibration state</h2>
+      <p>The handout explicitly requires the sweep calibration and both vertical fine-gain controls to remain in their <strong>CAL</strong> positions, while the X10 horizontal magnifier must not be engaged.</p>
+      <div class="notice learn-only"><strong>Why:</strong> if a fine-adjust control is uncalibrated, the engraved VOLTS/DIV or TIME/DIV value no longer gives the true scale.</div>
+      <p style="margin-top:14px">The virtual instrument will let you deliberately disturb calibration so you can see why a measurement becomes wrong.</p>
+    </article>
+  </div>
+
+  <article class="paper" style="margin-top:18px">
+    <h2>Front-panel controls used in this TP</h2>
+    <div class="control-map">
+      <div class="control-chip"><b>2–3</b><span>Intensity & focus</span></div>
+      <div class="control-chip"><b>5A/5B</b><span>AC–DC–GND coupling</span></div>
+      <div class="control-chip"><b>6A/6B</b><span>Vertical position</span></div>
+      <div class="control-chip"><b>7A/7B</b><span>VOLTS/DIV</span></div>
+      <div class="control-chip"><b>8</b><span>Horizontal position</span></div>
+      <div class="control-chip"><b>9</b><span>Trigger LEVEL</span></div>
+      <div class="control-chip"><b>12</b><span>TIME/DIV or XY</span></div>
+      <div class="control-chip"><b>13–14</b><span>Display & trigger mode</span></div>
+      <div class="control-chip"><b>18</b><span>CH2 inversion</span></div>
+    </div>
+  </article>
+</section>
+
+<section class="tabpanel" id="xy">
+  <div class="scope-shell">
+    <div class="scope-unit">
+      <div class="scope-head"><div><div class="scope-kicker">3 — Operating in XY mode</div><h3>Spot-motion familiarisation</h3></div><span class="scope-state" id="xyState">XY mode</span></div>
+      <div class="scope-screen"><canvas id="xyCanvas" width="900" height="580"></canvas><div class="scope-overlay"><span id="xyCH1Label">CH1/X</span><span id="xyCH2Label">CH2/Y</span></div></div>
+
+      <div class="scope-controls">
+        <div class="scope-control"><label>Generator waveform</label><select id="xyWave"><option value="sine">Sine</option><option value="triangle">Triangle</option><option value="square">Square</option></select></div>
+        <div class="scope-control"><label>Low frequency</label><select id="xyFreq"><option value="0.5">0.5 Hz</option><option value="1">1 Hz</option><option value="2">2 Hz</option></select></div>
+        <div class="scope-control"><label>Connection</label><select id="xyRoute"><option value="x">CH1 → X only</option><option value="y">CH2 → Y only</option><option value="both">Same signal → X and Y</option></select></div>
+        <div class="scope-control"><label>CH1 sensitivity</label><select id="xyVdiv1"><option>0.5</option><option selected>1</option><option>2</option><option>5</option></select><strong>V/div</strong></div>
+        <div class="scope-control"><label>CH2 sensitivity</label><select id="xyVdiv2"><option>0.5</option><option selected>1</option><option>2</option><option>5</option></select><strong>V/div</strong></div>
+        <div class="scope-control"><label>Amplitude</label><input id="xyAmp" type="range" min="0.5" max="4" step="0.1" value="2"><strong id="xyAmpLabel">2.0 V peak</strong></div>
+      </div>
+
+      <div class="scope-actions"><button class="btn" id="recordXYObservation" type="button">Record observation</button><button class="btn secondary" id="centerSpot" type="button">Centre spot</button></div>
+      <div class="notice" id="xyMessage">Observe sine, triangle and square motion in X, then in Y, then apply the same signal to both channels.</div>
+    </div>
+
+    <aside class="scope-side">
+      <article class="scope-card"><h4>Required observations</h4><div class="obs-grid" id="xyObservations"></div></article>
+      <article class="scope-card learn-only"><h4>What to notice</h4><ul><li>Sine motion slows near the turning points.</li><li>Triangle motion has nearly constant speed in each direction.</li><li>Square input makes the spot jump between two positions.</li><li>The same signal on X and Y produces a straight diagonal trace.</li></ul></article>
+    </aside>
+  </div>
+</section>
+
+<section class="tabpanel" id="sweep">
+  <div class="scope-shell">
+    <div class="scope-unit">
+      <div class="scope-head"><div><div class="scope-kicker">4 — Sweep operation</div><h3>Time base, triggering & frequency</h3></div><span class="scope-state" id="sweepState">Not calibrated</span></div>
+      <div class="scope-screen"><canvas id="sweepCanvas" width="900" height="580"></canvas><div class="scope-overlay"><span id="timeScaleLabel">0.5 s/div</span><span id="verticalScaleLabel">1 V/div</span><span id="triggerLabel">trigger free-run</span></div></div>
+      <div class="scope-controls">
+        <div class="scope-control"><label>Generator waveform</label><select id="sweepWave"><option value="sine">Sine</option><option value="triangle">Triangle</option><option value="square">Square</option></select></div>
+        <div class="scope-control"><label>Generator frequency</label><input id="sweepFreq" type="range" min="1" max="100" step="1" value="10"><strong id="sweepFreqLabel">10 Hz</strong></div>
+        <div class="scope-control"><label>TIME/DIV</label><select id="timeDiv"><option value=".5">0.5 s/div</option><option value=".2">0.2 s/div</option><option value=".1">0.1 s/div</option><option value=".05">50 ms/div</option><option value=".02">20 ms/div</option><option value=".01">10 ms/div</option><option value=".005">5 ms/div</option><option value=".002">2 ms/div</option><option value=".001">1 ms/div</option></select></div>
+        <div class="scope-control"><label>CH1 VOLTS/DIV</label><select id="sweepVdiv"><option value=".2">0.2</option><option value=".5">0.5</option><option value="1" selected>1</option><option value="2">2</option><option value="5">5</option></select><strong>V/div</strong></div>
+        <div class="scope-control"><label>Trigger LEVEL</label><input id="triggerLevel" type="range" min="-2" max="2" step=".1" value="0"><strong id="triggerLevelLabel">0.0 V</strong></div>
+        <div class="scope-control"><label>Trigger mode</label><select id="triggerMode"><option value="free">Free-run</option><option value="auto">AUTO · CH1 rising</option></select></div>
+      </div>
+      <div class="knobrow"><div class="knob"><span>Sweep CAL</span><strong id="sweepCalLabel">CAL</strong></div><div class="knob"><span>CH1 fine</span><strong id="ch1CalLabel">CAL</strong></div><div class="knob"><span>X magnifier</span><strong id="xMagLabel">×1</strong></div><div class="knob"><span>Coupling</span><strong>DC</strong></div></div>
+      <div class="scope-actions"><button class="btn secondary" id="toggleSweepCal" type="button">Toggle sweep CAL</button><button class="btn secondary" id="toggleCh1Cal" type="button">Toggle CH1 CAL</button><button class="btn secondary" id="toggleXMag" type="button">Toggle X10</button><button class="btn" id="recordSweep" type="button">Record measurement</button></div>
+      <div class="notice" id="sweepMessage">First set 0.5 s/div and verify that 10 divisions correspond to 5 s.</div>
+    </div>
+
+    <aside class="scope-side">
+      <article class="scope-card"><h4>Sweep calibration task</h4><p>The handout requires 0.5 s/div and a 10-division crossing time of 5 s.</p><div class="measure-grid"><div class="measure-box"><span>Screen width</span><strong>10 div</strong></div><div class="measure-box"><span>Expected</span><strong>5.0 s</strong></div><div class="measure-box"><span>Your effective time</span><strong id="screenTime">5.0 s</strong></div><div class="measure-box"><span>Status</span><strong id="calStatus">—</strong></div></div></article>
+      <article class="scope-card"><h4>Frequency measurement</h4><p>Stabilise the waveform with the trigger, then infer frequency from the number of horizontal divisions occupied by one period.</p><div class="measure-grid"><div class="measure-box"><span>Period divisions</span><strong id="periodDivs">—</strong></div><div class="measure-box"><span>T measured</span><strong id="periodMeasured">—</strong></div><div class="measure-box"><span>f measured</span><strong id="freqMeasured">—</strong></div><div class="measure-box"><span>Generator</span><strong id="freqGenerator">10 Hz</strong></div></div></article>
+    </aside>
+  </div>
+</section>
+
+<section class="tabpanel" id="resistor">
+  <div class="balance-layout">
+    <div class="scope-unit">
+      <div class="scope-head"><div><div class="scope-kicker">5.1 — Unknown resistance</div><h3>Amplitude balance & phase measurement</h3></div><span class="scope-state ok">AC · dual trace</span></div>
+      <div class="scope-screen"><canvas id="resistorCanvas" width="900" height="580"></canvas><div class="scope-overlay"><span>CH1: V<sub>A</sub>−V<sub>B</sub></span><span>CH2 INV: V<sub>B</sub>−V<sub>C</sub></span></div></div>
+      <div class="scope-controls">
+        <div class="scope-control"><label>Frequency f</label><select id="rFreq"><option value="500">500 Hz</option><option value="1000" selected>1.00 kHz</option><option value="2000">2.00 kHz</option></select></div>
+        <div class="scope-control"><label>Both channels</label><select id="rVdiv"><option value=".2">0.2 V/div</option><option value=".5">0.5 V/div</option><option value="1" selected>1 V/div</option><option value="2">2 V/div</option></select></div>
+        <div class="scope-control"><label>TIME/DIV</label><select id="rTimeDiv"><option value=".0001">0.1 ms/div</option><option value=".0002" selected>0.2 ms/div</option><option value=".0005">0.5 ms/div</option><option value=".001">1 ms/div</option></select></div>
+      </div>
+      <div class="decade-box" style="margin-top:14px"><label>Decade resistance R<sub>d</sub><input id="rDecade" type="range" min="100" max="5000" step="10" value="1000"></label><div><span class="mini">Current setting</span><div class="decade-readout" id="rDecadeLabel">1000 Ω</div></div></div>
+      <div class="scope-actions"><button class="btn" id="recordResistorBalance" type="button">Record balanced condition</button><button class="btn ghost" id="switchResistorXY" type="button">Toggle sweep / XY</button></div>
+      <div class="notice" id="resistorMessage">Adjust the decade resistance until the two sinusoidal amplitudes are equal.</div>
+    </div>
+    <aside class="scope-side">
+      <article class="scope-card"><h4>Balance condition</h4><div class="measure-grid"><div class="measure-box"><span>CH1 amplitude</span><strong id="rAmp1">— V</strong></div><div class="measure-box"><span>CH2 amplitude</span><strong id="rAmp2">— V</strong></div><div class="measure-box"><span>Ratio</span><strong id="rRatio">—</strong></div><div class="measure-box"><span>Rx result</span><strong id="rxResult">— Ω</strong></div></div></article>
+      <article class="scope-card"><h4>Phase</h4><div class="measure-grid"><div class="measure-box"><span>Δt</span><strong id="rDt">—</strong></div><div class="measure-box"><span>T</span><strong id="rT">—</strong></div><div class="measure-box"><span>φ sweep</span><strong id="rPhiSweep">—°</strong></div><div class="measure-box"><span>φ XY</span><strong id="rPhiXY">—°</strong></div></div></article>
+    </aside>
+  </div>
+</section>
+
+<section class="tabpanel" id="capacitor">
+  <div class="balance-layout">
+    <div class="scope-unit">
+      <div class="scope-head"><div><div class="scope-kicker">5.2 — Capacitor</div><h3>Impedance balance & Lissajous phase</h3></div><span class="scope-state ok">AC · equal sensitivities</span></div>
+      <div class="scope-screen"><canvas id="capacitorCanvas" width="900" height="580"></canvas><div class="scope-overlay"><span>CH1: resistor voltage</span><span>CH2 INV: capacitor voltage</span></div></div>
+      <div class="scope-controls">
+        <div class="scope-control"><label>Frequency f</label><select id="cFreq"><option value="500">500 Hz</option><option value="1000" selected>1.00 kHz</option><option value="1500">1.50 kHz</option></select></div>
+        <div class="scope-control"><label>Both channels</label><select id="cVdiv"><option value=".2">0.2 V/div</option><option value=".5">0.5 V/div</option><option value="1" selected>1 V/div</option><option value="2">2 V/div</option></select></div>
+        <div class="scope-control"><label>TIME/DIV</label><select id="cTimeDiv"><option value=".0001">0.1 ms/div</option><option value=".0002" selected>0.2 ms/div</option><option value=".0005">0.5 ms/div</option><option value=".001">1 ms/div</option></select></div>
+      </div>
+      <div class="decade-box" style="margin-top:14px"><label>Decade resistance R<sub>d</sub><input id="cDecade" type="range" min="100" max="3000" step="10" value="700"></label><div><span class="mini">Current setting</span><div class="decade-readout" id="cDecadeLabel">700 Ω</div></div></div>
+      <div class="scope-actions"><button class="btn" id="recordCapBalance" type="button">Record balanced condition</button><button class="btn ghost" id="switchCapXY" type="button">Toggle sweep / XY</button></div>
+      <div class="notice" id="capMessage">Adjust the decade resistance until the resistor and capacitor voltage amplitudes are equal.</div>
+    </div>
+    <aside class="scope-side">
+      <article class="scope-card"><h4>Impedance result</h4><div class="measure-grid"><div class="measure-box"><span>Balanced Rd</span><strong id="zcResult">— Ω</strong></div><div class="measure-box"><span>φ sweep</span><strong id="cPhiSweep">—°</strong></div><div class="measure-box"><span>φ XY</span><strong id="cPhiXY">—°</strong></div><div class="measure-box"><span>Derived C</span><strong id="cResult">— µF</strong></div></div></article>
+      <article class="scope-card"><h4>Lissajous relation</h4><div class="formula-scope">sin φ = OE / OF</div><p>At quadrature and equal amplitudes, the XY trace approaches a circle.</p></article>
+    </aside>
+  </div>
+</section>
+
+<section class="tabpanel" id="assessment">
+  <article class="paper">
+    <h2>Post-laboratory assessment</h2>
+    <form id="quiz">
+      <fieldset class="question"><legend>1. In XY mode, CH1 controls:</legend><label class="choice"><input type="radio" name="q1" value="a"> Horizontal deflection X.</label><label class="choice"><input type="radio" name="q1" value="b"> Trigger level only.</label><label class="choice"><input type="radio" name="q1" value="c"> Brightness.</label></fieldset>
+      <fieldset class="question"><legend>2. At 0.5 s/div, the 10-division screen corresponds to:</legend><label class="choice"><input type="radio" name="q2" value="a"> 5 s.</label><label class="choice"><input type="radio" name="q2" value="b"> 0.05 s.</label><label class="choice"><input type="radio" name="q2" value="c"> 20 s.</label></fieldset>
+      <fieldset class="question"><legend>3. Triggering stabilises a periodic waveform because the sweep starts:</legend><label class="choice"><input type="radio" name="q3" value="a"> At a reproducible point on the signal.</label><label class="choice"><input type="radio" name="q3" value="b"> At a random phase each sweep.</label><label class="choice"><input type="radio" name="q3" value="c"> Only when the signal is zero frequency.</label></fieldset>
+      <fieldset class="question"><legend>4. Phase from sweep mode is calculated using:</legend><label class="choice"><input type="radio" name="q4" value="a"> φ=2πΔt/T.</label><label class="choice"><input type="radio" name="q4" value="b"> φ=T/Δt.</label><label class="choice"><input type="radio" name="q4" value="c"> φ=V/I.</label></fieldset>
+      <fieldset class="question"><legend>5. At equal amplitudes in the resistor-balancing experiment:</legend><label class="choice"><input type="radio" name="q5" value="a"> Rd≈Rx.</label><label class="choice"><input type="radio" name="q5" value="b"> Rd≈1/(ωC).</label><label class="choice"><input type="radio" name="q5" value="c"> Rx=0.</label></fieldset>
+      <fieldset class="question"><legend>6. An ideal capacitor voltage is shifted by approximately:</legend><label class="choice"><input type="radio" name="q6" value="a"> 90° relative to the resistor/current voltage.</label><label class="choice"><input type="radio" name="q6" value="b"> 0°.</label><label class="choice"><input type="radio" name="q6" value="c"> 360° only.</label></fieldset>
+      <button class="btn" type="submit">Submit assessment</button>
+    </form><div id="quizResult" style="margin-top:14px"></div>
+  </article>
+</section>
+
+<section class="tabpanel" id="report">
+  <article class="paper no-print"><h2>Laboratory report</h2><div class="report-grid"><label>Student name<input id="studentName" type="text"></label><label>Group / section<input id="studentGroup" type="text"></label><label>Date<input id="reportDate" type="date"></label><label>Mode<input id="reportMode" type="text" readonly></label><label class="wide">Discussion<textarea id="reportDiscussion" placeholder="Discuss XY motion, sweep calibration, triggering, frequency measurement, amplitude balance, phase and the Lissajous confirmation."></textarea></label><label class="wide">Conclusion<textarea id="reportConclusion" placeholder="State the measured Rx, capacitor impedance/capacitance and what the oscilloscope modes allowed you to verify."></textarea></label></div><div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button></div></article>
+  <div class="report-preview" id="reportPreview"><h2>Laboratory Report — E04</h2><p class="mini">Complete the required oscilloscope tasks and build the report.</p></div>
+</section>
+<section class="tabpanel" id="printable-report"><div class="report-preview" id="printOnlyPreview"></div></section>
+</main>
+
+<footer class="footer"><div class="shell">E04 • The Oscilloscope • Physics USTHB interactive laboratory</div></footer>
+<script src="lab.js"></script>
+</body>
+</html>
