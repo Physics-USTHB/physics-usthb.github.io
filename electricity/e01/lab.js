@@ -49,7 +49,7 @@ function save(){
   try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}
 }
 function load(){
-  try{const x=JSON.parse(localStorage.getItem(STORAGE)||'null');if(x?.version===1)state={...state,...x};}catch(_){}
+  try{const x=JSON.parse(localStorage.getItem(STORAGE)||'null');if(x?.version===2)state={...state,...x};}catch(_){}
 }
 function collectText(){
   const ids=['emfConclusion','methodJustification'];
