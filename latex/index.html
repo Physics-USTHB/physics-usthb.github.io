@@ -89,11 +89,11 @@
       </div>
       <div class="tool-section">
         <h3>Local compilation</h3>
-        <p>Compilation runs inside this browser with a WebAssembly TeX engine. Your project source is not uploaded to a compile server.</p>
+        <p>Compilation runs inside this browser with a WebAssembly pdfLaTeX engine. Your project source is not uploaded to a compile server.</p>
         <label for="engine">Engine</label>
-        <select id="engine"><option value="pdflatex">pdfLaTeX</option><option value="xelatex">XeLaTeX</option><option value="lualatex">LuaLaTeX</option></select>
+        <select id="engine"><option value="pdflatex">pdfLaTeX (browser)</option></select>
         <button id="compile-side" class="primary wide">Compile locally</button>
-        <p class="notice">The first compilation downloads the TeX engine and package files. Those hosts can see normal network metadata such as your IP, but the editor does not send them your document text.</p>
+        <p class="notice">The first compilation downloads a pinned pdfTeX engine and TeX package files. The asset host can see ordinary network metadata such as your IP, but the editor does not send it your document text.</p>
         <details class="compile-log"><summary>Compilation log</summary><pre id="compile-log">No compilation yet.</pre></details>
       </div>
       <div class="tool-section privacy-panel">
@@ -127,7 +127,7 @@
       <select id="template-select">
         <option value="article">Scientific article</option>
         <option value="lab">Physics laboratory report</option>
-        <option value="beamer">Beamer presentation</option>
+        <option value="report">Technical report</option>
         <option value="blank">Minimal document</option>
       </select>
       <div class="dialog-actions"><button type="button" id="cancel-create">Cancel</button><button class="primary" type="submit">Create project</button></div>
