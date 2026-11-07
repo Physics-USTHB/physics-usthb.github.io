@@ -291,6 +291,7 @@
 <section class="tabpanel" id="report">
   <article class="paper no-print">
     <h2>Laboratory report</h2>
+    <p class="mini"><strong>Privacy:</strong> student name and group stay only in this open page and are not saved. Measurements and report text autosave locally in this browser.</p>
     <div class="report-grid">
       <label>Student name<input id="studentName" type="text"></label>
       <label>Group / section<input id="studentGroup" type="text"></label>
@@ -299,7 +300,7 @@
       <label class="wide">Discussion<textarea id="reportDiscussion" placeholder="Discuss range selection, uncertainty, divider linearity, systematic corrections, and the choice of resistance-measurement topology."></textarea></label>
       <label class="wide">Conclusion<textarea id="reportConclusion" placeholder="State the retained generator emf, divider current, corrected resistance and preferred method."></textarea></label>
     </div>
-    <div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button></div>
+    <div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button><button class="btn ghost" id="clearLocalProgress" type="button">Clear local data</button></div>
   </article>
   <div class="report-preview" id="reportPreview"><h2>Laboratory Report — E01</h2><p class="mini">Complete the experimental sequence and build the report.</p></div>
 </section>
