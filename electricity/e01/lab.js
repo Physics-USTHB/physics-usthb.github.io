@@ -56,7 +56,7 @@ function collectText(){
   const out={};ids.forEach(id=>{const el=document.getElementById(id);if(el)out[id]=el.value;});return out;
 }
 function collectReport(){
-  const ids=['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'];
+  const ids=['reportDate','reportDiscussion','reportConclusion'];
   const out={};ids.forEach(id=>{const el=document.getElementById(id);if(el)out[id]=el.value;});return out;
 }
 function restoreFields(){
@@ -378,12 +378,12 @@ function renderAll(){
   if(state.exactShown)revealExact();
 }
 function init(){
-  load();if(!state.run)state.run=makeRun();fillRanges();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
+  load();if(state.report){delete state.report.studentName;delete state.report.studentGroup;try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}}if(!state.run)state.run=makeRun();fillRanges();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
   ['emfVPlus','emfCOM'].forEach(id=>$('#'+id).addEventListener('change',()=>{state.emf.connected=false;updateEmfWiring();updateEmf();save();}));$('#emfRange').addEventListener('change',()=>{$('#emfStudentN').value='';$('#emfStudentValue').value='';$('#emfStudentUnc').value='';updateEmf();});$('#connectEmf').addEventListener('click',connectEmf);$('#recordEmf').addEventListener('click',recordEmf);$('#newSpecimen').addEventListener('click',newSpecimen);
   ['potGenPlus','potGenMinus','potVPlus','potVCom'].forEach(id=>$('#'+id).addEventListener('change',()=>{updatePotWiring();updatePot();save();}));$('#potRange').addEventListener('change',updatePot);$('#potSelectorSelect').addEventListener('change',e=>{state.pot.selector=+e.target.value;updatePot();save();});$('#verifyPot').addEventListener('click',verifyPot);$('#recordPot').addEventListener('click',recordPot);
   $('.method-btn').forEach(b=>b.addEventListener('click',()=>setMethod(b.dataset.method)));['rxAmmeterPlacement','rxVoltmeterSpan'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateRxWiring();updateRx();save();}));$('#rxVRange').addEventListener('change',updateRx);$('#rxIRange').addEventListener('change',updateRx);$('#verifyRx').addEventListener('click',verifyRx);$('#recordRx').addEventListener('click',recordRx);
-  $('#revealExact').addEventListener('click',revealExact);$('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
-  ['emfConclusion','methodJustification','studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'].forEach(id=>document.getElementById(id)?.addEventListener('input',save));
+  $('#revealExact').addEventListener('click',revealExact);$('#buildReport').addEventListener('click',buildReport);$('#clearLocalProgress')?.addEventListener('click',()=>{if(confirm('Clear all locally saved progress for this practical on this browser?')){try{localStorage.removeItem(STORAGE);}catch(_){}location.reload();}});$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
+  ['emfConclusion','methodJustification','reportDate','reportDiscussion','reportConclusion'].forEach(id=>document.getElementById(id)?.addEventListener('input',save));
   window.addEventListener('resize',drawPot);window.addEventListener('beforeunload',save);renderAll();
 }
 init();
