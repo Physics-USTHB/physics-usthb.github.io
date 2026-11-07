@@ -101,6 +101,14 @@
         <div class="arc"></div><div class="needle" id="emfNeedle"></div><div class="pivot"></div>
         <div class="reading"><strong id="emfReading">0.0 V</strong><span id="emfDivisionReading">0.0 / 30 divisions</span></div>
       </div>
+      <div class="wiring-box">
+        <div class="wiring-title"><strong>Wire the voltmeter to the generator</strong><span>Respect the red (+) and black COM leads.</span></div>
+        <div class="wiring-grid">
+          <label>Red V/+ lead<select id="emfVPlus"><option value="">Choose terminal…</option><option value="gplus">Generator +</option><option value="gminus">Generator −</option></select></label>
+          <label>Black COM lead<select id="emfCOM"><option value="">Choose terminal…</option><option value="gplus">Generator +</option><option value="gminus">Generator −</option></select></label>
+        </div>
+        <div class="wiring-status" id="emfWiringStatus">No leads connected.</div>
+      </div>
       <div class="range-controls">
         <label class="wide">Voltmeter range
           <select id="emfRange"></select>
@@ -143,6 +151,16 @@
         <div class="pot-readout"><span>Vm</span><strong id="potVm">0.00 V</strong></div>
         <div class="pot-readout"><span>Selected V range</span><strong id="potRangeLabel">300 V</strong></div>
       </div>
+      <div class="wiring-box">
+        <div class="wiring-title"><strong>Build the potentiometric source</strong><span>Generator across A–C; utilisation voltage measured A–B.</span></div>
+        <div class="wiring-grid four">
+          <label>Generator +<select id="potGenPlus"><option value="">Choose…</option><option>A</option><option>B</option><option>C</option></select></label>
+          <label>Generator −<select id="potGenMinus"><option value="">Choose…</option><option>A</option><option>B</option><option>C</option></select></label>
+          <label>Voltmeter +<select id="potVPlus"><option value="">Choose…</option><option>A</option><option>B</option><option>C</option></select></label>
+          <label>Voltmeter COM<select id="potVCom"><option value="">Choose…</option><option>A</option><option>B</option><option>C</option></select></label>
+        </div>
+        <div class="wiring-status" id="potWiringStatus">Circuit not wired.</div>
+      </div>
       <div class="range-controls" style="margin-top:14px">
         <label>Voltmeter range<select id="potRange"></select></label>
         <label>Selector position<select id="potSelectorSelect"></select></label>
@@ -177,6 +195,14 @@
         <path class="wire" id="voltBranch" d="M500 82V150H605V82"/><circle class="device" id="voltCircle" cx="552" cy="150" r="29"/><text id="voltText" x="552" y="156" text-anchor="middle">V</text>
       </svg>
 
+      <div class="wiring-box light">
+        <div class="wiring-title"><strong>Wire the selected derivation</strong><span>The topology must agree with Figure 1 or Figure 2 of the handout.</span></div>
+        <div class="wiring-grid">
+          <label>Ammeter placement<select id="rxAmmeterPlacement"><option value="">Choose…</option><option value="total">Before branch: reads I<sub>Rx</sub> + I<sub>V</sub></option><option value="rx">In R<sub>x</sub> branch: reads I<sub>Rx</sub></option></select></label>
+          <label>Voltmeter connection<select id="rxVoltmeterSpan"><option value="">Choose…</option><option value="rx">Across R<sub>x</sub> only</option><option value="a_rx">Across ammeter + R<sub>x</sub></option></select></label>
+        </div>
+        <div class="wiring-status" id="rxWiringStatus">Topology not selected.</div>
+      </div>
       <div class="range-controls">
         <label>Voltmeter range<select id="rxVRange"></select></label>
         <label>Ammeter range<select id="rxIRange"></select></label>
