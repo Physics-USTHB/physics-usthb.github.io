@@ -10,6 +10,23 @@ A GitHub Pages project for rigorous undergraduate physics learning in English.
 - Electricity laboratory: https://physics-usthb.github.io/electricity/
 - E03 — Current–Voltage Characteristics: https://physics-usthb.github.io/electricity/e03/
 
+## Fidelity policy
+
+The development priority is now:
+
+1. **Reproduce the USTHB practicum first.** The core mode should preserve the apparatus logic, connection decisions, prescribed measurement sequence, calculations and conclusions of the corresponding USTHB handout as closely as a browser can.
+2. **Do not hide laboratory decisions.** Where the physical TP asks students to choose meter ranges, wire instruments, select oscilloscope controls, search for equipotentials or adjust a display, the virtual TP should require the same decision rather than pre-configuring it.
+3. **Keep enhancements separate.** Additional uncertainty analysis, regression, numerical field solutions, exponential fitting, diagnostic hints and learning scaffolds are labelled as digital extensions and must not silently replace the official procedure.
+4. **Do not claim physical identity.** A browser cannot reproduce cable handling, damaged leads, intermittent contacts, probe pressure, water handling, real parallax, component identification by touch, equipment wear, safety consequences or instructor sign-off. These remain physical-laboratory skills.
+
+### Current fidelity improvements
+
+- **E01:** explicit voltmeter polarity, maximum-range-before-connection rule, A–C/A–B potentiometric wiring, dangerous A–B source connection rejection, and explicit short-/long-derivation meter topology.
+- **E02:** equipotentials are no longer mapped on prescribed digital y-lines; students first find the x-axis point and then choose their own constant-y search lines before using symmetry. The y=±5 cm construction is retained only for the M/N field-line task where the handout prescribes it.
+- **E03:** explicit generator A–C, utilisation A–B, short-derivation ammeter and voltmeter connections are required before readings; the forbidden generator A–B connection is rejected.
+- **E04:** the virtual oscilloscope now exposes consequential front-panel controls for intensity, focus, spot position, XY selection, sweep calibration, trigger source/level, coupling, display mode and CH2 inversion. Figure-5/6 A/B/C probe and common-ground choices are required for the phase/impedance experiments.
+- **E05:** the student must build and verify the RC or RL series circuit, choose the step/square excitation, select the correct measured voltage (V_C for RC, V_R for RL) and use the common return before a transient measurement is accepted.
+
 ## E01 — Electrical Measurements & Resistance
 
 E01 is now implemented as an English-language virtual version of the USTHB resistance-measurement practical. The current USTHB Faculty of Physics course listing identifies this experiment as **TP1 — Mesure de résistances**.
