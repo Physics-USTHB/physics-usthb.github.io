@@ -15,7 +15,7 @@
 <body>
   <header class="masthead">
     <a class="identity" href="../index.html"><span class="mark">Φ</span><span><b>Physics USTHB</b><small>Scientific workspace</small></span></a>
-    <div class="headline"><span class="dot"></span> LaTeX Studio <span class="beta">FIRST RELEASE</span></div>
+    <div class="headline"><span class="dot"></span> LaTeX Studio <span class="beta">LOCAL COMPILER</span></div>
     <nav aria-label="Site navigation">
       <a href="../index.html">Home</a>
       <a href="../electricity/index.html">Physics labs</a>
@@ -38,7 +38,7 @@
       <ul id="file-list" class="file-list" aria-label="Project files"></ul>
       <div class="file-actions"><button id="rename-file">Rename file</button><button id="delete-file" class="danger">Delete file</button></div>
       <div class="sidefoot">
-        <p><b>Private by default.</b> Projects autosave in this browser only. Export ZIPs regularly.</p>
+        <p><b>Local autosave.</b> Projects stay in this browser. Export ZIPs for portable backups.</p>
         <button id="import-project">Import ZIP / files</button>
         <button id="export-project">Export project ZIP</button>
         <input id="import-input" type="file" accept=".zip,.tex,.bib,.sty,.cls,.bst,.png,.jpg,.jpeg,.pdf,.txt" multiple hidden>
@@ -53,7 +53,7 @@
           <button id="insert-section" title="Insert section">§ Section</button>
           <button id="download-file" title="Download selected file">↓ File</button>
           <button id="save-project" class="primary-muted">Save</button>
-          <button id="compile" class="primary">Compile PDF ↗</button>
+          <button id="compile" class="primary">Compile PDF</button>
         </div>
       </div>
       <div class="editor-info">
@@ -73,24 +73,38 @@
     </section>
 
     <aside class="preview" aria-label="Document tools">
-      <div class="preview-head"><h2>Document tools</h2><span class="pill">LOCAL-FIRST</span></div>
+      <div class="preview-head"><h2>Document tools</h2><span class="pill">LOCAL-FIRST · PRIVATE</span></div>
       <div class="tool-section">
         <h3>Quick math preview</h3>
         <p>Shows the first display equation using KaTeX, not a compiled document.</p>
         <div id="math-preview" class="math-preview"><span class="muted">Add a display equation using \[ ... \] or $$ ... $$.</span></div>
       </div>
       <div class="tool-section">
-        <h3>Compilation</h3>
-        <p>For the first release, PDF compilation opens <a href="https://latexonline.cc/" target="_blank" rel="noopener noreferrer">LaTeX.Online</a>. Your source is transmitted only after you agree. Only single-file source is supported here.</p>
-        <label for="engine">Engine</label>
-        <select id="engine"><option value="pdflatex">pdfLaTeX</option><option value="xelatex">XeLaTeX</option><option value="lualatex">LuaLaTeX</option></select>
-        <button id="compile-side" class="primary wide">Compile PDF ↗</button>
-        <p class="notice">Do not compile confidential or unpublished documents with this external service. For multi-file documents, use the advanced local-first editor linked below.</p>
+        <h3>PDF preview</h3>
+        <div class="pdf-wrap">
+          <div id="pdf-empty" class="pdf-empty">Compile the project to preview its PDF here.</div>
+          <iframe id="pdf-frame" title="Compiled PDF preview" hidden></iframe>
+        </div>
+        <button id="download-pdf" disabled>Download PDF</button>
       </div>
       <div class="tool-section">
-        <h3>Advanced tools</h3>
-        <p>Need browser-based WebAssembly compiling, multi-file builds, and collaboration now? TeXlyre provides these in a separate service.</p>
-        <a class="outlink" href="https://texlyre.github.io/texlyre/" target="_blank" rel="noopener noreferrer">Open TeXlyre ↗</a>
+        <h3>Local compilation</h3>
+        <p>Compilation runs inside this browser with a WebAssembly TeX engine. Your project source is not uploaded to a compile server.</p>
+        <label for="engine">Engine</label>
+        <select id="engine"><option value="pdflatex">pdfLaTeX</option><option value="xelatex">XeLaTeX</option><option value="lualatex">LuaLaTeX</option></select>
+        <button id="compile-side" class="primary wide">Compile locally</button>
+        <p class="notice">The first compilation downloads the TeX engine and package files. Those hosts can see normal network metadata such as your IP, but the editor does not send them your document text.</p>
+        <details class="compile-log"><summary>Compilation log</summary><pre id="compile-log">No compilation yet.</pre></details>
+      </div>
+      <div class="tool-section privacy-panel">
+        <h3>Storage & privacy</h3>
+        <p id="storage-details">Checking browser storage…</p>
+        <div class="privacy-actions"><button id="persist-storage">Protect local storage</button><button id="clear-local-data" class="danger">Clear local projects</button></div>
+        <p class="notice"><b>Shared computer:</b> browser-local storage is private between different browser profiles/devices, but not between people who share the same browser profile. Export your work and clear local projects when finished on a public computer.</p>
+      </div>
+      <div class="tool-section">
+        <h3>Simultaneous use</h3>
+        <p>Many people can use the site at the same time because each browser has an independent workspace. Real-time co-editing of the <em>same</em> project is a separate collaboration feature and is not enabled yet.</p>
       </div>
       <div class="tool-section" id="help">
         <h3>Prism migration</h3>
