@@ -25,3 +25,15 @@
 .protocol-banner{display:flex;align-items:flex-start;justify-content:space-between;gap:22px;padding:18px 20px;margin-bottom:18px;border-radius:16px;background:linear-gradient(135deg,#fff8eb,#fff3d6);border:1px solid #efd8a8;color:#5b4523}
 .protocol-banner strong{display:block;color:#33260f;margin-bottom:3px}.protocol-banner p{margin:0;color:#765c2d;font-size:.82rem;line-height:1.55}.protocol-banner a{white-space:nowrap;text-decoration:none;font-weight:850;color:#7a4b00;font-size:.78rem}
 @media(max-width:700px){.protocol-banner{flex-direction:column}}
+
+/* E04 fidelity pass: front-panel and Figure 5/6 connections */
+.front-panel-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}
+.front-control{border:1px solid #304a5e;background:#0d1b27;border-radius:11px;padding:9px}
+.front-control b{display:block;font-family:var(--mono);font-size:.56rem;color:#77e6ff;margin-bottom:4px}.front-control label{display:block;color:#91a7b8;font-size:.59rem;text-transform:uppercase;letter-spacing:.05em;font-weight:800}.front-control input,.front-control select{width:100%;margin-top:6px}.front-control select{border:1px solid #36556b;background:#07131c;color:#eaf9ff;border-radius:8px;padding:6px}.front-control span{display:block;margin-top:4px;font-family:var(--mono);font-size:.6rem;color:#c8f9ff}
+.setup-checklist{display:grid;gap:7px}.setup-item{display:flex;align-items:center;gap:8px;font-size:.73rem;color:#62778a}.setup-item i{width:9px;height:9px;border-radius:50%;background:#d0dae3}.setup-item.ok i{background:#32a67d}.setup-item.warn i{background:#d99a32}
+.connection-panel{margin-top:14px;border:1px solid #304a5e;background:#0c1924;border-radius:13px;padding:12px}
+.connection-title{display:flex;justify-content:space-between;gap:14px;align-items:baseline}.connection-title strong{font-size:.8rem;color:#dff8ff}.connection-title span{font-size:.61rem;color:#7893a7}
+.connection-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.connection-grid label{font-size:.58rem;color:#8ba3b4;text-transform:uppercase;letter-spacing:.05em;font-weight:800}.connection-grid select{width:100%;margin-top:5px;border:1px solid #36556b;background:#07131c;color:#eaf9ff;border-radius:8px;padding:7px}
+.connection-status{margin-top:9px;padding:8px 9px;border-radius:8px;background:#0a2a22;border:1px solid #2c765f;color:#8de9c4;font-size:.67rem}.connection-status.bad{background:#2a161b;border-color:#84404f;color:#ffb8c5}
+@media(max-width:900px){.front-panel-grid{grid-template-columns:repeat(2,1fr)}.connection-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.front-panel-grid,.connection-grid{grid-template-columns:1fr}.connection-title{flex-direction:column}}
