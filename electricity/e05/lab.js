@@ -26,7 +26,10 @@ function makeRun(){
     scopeBias:(Math.random()-.5)*.005
   };
 }
-function save(){state.report=collectReport();try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}}
+function persistState(){
+  persistState()
+}
+function save(){state.report=collectReport();persistState()}
 function load(){try{const x=JSON.parse(localStorage.getItem(STORAGE)||'null');if(x?.version===2)state={...state,...x};}catch(_){}}
 function collectReport(){const ids=['reportDate','reportDiscussion','reportConclusion'],o={};ids.forEach(id=>{const el=document.getElementById(id);if(el)o[id]=el.value;});return o}
 function restoreReport(){Object.entries(state.report||{}).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.value=v||''});if(!$('#reportDate').value)$('#reportDate').value=new Date().toISOString().slice(0,10)}
@@ -221,8 +224,20 @@ function newRun(){
 function setupTabs(){
   $$('.tabbtn').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.tab;$$('.tabbtn').forEach(x=>x.classList.toggle('active',x===b));$$('.tabpanel').forEach(p=>p.classList.toggle('active',p.id===id));draw();drawSummary()}))
 }
+function bindPersistentFields(){
+  const bind=(id,bucket)=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.addEventListener('input',()=>{
+      state[bucket]=state[bucket]||{};
+      state[bucket][id]=el.value;
+      persistState();
+    });
+  };
+  [].forEach(id=>bind(id,'text'));
+  ["reportDate","reportDiscussion","reportConclusion"].forEach(id=>bind(id,'report'));
+}
 function init(){
-  load();if(state.report){delete state.report.studentName;delete state.report.studentGroup;try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}}if(!state.run)state.run=makeRun();restoreReport();setupTabs();setupQuiz();applyMode(state.mode);renderResults();renderFit();progress();drawSummary();restoreAssessment();
+  load();bindPersistentFields();if(state.report){delete state.report.studentName;delete state.report.studentGroup;persistState()}if(!state.run)state.run=makeRun();restoreReport();setupTabs();setupQuiz();applyMode(state.mode);renderResults();renderFit();progress();drawSummary();restoreAssessment();
   $('#e05CircuitType').value=state.wiring?.circuit||'';$('#e05ProbeAcross').value=state.wiring?.probe||'';$('#e05SourceWave').value=state.wiring?.source||'';$('#e05Ground').value=state.wiring?.ground||'';updateWiring();if(state.wiring?.verified&&wiringOK()){state.wiring.verified=true;$('#e05WiringStatus').className='transient-wiring-status ok';$('#e05WiringStatus').textContent='Saved circuit verification restored.';}
   ['e05CircuitType','e05ProbeAcross','e05SourceWave','e05Ground'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateWiring();syncUI();save()}));$('#e05VerifyWiring').addEventListener('click',verifyWiring);
   $('#taskSelect').addEventListener('change',taskChanged);$('#frequency').addEventListener('change',e=>{state.settings.frequency=+e.target.value;syncUI();save()});$('#sourceAmp').addEventListener('input',e=>{state.settings.sourceAmp=+e.target.value;syncUI();save()});$('#timeDiv').addEventListener('change',e=>{state.settings.timeDiv=+e.target.value;syncUI();save()});$('#voltsDiv').addEventListener('change',e=>{state.settings.voltsDiv=+e.target.value;syncUI();save()});$('#tauMethod').addEventListener('change',e=>{state.method=e.target.value;syncUI();save()});$('#cursorTime').addEventListener('input',e=>{state.settings.cursor=+e.target.value;updateCursor();save()});
