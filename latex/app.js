@@ -97,7 +97,7 @@ const cleanName = s => s.replace(/[^a-zA-Z0-9._ -]/g,'_').replace(/^\.+/,'').sli
 const safePath = s => {
   if (!s || s.includes('\\') || s.startsWith('/') || s.length > 220) return null;
   const a = s.split('/');
-  if (a.some(p=> p === '..' || p === '')) return null;
+  if (a.some(p=> p === '..' || p === '' || ['__proto__','prototype','constructor'].includes(p))) return null;
   return a.filter(p=>p!=='.').join('/');
 };
 const inform = s => { $('status').textContent = s; };
@@ -224,6 +224,8 @@ async function importZip(file){
  const prefix=entries.every(e=>e.name.startsWith(first+'/'))?first+'/':'';
  const files={};let total=0;
  for(const e of entries){
+   if(e._data?.uncompressedSize > LIMIT || total + (e._data?.uncompressedSize || 0) > LIMIT)
+     throw new Error('Uncompressed ZIP content exceeds the 50 MB safety limit.');
    const n=safePath(e.name.slice(prefix.length));
    if(!n || n==='PHYSICS-USTHB-README.txt')continue;
    const value=await e.async(TEXT.test(n)?'string':'uint8array');
