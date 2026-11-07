@@ -143,6 +143,7 @@ function recordEmf(){
   if(Math.abs(r.cal-best.cal)<1e-12){
     state.emf.best=rec;$('#emfMessage').className='notice ok';$('#emfMessage').textContent=`Appropriate-range measurement stored. Now repeat using the immediately higher range (${higher.label}).`;
   }else if(Math.abs(r.cal-higher.cal)<1e-12){
+    if(!state.emf.best){$('#emfMessage').className='notice warn';$('#emfMessage').textContent=`First store the appropriate-range result (${best.label}); the TP then asks for the immediately higher range.`;return;}
     state.emf.high=rec;$('#emfMessage').className='notice ok';$('#emfMessage').textContent='Higher-range measurement stored. Compare the two uncertainty intervals.';
   }else{
     $('#emfMessage').className='notice warn';$('#emfMessage').textContent=`This is a valid reading, but the TP requires ${best.label} and then ${higher.label}. It was not stored as one of the two required results.`;return;
@@ -327,7 +328,7 @@ function renderAll(){
 }
 function init(){
   load();if(!state.run)state.run=makeRun();fillRanges();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
-  $('#emfRange').addEventListener('change',updateEmf);$('#connectEmf').addEventListener('click',connectEmf);$('#recordEmf').addEventListener('click',recordEmf);
+  $('#emfRange').addEventListener('change',updateEmf);$('#connectEmf').addEventListener('click',connectEmf);$('#recordEmf').addEventListener('click',recordEmf);$('#newSpecimen').addEventListener('click',newSpecimen);
   $('#potRange').addEventListener('change',updatePot);$('#potSelectorSelect').addEventListener('change',e=>{state.pot.selector=+e.target.value;updatePot();save();});$('#verifyPot').addEventListener('click',verifyPot);$('#recordPot').addEventListener('click',recordPot);
   $$('.method-btn').forEach(b=>b.addEventListener('click',()=>setMethod(b.dataset.method)));$('#rxVRange').addEventListener('change',updateRx);$('#rxIRange').addEventListener('change',updateRx);$('#verifyRx').addEventListener('click',verifyRx);$('#recordRx').addEventListener('click',recordRx);
   $('#revealExact').addEventListener('click',revealExact);$('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
