@@ -1,88 +1,139 @@
-// Browser-local LaTeX compilation. Project source stays in this browser.
-// Engine wrapper is loaded lazily; TeX Live runtime assets are fetched as static files only.
-const MODULE_URL = 'https://cdn.jsdelivr.net/npm/texlyre-busytex@1.4.1/+esm';
-const ASSET_BASE = 'https://github.com/TeXlyre/texlyre-busytex-build/releases/download/build_wasm_46ebb6216a5c1fe63dd1dc885831d1a8cef2dc86_31802832436_1';
+// Browser-local pdfLaTeX compilation using a pinned SwiftLaTeX WebAssembly worker.
+// Project source remains in the browser. Engine/package assets are fetched as static files only.
+const UPSTREAM_COMMIT = 'f80f84659c9476e41ef7212f6d753e10f6bd4af5';
+const TEXLIVE_ENDPOINT =
+  'https://raw.githubusercontent.com/sean-reid/latex-preview/' +
+  UPSTREAM_COMMIT + '/public/texlive/';
+const WORKER_URL = new URL('./vendor/swiftlatexpdftex.js', import.meta.url);
 
-let apiPromise;
-const runners = new Map();
+const RERUN = /Label\(s\) may have changed|Rerun to get |Table widths have changed\. Rerun|There were undefined references|Citation .* undefined/;
+let enginePromise;
+let queue = Promise.resolve();
 
-async function api() {
-  if (!apiPromise) apiPromise = import(MODULE_URL);
-  return apiPromise;
-}
+class PdfTeXEngine {
+  constructor() { this.worker = null; this.ready = false; }
 
-function engineMode(engine) {
-  return engine === 'xelatex' ? 'xetex' : engine === 'lualatex' ? 'luahbtex' : 'pdftex';
-}
-
-function needsExtra(source) {
-  return /\\documentclass(?:\[[^\]]*\])?\{beamer\}|\\usepackage(?:\[[^\]]*\])?\{[^}]*(?:booktabs|tikz|pgfplots|physics|siunitx|mathtools|minted|listings|biblatex)[^}]*\}/i.test(source);
-}
-
-async function getRunner(engine, onStatus = () => {}) {
-  const key = engineMode(engine);
-  if (runners.has(key)) return runners.get(key);
-  onStatus('Loading browser LaTeX engine… first use downloads the WebAssembly runtime.');
-  const { BusyTexRunner } = await api();
-  const runner = new BusyTexRunner({
-    busytexBasePath: ASSET_BASE,
-    engineMode: key,
-    preloadDataPackages: [
-      ASSET_BASE + '/texlive-basic.js',
-      ASSET_BASE + '/texlive-recommended.js'
-    ],
-    catalogDataPackages: [
-      ASSET_BASE + '/texlive-extra.js'
-    ],
-    verbose: false
-  });
-  // Main-thread initialization avoids cross-origin Worker restrictions on GitHub Pages.
-  // Compilation is local; the tradeoff is that large builds may briefly make the UI less responsive.
-  await runner.initialize(false);
-  runners.set(key, runner);
-  return runner;
-}
-
-export async function compileProject({ engine = 'pdflatex', main, files, onStatus = () => {} }) {
-  if (!main || typeof files?.[main] !== 'string') throw new Error('Choose a text .tex file as the main document.');
-  if (!globalThis.WebAssembly) throw new Error('This browser does not support WebAssembly.');
-
-  const source = files[main];
-  const runner = await getRunner(engine, onStatus);
-  const { PdfLatex, XeLatex, LuaLatex } = await api();
-  const Compiler = engine === 'xelatex' ? XeLatex : engine === 'lualatex' ? LuaLatex : PdfLatex;
-  const latex = new Compiler(runner);
-
-  const additionalFiles = Object.entries(files)
-    .filter(([name]) => name !== main)
-    .map(([path, content]) => ({ path, content }));
-
-  const hasBib = additionalFiles.some(file => /\.bib$/i.test(file.path));
-  const usesBibtex = hasBib && /\\bibliography\s*\{|\\bibliographystyle\s*\{/i.test(source);
-  const options = {
-    input: source,
-    additionalFiles,
-    bibtex: usesBibtex,
-    rerun: true,
-    verbose: 'silent'
-  };
-  if (needsExtra(source)) options.dataPackagesJs = [ASSET_BASE + '/texlive-extra.js'];
-
-  onStatus('Compiling locally in your browser… no document source is uploaded.');
-  const result = await latex.compile(options);
-  if (!result.success || !result.pdf) {
-    const error = new Error('LaTeX compilation failed.');
-    error.log = result.log || '';
-    throw error;
+  async load() {
+    if (this.worker) return;
+    const worker = new Worker(WORKER_URL);
+    await new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => reject(new Error('pdfLaTeX engine startup timed out.')), 60000);
+      worker.onmessage = event => {
+        if (event.data?.result === 'ok' && !event.data?.cmd) {
+          clearTimeout(timeout);
+          this.ready = true;
+          resolve();
+        }
+      };
+      worker.onerror = event => {
+        clearTimeout(timeout);
+        reject(new Error(event.message || 'Could not load the local pdfLaTeX engine.'));
+      };
+    }).catch(error => { worker.terminate(); throw error; });
+    worker.onmessage = null;
+    worker.onerror = null;
+    this.worker = worker;
+    this.worker.postMessage({cmd:'settexliveurl', url:TEXLIVE_ENDPOINT});
   }
-  return { pdf: result.pdf, log: result.log || '', synctex: result.synctex || null };
+
+  ensureReady() {
+    if (!this.worker || !this.ready) throw new Error('pdfLaTeX engine is not ready.');
+  }
+  resetProject() { this.ensureReady(); this.worker.postMessage({cmd:'flushcache'}); }
+  mkdir(path) { this.ensureReady(); this.worker.postMessage({cmd:'mkdir', url:path}); }
+  write(path, content) { this.ensureReady(); this.worker.postMessage({cmd:'writefile', url:path, src:content}); }
+  setMain(path) { this.ensureReady(); this.worker.postMessage({cmd:'setmainfile', url:path}); }
+
+  compileOnce() {
+    this.ensureReady();
+    return new Promise(resolve => {
+      const worker = this.worker;
+      worker.onmessage = event => {
+        const data = event.data || {};
+        if (data.cmd !== 'compile') return;
+        worker.onmessage = null;
+        resolve({
+          success: data.result === 'ok' && data.status === 0 && !!data.pdf,
+          status: data.status ?? -254,
+          log: data.log || 'No compiler log.',
+          pdf: data.pdf ? new Uint8Array(data.pdf) : null
+        });
+      };
+      worker.postMessage({cmd:'compilelatex'});
+    });
+  }
+}
+
+function getEngine(onStatus) {
+  if (!enginePromise) {
+    enginePromise = (async () => {
+      onStatus?.('Loading the local pdfLaTeX engine…');
+      const engine = new PdfTeXEngine();
+      await engine.load();
+      return engine;
+    })().catch(error => { enginePromise = null; throw error; });
+  }
+  return enginePromise;
+}
+
+function projectFolders(files) {
+  const folders = new Set();
+  for (const name of Object.keys(files)) {
+    const parts = name.split('/');
+    parts.pop();
+    let current = '';
+    for (const part of parts) {
+      current = current ? current + '/' + part : part;
+      folders.add(current);
+    }
+  }
+  return [...folders].sort((a,b) => a.split('/').length - b.split('/').length);
+}
+
+function serializeCompile(task) {
+  const run = queue.then(task, task);
+  queue = run.then(() => undefined, () => undefined);
+  return run;
+}
+
+export function compileProject({engine='pdflatex', main, files, onStatus=()=>{}}) {
+  return serializeCompile(async () => {
+    if (engine !== 'pdflatex') throw new Error('This release currently supports pdfLaTeX only.');
+    if (!globalThis.WebAssembly || !globalThis.Worker) throw new Error('This browser lacks WebAssembly or Web Worker support.');
+    if (!main || typeof files?.[main] !== 'string') throw new Error('Choose a text .tex file as the main document.');
+
+    const tex = await getEngine(onStatus);
+    tex.resetProject();
+    for (const folder of projectFolders(files)) tex.mkdir(folder);
+    for (const [path, content] of Object.entries(files)) tex.write(path, content);
+    tex.setMain(main);
+
+    const source = files[main];
+    const bibliography = /\\bibliography\s*\{|\\bibliographystyle\s*\{/.test(source) &&
+      Object.keys(files).some(name => /\.bib$/i.test(name));
+    let result;
+    for (let pass=0; pass<3; pass++) {
+      onStatus('Compiling locally in this browser… pass ' + (pass+1));
+      result = await tex.compileOnce();
+      if (!result.success) break;
+      if (!bibliography && !RERUN.test(result.log)) break;
+    }
+    if (!result?.success || !result.pdf) {
+      const error = new Error('LaTeX compilation failed.');
+      error.log = result?.log || 'No compiler log.';
+      throw error;
+    }
+    return {pdf:result.pdf, log:result.log};
+  });
 }
 
 export function compilerPrivacySummary() {
   return {
-    sourceUpload: false,
-    compileLocation: 'browser',
-    dependencyHosts: ['cdn.jsdelivr.net', 'github.com / GitHub release assets'],
-    note: 'Dependency hosts receive ordinary asset requests and IP/network metadata, but this module does not transmit LaTeX project contents.'
+    sourceUpload:false,
+    compileLocation:'browser',
+    engine:'SwiftLaTeX pdfTeX WebAssembly',
+    pinnedUpstreamCommit:UPSTREAM_COMMIT,
+    dependencyHost:'raw.githubusercontent.com',
+    note:'The dependency host receives normal asset requests/network metadata. Project source is written only into the browser WebAssembly filesystem.'
   };
 }
