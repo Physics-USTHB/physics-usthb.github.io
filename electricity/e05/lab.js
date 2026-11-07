@@ -27,7 +27,7 @@ function makeRun(){
   };
 }
 function persistState(){
-  persistState()
+  try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}
 }
 function save(){state.report=collectReport();persistState()}
 function load(){try{const x=JSON.parse(localStorage.getItem(STORAGE)||'null');if(x?.version===2)state={...state,...x};}catch(_){}}
