@@ -97,9 +97,9 @@
     <div class="analog-bench">
       <div class="bench-head"><div><div class="kicker">7.1 — Generator emf</div><h3>Analog voltmeter station</h3></div><span class="bench-state" id="emfState">Source isolated</span></div>
       <div class="meter-face">
-        <div class="scale-text" id="emfScaleText">0–30 divisions · 300 V range</div>
-        <div class="arc"></div><div class="needle" id="emfNeedle"></div><div class="pivot"></div>
-        <div class="reading"><strong id="emfReading">0.0 V</strong><span id="emfDivisionReading">0.0 / 30 divisions</span></div>
+        <div class="scale-text" id="emfScaleText">0–30 scale · 300 V range</div>
+        <div class="arc"></div><svg class="meter-scale-svg" id="emfScaleSvg" viewBox="0 0 400 215" aria-label="Analog voltmeter scale"></svg><div class="needle" id="emfNeedle"></div><div class="pivot"></div>
+        <div class="reading"><strong id="emfReading">READ SCALE</strong><span id="emfDivisionReading">Estimate the pointer position in divisions.</span></div>
       </div>
       <div class="wiring-box">
         <div class="wiring-title"><strong>Wire the voltmeter to the generator</strong><span>Respect the red (+) and black COM leads.</span></div>
@@ -114,7 +114,12 @@
           <select id="emfRange"></select>
         </label>
       </div>
-      <div class="bench-actions"><button class="btn secondary" id="connectEmf" type="button">Connect voltmeter</button><button class="btn" id="recordEmf" type="button" disabled>Record this measurement</button><button class="btn secondary" id="newSpecimen" type="button">New specimen</button></div>
+      <div class="analog-entry">
+        <label>Pointer reading n / divisions<input id="emfStudentN" type="number" min="0" step="0.1" placeholder="e.g. 12.4"></label>
+        <label>Calculated voltage E / V<input id="emfStudentValue" type="number" min="0" step="0.01" placeholder="from n/N × CAL"></label>
+        <label>Calculated ΔE / V<input id="emfStudentUnc" type="number" min="0" step="0.01" placeholder="class + reading"></label>
+      </div>
+      <div class="bench-actions"><button class="btn secondary" id="connectEmf" type="button">Connect voltmeter</button><button class="btn" id="recordEmf" type="button" disabled>Submit scale reading</button><button class="btn secondary" id="newSpecimen" type="button">New specimen</button></div>
       <div class="notice" id="emfMessage">Begin on the maximum voltmeter range, then identify the appropriate range.</div>
     </div>
     <aside class="side-stack">
