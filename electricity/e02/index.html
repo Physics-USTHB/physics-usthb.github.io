@@ -95,13 +95,13 @@
       <div class="tank-head"><div><div class="kicker">A.3 — Mapping</div><h3>Find the 2, 4, 6 and 8 V equipotentials</h3></div><span class="tank-state ok">Configuration A</span></div>
       <div class="tank-canvas-wrap"><canvas class="tank-canvas" id="mapACanvas" width="900" height="620"></canvas><div class="tank-overlay"><span id="targetOverlay">Target: 2 V</span><span>Tolerance ±0.10 V</span></div></div>
       <div class="probe-readout"><div><span>x</span><strong id="mapAX">0.0 cm</strong></div><div><span>y</span><strong id="mapAY">0.0 cm</strong></div><div><span>Potential</span><strong id="mapAV">— V</strong></div><div><span>Target error</span><strong id="mapAError">— V</strong></div></div>
-      <div class="probe-controls"><label>x position<input id="mapAXSlider" type="range" min="-10" max="10" step="0.05" value="0"></label><label>Required y line<select id="mapAYSelect"><option value="0">0 cm</option><option value="2">+2 cm</option><option value="5">+5 cm</option><option value="8">+8 cm</option></select></label></div>
+      <div class="probe-controls"><label>x position<input id="mapAXSlider" type="range" min="-10" max="10" step="0.05" value="0"></label><label>Choose a constant-y search line <strong id="mapAYLineLabel">0.0 cm</strong><input id="mapAYSelect" type="range" min="0" max="10" step="0.5" value="0"></label></div>
       <div class="tank-actions"><button class="btn" id="markEquipA" type="button">Mark point on target equipotential</button><button class="btn secondary" id="mirrorEquipA" type="button">Apply symmetry to completed points</button></div>
-      <div class="notice" id="mapAMessage">For each target, locate points at y = 0, +2, +5 and +8 cm. Negative-y points can then be reported by symmetry.</div>
+      <div class="notice" id="mapAMessage">For each target, first locate the point on x′Ox (y=0), then choose at least three other positive constant-y lines yourself. Negative-y points are obtained by symmetry, as in the USTHB sheet.</div>
     </div>
     <aside class="side-stack-e02">
       <article class="e02-card"><h4>Target potential</h4><div class="target-grid" id="targetsA"></div></article>
-      <article class="e02-card"><h4>Required upper-half points</h4><div class="yline-grid" id="yProgressA"></div></article>
+      <article class="e02-card"><h4>Upper-half mapping progress</h4><p>One x-axis point plus at least three freely chosen positive-y points per equipotential.</p><div class="yline-grid" id="yProgressA"></div></article>
       <article class="e02-card wide-side"><h4>Recorded points</h4><div class="equip-table-wrap"><table class="equip-table"><thead><tr><th>Eq</th><th>y / cm</th><th>x / cm</th><th>V / V</th></tr></thead><tbody id="equipABody"></tbody></table></div></article>
     </aside>
   </div>
@@ -133,7 +133,7 @@
     <aside class="side-stack-e02">
       <article class="e02-card"><h4>B.1 — Conductor C</h4><div class="electrode-results"><div><span>VC</span><strong id="vcResult">—</strong></div><div><span>Inside |E|</span><strong id="ecResult">—</strong></div><div><span>Diameter</span><strong>6.0 cm</strong></div></div><div class="question-block"><label for="chargeDistribution">How are charges distributed on the conductor surface?</label><textarea id="chargeDistribution" placeholder="Relate surface-charge density to the local field and curvature/distortion."></textarea></div></article>
       <article class="e02-card"><h4>B.2 — Equipotential targets</h4><div class="target-grid" id="targetsB"></div><div class="yline-grid" id="yProgressB"></div></article>
-      <article class="e02-card wide-side"><h4>Mapping controls</h4><p>Select a target and required y line, then move the probe until the reading is within ±0.10 V.</p><label class="field-label">Target<select id="targetBSelect"><option value="2">2 V</option><option value="4">4 V</option><option value="6">6 V</option><option value="8">8 V</option></select></label><label class="field-label">y line<select id="mapBYSelect"><option value="0">0 cm</option><option value="2">+2 cm</option><option value="5">+5 cm</option><option value="8">+8 cm</option></select></label><button class="btn" id="markEquipB" type="button">Mark current point</button></article>
+      <article class="e02-card wide-side"><h4>Mapping controls</h4><p>Select a target and required y line, then move the probe until the reading is within ±0.10 V.</p><label class="field-label">Target<select id="targetBSelect"><option value="2">2 V</option><option value="4">4 V</option><option value="6">6 V</option><option value="8">8 V</option></select></label><label class="field-label">Choose constant-y line <strong id="mapBYLineLabel">0.0 cm</strong><input id="mapBYSelect" type="range" min="0" max="10" step="0.5" value="0"></label><button class="btn" id="markEquipB" type="button">Mark current point</button></article>
     </aside>
   </div>
 </section>
