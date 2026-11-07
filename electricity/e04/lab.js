@@ -11,8 +11,8 @@ let state={
   version:1,mode:'learn',run:null,
   xy:{observed:{},centered:true},
   sweep:{cal:true,ch1Cal:true,xMag:false,calChecked:false,measurement:null},
-  resistor:{xy:false,balance:null},
-  capacitor:{xy:false,balance:null},
+  resistor:{xy:false,xyVerified:false,balance:null},
+  capacitor:{xy:false,xyVerified:false,balance:null},
   assessment:null,report:{}
 };
 
@@ -49,7 +49,7 @@ function applyMode(mode){
 function progress(){
   const xy=Object.keys(state.xy.observed||{}).length===9;
   const sw=state.sweep.calChecked&&!!state.sweep.measurement;
-  const rr=!!state.resistor.balance,cc=!!state.capacitor.balance;
+  const rr=!!state.resistor.balance&&!!state.resistor.xyVerified,cc=!!state.capacitor.balance&&!!state.capacitor.xyVerified;
   const items=[
     ['3','XY mode',xy,`${Object.keys(state.xy.observed||{}).length}/9 observations`],
     ['4','Sweep & trigger',sw,`${state.sweep.calChecked?'cal ✓':'cal …'} · ${state.sweep.measurement?'f ✓':'f …'}`],
@@ -90,8 +90,10 @@ function drawXY(){
   const type=$('#xyWave').value,route=$('#xyRoute').value,amp=+$('#xyAmp').value,v1=+$('#xyVdiv1').value,v2=+$('#xyVdiv2').value;
   $('#xyAmpLabel').textContent=`${amp.toFixed(1)} V peak`;
   const pts=[];for(let k=0;k<=600;k++){const ph=TAU*k/600,s=waveform(type,ph),xd=route==='y'?0:amp*s/v1,yd=route==='x'?0:amp*s/v2;pts.push({x:g.cx+xd*g.xdiv,y:g.cy-yd*g.ydiv});}
-  drawPath(ctx,pts,'#79ffc1',2.4,.92);
-  if(type==='square'){ctx.fillStyle='#9affcf';for(const p of [pts[75],pts[225],pts[375],pts[525]]){ctx.beginPath();ctx.arc(p.x,p.y,4,0,TAU);ctx.fill();}}
+  drawPath(ctx,pts,'#79ffc1',2.1,.48);
+  ctx.fillStyle='#a6ffd7';
+  for(let m=0;m<24;m++){const p=pts[Math.round(m*600/24)];ctx.beginPath();ctx.arc(p.x,p.y,type==='square'?4.2:2.8,0,TAU);ctx.fill();}
+  if(type==='square'){ctx.fillStyle='#e5fff3';for(const p of [pts[75],pts[225],pts[375],pts[525]]){ctx.beginPath();ctx.arc(p.x,p.y,4.8,0,TAU);ctx.fill();}}
   $('#xyCH1Label').textContent=route==='y'?'CH1/X disconnected':`CH1/X · ${v1} V/div`;
   $('#xyCH2Label').textContent=route==='x'?'CH2/Y disconnected':`CH2/Y · ${v2} V/div`;
 }
@@ -156,21 +158,21 @@ function drawDual(canvasId,kind){
 }
 function updateResistor(){
   const x=drawDual('#resistorCanvas','r'),ratio=x.a2/x.a1;$('#rDecadeLabel').textContent=`${x.rd.toFixed(0)} Ω`;$('#rAmp1').textContent=`${x.a1.toFixed(2)} V`;$('#rAmp2').textContent=`${x.a2.toFixed(2)} V`;$('#rRatio').textContent=ratio.toFixed(3);
-  if(state.resistor.balance){const b=state.resistor.balance;$('#rxResult').textContent=`${b.rd.toFixed(0)} Ω`;$('#rDt').textContent=formatTime(b.dt);$('#rT').textContent=formatTime(b.T);$('#rPhiSweep').textContent=`${b.phiSweep.toFixed(1)}°`;$('#rPhiXY').textContent=`${b.phiXY.toFixed(1)}°`;}
+  if(state.resistor.balance){const b=state.resistor.balance;$('#rxResult').textContent=`${b.rd.toFixed(0)} Ω`;$('#rDt').textContent=formatTime(b.dt);$('#rT').textContent=formatTime(b.T);$('#rPhiSweep').textContent=`${b.phiSweep.toFixed(1)}°`;$('#rPhiXY').textContent=state.resistor.xyVerified?`${b.phiXY.toFixed(1)}°`:'—°';}
   else{$('#rxResult').textContent='— Ω';$('#rDt').textContent='—';$('#rT').textContent='—';$('#rPhiSweep').textContent='—°';$('#rPhiXY').textContent='—°';}
   $('#resistorMessage').className=Math.abs(ratio-1)<.03?'notice ok':'notice';$('#resistorMessage').textContent=Math.abs(ratio-1)<.03?'Amplitudes are balanced within 3%. You may record the condition.':state.mode==='learn'?(ratio>1?'CH2 is larger: increase the decade resistance.':'CH1 is larger: decrease the decade resistance.'):'Adjust until the two amplitudes are equal.';
 }
 function recordRBalance(){
-  const x=circuitResistor(),ratio=x.a2/x.a1;if(Math.abs(ratio-1)>=.03){updateResistor();return;}const f=+$('#rFreq').value,T=1/f,dt=0;state.resistor.balance={rd:x.rd,ratio,T,dt,phiSweep:0,phiXY:0,frequency:f,trueRx:state.run.rx};$('#resistorMessage').className='notice ok';$('#resistorMessage').textContent='Balanced condition stored. In sweep mode the signals are in phase; in XY mode the trace should be a straight line.';updateResistor();progress();save();
+  const x=circuitResistor(),ratio=x.a2/x.a1;if(Math.abs(ratio-1)>=.03){updateResistor();return;}const f=+$('#rFreq').value,T=1/f,dt=0;state.resistor.balance={rd:x.rd,ratio,T,dt,phiSweep:0,phiXY:0,frequency:f,trueRx:state.run.rx};state.resistor.xyVerified=false;$('#resistorMessage').className='notice ok';$('#resistorMessage').textContent='Balanced condition stored. Now switch to XY mode and verify the straight-line Lissajous trace.';updateResistor();progress();save();
 }
 function updateCap(){
   const x=drawDual('#capacitorCanvas','c'),ratio=x.a2/x.a1;$('#cDecadeLabel').textContent=`${x.rd.toFixed(0)} Ω`;
-  if(state.capacitor.balance){const b=state.capacitor.balance;$('#zcResult').textContent=`${b.rd.toFixed(0)} Ω`;$('#cPhiSweep').textContent=`${b.phiSweep.toFixed(1)}°`;$('#cPhiXY').textContent=`${b.phiXY.toFixed(1)}°`;$('#cResult').textContent=`${(b.Cderived*1e6).toFixed(3)} µF`;}
+  if(state.capacitor.balance){const b=state.capacitor.balance;$('#zcResult').textContent=`${b.rd.toFixed(0)} Ω`;$('#cPhiSweep').textContent=`${b.phiSweep.toFixed(1)}°`;$('#cPhiXY').textContent=state.capacitor.xyVerified?`${b.phiXY.toFixed(1)}°`:'—°';$('#cResult').textContent=`${(b.Cderived*1e6).toFixed(3)} µF`;}
   else{$('#zcResult').textContent='— Ω';$('#cPhiSweep').textContent='—°';$('#cPhiXY').textContent='—°';$('#cResult').textContent='— µF';}
   $('#capMessage').className=Math.abs(ratio-1)<.03?'notice ok':'notice';$('#capMessage').textContent=Math.abs(ratio-1)<.03?'Voltage amplitudes are balanced within 3%. Record the condition.':state.mode==='learn'?(ratio>1?'Capacitor voltage is larger: increase decade resistance.':'Resistor voltage is larger: decrease decade resistance.'):'Adjust the decade resistance until the two amplitudes are equal.';
 }
 function recordCBalance(){
-  const x=circuitCap(),ratio=x.a2/x.a1;if(Math.abs(ratio-1)>=.03){updateCap();return;}const f=+$('#cFreq').value,T=1/f,dt=T/4,Cderived=1/(TAU*f*x.rd);state.capacitor.balance={rd:x.rd,zcTrue:x.zc,ratio,T,dt,phiSweep:90,phiXY:90,Cderived,trueC:state.run.C,frequency:f};$('#capMessage').className='notice ok';$('#capMessage').textContent='Balanced impedance condition stored. Sweep mode gives a quarter-period shift; XY mode should give an ellipse close to a circle.';updateCap();progress();save();
+  const x=circuitCap(),ratio=x.a2/x.a1;if(Math.abs(ratio-1)>=.03){updateCap();return;}const f=+$('#cFreq').value,T=1/f,dt=T/4,Cderived=1/(TAU*f*x.rd);state.capacitor.balance={rd:x.rd,zcTrue:x.zc,ratio,T,dt,phiSweep:90,phiXY:90,Cderived,trueC:state.run.C,frequency:f};state.capacitor.xyVerified=false;$('#capMessage').className='notice ok';$('#capMessage').textContent='Balanced impedance condition stored. Now switch to XY mode and verify the near-circular Lissajous figure.';updateCap();progress();save();
 }
 
 function setupQuiz(){
@@ -199,8 +201,8 @@ function init(){
   load();if(!state.run)state.run=makeRun();restoreReport();setupTabs();setupQuiz();applyMode(state.mode);renderXYObs();progress();restoreAssessment();
   ['xyWave','xyFreq','xyRoute','xyVdiv1','xyVdiv2','xyAmp'].forEach(id=>$('#'+id).addEventListener('input',drawXY));$('#recordXYObservation').addEventListener('click',recordXY);$('#centerSpot').addEventListener('click',()=>{state.xy.centered=true;$('#xyMessage').className='notice ok';$('#xyMessage').textContent='Spot centred at the screen origin.';save();});
   ['sweepWave','sweepFreq','timeDiv','sweepVdiv','triggerLevel','triggerMode'].forEach(id=>$('#'+id).addEventListener('input',drawSweep));$('#toggleSweepCal').addEventListener('click',()=>{state.sweep.cal=!state.sweep.cal;drawSweep();save();});$('#toggleCh1Cal').addEventListener('click',()=>{state.sweep.ch1Cal=!state.sweep.ch1Cal;drawSweep();save();});$('#toggleXMag').addEventListener('click',()=>{state.sweep.xMag=!state.sweep.xMag;drawSweep();save();});$('#recordSweep').addEventListener('click',recordSweep);
-  ['rFreq','rVdiv','rTimeDiv','rDecade'].forEach(id=>$('#'+id).addEventListener('input',updateResistor));$('#recordResistorBalance').addEventListener('click',recordRBalance);$('#switchResistorXY').addEventListener('click',()=>{state.resistor.xy=!state.resistor.xy;updateResistor();save();});
-  ['cFreq','cVdiv','cTimeDiv','cDecade'].forEach(id=>$('#'+id).addEventListener('input',updateCap));$('#recordCapBalance').addEventListener('click',recordCBalance);$('#switchCapXY').addEventListener('click',()=>{state.capacitor.xy=!state.capacitor.xy;updateCap();save();});
+  ['rFreq','rVdiv','rTimeDiv','rDecade'].forEach(id=>$('#'+id).addEventListener('input',updateResistor));$('#recordResistorBalance').addEventListener('click',recordRBalance);$('#switchResistorXY').addEventListener('click',()=>{state.resistor.xy=!state.resistor.xy;if(state.resistor.xy&&state.resistor.balance)state.resistor.xyVerified=true;updateResistor();progress();save();});
+  ['cFreq','cVdiv','cTimeDiv','cDecade'].forEach(id=>$('#'+id).addEventListener('input',updateCap));$('#recordCapBalance').addEventListener('click',recordCBalance);$('#switchCapXY').addEventListener('click',()=>{state.capacitor.xy=!state.capacitor.xy;if(state.capacitor.xy&&state.capacitor.balance)state.capacitor.xyVerified=true;updateCap();progress();save();});
   $('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
   ['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'].forEach(id=>$('#'+id).addEventListener('input',save));
   window.addEventListener('resize',()=>{drawXY();drawSweep();updateResistor();updateCap();});window.addEventListener('beforeunload',save);
