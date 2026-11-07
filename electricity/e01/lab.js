@@ -144,14 +144,26 @@ function emfTrue(){
   const rv=voltmeterR(range);
   return state.run.E*rv/(state.run.rg+rv);
 }
+
+function renderAnalogScale(range){
+  const svg=$('#emfScaleSvg');if(!svg)return;const cx=200,cy=188,r1=145,r2=range.N===30?132:135,labels=range.N===30?5:20;let out='';
+  for(let n=0;n<=range.N;n++){
+    const a=(-150+120*n/range.N)*Math.PI/180,major=n%labels===0,mid=!major&&(n%(range.N===30?1:5)===0),ro=r1,ri=major?119:mid?127:r2;
+    const x1=cx+ro*Math.cos(a),y1=cy+ro*Math.sin(a),x2=cx+ri*Math.cos(a),y2=cy+ri*Math.sin(a);
+    out+=`<line class="${major?'major':''}" x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"></line>`;
+    if(major){const rt=105,xt=cx+rt*Math.cos(a),yt=cy+rt*Math.sin(a)+4;out+=`<text x="${xt.toFixed(1)}" y="${yt.toFixed(1)}">${n}</text>`;}
+  }
+  out+=`<text class="unit" x="200" y="84">divisions</text>`;svg.innerHTML=out;
+}
+
 function updateEmf(){
   state.emf.range=+$('#emfRange').value;const r=rangeByCal(V_RANGES,state.emf.range);
   if(r.cal===V_RANGES.at(-1).cal)state.emf.maxSeen=true;
   const trueV=emfTrue(),m=analogRead(trueV,r,'v');
-  $('#emfScaleText').textContent=`0–${r.N} divisions · ${r.label} range`;
-  if(m.overloaded){$('#emfReading').textContent='OVERLOAD';$('#emfDivisionReading').textContent='Range too small';$('#emfNeedle').style.transform='rotate(32deg)';}
+  $('#emfScaleText').textContent=`0–${r.N} scale · ${r.label} range`;renderAnalogScale(r);
+  if(m.overloaded){$('#emfReading').textContent='OVER RANGE';$('#emfDivisionReading').textContent='Increase the selected range.';$('#emfNeedle').style.transform='rotate(-25deg)';}
   else{
-    $('#emfReading').textContent=`${m.value.toFixed(r.cal<1?3:2)} V`;$('#emfDivisionReading').textContent=`${m.n.toFixed(1)} / ${m.N} divisions`;
+    $('#emfReading').textContent='READ SCALE';$('#emfDivisionReading').textContent=`Use the 0–${r.N} scale and calculate X=(n/N)·CAL.`;
     const frac=m.n/m.N;$('#emfNeedle').style.transform=`rotate(${-150+120*frac}deg)`;
   }
   $('#recordEmf').disabled=!state.emf.connected||m.overloaded;
@@ -166,8 +178,14 @@ function recordEmf(){
   if(!state.emf.connected)return;
   const r=rangeByCal(V_RANGES,+$('#emfRange').value),trueV=emfTrue(),m=analogRead(trueV,r,'v');
   if(m.overloaded)return;
+  const sn=+$('#emfStudentN').value,sv=+$('#emfStudentValue').value,su=+$('#emfStudentUnc').value;
+  if(!Number.isFinite(sn)||!Number.isFinite(sv)||!Number.isFinite(su)){$('#emfMessage').className='notice warn';$('#emfMessage').textContent='Read the pointer and enter n, the calculated voltage, and ΔE before submitting.';return;}
+  if(Math.abs(sn-m.n)>.6){$('#emfMessage').className='notice warn';$('#emfMessage').textContent=state.mode==='learn'?'Your division reading is not consistent with the pointer position. Re-read the analog scale; ±0.5 division is the intended reading estimate.':'Scale reading rejected: re-read the pointer.';return;}
+  const fromN=sn/r.N*r.cal;
+  if(Math.abs(sv-fromN)>Math.max(.015,r.cal/r.N*.15)){$('#emfMessage').className='notice warn';$('#emfMessage').textContent='Recalculate the voltage using X=(n/N)·CAL with the selected scale and range.';return;}
+  if(Math.abs(su-m.delta)>Math.max(.015,.08*m.delta)){$('#emfMessage').className='notice warn';$('#emfMessage').textContent='Recalculate ΔE = ΔE_class + ΔE_read using class 1.5 and Δn=0.5 division.';return;}
   const best=appropriateRange(V_RANGES,state.run.E),higher=nextRange(V_RANGES,best);
-  const rec={range:r.cal,label:r.label,value:m.value,n:m.n,N:m.N,delta:m.delta,rv:voltmeterR(r)};
+  const rec={range:r.cal,label:r.label,value:sv,n:sn,N:m.N,delta:su,rv:voltmeterR(r)};
   if(Math.abs(r.cal-best.cal)<1e-12){
     state.emf.best=rec;$('#emfMessage').className='notice ok';$('#emfMessage').textContent=`Appropriate-range measurement stored. Now repeat using the immediately higher range (${higher.label}).`;
   }else if(Math.abs(r.cal-higher.cal)<1e-12){
@@ -176,7 +194,7 @@ function recordEmf(){
   }else{
     $('#emfMessage').className='notice warn';$('#emfMessage').textContent=`This is a valid reading, but the TP requires ${best.label} and then ${higher.label}. It was not stored as one of the two required results.`;return;
   }
-  renderEmfResults();progress();summary();save();
+  $('#emfStudentN').value='';$('#emfStudentValue').value='';$('#emfStudentUnc').value='';renderEmfResults();progress();summary();save();
 }
 function renderEmfResults(){
   const put=(rec,prefix)=>{
@@ -361,7 +379,7 @@ function renderAll(){
 }
 function init(){
   load();if(!state.run)state.run=makeRun();fillRanges();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
-  ['emfVPlus','emfCOM'].forEach(id=>$('#'+id).addEventListener('change',()=>{state.emf.connected=false;updateEmfWiring();updateEmf();save();}));$('#emfRange').addEventListener('change',updateEmf);$('#connectEmf').addEventListener('click',connectEmf);$('#recordEmf').addEventListener('click',recordEmf);$('#newSpecimen').addEventListener('click',newSpecimen);
+  ['emfVPlus','emfCOM'].forEach(id=>$('#'+id).addEventListener('change',()=>{state.emf.connected=false;updateEmfWiring();updateEmf();save();}));$('#emfRange').addEventListener('change',()=>{$('#emfStudentN').value='';$('#emfStudentValue').value='';$('#emfStudentUnc').value='';updateEmf();});$('#connectEmf').addEventListener('click',connectEmf);$('#recordEmf').addEventListener('click',recordEmf);$('#newSpecimen').addEventListener('click',newSpecimen);
   ['potGenPlus','potGenMinus','potVPlus','potVCom'].forEach(id=>$('#'+id).addEventListener('change',()=>{updatePotWiring();updatePot();save();}));$('#potRange').addEventListener('change',updatePot);$('#potSelectorSelect').addEventListener('change',e=>{state.pot.selector=+e.target.value;updatePot();save();});$('#verifyPot').addEventListener('click',verifyPot);$('#recordPot').addEventListener('click',recordPot);
   $('.method-btn').forEach(b=>b.addEventListener('click',()=>setMethod(b.dataset.method)));['rxAmmeterPlacement','rxVoltmeterSpan'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateRxWiring();updateRx();save();}));$('#rxVRange').addEventListener('change',updateRx);$('#rxIRange').addEventListener('change',updateRx);$('#verifyRx').addEventListener('click',verifyRx);$('#recordRx').addEventListener('click',recordRx);
   $('#revealExact').addEventListener('click',revealExact);$('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
