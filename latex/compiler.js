@@ -19,10 +19,16 @@ class PdfTeXEngine {
     await new Promise((resolve, reject) => {
       const timeout = setTimeout(() => reject(new Error('pdfLaTeX engine startup timed out.')), 60000);
       worker.onmessage = event => {
-        if (event.data?.result === 'ok' && !event.data?.cmd) {
+        const data = event.data || {};
+        if (data.result === 'ok' && !data.cmd) {
           clearTimeout(timeout);
           this.ready = true;
           resolve();
+          return;
+        }
+        if (data.result === 'failed') {
+          clearTimeout(timeout);
+          reject(new Error(data.log || 'pdfLaTeX WebAssembly engine aborted during startup.'));
         }
       };
       worker.onerror = event => {
