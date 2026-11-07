@@ -7,11 +7,11 @@ const html = read('./index.html');
 const js = read('./app.js');
 const css = read('./styles.css');
 const home = read('../index.html');
-const rootCss = read('../assets/styles.css');
+const rootCss = read('../assets/home.css');
 
 new Script(js, {filename: 'latex/app.js'});
 assert.ok(html.startsWith('<!doctype html>'), 'LaTeX Studio must be an HTML page');
-assert.ok(home.includes('href="latex/index.html"'), 'Homepage must link LaTeX Studio');
+assert.ok(home.includes('href="latex/"'), 'Homepage must link LaTeX Studio');
 assert.ok(html.includes('src="app.js"'), 'Studio must load application script');
 assert.ok(html.includes('src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"'), 'ZIP dependency missing');
 assert.ok(html.includes('src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"'), 'KaTeX dependency missing');
@@ -34,7 +34,18 @@ const checks = [
 ];
 for (const [pattern, label] of checks) assert.match(js, pattern, label);
 assert.ok(css.includes('@media(max-width:650px)'), 'Workspace must have mobile layout');
-assert.ok(rootCss.includes('.latex-pathway-card'), 'Homepage needs LaTeX pathway styling');
+assert.ok(rootCss.includes('.path-grid'), 'Homepage needs learning pathways styling');
+assert.ok(rootCss.includes('@media(max-width:560px)'), 'Homepage needs mobile layout');
+assert.ok(home.includes('href="electricity/"'), 'Homepage must link physics labs');
+assert.ok(home.includes('href="#english"'), 'Homepage must link Scientific English');
+assert.ok(home.includes('In development'), 'English availability must be clear');
+assert.ok(home.includes('Not an official USTHB website'), 'Homepage must identify independent status');
+assert.equal((home.match(/class="path-card"/g) || []).length, 3, 'Homepage must have three pathways');
+assert.equal((home.match(/class="tp-card"/g) || []).length, 5, 'Homepage must link exactly five practicums');
+for (const n of ['e01','e02','e03','e04','e05']) {
+ assert.ok(home.includes('href="electricity/' + n + '/"'), 'Missing direct TP link ' + n);
+}
+assert.ok(home.includes('href="assets/home.css"'), 'Homepage must use isolated stylesheet');
 
 for (const n of ['e01','e02','e03','e04','e05']) {
   const path = new URL('../electricity/' + n + '/index.html', import.meta.url);
