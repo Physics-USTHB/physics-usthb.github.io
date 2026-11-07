@@ -62,26 +62,25 @@ Discuss instrument limits and compare with theory.
 Explain what the results demonstrate.
 \end{document}
 `,
-beamer: String.raw`\documentclass{beamer}
-\title{Scientific Presentation}
-\author{Your Name}
-\date{\today}
-\begin{document}
-\frame{\titlepage}
-\begin{frame}{Research Question}
-What are we trying to measure or explain?
-\[
-E=mc^2
-\]
-\end{frame}
-\begin{frame}{Conclusion}
-\begin{itemize}
-\item Main finding
-\item Remaining uncertainty
-\end{itemize}
-\end{frame}
-\end{document}
-`,
+report: String.raw\`\\documentclass[11pt,a4paper]{report}
+\\usepackage{amsmath,amssymb,graphicx}
+\\title{Scientific Report}
+\\author{Your Name}
+\\date{\\today}
+\\begin{document}
+\\maketitle
+\\chapter{Introduction}
+State the problem and objectives.
+\\chapter{Method}
+Describe the method and apparatus.
+\\chapter{Results}
+\\[
+E = mc^2
+\\]
+\\chapter{Conclusion}
+Summarise the findings and limitations.
+\\end{document}
+\`,
 blank: String.raw`\documentclass{article}
 \begin{document}
 Hello, LaTeX!
