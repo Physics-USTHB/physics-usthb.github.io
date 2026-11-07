@@ -9,10 +9,13 @@ A GitHub Pages project for rigorous undergraduate physics learning in English.
 - Home: https://physics-usthb.github.io/
 - Electricity laboratory: https://physics-usthb.github.io/electricity/
 - E03 — Current–Voltage Characteristics: https://physics-usthb.github.io/electricity/e03/
+- LaTeX Studio: https://physics-usthb.github.io/latex/
 
-## LaTeX Studio (proposed first release)
+## Homepage and LaTeX Studio
 
-The `feature/latex-studio-v1` branch adds a local-first LaTeX editor at `/latex/` with project management, ZIP import/export, Prism-source migration, equations preview, and an explicit opt-in external PDF compiler for short single-file projects. The main branch's live website does **not** include this feature until the pull request is merged. See [`latex/README.md`](latex/README.md) for privacy limits, deployment scope and testing instructions.
+The homepage offers three clearly labelled paths: **Physics Practicums** (TP1–TP5 available), **Scientific English** (curriculum in development), and **LaTeX Studio** (first release). Each practical has a direct link from the homepage. The new homepage uses its own `assets/home.css`, keeping the existing laboratory styles independent.
+
+LaTeX Studio at `/latex/` is a local-first document editor with multiple projects, templates, ZIP import/export (including Prism source files), optional equation preview, and **opt-in external PDF compilation for short standalone .tex files**. Projects are stored only in the user's current browser; there is no built-in cloud sync, collaboration, or full PDF preview yet. See [`latex/README.md`](latex/README.md) for privacy disclosures, migration instructions and supported functionality.
 
 ## Fidelity policy
 
