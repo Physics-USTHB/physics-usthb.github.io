@@ -63,6 +63,30 @@ The browser solves the two-dimensional Laplace equation on a finite-difference g
 Live E02:
 https://physics-usthb.github.io/electricity/e02/
 
+## E04 — The Oscilloscope
+
+E04 is implemented from the USTHB L1 ST/SM oscilloscope handout by K. Belhous and A. El-Mehdaoui, corresponding to the current **TP4 — L’oscilloscope** listing.
+
+Core tasks include:
+
+- oscilloscope front-panel control identification;
+- calibrated-control requirements (sweep CAL, vertical CAL, X1);
+- XY-mode spot motion for sine, triangle and square signals;
+- X-only, Y-only and same-signal X+Y observations;
+- 0.5 s/div sweep calibration over 10 screen divisions;
+- generator signals from 1 to 100 Hz;
+- trigger-level and AUTO/CH1 synchronisation;
+- period and frequency measurement from divisions × TIME/DIV;
+- phase relation φ=2πΔt/T;
+- unknown-resistance measurement by decade-box amplitude balance;
+- sweep-mode and XY/Lissajous phase verification;
+- capacitor-impedance measurement by amplitude balance;
+- comparison with Z_C=1/(Cω) and capacitance deduction;
+- post-lab assessment and English report.
+
+Live E04:
+https://physics-usthb.github.io/electricity/e04/
+
 ## E03 — current status
 
 E03 now has two explicitly separated layers.
@@ -126,6 +150,10 @@ physics-usthb.github.io/
 │   │   ├── index.html
 │   │   ├── e02.css
 │   │   └── lab.js
+│   ├── e04/
+│   │   ├── index.html
+│   │   ├── e04.css
+│   │   └── lab.js
 │   └── e03/
 │       ├── index.html
 │       ├── official.css
@@ -150,6 +178,6 @@ Before using the project for formally assessed coursework, it should still under
 2. Complete automated browser interaction tests and accessibility audit.
 3. Instructor review of E01 and E03.
 4. Instructor review of E02 field geometry and measurement workflow.
-5. E04 — Oscilloscope, aligned with TP4.
+5. Instructor review of E04 oscilloscope controls and measurement workflow.
 6. E05 — RC–RL Transients, aligned with TP5.
 7. English-for-Physicists pathway integrated with laboratory vocabulary and reporting.
