@@ -59,7 +59,18 @@ Physics USTHB local compiler browser test.
 
   const leaked = outbound.filter(url => url.includes('Physics%20USTHB%20local%20compiler') || url.includes('Physics+USTHB+local+compiler'));
   assert.deepEqual(leaked, [], 'Document source appeared in an outbound request URL');
-  console.log('Browser test passed: persistence reload + isolated concurrent user context + browser-local PDF compilation + preview.');
+
+  // Practicum persistence/privacy: useful work persists, student identity does not.
+  await page.goto('http://127.0.0.1:8080/electricity/e01/', {waitUntil:'domcontentloaded', timeout:30_000});
+  await page.locator('#studentName').fill('Private Test Student');
+  await page.locator('#studentGroup').fill('Private Group');
+  await page.locator('#reportDiscussion').fill('Persisted scientific discussion');
+  await page.waitForTimeout(150);
+  await page.reload({waitUntil:'domcontentloaded'});
+  assert.equal(await page.locator('#studentName').inputValue(), '', 'TP1 persisted student identity');
+  assert.equal(await page.locator('#studentGroup').inputValue(), '', 'TP1 persisted group identity');
+  assert.equal(await page.locator('#reportDiscussion').inputValue(), 'Persisted scientific discussion', 'TP1 did not restore non-identifying saved work');
+  console.log('Browser test passed: persistence reload + isolated concurrent user context + local PDF compilation + TP privacy persistence.');
 } finally {
   await browser.close();
 }
