@@ -10,6 +10,34 @@ A GitHub Pages project for rigorous undergraduate physics learning in English.
 - Electricity laboratory: https://physics-usthb.github.io/electricity/
 - E03 — Current–Voltage Characteristics: https://physics-usthb.github.io/electricity/e03/
 
+## E01 — Electrical Measurements & Resistance
+
+E01 is now implemented as an English-language virtual version of the USTHB resistance-measurement practical. The current USTHB Faculty of Physics course listing identifies this experiment as **TP1 — Mesure de résistances**.
+
+The core sequence includes:
+
+- analogue voltmeter and ammeter range selection;
+- 0–30 and 0–100 scale reading;
+- meter class uncertainty and reading uncertainty;
+- generator-emf measurement on the appropriate voltmeter range and the immediately higher range;
+- uncertainty-interval comparison and selection of the retained emf;
+- the 11 Ω potentiometric resistance box;
+- V_AB measurements at selector positions 0–11;
+- V_AB=f(R_AB) plotting and slope-derived divider current;
+- uncertainty on the divider current using the handout's additive relative-uncertainty convention;
+- unknown-resistance measurement at selector position 5;
+- short-derivation and long-derivation circuits;
+- systematic corrections CCD≈R_Ca²/R_V and CLD=−R_A;
+- corrected resistance and propagated worst-case uncertainty;
+- appropriate-topology criterion R_0=√(R_V R_A);
+- post-lab assessment and English laboratory report;
+- optional comparison with the simulator's exact finite-meter-resistance model.
+
+Virtual analogue meter specifications and hidden component values are explicit simulation parameters rather than values claimed by the USTHB handout.
+
+Live E01:
+https://physics-usthb.github.io/electricity/e01/
+
 ## E03 — current status
 
 E03 now has two explicitly separated layers.
@@ -65,6 +93,10 @@ physics-usthb.github.io/
 │   └── styles.css
 ├── electricity/
 │   ├── index.html
+│   ├── e01/
+│   │   ├── index.html
+│   │   ├── e01.css
+│   │   └── lab.js
 │   └── e03/
 │       ├── index.html
 │       ├── official.css
@@ -87,7 +119,7 @@ Before using the project for formally assessed coursework, it should still under
 
 1. Instructor/pedagogical review of the revised USTHB-aligned E03.
 2. Complete automated browser interaction tests and accessibility audit.
-3. E01 — Electrical Measurements & Resistance, aligned with the official USTHB TP1.
+3. Instructor review of E01 and E03.
 4. E02 — Rheographic Tank / Electric Potential Mapping, aligned with TP2.
 5. E04 — Oscilloscope, aligned with TP4.
 6. E05 — RC–RL Transients, aligned with TP5.
