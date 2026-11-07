@@ -15,7 +15,15 @@ A GitHub Pages project for rigorous undergraduate physics learning in English.
 
 The homepage offers three clearly labelled paths: **Physics Practicums** (TP1–TP5 available), **Scientific English** (curriculum in development), and **LaTeX Studio** (first release). Each practical has a direct link from the homepage. The new homepage uses its own `assets/home.css`, keeping the existing laboratory styles independent.
 
-LaTeX Studio at `/latex/` is a local-first document editor with multiple projects, templates, ZIP import/export (including Prism source files), optional equation preview, and **opt-in external PDF compilation for short standalone .tex files**. Projects are stored only in the user's current browser; there is no built-in cloud sync, collaboration, or full PDF preview yet. See [`latex/README.md`](latex/README.md) for privacy disclosures, migration instructions and supported functionality.
+LaTeX Studio at `/latex/` is a local-first document editor with multiple projects, templates, ZIP import/export, browser-local PDF preview, and **WebAssembly LaTeX compilation on the user's device**. It prefers IndexedDB, falls back to localStorage, exposes storage diagnostics, and supports portable ZIP backups. There is no central student account or central document database. See [`latex/README.md`](latex/README.md) for the compilation/storage model and [`privacy.html`](privacy.html) for privacy details.
+
+### Concurrency and privacy
+
+- Many students can use the public site simultaneously. Each browser runs an independent copy of the static application.
+- The practicals and LaTeX Studio do **not** share one student's saved work with another student's browser.
+- Real-time co-editing of the same LaTeX project is not enabled yet; that requires a separate opt-in collaboration layer.
+- TP1–TP5 save progress locally. Student name and group are no longer persisted, and each practical has a **Clear local data** control for shared computers.
+- TP1's previous save/restore version mismatch has been corrected.
 
 ## Fidelity policy
 
