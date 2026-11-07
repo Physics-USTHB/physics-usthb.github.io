@@ -1,0 +1,34 @@
+name: LaTeX Studio smoke checks
+
+on:
+  pull_request:
+    paths:
+      - "latex/**"
+      - "index.html"
+      - "assets/styles.css"
+      - ".github/workflows/latex-studio.yml"
+  push:
+    branches:
+      - "feature/latex-studio-v1"
+    paths:
+      - "latex/**"
+      - "index.html"
+      - "assets/styles.css"
+      - ".github/workflows/latex-studio.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check JavaScript and UI wiring
+        run: node latex/test.mjs
