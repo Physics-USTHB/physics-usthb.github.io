@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Electricity & Circuits — undergraduate interactive laboratory sequence by Physics USTHB.">
+  <title>Electricity Laboratory — Physics USTHB</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body class="site-page electricity-page">
+<header class="topbar site-topbar">
+  <div class="shell nav">
+    <a class="brand" href="../index.html"><span class="brandmark">Φ</span><span class="brandcopy"><strong>Physics USTHB</strong><small>Interactive learning platform</small></span></a>
+    <nav class="navlinks" aria-label="Primary navigation"><a href="../index.html">Home</a><a href="#sequence">Experiments</a><a href="#method">Laboratory method</a><a class="nav-cta" href="e03/index.html">Open E03 ↗</a></nav>
+  </div>
+</header>
+
+<main>
+<section class="electricity-hero">
+  <div class="hero-noise"></div>
+  <div class="shell electricity-hero-grid">
+    <div class="electricity-copy">
+      <a class="backlink" href="../index.html">← Virtual Physics Laboratory</a>
+      <div class="eyebrow"><span></span> Laboratory collection / 01</div>
+      <h1>Electricity<br><em>& Circuits</em></h1>
+      <p>Undergraduate experiments in electrical measurement, potential mapping, nonlinear dipoles, instrumentation, and transient circuits—with uncertainty and scientific reporting built into the workflow.</p>
+      <div class="electricity-meta">
+        <div><strong>05</strong><span>Core experiments</span></div>
+        <div><strong>01</strong><span>Interactive module live</span></div>
+        <div><strong>EN</strong><span>English instruction</span></div>
+      </div>
+    </div>
+
+    <div class="circuit-poster" aria-hidden="true">
+      <div class="poster-grid"></div>
+      <span class="poster-label">DC CIRCUIT / MEASUREMENT TOPOLOGY</span>
+      <svg viewBox="0 0 640 420" class="poster-circuit">
+        <path d="M80 230H205"/><circle cx="255" cy="230" r="46"/><text x="255" y="243">A</text><path d="M301 230H410"/><rect x="410" y="194" width="105" height="72" rx="8"/><path d="M515 230H570V330H80V270"/>
+        <path d="M410 230V105H515V230"/><circle cx="462" cy="105" r="37"/><text x="462" y="117">V</text>
+        <rect x="55" y="190" width="85" height="80" rx="10"/><text class="smalltext" x="97" y="225">DC</text><text class="smalltext" x="97" y="247">SOURCE</text>
+        <text class="smalltext" x="463" y="237">Rₓ</text>
+      </svg>
+      <div class="poster-readouts"><span><small>V</small> 6.18</span><span><small>mA</small> 61.8</span></div>
+      <div class="poster-axis"><span>V</span><svg viewBox="0 0 180 90"><path d="M4 80L175 80M4 80L4 5"/><path class="curve" d="M8 76L35 65L62 54L90 42L120 28L165 9"/></svg><span>I</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section sequence-section" id="sequence">
+  <div class="shell">
+    <div class="section-head">
+      <div><div class="eyebrow dark"><span></span> Core sequence</div><h2 class="section-title">Five experiments, one experimental language.</h2></div>
+      <p>The sequence follows a progression from measurement fundamentals to field mapping, device characteristics, instrumentation, and transients.</p>
+    </div>
+
+    <div class="experiment-grid">
+      <article class="experiment-card planned">
+        <div class="experiment-top"><span class="experiment-code">E01</span><span class="status">Planned</span></div>
+        <div class="experiment-icon meter-icon"><span>Ω</span></div>
+        <h3>Electrical Measurements & Resistance</h3>
+        <p>Multimeters, internal resistance, direct/indirect measurement methods, uncertainty, and method comparison.</p>
+        <div class="experiment-tags"><span>Multimeter</span><span>Uncertainty</span><span>Loading</span></div>
+      </article>
+      <article class="experiment-card planned">
+        <div class="experiment-top"><span class="experiment-code">E02</span><span class="status">Planned</span></div>
+        <div class="experiment-icon field-icon"><span>∇V</span></div>
+        <h3>Electric Potential Mapping</h3>
+        <p>Equipotential curves, electric field reconstruction, boundary conditions, and rheographic-tank measurements.</p>
+        <div class="experiment-tags"><span>Field</span><span>Potential</span><span>Mapping</span></div>
+      </article>
+      <a class="experiment-card featured" href="e03/index.html">
+        <div class="featured-glow"></div>
+        <div class="experiment-top"><span class="experiment-code">E03</span><span class="status live">Available now</span></div>
+        <div class="experiment-icon iv-icon"><svg viewBox="0 0 70 70"><path d="M12 57V12M12 57H59"/><path class="accent-line" d="M15 54L28 45L39 34L49 22L58 14"/></svg></div>
+        <h3>Current–Voltage Characteristics</h3>
+        <p>Ohmic and non-ohmic dipoles, meter loading, uncertainty propagation, I–V curves, regression, residuals, and series/parallel synthesis.</p>
+        <div class="experiment-tags"><span>75–100 min</span><span>Regression</span><span>Lab report</span></div>
+        <div class="open-row">Open interactive experiment <span>→</span></div>
+      </a>
+      <article class="experiment-card planned">
+        <div class="experiment-top"><span class="experiment-code">E04</span><span class="status">Planned</span></div>
+        <div class="experiment-icon scope-icon"><svg viewBox="0 0 70 70"><path d="M7 35H18L25 18L34 52L43 27L50 35H63"/></svg></div>
+        <h3>The Oscilloscope</h3>
+        <p>Amplitude, period, frequency, phase, triggering, XY mode, coupling, and instrument limitations.</p>
+        <div class="experiment-tags"><span>Waveforms</span><span>Phase</span><span>Triggering</span></div>
+      </article>
+      <article class="experiment-card planned">
+        <div class="experiment-top"><span class="experiment-code">E05</span><span class="status">Planned</span></div>
+        <div class="experiment-icon transient-icon"><svg viewBox="0 0 70 70"><path d="M8 55H60M9 54C18 54 18 17 60 17"/></svg></div>
+        <h3>RC & RL Transients</h3>
+        <p>Charging and discharging, time constants, exponential fitting, stored energy, and transient-response interpretation.</p>
+        <div class="experiment-tags"><span>RC</span><span>RL</span><span>τ fitting</span></div>
+      </article>
+      <article class="experiment-card extension">
+        <div class="experiment-top"><span class="experiment-code">E06+</span><span class="status">Extension</span></div>
+        <div class="experiment-icon plus-icon"><span>+</span></div>
+        <h3>Advanced Circuit Experiments</h3>
+        <p>Kirchhoff laws, bridge methods, capacitor networks, AC impedance, resonance, and frequency response.</p>
+        <div class="experiment-tags"><span>AC</span><span>Bridges</span><span>Resonance</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section method-section" id="method">
+  <div class="shell method-grid">
+    <div class="method-copy">
+      <div class="eyebrow dark"><span></span> Laboratory method</div>
+      <h2 class="section-title">The interface follows the logic of an actual TP.</h2>
+      <p>Students are not shown the “correct answer” before they experiment. They must make measurements, choose data coverage, analyse uncertainty, inspect model adequacy, and defend their interpretation.</p>
+      <a class="btn btn-dark" href="e03/index.html">Launch E03 <span>→</span></a>
+    </div>
+    <ol class="method-steps">
+      <li><span>01</span><div><strong>Prepare</strong><small>Read objectives, theory, apparatus limits, and protocol.</small></div></li>
+      <li><span>02</span><div><strong>Measure</strong><small>Operate the virtual bench and acquire your own data.</small></div></li>
+      <li><span>03</span><div><strong>Analyse</strong><small>Fit models, propagate uncertainty, inspect residuals.</small></div></li>
+      <li><span>04</span><div><strong>Report</strong><small>Write a scientific interpretation in English.</small></div></li>
+    </ol>
+  </div>
+</section>
+</main>
+
+<footer class="footer site-footer"><div class="shell footer-grid"><div><a class="brand footer-brand" href="../index.html"><span class="brandmark">Φ</span><span class="brandcopy"><strong>Physics USTHB</strong><small>Electricity & Circuits</small></span></a></div><p>Interactive undergraduate laboratory • English-medium instruction</p></div></footer>
+</body>
+</html>
