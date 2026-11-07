@@ -1,0 +1,359 @@
+/* Physics USTHB LaTeX Studio v1 — local-first application. */
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const DB = 'physics-usthb-latex-v1', STORE = 'projects', ACTIVE = 'physics-usthb-latex-active';
+const TEXT = /\.(tex|bib|sty|cls|bst|txt|md|cfg|def|bbx|cbx|lua|csv|json|xml|eps)$/i;
+const LIMIT = 50 * 1024 * 1024;
+const templates = {
+article: String.raw`\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,graphicx}
+\title{An Introduction to Scientific Writing}
+\author{Your Name}
+\date{\today}
+\begin{document}
+\maketitle
+\begin{abstract}
+Write a concise summary of the aim, methods and results.
+\end{abstract}
+\section{Introduction}
+A measured quantity can be expressed with its uncertainty.
+\section{Method}
+Describe the experimental or theoretical approach.
+\section{Results}
+\[
+R=\frac{U}{I}.
+\]
+\section{Conclusion}
+Summarise the main result and its limitations.
+\end{document}
+`,
+lab: String.raw`\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs}
+\title{Physics Laboratory Report}
+\author{Student: Your Name \\ Group: Your Group}
+\date{\today}
+\begin{document}
+\maketitle
+\section{Objectives}
+State the aim of the practical.
+\section{Apparatus and method}
+List the apparatus, circuit configuration, measurement ranges and procedure.
+\section{Measurements}
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+Voltage (V) & Current (A) & Resistance ($\Omega$)\\
+\midrule
+2.0 & 0.10 & 20.0\\
+4.0 & 0.20 & 20.0\\
+\bottomrule
+\end{tabular}
+\end{center}
+\section{Analysis and uncertainties}
+\[
+R=\frac{U}{I},
+\qquad
+\frac{\Delta R}{R}\approx\frac{\Delta U}{U}+\frac{\Delta I}{I}.
+\]
+Discuss instrument limits and compare with theory.
+\section{Conclusion}
+Explain what the results demonstrate.
+\end{document}
+`,
+beamer: String.raw`\documentclass{beamer}
+\usetheme{default}
+\title{Scientific Presentation}
+\author{Your Name}
+\date{\today}
+\begin{document}
+\frame{\titlepage}
+\begin{frame}{Research Question}
+What are we trying to measure or explain?
+\[
+E=mc^2
+\]
+\end{frame}
+\begin{frame}{Conclusion}
+\begin{itemize}
+\item Main finding
+\item Remaining uncertainty
+\end{itemize}
+\end{frame}
+\end{document}
+`,
+blank: String.raw`\documentclass{article}
+\begin{document}
+Hello, LaTeX!
+\end{document}
+`
+};
+let db, projects = [], current = null, activeFile = 'main.tex', dirty = false, saveTimer = null, previewTimer = null, pendingAction = null;
+const stamp = () => new Date().toISOString();
+const uid = () => crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2);
+const cleanName = s => s.replace(/[^a-zA-Z0-9._ -]/g,'_').replace(/^\.+/,'').slice(0,90) || 'project';
+const safePath = s => {
+  if (!s || s.includes('\\') || s.startsWith('/') || s.length > 220) return null;
+  const a = s.split('/');
+  if (a.some(p=> p === '..' || p === '')) return null;
+  return a.filter(p=>p!=='.').join('/');
+};
+const inform = s => { $('status').textContent = s; };
+const fail = e => { console.error(e); inform('Error: '+(e?.message || e)); };
+const fileNames = () => Object.keys(current?.files || {}).sort((a,b)=>a.localeCompare(b));
+function openDb() {
+ return new Promise((res,rej) => {
+   const r = indexedDB.open(DB,1);
+   r.onupgradeneeded = () => r.result.createObjectStore(STORE,{keyPath:'id'});
+   r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+ });
+}
+function store(mode,method,value) {
+ return new Promise((res,rej) => {
+   const tx = db.transaction(STORE,mode), s = tx.objectStore(STORE);
+   const r = method==='getAll'? s.getAll() : method==='delete'?s.delete(value):s.put(value);
+   r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); tx.onerror=()=>rej(tx.error);
+ });
+}
+function copy(p){ return {id:p.id,name:p.name,files:{...p.files},main:p.main,updated:p.updated}; }
+function makeProject(name,type='article'){
+ return {id:uid(),name:name.trim().slice(0,80)||'Untitled document',files:{'main.tex':templates[type]||templates.article},main:'main.tex',updated:stamp()};
+}
+function markDirty(){
+ dirty=true; $('dirty-indicator').textContent='Unsaved'; $('dirty-indicator').style.color='#f6bc83';
+ clearTimeout(saveTimer); saveTimer=setTimeout(()=>save().catch(fail),600);
+}
+async function save(){
+ if(!current)return;
+ clearTimeout(saveTimer);
+ current.updated=stamp();
+ await store('readwrite','put',copy(current));
+ dirty=false;$('dirty-indicator').textContent='Saved locally';$('dirty-indicator').style.color='';
+ inform('Saved in this browser · '+new Date().toLocaleTimeString());
+}
+function renderProjects(){
+ const s=$('project-select');s.replaceChildren();
+ projects.sort((a,b)=>b.updated.localeCompare(a.updated));
+ for(const p of projects){const o=document.createElement('option');o.value=p.id;o.textContent=p.name;s.append(o);}
+ if(current)s.value=current.id;
+}
+function renderFiles(){
+ const l=$('file-list');l.replaceChildren();
+ for(const n of fileNames()){
+   const li=document.createElement('li');if(n===activeFile)li.className='selected';
+   const button=document.createElement('button');button.type='button';button.className='file-select';
+   button.textContent=(typeof current.files[n]==='string'?'◇  ':'▣  ')+n;button.title=n;
+   button.onclick=()=>selectFile(n);li.append(button);
+   if(/\.tex$/i.test(n)){
+     const b=document.createElement('button');b.type='button';
+     b.className='main-toggle'+(n===current.main?' active':'');
+     b.title=n===current.main?'Main file':'Set as main .tex file';
+     b.setAttribute('aria-label',b.title);b.textContent=n===current.main?'★':'☆';
+     b.onclick=()=>{current.main=n;markDirty();renderFiles();inform('Main document: '+n);};
+     li.append(b);
+   }
+   l.append(li);
+ }
+}
+function updateMetrics(){
+ const t=$('source').value, lines=t.split('\n').length;
+ $('line-numbers').textContent=Array.from({length:lines},(_,i)=>i+1).join('\n');
+ $('line-numbers').scrollTop=$('source').scrollTop;
+ $('editor-count').textContent=lines+' lines · '+t.length+' characters';
+}
+function mathPreview(){
+ const t=$('source').value, m=t.match(/\\\[([\s\S]*?)\\\]/) || t.match(/\$\$([\s\S]*?)\$\$/) ||
+   t.match(/\\begin\{equation\*?\}([\s\S]*?)\\end\{equation\*?\}/);
+ const target=$('math-preview');target.replaceChildren();
+ if(!m){ const s=document.createElement('span');s.className='muted';s.textContent='Add an equation using \\[ ... \\]';target.append(s);return; }
+ if(window.katex){try{window.katex.render(m[1],target,{displayMode:true,throwOnError:false,trust:false});return;}catch(e){console.warn(e);}}
+ target.textContent=m[1].trim();
+}
+function selectFile(n){
+ if(!current || !Object.hasOwn(current.files,n))return;
+ activeFile=n;const value=current.files[n],binary=typeof value!=='string';
+ $('source').hidden=binary;$('binary-message').hidden=!binary;$('line-numbers').hidden=binary;
+ $('source').value=binary?'':value;$('active-file-label').textContent=n;
+ $('editor-mode').textContent=binary?'Binary asset':/\.bib$/i.test(n)?'BibTeX source':'Text source';
+ renderFiles();updateMetrics();mathPreview();
+}
+async function activate(id){
+ if(current && dirty)await save();
+ current=projects.find(p=>p.id===id);
+ if(!current)return;
+ localStorage.setItem(ACTIVE,id);
+ activeFile=Object.hasOwn(current.files,current.main)?current.main:fileNames()[0];
+ renderProjects();selectFile(activeFile);inform('Editing '+current.name+' · local browser storage');
+}
+async function addProject(p){
+ projects.push(p);await store('readwrite','put',copy(p));await activate(p.id);
+}
+function insert(text,offset=0){
+ if(!current || typeof current.files[activeFile]!=='string')return;
+ const el=$('source');el.focus();const begin=el.selectionStart;
+ el.setRangeText(text,begin,el.selectionEnd,'end');
+ el.selectionStart=el.selectionEnd=begin+text.length+offset;
+ el.dispatchEvent(new Event('input'));
+}
+function ask(title,message,action){
+ pendingAction=action;$('confirm-title').textContent=title;
+ $('confirm-text').textContent=message;$('confirm-dialog').showModal();
+}
+function zipLib(){if(!window.JSZip)throw new Error('ZIP library unavailable. Connect to the internet and reload.');return new JSZip();}
+function download(name,content){
+ const url=URL.createObjectURL(content),a=document.createElement('a');
+ a.href=url;a.download=cleanName(name);document.body.append(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+async function exportZip(){
+ if(!current)return;await save();
+ const z=zipLib();
+ for(const n of fileNames())z.file(n,current.files[n]);
+ z.file('PHYSICS-USTHB-README.txt','LaTeX Studio export\nProject: '+current.name+'\nMain: '+current.main+'\nDate: '+stamp()+'\n');
+ const blob=await z.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}});
+ download(cleanName(current.name)+'.zip',blob);inform('Project ZIP exported. Keep backups outside this browser.');
+}
+async function importZip(file){
+ if(file.size>LIMIT)throw new Error('ZIP exceeds the 50 MB safety limit.');
+ const z=await zipLib().loadAsync(file);
+ const entries=Object.values(z.files).filter(e=>!e.dir && !e.name.startsWith('__MACOSX/'));
+ if(!entries.length || entries.length>300)throw new Error('ZIP must contain between 1 and 300 files.');
+ const first=entries[0].name.split('/')[0];
+ const prefix=entries.every(e=>e.name.startsWith(first+'/'))?first+'/':'';
+ const files={};let total=0;
+ for(const e of entries){
+   const n=safePath(e.name.slice(prefix.length));
+   if(!n || n==='PHYSICS-USTHB-README.txt')continue;
+   const value=await e.async(TEXT.test(n)?'string':'uint8array');
+   total+=typeof value==='string'?new TextEncoder().encode(value).length:value.byteLength;
+   if(total>LIMIT)throw new Error('Uncompressed contents exceed the 50 MB safety limit.');
+   files[n]=value;
+ }
+ const names=Object.keys(files);
+ if(!names.length)throw new Error('ZIP has no importable files.');
+ const main=names.find(n=>/(^|\/)main\.tex$/i.test(n))||names.find(n=>/\.tex$/i.test(n))||names[0];
+ await addProject({id:uid(),name:file.name.replace(/\.zip$/i,'').slice(0,80),files,main,updated:stamp()});
+ inform('ZIP imported as new project. Confirm your main .tex file and export a backup.');
+}
+async function importFiles(input){
+ for(const file of [...input]){
+   if(/\.zip$/i.test(file.name)){await importZip(file);continue;}
+   if(file.size>LIMIT)throw new Error(file.name+' exceeds 50 MB.');
+   const n=safePath(file.name);if(!n)continue;
+   const value=TEXT.test(n)?await file.text():new Uint8Array(await file.arrayBuffer());
+   if(Object.hasOwn(current.files,n) && !confirm('Replace '+n+'?'))continue;
+   current.files[n]=value;
+   if(/\.tex$/i.test(n) && !/\.tex$/i.test(current.main))current.main=n;
+   activeFile=n;markDirty();
+ }
+ await save();selectFile(activeFile);inform('Files imported locally. Export a ZIP to keep a backup.');
+}
+function compile(){
+ if(!current)return;
+ const main=current.files[current.main];
+ if(typeof main!=='string'||!/\.tex$/i.test(current.main)){
+   inform('Choose a text .tex main file (★).');return;
+ }
+ if(/\\(?:input|include|includegraphics|bibliography|addbibresource)\s*(?:\[.*?\])?\s*\{/.test(main)){
+   inform('Online compiler cannot access local project attachments. Use TeXlyre for multi-file projects.');return;
+ }
+ const encoded=encodeURIComponent(main);
+ if(encoded.length>7000){
+   inform('Document is too long for URL-based compilation. Export the ZIP and use TeXlyre.');return;
+ }
+ ask('Send source to external compiler?',
+   'This sends your main .tex source to latexonline.cc in a URL. The URL can appear in browser and server logs. Do not send confidential or unpublished work. Continue?',
+   ()=>{
+     const url='https://latexonline.cc/compile?text='+encoded+'&command='+encodeURIComponent($('engine').value)+
+       '&download='+encodeURIComponent(cleanName(current.name)+'.pdf');
+     window.open(url,'_blank','noopener,noreferrer');
+     inform('Opened external PDF compiler. Output or compilation errors appear in the new tab.');
+   });
+}
+function wire(){
+ $('source').oninput=()=>{
+   if(!current)return;current.files[activeFile]=$('source').value;markDirty();updateMetrics();
+   clearTimeout(previewTimer);previewTimer=setTimeout(mathPreview,200);
+ };
+ $('source').onscroll=()=>$('line-numbers').scrollTop=$('source').scrollTop;
+ $('source').onkeydown=e=>{
+   if(e.key==='Tab'){e.preventDefault();insert('  ');}
+   if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();compile();}
+ };
+ document.addEventListener('keydown',e=>{
+   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();save().catch(fail);}
+ });
+ $('project-select').onchange=e=>activate(e.target.value).catch(fail);
+ $('new-project').onclick=()=>{$('project-name').value='Untitled document';$('new-dialog').showModal();$('project-name').select();};
+ $('cancel-create').onclick=()=>$('new-dialog').close();
+ $('create-form').onsubmit=e=>{e.preventDefault();$('new-dialog').close();
+   addProject(makeProject($('project-name').value,$('template-select').value)).catch(fail);};
+ $('rename-project').onclick=()=>{
+   const n=prompt('Rename project',current.name);if(!n?.trim())return;
+   current.name=n.trim().slice(0,80);markDirty();renderProjects();
+ };
+ $('duplicate-project').onclick=()=>addProject({...copy(current),id:uid(),name:current.name+' (copy)',updated:stamp()}).catch(fail);
+ $('delete-project').onclick=()=>{
+   if(projects.length<=1){inform('Create a second project before deleting this one.');return;}
+   const id=current.id;
+   ask('Delete project permanently?','This removes "'+current.name+'" from this browser. Export a ZIP first.',()=>{
+     (async()=>{clearTimeout(saveTimer);dirty=false;await store('readwrite','delete',id);
+       projects=projects.filter(p=>p.id!==id);current=null;await activate(projects[0].id);
+       inform('Project deleted locally.');})().catch(fail);
+   });
+ };
+ $('new-file').onclick=()=>{
+   const r=prompt('New file path (e.g. sections/results.tex)','notes.tex');
+   if(!r)return;const n=safePath(r.trim());
+   if(!n||Object.hasOwn(current.files,n)){inform('Invalid or duplicate path.');return;}
+   current.files[n]='';markDirty();selectFile(n);
+ };
+ $('rename-file').onclick=()=>{
+   const r=prompt('Rename file',activeFile);if(!r||r===activeFile)return;
+   const n=safePath(r.trim());
+   if(!n||Object.hasOwn(current.files,n)){inform('Invalid or duplicate path.');return;}
+   current.files[n]=current.files[activeFile];delete current.files[activeFile];
+   if(current.main===activeFile)current.main=n;
+   markDirty();selectFile(n);
+ };
+ $('delete-file').onclick=()=>{
+   if(fileNames().length<=1){inform('Keep at least one file in the project.');return;}
+   const n=activeFile;
+   ask('Delete file?','Remove "'+n+'" from this project?',()=>{
+     delete current.files[n];
+     if(current.main===n)current.main=fileNames().find(x=>/\.tex$/i.test(x))||fileNames()[0];
+     markDirty();selectFile(current.main);
+   });
+ };
+ $('import-project').onclick=()=>$('import-input').click();
+ $('import-input').onchange=e=>importFiles(e.target.files).catch(fail).finally(()=>{e.target.value='';});
+ $('export-project').onclick=()=>exportZip().catch(fail);
+ $('download-file').onclick=()=>{
+   const data=current.files[activeFile];
+   download(activeFile,new Blob([data],{type:typeof data==='string'?'text/plain;charset=utf-8':'application/octet-stream'}));
+ };
+ $('save-project').onclick=()=>save().catch(fail);
+ $('insert-equation').onclick=()=>insert('\n\\[\n  E = mc^2\n\\]\n',-4);
+ $('insert-section').onclick=()=>insert('\n\\section{New section}\n');
+ $('compile').onclick=compile;$('compile-side').onclick=compile;
+ $('confirm-cancel').onclick=()=>{pendingAction=null;$('confirm-dialog').close();};
+ $('confirm-form').onsubmit=e=>{
+   e.preventDefault();$('confirm-dialog').close();
+   const fn=pendingAction;pendingAction=null;if(fn)fn();
+ };
+ $('confirm-dialog').addEventListener('close',()=>{pendingAction=null;});
+ window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
+}
+async function boot(){
+ wire();
+ try{
+   db=await openDb();projects=await store('readonly','getAll');
+   if(!projects.length)await addProject(makeProject('My first scientific article'));
+   else await activate(projects.find(p=>p.id===localStorage.getItem(ACTIVE))?.id||projects[0].id);
+   inform('Ready — projects stay in this browser until you export them.');
+ }catch(e){fail(e);alert('LaTeX Studio needs browser storage. Enable IndexedDB or use a normal window.');}
+}
+boot();
+})();
