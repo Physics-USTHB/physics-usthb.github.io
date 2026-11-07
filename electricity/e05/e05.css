@@ -19,3 +19,10 @@
 @media(max-width:1080px){.transient-layout{grid-template-columns:1fr}.transient-side{display:grid;grid-template-columns:repeat(2,1fr)}.transient-side .wide-side{grid-column:1/-1}}
 @media(max-width:780px){.transient-progress,.transient-controls,.result-panel{grid-template-columns:1fr 1fr}.component-grid,.quality-meter{grid-template-columns:1fr}.transient-side{grid-template-columns:1fr}.protocol-banner{flex-direction:column}}
 @media(max-width:520px){.transient-progress,.transient-controls,.cursor-values,.result-panel,.method-toggle{grid-template-columns:1fr}}
+
+/* E05 fidelity pass: circuit construction before oscilloscope measurement */
+.transient-wiring{margin:14px 0;border:1px solid #304a5e;background:#0c1924;border-radius:13px;padding:12px}
+.transient-wiring-head{display:flex;justify-content:space-between;gap:14px;align-items:baseline}.transient-wiring-head strong{font-size:.8rem;color:#dff8ff}.transient-wiring-head span{font-size:.61rem;color:#7893a7}
+.transient-wiring-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.transient-wiring-grid label{font-size:.58rem;color:#8ba3b4;text-transform:uppercase;letter-spacing:.05em;font-weight:800}.transient-wiring-grid select{width:100%;margin-top:5px;border:1px solid #36556b;background:#07131c;color:#eaf9ff;border-radius:8px;padding:7px}
+.transient-wiring-status{margin:9px 0;padding:8px 9px;border-radius:8px;background:#142635;border:1px solid #31516b;color:#a8bfce;font-size:.68rem}.transient-wiring-status.ok{background:#0a2a22;border-color:#2c765f;color:#8de9c4}.transient-wiring-status.bad{background:#2a161b;border-color:#84404f;color:#ffb8c5}
+@media(max-width:900px){.transient-wiring-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.transient-wiring-grid{grid-template-columns:1fr}.transient-wiring-head{flex-direction:column}}
