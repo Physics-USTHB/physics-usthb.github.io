@@ -129,6 +129,17 @@
         </label>
       </div>
 
+      <div class="e03-wiring-box">
+        <div class="e03-wiring-head"><strong>Build the TP3 measurement circuit</strong><span>The source and utilisation circuit must use the correct terminals of the 11 Ω box.</span></div>
+        <div class="e03-wiring-grid">
+          <label>Generator terminals<select id="e03SourcePair"><option value="">Choose…</option><option value="AC">A–C</option><option value="AB">A–B</option><option value="BC">B–C</option></select></label>
+          <label>Utilisation circuit<select id="e03UsePair"><option value="">Choose…</option><option value="AB">A–B</option><option value="AC">A–C</option><option value="BC">B–C</option></select></label>
+          <label>Ammeter connection<select id="e03AmmeterTopo"><option value="">Choose…</option><option value="total">Before voltmeter branch: reads I<sub>m</sub></option><option value="dipole">Only in dipole branch</option></select></label>
+          <label>Voltmeter connection<select id="e03VoltmeterTopo"><option value="">Choose…</option><option value="load">Across tested dipole/network</option><option value="source">Across source A–C</option></select></label>
+        </div>
+        <div class="e03-wiring-status" id="e03WiringStatus">Circuit not wired.</div>
+      </div>
+
       <div class="selector-board">
         <div class="selector-head"><span>Selector position B</span><strong id="selectorStatus">B → 1</strong></div>
         <div class="selector-row" id="selectorRow"></div>
