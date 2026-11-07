@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="USTHB-aligned undergraduate virtual laboratory on electrical measurements and resistance.">
+  <title>E01 — Electrical Measurements & Resistance | Physics USTHB</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="stylesheet" href="e01.css">
+</head>
+<body class="lab-page">
+<header class="topbar">
+  <div class="shell nav">
+    <a class="brand" href="../../index.html"><span class="brandmark">Φ</span><span class="brandcopy"><strong>Physics USTHB</strong><small>Electricity laboratory</small></span></a>
+    <nav class="navlinks"><a href="../index.html">Electricity Lab</a><a href="../e03/index.html">E03</a><a href="../../index.html">Home</a></nav>
+  </div>
+</header>
+
+<section class="labmast">
+  <div class="shell labmast-grid">
+    <div>
+      <div class="breadcrumbs">Virtual Laboratory / Electricity & Circuits / E01</div>
+      <h1>Electrical Measurements & Resistance</h1>
+      <div class="labmeta">
+        <span class="pill">USTHB TP1 core</span>
+        <span class="pill">L1 SM / ST</span>
+        <span class="pill">Analog meters</span>
+        <span class="pill">Measurement uncertainty</span>
+      </div>
+    </div>
+    <div class="mode-card no-print">
+      <div><strong>Guidance mode</strong><div class="mini" id="modeDescription">Protocol guidance and interpretation prompts are visible.</div></div>
+      <div class="segmented"><button class="modebtn active" data-mode="learn" type="button">Learn</button><button class="modebtn" data-mode="lab" type="button">Lab</button></div>
+    </div>
+  </div>
+</section>
+
+<div class="tabs no-print">
+  <div class="shell tabrow">
+    <button class="tabbtn active" data-tab="briefing">1. Briefing</button>
+    <button class="tabbtn" data-tab="emf">2. Generator EMF</button>
+    <button class="tabbtn" data-tab="potentiometer">3. Potentiometric Source</button>
+    <button class="tabbtn" data-tab="resistance">4. Unknown Resistance</button>
+    <button class="tabbtn" data-tab="analysis">5. Analysis</button>
+    <button class="tabbtn" data-tab="assessment">6. Assessment</button>
+    <button class="tabbtn" data-tab="report">7. Lab Report</button>
+  </div>
+</div>
+
+<main class="shell">
+<section class="tabpanel active" id="briefing">
+  <div class="e01-banner">
+    <div><strong>USTHB-aligned core sequence</strong><p>This experiment follows the published USTHB “Introduction and Resistance Measurements” practical: instrument familiarisation, analog reading and uncertainty, generator emf, the potentiometric divider, then short- and long-derivation resistance measurements.</p></div>
+    <a href="https://www.fphy.usthb.dz/cours%20en%20ligne/Cours-en-ligne" target="_blank" rel="noopener">USTHB course listing ↗</a>
+  </div>
+
+  <div class="e01-progress" id="progressBoard"></div>
+
+  <div class="instrument-grid">
+    <article class="instrument-card"><span class="code">01</span><h3>Stabilised DC source</h3><p>Nominally maintains an emf E, but a real source has an internal resistance r<sub>g</sub>, so the terminal voltage decreases under load.</p></article>
+    <article class="instrument-card"><span class="code">02</span><h3>Analog voltmeter</h3><p>Connected in parallel, with a finite input resistance and selectable ranges. The correct range is the smallest one that does not overload.</p></article>
+    <article class="instrument-card"><span class="code">03</span><h3>Analog ammeter</h3><p>Connected in series, with a non-zero internal resistance. Range selection changes both resolution and circuit loading.</p></article>
+    <article class="instrument-card"><span class="code">04</span><h3>11 Ω resistance box</h3><p>Eleven 1 Ω sections in series between A and C; the selector connected to B provides R<sub>AB</sub>=0…11 Ω.</p></article>
+  </div>
+
+  <div class="grid two" style="margin-top:18px">
+    <article class="paper">
+      <h2>Analog scale reading</h2>
+      <p>If the needle indicates <em>n</em> divisions on a scale of <em>N</em> divisions, with selected range CAL, then</p>
+      <div class="formula-blue">X = (n/N) · CAL.</div>
+      <p>The handout uses a 0–30 scale with the 0.3, 3, 30 and 300 ranges, and a 0–100 scale with the 1, 10 and 100 ranges.</p>
+      <div class="notice learn-only"><strong>Rule:</strong> start on the maximum range, then step down until the needle deflection is as large as possible without exceeding full scale.</div>
+    </article>
+    <article class="paper">
+      <h2>Uncertainty used in the TP</h2>
+      <div class="formula-blue">ΔX<sub>class</sub> = CAL · class/100</div>
+      <div class="formula-blue">ΔX<sub>read</sub> = CAL · Δn/N</div>
+      <div class="formula-blue">ΔX = ΔX<sub>class</sub> + ΔX<sub>read</sub></div>
+      <p>This is the worst-case absolute-uncertainty convention taught in the handout. The simulation uses meter class 1.5 and a reading estimate Δn = 0.5 division.</p>
+    </article>
+  </div>
+
+  <article class="paper" style="margin-top:18px">
+    <h2>Safety and laboratory discipline</h2>
+    <ol>
+      <li>Every new circuit must be checked before the source is connected.</li>
+      <li>Measurement instruments must be placed on their maximum range before a new measurement sequence.</li>
+      <li>Never connect the generator between A and B of the resistance box; the low resistance can produce excessive current.</li>
+      <li>Before changing the circuit, disconnect the source first.</li>
+      <li>At the end of the session, switch instruments off and leave the bench ready for the next group.</li>
+    </ol>
+  </article>
+</section>
+
+<section class="tabpanel" id="emf">
+  <div class="analog-panel">
+    <div class="analog-bench">
+      <div class="bench-head"><div><div class="kicker">7.1 — Generator emf</div><h3>Analog voltmeter station</h3></div><span class="bench-state" id="emfState">Source isolated</span></div>
+      <div class="meter-face">
+        <div class="scale-text" id="emfScaleText">0–30 divisions · 300 V range</div>
+        <div class="arc"></div><div class="needle" id="emfNeedle"></div><div class="pivot"></div>
+        <div class="reading"><strong id="emfReading">0.0 V</strong><span id="emfDivisionReading">0.0 / 30 divisions</span></div>
+      </div>
+      <div class="range-controls">
+        <label class="wide">Voltmeter range
+          <select id="emfRange"></select>
+        </label>
+      </div>
+      <div class="bench-actions"><button class="btn secondary" id="connectEmf" type="button">Connect voltmeter</button><button class="btn" id="recordEmf" type="button" disabled>Record this measurement</button></div>
+      <div class="notice" id="emfMessage">Begin on the maximum voltmeter range, then identify the appropriate range.</div>
+    </div>
+    <aside class="side-stack">
+      <article class="info-card"><h4>Task required by the TP</h4><p>Measure the generator emf on the appropriate range, calculate ΔE, then repeat using the immediately higher range and calculate ΔE′.</p></article>
+      <article class="info-card"><h4>Virtual meter specification</h4><dl class="spec-list"><dt>Class</dt><dd>1.5</dd><dt>Reading estimate Δn</dt><dd>0.5 div</dd><dt>Sensitivity</dt><dd>20 kΩ/V</dd><dt>Available V ranges</dt><dd>0.3–300 V</dd></dl></article>
+      <article class="info-card learn-only"><h4>Range strategy</h4><p>A range below the actual emf overloads. A much larger range gives a valid reading but a larger class uncertainty. The TP asks you to compare the appropriate range with the next larger one.</p></article>
+    </aside>
+  </div>
+
+  <div class="grid two" style="margin-top:18px">
+    <article class="paper">
+      <h2>Recorded emf measurements</h2>
+      <div class="emf-results">
+        <div class="measurement-box"><h4>Appropriate range</h4><dl><dt>Range</dt><dd id="emfBestRange">—</dd><dt>Reading</dt><dd id="emfBestValue">—</dd><dt>Uncertainty</dt><dd id="emfBestUnc">—</dd></dl></div>
+        <div class="measurement-box"><h4>Immediately higher range</h4><dl><dt>Range</dt><dd id="emfHighRange">—</dd><dt>Reading</dt><dd id="emfHighValue">—</dd><dt>Uncertainty</dt><dd id="emfHighUnc">—</dd></dl></div>
+      </div>
+      <div class="interval-plot" id="emfIntervals"></div>
+    </article>
+    <article class="paper">
+      <h2>Interpretation</h2>
+      <div class="question-block"><label for="emfConclusion">Which measurement should be retained, and why?</label><textarea id="emfConclusion" placeholder="Compare the uncertainty intervals and explain the role of the selected range."></textarea></div>
+      <div class="notice" id="emfConclusionHint">The result is complete after both required ranges have been recorded.</div>
+    </article>
+  </div>
+</section>
+
+<section class="tabpanel" id="potentiometer">
+  <div class="pot-panel">
+    <div class="pot-board-e01">
+      <div class="bench-head"><div><div class="kicker">7.2 — Potentiometric source</div><h3>Resistance-box voltage divider</h3></div><span class="bench-state" id="potState">Wiring not verified</span></div>
+      <div class="selector-row-e01" id="potSelectorRow"></div>
+      <div class="pot-readouts">
+        <div class="pot-readout"><span>RAB</span><strong id="potRab">0 Ω</strong></div>
+        <div class="pot-readout"><span>Vm</span><strong id="potVm">0.00 V</strong></div>
+        <div class="pot-readout"><span>Selected V range</span><strong id="potRangeLabel">300 V</strong></div>
+      </div>
+      <div class="range-controls" style="margin-top:14px">
+        <label>Voltmeter range<select id="potRange"></select></label>
+        <label>Selector position<select id="potSelectorSelect"></select></label>
+      </div>
+      <div class="bench-actions"><button class="btn secondary" id="verifyPot" type="button">Verify wiring</button><button class="btn" id="recordPot" type="button" disabled>Record VAB</button></div>
+      <div class="notice" id="potMessage">Verify the A–C generator connection and the A–B voltmeter connection before recording.</div>
+    </div>
+    <aside class="side-stack">
+      <article class="info-card"><h4>Official task</h4><p>Record V<sub>AB</sub> for every selector position, plot V<sub>AB</sub> as a function of R<sub>AB</sub>, and infer the divider current I<sub>a</sub> from the slope.</p></article>
+      <article class="info-card"><h4>Uncertainty at position 10</h4><p>Use the TP relation</p><div class="formula-blue">ΔI<sub>a</sub>/I<sub>a</sub> = ΔV<sub>AB</sub>/V<sub>AB</sub> + ΔR<sub>AB</sub>/R<sub>AB</sub>.</div><p>The virtual resistance box is labelled ±1.0%.</p></article>
+      <article class="info-card learn-only"><h4>Range choice</h4><p>You may change the voltmeter range as the selector moves. Smaller valid ranges reduce class uncertainty.</p></article>
+    </aside>
+  </div>
+  <div class="grid two" style="margin-top:18px">
+    <article class="paper"><h2>VAB measurements</h2><div class="e01-table-wrap"><table class="e01-table"><thead><tr><th>RAB / Ω</th><th>Range / V</th><th>n / N</th><th>VAB / V</th><th>ΔV / V</th></tr></thead><tbody id="potBody"></tbody></table></div></article>
+    <article class="paper"><h2>VAB = f(RAB)</h2><div class="e01-chart"><canvas id="potChart" width="850" height="480"></canvas></div><div class="metric-grid-e01" style="margin-top:12px"><div class="metric-e01"><span>Slope</span><strong id="potSlope">— A</strong></div><div class="metric-e01"><span>I uncertainty</span><strong id="potIUnc">— A</strong></div><div class="metric-e01"><span>Linearity R²</span><strong id="potR2">—</strong></div></div></article>
+  </div>
+</section>
+
+<section class="tabpanel" id="resistance">
+  <div class="resistance-layout">
+    <div class="topology-card">
+      <div class="section-toolbar"><div><h2>7.3 — Unknown resistance R<sub>X</sub></h2><div class="mini">The resistance box is fixed at selector position 5, as required by the TP.</div></div><span class="completion-badge" id="rxBadge">0 / 2</span></div>
+      <div class="method-switch"><button class="method-btn active" data-method="short" type="button">Short derivation</button><button class="method-btn" data-method="long" type="button">Long derivation</button></div>
+
+      <svg class="topology-svg" viewBox="0 0 760 270" id="topologySvg" aria-label="Resistance measurement circuit">
+        <path class="wire" d="M70 200H650M70 200V82H160M650 200V82H590"/>
+        <rect class="device" x="160" y="52" width="115" height="60" rx="9"/><text x="217" y="87" text-anchor="middle">Potentiometric source</text>
+        <path class="wire" d="M275 82H344"/><circle class="device" cx="386" cy="82" r="34"/><text x="386" y="88" text-anchor="middle">A</text>
+        <path class="wire" id="wireAfterA" d="M420 82H500"/><rect class="load" x="500" y="54" width="105" height="56" rx="9"/><text x="552" y="88" text-anchor="middle">Rₓ</text>
+        <path class="wire" d="M605 82H650V200"/>
+        <path class="wire" id="voltBranch" d="M500 82V150H605V82"/><circle class="device" id="voltCircle" cx="552" cy="150" r="29"/><text id="voltText" x="552" y="156" text-anchor="middle">V</text>
+      </svg>
+
+      <div class="range-controls">
+        <label>Voltmeter range<select id="rxVRange"></select></label>
+        <label>Ammeter range<select id="rxIRange"></select></label>
+      </div>
+      <div class="core-meters" style="margin-top:14px">
+        <div class="core-meter"><span>Vm</span><strong id="rxVm">0.00 V</strong></div>
+        <div class="core-meter"><span>Im</span><strong id="rxIm">0.0 mA</strong></div>
+      </div>
+      <div class="bench-actions"><button class="btn secondary" id="verifyRx" type="button">Verify wiring</button><button class="btn" id="recordRx" type="button" disabled>Record measurement</button></div>
+      <div class="notice" id="rxMessage">Begin with maximum meter ranges, then reduce to appropriate ranges after verifying the circuit.</div>
+    </div>
+
+    <aside class="side-stack">
+      <article class="info-card">
+        <h4>Short derivation</h4>
+        <p>The voltmeter measures V<sub>RX</sub>, but the ammeter reads I<sub>RX</sub>+I<sub>V</sub>. The calculated resistance is too small.</p>
+        <div class="formula-blue">R<sub>Ca1</sub> = V<sub>m1</sub>/I<sub>m1</sub></div>
+        <div class="formula-blue">CCD ≈ R<sub>Ca1</sub>²/R<sub>V</sub></div>
+      </article>
+      <article class="info-card">
+        <h4>Long derivation</h4>
+        <p>The ammeter reads I<sub>RX</sub>, but the voltmeter includes the ammeter voltage drop. The calculated resistance is too large.</p>
+        <div class="formula-blue">R<sub>Ca2</sub> = V<sub>m2</sub>/I<sub>m2</sub></div>
+        <div class="formula-blue">CLD = −R<sub>A</sub></div>
+      </article>
+    </aside>
+  </div>
+
+  <div class="grid two" style="margin-top:18px">
+    <article class="paper">
+      <h2>Corrected results</h2>
+      <div class="e01-table-wrap"><table class="e01-table"><thead><tr><th>Method</th><th>Vm</th><th>Im</th><th>RCa</th><th>Correction</th><th>ΔRCa</th><th>Corrected RX</th></tr></thead><tbody id="rxBody"></tbody></table></div>
+    </article>
+    <article class="paper">
+      <h2>Choose the appropriate connection</h2>
+      <p>Equating the magnitudes of the two systematic corrections gives the crossover resistance</p>
+      <div class="criterion">R<sub>0</sub> = √(R<sub>V</sub>R<sub>A</sub>).</div>
+      <div class="decision" id="methodDecision">Complete both methods first. Then compare R<sub>Ca</sub> with R<sub>0</sub>.</div>
+      <div class="question-block"><label for="methodJustification">Which connection is more appropriate for this resistor, and why?</label><textarea id="methodJustification" placeholder="Use the correction criterion and your measured/calculated resistance."></textarea></div>
+    </article>
+  </div>
+</section>
+
+<section class="tabpanel" id="analysis">
+  <div class="grid two">
+    <article class="paper">
+      <h2>Experimental consistency</h2>
+      <div class="metric-grid-e01">
+        <div class="metric-e01"><span>Retained E</span><strong id="summaryE">—</strong></div>
+        <div class="metric-e01"><span>Divider current Ia</span><strong id="summaryIa">—</strong></div>
+        <div class="metric-e01"><span>Preferred RX</span><strong id="summaryRx">—</strong></div>
+      </div>
+      <div class="analysis-copy" id="summaryText"></div>
+    </article>
+    <article class="paper">
+      <h2>Advanced extension</h2>
+      <p>The official TP uses worst-case additive uncertainties and approximate systematic corrections. This extension compares those results with the exact finite-meter-resistance model used by the simulator.</p>
+      <button class="btn" id="revealExact" type="button">Compare with exact instrument model</button>
+      <div class="notice" id="exactNotice" style="margin-top:12px">Complete the short- and long-derivation measurements first.</div>
+      <div class="analysis-copy" id="exactText"></div>
+    </article>
+  </div>
+</section>
+
+<section class="tabpanel" id="assessment">
+  <article class="paper">
+    <h2>Post-laboratory assessment</h2>
+    <form id="quiz">
+      <fieldset class="question"><legend>1. Why must an unknown voltage first be measured on the maximum range?</legend><label class="choice"><input type="radio" name="q1" value="a"> To protect the instrument from overload.</label><label class="choice"><input type="radio" name="q1" value="b"> To maximise class uncertainty.</label><label class="choice"><input type="radio" name="q1" value="c"> Because smaller ranges are always less accurate.</label></fieldset>
+      <fieldset class="question"><legend>2. The meter class uncertainty is proportional to:</legend><label class="choice"><input type="radio" name="q2" value="a"> The selected range CAL.</label><label class="choice"><input type="radio" name="q2" value="b"> Only the measured value.</label><label class="choice"><input type="radio" name="q2" value="c"> The resistance box position only.</label></fieldset>
+      <fieldset class="question"><legend>3. In the potentiometric source, the generator is connected between:</legend><label class="choice"><input type="radio" name="q3" value="a"> A and C.</label><label class="choice"><input type="radio" name="q3" value="b"> A and B.</label><label class="choice"><input type="radio" name="q3" value="c"> B and C only.</label></fieldset>
+      <fieldset class="question"><legend>4. In short derivation, RCa is smaller than RX mainly because:</legend><label class="choice"><input type="radio" name="q4" value="a"> The ammeter includes voltmeter current.</label><label class="choice"><input type="radio" name="q4" value="b"> The voltmeter includes ammeter voltage drop.</label><label class="choice"><input type="radio" name="q4" value="c"> The source emf is zero.</label></fieldset>
+      <fieldset class="question"><legend>5. In long derivation, the correction applied to RCa is:</legend><label class="choice"><input type="radio" name="q5" value="a"> −RA.</label><label class="choice"><input type="radio" name="q5" value="b"> +RA.</label><label class="choice"><input type="radio" name="q5" value="c"> RCa²/RV.</label></fieldset>
+      <fieldset class="question"><legend>6. Short derivation is preferred when the measured resistance is:</legend><label class="choice"><input type="radio" name="q6" value="a"> Below √(RVRA).</label><label class="choice"><input type="radio" name="q6" value="b"> Always above RV.</label><label class="choice"><input type="radio" name="q6" value="c"> Exactly zero.</label></fieldset>
+      <button class="btn" type="submit">Submit assessment</button>
+    </form>
+    <div id="quizResult" style="margin-top:14px"></div>
+  </article>
+</section>
+
+<section class="tabpanel" id="report">
+  <article class="paper no-print">
+    <h2>Laboratory report</h2>
+    <div class="report-grid">
+      <label>Student name<input id="studentName" type="text"></label>
+      <label>Group / section<input id="studentGroup" type="text"></label>
+      <label>Date<input id="reportDate" type="date"></label>
+      <label>Mode<input id="reportMode" type="text" readonly></label>
+      <label class="wide">Discussion<textarea id="reportDiscussion" placeholder="Discuss range selection, uncertainty, divider linearity, systematic corrections, and the choice of resistance-measurement topology."></textarea></label>
+      <label class="wide">Conclusion<textarea id="reportConclusion" placeholder="State the retained generator emf, divider current, corrected resistance and preferred method."></textarea></label>
+    </div>
+    <div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button></div>
+  </article>
+  <div class="report-preview" id="reportPreview"><h2>Laboratory Report — E01</h2><p class="mini">Complete the experimental sequence and build the report.</p></div>
+</section>
+<section class="tabpanel" id="printable-report"><div class="report-preview" id="printOnlyPreview"></div></section>
+</main>
+
+<footer class="footer"><div class="shell">E01 • Electrical Measurements & Resistance • Physics USTHB interactive laboratory</div></footer>
+<script src="lab.js"></script>
+</body>
+</html>
