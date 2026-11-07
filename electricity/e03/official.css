@@ -37,3 +37,6 @@
 @media(max-width:1050px){.protocol-grid,.official-bench,.analysis-split{grid-template-columns:1fr}.task-panel{display:grid;grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.progress-board{grid-template-columns:1fr 1fr}.selector-row{grid-template-columns:repeat(6,1fr);gap:7px}.task-panel,.verification-grid{grid-template-columns:1fr}.pot-readouts{grid-template-columns:1fr 1fr}.pot-readouts .pot-readout:last-child{grid-column:1/-1}.protocol-banner{flex-direction:column}.core-chart canvas{height:330px}}
 @media(max-width:520px){.progress-board{grid-template-columns:1fr}.core-controls{grid-template-columns:1fr}.core-controls .wide{grid-column:auto}.core-meters,.result-grid{grid-template-columns:1fr}.selector-row{grid-template-columns:repeat(4,1fr)}}
+
+.mode-lab .learn-only{display:none!important}
+.mode-learn .lab-only{display:none!important}
