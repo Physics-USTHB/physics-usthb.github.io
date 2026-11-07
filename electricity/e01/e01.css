@@ -32,3 +32,8 @@
 .wiring-status{margin-top:9px;padding:8px 9px;border-radius:8px;background:#142635;border:1px solid #31516b;color:#a8bfce;font-size:.68rem}.wiring-status.ok{background:#0a2a22;border-color:#2c765f;color:#8de9c4}.wiring-status.bad{background:#2a161b;border-color:#84404f;color:#ffb8c5}.wiring-box.light .wiring-status{background:#fff;border-color:#d3e1ed;color:#60768a}.wiring-box.light .wiring-status.ok{background:#eafaf3;border-color:#b9e5d1;color:#237a55}.wiring-box.light .wiring-status.bad{background:#fff1f4;border-color:#f0b8c4;color:#8c3047}
 @media(max-width:800px){.wiring-grid.four{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.wiring-grid,.wiring-grid.four{grid-template-columns:1fr}.wiring-title{flex-direction:column}}
+
+/* E01 fidelity: true analog-scale reading task */
+.meter-scale-svg{position:absolute;left:50%;bottom:19px;width:390px;max-width:96%;height:205px;transform:translateX(-50%);pointer-events:none}.meter-scale-svg line{stroke:#294f70;stroke-width:1}.meter-scale-svg line.major{stroke-width:2}.meter-scale-svg text{fill:#294f70;font-family:var(--mono);font-size:11px;font-weight:800;text-anchor:middle}.meter-scale-svg .unit{font-size:9px;fill:#6c8295}
+.analog-entry{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:11px 0}.analog-entry label{font-size:.61rem;color:#91a8b8;text-transform:uppercase;letter-spacing:.05em;font-weight:800}.analog-entry input{width:100%;margin-top:5px;border:1px solid #31516b;background:#07131f;color:#e9f8ff;border-radius:9px;padding:8px}.analog-entry input::placeholder{color:#587286}.meter-face .reading strong{font-size:.9rem;letter-spacing:.08em}.meter-face .reading span{font-size:.62rem}
+@media(max-width:650px){.analog-entry{grid-template-columns:1fr}}
