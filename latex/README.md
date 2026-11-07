@@ -1,58 +1,83 @@
-# Physics USTHB — LaTeX Studio (first release)
+# Physics USTHB — LaTeX Studio
 
-A local-first scientific writing workspace at `/latex/` within the existing GitHub Pages repository.
+A privacy-oriented, local-first scientific writing workspace at `/latex/`.
 
-> **Independent educational resource.** Not affiliated with or endorsed by USTHB. **Not yet a complete Prism replacement.** First release awaiting review and merge.
+> Independent educational resource. Not affiliated with or endorsed by USTHB. This release is intended for individual scientific writing; real-time shared editing is a separate future feature.
 
-## Working capabilities
+## Current capabilities
 
-- Create, rename, switch, duplicate and delete LaTeX projects.
-- Scientific-article, physics-laboratory-report, Beamer and minimal LaTeX templates.
-- Edit and download `.tex`, `.bib`, `.sty` and other text files; select the main `.tex` with ★.
-- Local project autosaving in browser **IndexedDB**; also an explicit Save button.
-- Import project ZIPs (source, bibliography, images and other assets) and individual files.
-- Export portable project ZIP backups or download one source file.
-- Line-numbered editor, Tab indentation, equation/section insertion, keyboard shortcuts.
-- Optional KaTeX math preview (shows first display equation, **not a compiled PDF**).
-- Opt-in short **single-file remote PDF compilation** via [LaTeX.Online](https://latexonline.cc/).
-- Link to [TeXlyre](https://texlyre.github.io/texlyre/) for advanced multi-file compilation and collaboration on an **external** site.
+- Multiple LaTeX projects: create, rename, switch, duplicate and delete.
+- Article, physics laboratory report, Beamer and minimal templates.
+- Multi-file projects with text sources, bibliography files and binary assets.
+- Project ZIP import/export, including the source files from Prism ZIP exports.
+- Browser-local autosave, explicit Save, storage diagnostics and a request for persistent browser storage.
+- IndexedDB primary storage with a localStorage fallback when IndexedDB is unavailable.
+- Cross-tab notifications to reduce accidental overwrites when the same project is open twice in one browser profile.
+- Local PDF preview and PDF download.
+- **Browser-local WebAssembly compilation** using TeXlyre BusyTeX 1.4.1 / TeX Live 2026:
+  - pdfLaTeX
+  - XeLaTeX
+  - LuaLaTeX
+  - multi-file input
+  - BibTeX when detected
+  - multiple passes for references
+- KaTeX quick preview for the first display equation.
 
-## Privacy and limitations
+## Compilation and privacy
 
-- Projects stay in this browser/device: **there is no cloud account or GitHub save yet**. Clearing site data, private browsing, or changing device may lose them. Export ZIP backups often.
-- **Compile PDF sends your LaTeX source to a third-party provider in a URL**, only after explicit confirmation. Contents may appear in browser/server URL logs. Never send confidential or unpublished research using that option. Local editing, saving and ZIP import/export do not send source to a compile provider.
-- The online compilation integration only supports short stand-alone documents. Includes, bibliography files, image assets and long source files are not supported in this compilation path. Use a TeX Live installation or TeXlyre for those.
-- Math preview is not a typeset full document and shows just one display equation. It falls back to raw text when KaTeX is unavailable.
-- Prism ZIP migration preserves underlying source and assets, **not** project history, comments, permissions, collaborators or connected accounts. Exports containing multiple separate projects may need to be split into project ZIPs.
-- JSZip and KaTeX load from an external CDN and need an initial network connection.
-- No API keys or GitHub personal access tokens are requested or stored.
+Compilation occurs on the visitor's device. LaTeX project source is not intentionally sent to a remote compilation API.
 
-## Migrating from Prism
+The TeX engine is large, so the browser downloads pinned engine/package assets from TeXlyre/GitHub release infrastructure and the JavaScript integration package from jsDelivr. Those hosts receive normal web-request metadata (for example IP address, user agent and requested asset), but `compiler.js` does not send them the project source.
 
-1. Export projects from Prism Data Controls before its shutdown on **January 1, 2027** ([OpenAI migration guide](https://help.openai.com/en/articles/20001615-prism-to-codex-migration-guide)).
-2. Choose **Import ZIP / files** from the studio sidebar.
-3. Verify the file tree and ★ main TeX document.
-4. Export another project ZIP and store it outside your browser.
-5. Compile larger projects via TeXlyre or a local TeX distribution.
+The first compile can therefore be a large download. TeXlyre documents roughly 32 MB of WASM plus TeX Live data packages ranging from about 90 MB upward depending on package set. Subsequent loads can benefit from normal browser/IndexedDB caches.
 
-## Files and tests
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for compiler and UI dependency licenses.
 
-- `index.html` — interface and navigation.
-- `styles.css` — responsive design.
-- `app.js` — local-first application logic.
-- `test.mjs` — no-dependency static smoke checks.
+## Saving model
 
-From repository root run `node latex/test.mjs`. Then perform browser manual checks for project persistence, editing, ZIP round-trip, PDF-compilation consent, mobile layout, and all existing electricity modules.
+Projects are stored by the browser, not by a Physics USTHB account:
 
-No existing practical (E01–E05) is changed in this pull request.
+1. IndexedDB is preferred.
+2. If IndexedDB is unavailable, the editor falls back to localStorage.
+3. If neither persistent storage mechanism is available, the UI clearly reports memory-only mode and ZIP export is required to preserve the work.
 
-## Planned next iterations
+The editor keeps the existing database name from the previous release so previously saved IndexedDB projects remain discoverable after this upgrade.
 
-1. Integrate a **browser-based WebAssembly TeX engine** and real PDF pane with pinned dependencies and package-size testing; this is *not* available in v1.
-2. Improve syntax highlighting, autocomplete, diagnostics and recursive folder navigation.
-3. Add optional private GitHub-backed storage using a secure OAuth approach without exposing tokens in GitHub Pages.
-4. Add optional AI and collaboration services only after privacy, costs and access controls are designed.
+The **Protect local storage** button calls the browser's Storage Persistence API when supported. This can reduce automatic browser eviction, but it is not a substitute for backups. Use **Export project ZIP** for portable copies.
 
-## Third-party acknowledgements
+## Multiple users
 
-[JSZip](https://stuk.github.io/jszip/) v3.10.1 (MIT), [KaTeX](https://katex.org/) (MIT), [LaTeX.Online](https://github.com/aslushnikov/latex-online) remote compile service; [TeXlyre](https://github.com/TeXlyre/texlyre) AGPL-3.0, linked externally and not bundled.
+Many people can use the published website at the same time. GitHub Pages serves static application files, and every visitor runs an independent editor in their own browser. One visitor's local projects are not loaded into another visitor's browser.
+
+This is different from **real-time co-editing of the same project**. Shared editing is not enabled in this release. A future collaboration mode should be explicitly opt-in and should use an architecture such as encrypted/peer-to-peer or carefully scoped collaborative documents rather than making all local projects centrally visible.
+
+On a shared computer, two people using the same browser profile are **not isolated from one another**. Use separate browser/OS profiles or clear local projects after exporting them.
+
+## Prism migration
+
+1. Export Prism projects before its shutdown on **January 1, 2027**.
+2. Select **Import ZIP / files**.
+3. Verify the imported file list and mark the correct main `.tex` file with ★.
+4. Compile in the browser.
+5. Export a fresh ZIP backup.
+
+Source files and assets can be imported; Prism-specific history, comments, permissions, collaborators and connected accounts are not recreated.
+
+## Files
+
+- `index.html` — editor, PDF viewer, storage/privacy controls.
+- `styles.css` — responsive workspace design.
+- `app.js` — project model, persistence, ZIP operations, compile UI.
+- `compiler.js` — pinned browser-local BusyTeX integration.
+- `test.mjs` — structural and privacy/persistence smoke checks.
+- `THIRD_PARTY_NOTICES.md` — dependency notices.
+
+## Remaining work
+
+- Browser end-to-end testing across Chrome, Firefox and Safari, especially the large WASM compiler download and engine initialization.
+- Better syntax highlighting/autocomplete and line-aware compilation diagnostics.
+- SyncTeX editor ↔ PDF navigation.
+- Optional real-time collaboration with an explicit privacy model.
+- Optional account/cloud synchronization only if there is a clear need and a defined access/retention policy.
+
+The root [privacy page](../privacy.html) describes the data model for both LaTeX Studio and the physics practicums.
