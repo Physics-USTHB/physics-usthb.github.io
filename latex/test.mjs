@@ -81,4 +81,13 @@ for (const n of ['e01','e02','e03','e04','e05']) {
 }
 const e01 = read('../electricity/e01/lab.js');
 assert.match(e01, /x\?\.version===2/, 'TP1 must reload the same state version it saves');
+assert.match(e01, /function bindPersistentFields\(\)/, 'TP1 must bind report fields directly to persistence');
+const e03 = read('../electricity/e03/official.js');
+assert.match(e03, /s\?\.version===5/, 'TP3 must reload the same state version it saves');
+for (const n of ['e01','e02','e03','e04','e05']) {
+  const scriptName = n === 'e03' ? 'official.js' : 'lab.js';
+  const labJs = read('../electricity/' + n + '/' + scriptName);
+  assert.match(labJs, /function persistState\(\)/, n + ' must have direct persistence helper');
+  assert.match(labJs, /function bindPersistentFields\(\)/, n + ' must bind editable text fields directly');
+}
 console.log('LaTeX Studio smoke checks passed: JS syntax, DOM references, resilient storage, local compiler wiring, privacy UI, homepage links, and TP persistence.');
