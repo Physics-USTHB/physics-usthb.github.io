@@ -2,7 +2,7 @@
 'use strict';
 
 const RG=50, RB=20;
-const STORAGE='PhysicsUSTHB_E05_v1';
+const STORAGE='PhysicsUSTHB_E05_v2';
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
@@ -11,7 +11,8 @@ const FREQ_OPTIONS=[100,200,500,1000,2000,5000];
 const VDIV_OPTIONS=[.25,.5,.75,1,1.5,2];
 
 let state={
-  version:1,mode:'learn',run:null,task:'knownRC',method:'5',
+  version:2,mode:'learn',run:null,task:'knownRC',method:'5',
+  wiring:{circuit:'',probe:'',source:'',ground:'',verified:false},
   settings:{frequency:500,sourceAmp:8,timeDiv:5e-5,voltsDiv:1,cursor:0},
   results:{},fits:{},assessment:null,report:{}
 };
@@ -26,7 +27,7 @@ function makeRun(){
   };
 }
 function save(){state.report=collectReport();try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}}
-function load(){try{const x=JSON.parse(localStorage.getItem(STORAGE)||'null');if(x?.version===1)state={...state,...x};}catch(_){}}
+function load(){try{const x=JSON.parse(localStorage.getItem(STORAGE)||'null');if(x?.version===2)state={...state,...x};}catch(_){}}
 function collectReport(){const ids=['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'],o={};ids.forEach(id=>{const el=document.getElementById(id);if(el)o[id]=el.value;});return o}
 function restoreReport(){Object.entries(state.report||{}).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.value=v||''});if(!$('#reportDate').value)$('#reportDate').value=new Date().toISOString().slice(0,10)}
 function applyMode(mode){
@@ -35,6 +36,31 @@ function applyMode(mode){
   $('#modeDescription').textContent=state.mode==='learn'?'Protocol guidance and measurement diagnostics are visible.':'Minimal guidance; choose the measurement settings independently.';
   $('#reportMode').value=state.mode==='learn'?'Learn mode':'Lab mode';save();
 }
+
+function requiredWiring(){
+  const info=taskInfo();
+  return{circuit:info.kind,probe:info.kind==='RC'?'C':'R',source:'step',ground:'return'};
+}
+function wiringOK(){
+  const r=requiredWiring(),w=state.wiring||{};
+  return w.circuit===r.circuit&&w.probe===r.probe&&w.source===r.source&&w.ground===r.ground;
+}
+function updateWiring(){
+  state.wiring.circuit=$('#e05CircuitType').value;state.wiring.probe=$('#e05ProbeAcross').value;state.wiring.source=$('#e05SourceWave').value;state.wiring.ground=$('#e05Ground').value;
+  state.wiring.verified=false;
+  const info=taskInfo(),r=requiredWiring(),w=state.wiring,el=$('#e05WiringStatus');
+  if(!w.circuit||!w.probe||!w.source||!w.ground){el.className='transient-wiring-status';el.textContent='Complete the four circuit choices, then verify the circuit.';return false;}
+  if(w.ground==='middle'){el.className='transient-wiring-status bad';el.textContent='Incorrect oscilloscope common: use the circuit return / generator common. Grounding the intermediate node changes the intended circuit.';return false;}
+  if(w.source!=='step'){el.className='transient-wiring-status bad';el.textContent='The transient practical requires a step/square excitation, not a sinusoidal steady-state signal.';return false;}
+  if(w.circuit!==r.circuit){el.className='transient-wiring-status bad';el.textContent=`${info.code} requires an ${r.circuit} series circuit.`;return false;}
+  if(w.probe!==r.probe){el.className='transient-wiring-status bad';el.textContent=info.kind==='RC'?'For the RC transient, observe V_C(t) across the capacitor.':'For the RL transient, observe V_R(t), which is proportional to the circuit current.';return false;}
+  el.className='transient-wiring-status ok';el.textContent=info.kind==='RC'?'Correct RC circuit: square-step source, R and C in series, oscilloscope across C, common at return.':'Correct RL circuit: square-step source, R and coil in series, oscilloscope across R, common at return.';return true;
+}
+function verifyWiring(){
+  if(!updateWiring())return;
+  state.wiring.verified=true;$('#e05WiringStatus').className='transient-wiring-status ok';$('#e05WiringStatus').textContent='Circuit verified. The generator may now be energised and the transient measured.';syncUI();save();
+}
+
 function taskInfo(task=state.task){
   if(task==='knownRC')return{code:'4.1 — Known R, known C',title:'Validate the RC time constant',kind:'RC',R:50,C:.5e-6,L:null,Rb:0,unknown:null,hint:'Adjust the trace for a complete RC charge and measure τ. Compare it with (R + r_g)C.'};
   if(task==='unknownR')return{code:'4.2 — Unknown R, known C',title:'Determine an unknown resistance',kind:'RC',R:state.run.rx,C:.5e-6,L:null,Rb:0,unknown:'R',hint:'Measure τ with the known 0.50 µF capacitor, then use R_x = τ/C − r_g.'};
@@ -90,6 +116,7 @@ function grid(ctx,w,h){
 }
 function draw(){
   const c=$('#transientCanvas');if(!c)return;const{ctx,w,h}=setupCanvas(c),g=grid(ctx,w,h),info=taskInfo(),td=state.settings.timeDiv,vd=state.settings.voltsDiv,screenT=10*td,p=periodicParams(info);
+  if(!state.wiring.verified||!wiringOK()){ctx.fillStyle='#ffb4c1';ctx.font='700 16px system-ui';ctx.textAlign='center';ctx.fillText('Verify the correct RC/RL circuit before energising the source',w/2,h/2);$('#timeDivLabel').textContent=`${fmtTime(td)}/div`;$('#voltsDivLabel').textContent=`${vd} V/div`;$('#methodLabel').textContent=state.method==='5'?'5-square method':'4-square method';return;}
   const src=[],sig=[];for(let k=0;k<=1000;k++){const t=screenT*k/1000,phase=((t%p.T)+p.T)%p.T,s=phase<p.h?state.settings.sourceAmp:0,y=responseAt(t,info);src.push({x:g.l+g.gw*k/1000,y:g.cy-s/vd*g.ydiv});sig.push({x:g.l+g.gw*k/1000,y:g.cy-y/vd*g.ydiv})}
   const path=(pts,color,width,alpha)=>{ctx.save();ctx.strokeStyle=color;ctx.lineWidth=width;ctx.globalAlpha=alpha;ctx.beginPath();pts.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));ctx.stroke();ctx.restore()};
   path(src,'#6ca8ff',1.2,.45);path(sig,'#7dffc2',2.4,.95);
@@ -114,9 +141,9 @@ function updateQuality(){
   set('#qualityComplete',q.complete,q.complete?'complete':`${q.halfTau.toFixed(1)} τ/half`,q.halfTau>=3);
   set('#qualityHorizontal',q.horizontal,`${q.tauDiv.toFixed(2)} div/τ`,q.tauDiv>=.4&&q.tauDiv<=6);
   set('#qualityVertical',q.vertical,`${q.ampDiv.toFixed(2)} div (target ${q.target})`,Math.abs(q.ampDiv-q.target)<1);
-  const good=q.complete&&q.horizontal&&q.vertical;$('#benchState').textContent=good?'Display ready':'Adjust settings';$('#benchState').classList.toggle('ok',good);
+  const good=state.wiring.verified&&wiringOK()&&q.complete&&q.horizontal&&q.vertical;$('#benchState').textContent=!state.wiring.verified?'Verify circuit':good?'Display ready':'Adjust settings';$('#benchState').classList.toggle('ok',good);
   if(state.mode==='learn'){
-    const hints=[];if(!q.complete)hints.push('lower the generator frequency so T/2 ≥ 5τ');if(!q.horizontal)hints.push(q.tauDiv<.7?'use a faster TIME/DIV so τ spans more divisions':'use a slower TIME/DIV so τ fits comfortably');if(!q.vertical)hints.push(`adjust source level or VOLTS/DIV so the final response spans ${q.target} divisions`);
+    const hints=[];if(!state.wiring.verified||!wiringOK())hints.push('build and verify the correct circuit first');if(!q.complete)hints.push('lower the generator frequency so T/2 ≥ 5τ');if(!q.horizontal)hints.push(q.tauDiv<.7?'use a faster TIME/DIV so τ spans more divisions':'use a slower TIME/DIV so τ fits comfortably');if(!q.vertical)hints.push(`adjust source level or VOLTS/DIV so the final response spans ${q.target} divisions`);
     $('#benchMessage').className=good?'notice ok':'notice '+(hints.length>1?'warn':'');$('#benchMessage').textContent=good?'The display meets the handout criteria. Move the cursor to the target level and record τ.':`Improve the display: ${hints.join('; ')}.`;
   }else{$('#benchMessage').className=good?'notice ok':'notice';$('#benchMessage').textContent=good?'Display conditions acceptable.':'Display conditions not yet acceptable.'}
 }
@@ -129,6 +156,7 @@ function recommended(){
   state.settings.voltsDiv=chosen.vd;state.settings.sourceAmp=Math.round(chosen.E*10)/10;state.settings.cursor=Math.min(periodicParams(info).h*.12,tau*.3);syncUI();save()
 }
 function recordTau(){
+  if(!state.wiring.verified||!wiringOK()){$('#benchMessage').className='notice warn';$('#benchMessage').textContent='Verify the correct USTHB circuit and oscilloscope connection before measuring τ.';return}
   const q=quality(),info=taskInfo(),p=periodicParams(info),target=methodFrac()*p.fin,y=responseCharge(state.settings.cursor,info),errDiv=Math.abs(y-target)/state.settings.voltsDiv;
   if(!(q.complete&&q.horizontal&&q.vertical)){$('#benchMessage').className='notice warn';$('#benchMessage').textContent='The handout measurement conditions are not yet satisfied.';return}
   if(errDiv>.10){$('#benchMessage').className='notice warn';$('#benchMessage').textContent=`Move the time cursor closer to the target level. Current error: ${errDiv.toFixed(2)} division.`;return}
@@ -140,7 +168,7 @@ function recordTau(){
   state.results[state.task]=rec;delete state.fits[state.task];$('#benchMessage').className='notice ok';$('#benchMessage').textContent=`τ recorded: ${fmtTime(tau)}. Result stored for ${info.code}.`;renderResults();progress();drawSummary();save()
 }
 function taskChanged(){
-  state.task=$('#taskSelect').value;state.settings.cursor=0;recommended()
+  state.task=$('#taskSelect').value;state.settings.cursor=0;state.wiring={circuit:'',probe:'',source:'',ground:'',verified:false};$('#e05CircuitType').value='';$('#e05ProbeAcross').value='';$('#e05SourceWave').value='';$('#e05Ground').value='';updateWiring();recommended()
 }
 
 function renderResults(){
@@ -188,13 +216,15 @@ function buildReport(){
 }
 function newRun(){
   if(Object.keys(state.results).length&&!confirm('Start a new E05 specimen? Existing measurements will be cleared.'))return;
-  const mode=state.mode,report=state.report;state={version:1,mode,run:makeRun(),task:'knownRC',method:'5',settings:{frequency:500,sourceAmp:8,timeDiv:5e-5,voltsDiv:1,cursor:0},results:{},fits:{},assessment:null,report};syncUI();renderResults();renderFit();progress();drawSummary();save()
+  const mode=state.mode,report=state.report;state={version:2,mode,run:makeRun(),task:'knownRC',method:'5',wiring:{circuit:'',probe:'',source:'',ground:'',verified:false},settings:{frequency:500,sourceAmp:8,timeDiv:5e-5,voltsDiv:1,cursor:0},results:{},fits:{},assessment:null,report};syncUI();renderResults();renderFit();progress();drawSummary();save()
 }
 function setupTabs(){
   $$('.tabbtn').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.tab;$$('.tabbtn').forEach(x=>x.classList.toggle('active',x===b));$$('.tabpanel').forEach(p=>p.classList.toggle('active',p.id===id));draw();drawSummary()}))
 }
 function init(){
   load();if(!state.run)state.run=makeRun();restoreReport();setupTabs();setupQuiz();applyMode(state.mode);renderResults();renderFit();progress();drawSummary();restoreAssessment();
+  $('#e05CircuitType').value=state.wiring?.circuit||'';$('#e05ProbeAcross').value=state.wiring?.probe||'';$('#e05SourceWave').value=state.wiring?.source||'';$('#e05Ground').value=state.wiring?.ground||'';updateWiring();if(state.wiring?.verified&&wiringOK()){state.wiring.verified=true;$('#e05WiringStatus').className='transient-wiring-status ok';$('#e05WiringStatus').textContent='Saved circuit verification restored.';}
+  ['e05CircuitType','e05ProbeAcross','e05SourceWave','e05Ground'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateWiring();syncUI();save()}));$('#e05VerifyWiring').addEventListener('click',verifyWiring);
   $('#taskSelect').addEventListener('change',taskChanged);$('#frequency').addEventListener('change',e=>{state.settings.frequency=+e.target.value;syncUI();save()});$('#sourceAmp').addEventListener('input',e=>{state.settings.sourceAmp=+e.target.value;syncUI();save()});$('#timeDiv').addEventListener('change',e=>{state.settings.timeDiv=+e.target.value;syncUI();save()});$('#voltsDiv').addEventListener('change',e=>{state.settings.voltsDiv=+e.target.value;syncUI();save()});$('#tauMethod').addEventListener('change',e=>{state.method=e.target.value;syncUI();save()});$('#cursorTime').addEventListener('input',e=>{state.settings.cursor=+e.target.value;updateCursor();save()});
   $('#recordTau').addEventListener('click',recordTau);$('#autoCentre').addEventListener('click',recommended);$('#newRun').addEventListener('click',newRun);$('#runFit').addEventListener('click',fitCurrent);
   $('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print()});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
