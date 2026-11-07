@@ -75,6 +75,11 @@ Physics USTHB local compiler browser test.
     }
   });
   await page.waitForTimeout(200);
+  const storedTp1 = await page.evaluate(() => JSON.parse(localStorage.getItem('PhysicsUSTHB_E01_v1') || 'null'));
+  assert.equal(storedTp1?.version, 2, 'TP1 did not write current state version');
+  assert.equal(storedTp1?.report?.reportDiscussion, 'Persisted scientific discussion', 'TP1 did not save report discussion before reload');
+  assert.equal(storedTp1?.report?.studentName, undefined, 'TP1 persisted student name');
+  assert.equal(storedTp1?.report?.studentGroup, undefined, 'TP1 persisted student group');
   await page.reload({waitUntil:'domcontentloaded'});
   assert.equal(await page.locator('#studentName').inputValue(), '', 'TP1 persisted student identity');
   assert.equal(await page.locator('#studentGroup').inputValue(), '', 'TP1 persisted group identity');
