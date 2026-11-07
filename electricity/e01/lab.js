@@ -22,10 +22,10 @@ const mean=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:NaN;
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 
 let state={
-  version:1,mode:'learn',run:null,
-  emf:{connected:false,maxSeen:false,range:300,best:null,high:null},
-  pot:{verified:false,selector:0,range:300,records:{}},
-  rx:{method:'short',verified:false,vRange:300,iRange:0.3,records:{}},
+  version:2,mode:'learn',run:null,
+  emf:{connected:false,maxSeen:false,range:300,best:null,high:null,wiring:{vplus:'',com:''}},
+  pot:{verified:false,selector:0,range:300,records:{},wiring:{gplus:'',gminus:'',vplus:'',vcom:''}},
+  rx:{method:'short',verified:false,vRange:300,iRange:0.3,records:{},wiring:{ammeter:'',voltmeter:''}},
   exactShown:false,assessment:null,text:{},report:{}
 };
 
@@ -92,6 +92,32 @@ function fillRanges(){
   $('#potSelectorSelect').value=state.pot.selector;
 }
 
+
+function updateEmfWiring(){
+  state.emf.wiring={vplus:$('#emfVPlus').value,com:$('#emfCOM').value};const w=state.emf.wiring,el=$('#emfWiringStatus');
+  if(!w.vplus||!w.com){el.className='wiring-status';el.textContent='No complete voltmeter connection yet.';return false;}
+  if(w.vplus===w.com){el.className='wiring-status bad';el.textContent='Both voltmeter leads cannot be connected to the same generator terminal.';return false;}
+  if(w.vplus==='gminus'&&w.com==='gplus'){el.className='wiring-status bad';el.textContent='Polarity reversed: the analog pointer would try to deflect in the wrong direction.';return false;}
+  const ok=w.vplus==='gplus'&&w.com==='gminus';el.className=ok?'wiring-status ok':'wiring-status bad';el.textContent=ok?'Correct: V/+ to generator + and COM to generator −.':'Respect the voltmeter polarity shown in the handout.';return ok;
+}
+function updatePotWiring(){
+  state.pot.wiring={gplus:$('#potGenPlus').value,gminus:$('#potGenMinus').value,vplus:$('#potVPlus').value,vcom:$('#potVCom').value};const w=state.pot.wiring,el=$('#potWiringStatus');
+  state.pot.verified=false;
+  if(!w.gplus||!w.gminus||!w.vplus||!w.vcom){el.className='wiring-status';el.textContent='Complete all four connections before verification.';return false;}
+  const genPair=new Set([w.gplus,w.gminus]);
+  if(genPair.has('A')&&genPair.has('B')){el.className='wiring-status bad';el.textContent='DANGEROUS: generator across A–B can drive excessive current through the low-resistance box. Disconnect it.';return false;}
+  if(w.gplus===w.gminus||w.vplus===w.vcom){el.className='wiring-status bad';el.textContent='A source or voltmeter cannot have both leads on the same terminal.';return false;}
+  const ok=w.gplus==='A'&&w.gminus==='C'&&w.vplus==='A'&&w.vcom==='B';el.className=ok?'wiring-status ok':'wiring-status bad';el.textContent=ok?'Correct potentiometric wiring: generator A–C, voltmeter A–B.':'The TP requires generator +→A, generator −→C, V/+→A and COM→B.';return ok;
+}
+function updateRxWiring(){
+  state.rx.wiring={ammeter:$('#rxAmmeterPlacement').value,voltmeter:$('#rxVoltmeterSpan').value};state.rx.verified=false;const w=state.rx.wiring,short=state.rx.method==='short',ok=short?(w.ammeter==='total'&&w.voltmeter==='rx'):(w.ammeter==='rx'&&w.voltmeter==='a_rx'),el=$('#rxWiringStatus');
+  if(!w.ammeter||!w.voltmeter){el.className='wiring-status';el.textContent='Select the ammeter and voltmeter positions for this topology.';return false;}
+  el.className=ok?'wiring-status ok':'wiring-status bad';el.textContent=ok?(short?'Correct short derivation: ammeter reads I_Rx + I_V and voltmeter spans R_x.':'Correct long derivation: ammeter reads I_Rx and voltmeter spans ammeter + R_x.'):(short?'This does not reproduce Figure 1 (short derivation).':'This does not reproduce Figure 2 (long derivation).');return ok;
+}
+function emfWiringOK(){return state.emf.wiring?.vplus==='gplus'&&state.emf.wiring?.com==='gminus'}
+function potWiringOK(){const w=state.pot.wiring||{};return w.gplus==='A'&&w.gminus==='C'&&w.vplus==='A'&&w.vcom==='B'}
+function rxWiringOK(){const w=state.rx.wiring||{};return state.rx.method==='short'?(w.ammeter==='total'&&w.voltmeter==='rx'):(w.ammeter==='rx'&&w.voltmeter==='a_rx')}
+
 function applyMode(mode){
   state.mode=mode==='lab'?'lab':'learn';document.body.classList.toggle('mode-lab',state.mode==='lab');document.body.classList.toggle('mode-learn',state.mode==='learn');
   $$('.modebtn').forEach(b=>b.classList.toggle('active',b.dataset.mode===state.mode));
@@ -131,8 +157,10 @@ function updateEmf(){
   $('#recordEmf').disabled=!state.emf.connected||m.overloaded;
 }
 function connectEmf(){
-  state.emf.connected=true;state.emf.maxSeen=true;$('#emfRange').value=300;state.emf.range=300;
-  $('#emfState').textContent='Voltmeter connected';$('#emfState').classList.add('ok');$('#emfMessage').className='notice ok';$('#emfMessage').textContent='Maximum range established. Reduce the range carefully until you identify the appropriate non-overloading range.';updateEmf();save();
+  if(!updateEmfWiring()){$('#emfMessage').className='notice warn';$('#emfMessage').textContent='Wire the voltmeter correctly before connecting it.';return;}
+  if(+$('#emfRange').value!==300){$('#emfMessage').className='notice warn';$('#emfMessage').textContent='The handout requires the maximum voltmeter range before connecting an unknown voltage. Set 300 V first.';return;}
+  state.emf.connected=true;state.emf.maxSeen=true;state.emf.range=300;
+  $('#emfState').textContent='Voltmeter connected';$('#emfState').classList.add('ok');$('#emfMessage').className='notice ok';$('#emfMessage').textContent='Correct polarity and maximum range established. Reduce the range carefully until the largest non-overloading deflection is obtained.';updateEmf();save();
 }
 function recordEmf(){
   if(!state.emf.connected)return;
@@ -184,7 +212,7 @@ function updatePot(){
   const r=rangeByCal(V_RANGES,state.pot.range),tv=potTrue(state.pot.selector,r),m=analogRead(tv,r,'v');
   $('#potRab').textContent=`${state.pot.selector} Ω`;$('#potRangeLabel').textContent=r.label;$('#potVm').textContent=m.overloaded?'OVERLOAD':`${m.value.toFixed(2)} V`;
   $('#potState').textContent=state.pot.verified?'Wiring verified':'Wiring not verified';$('#potState').classList.toggle('ok',state.pot.verified);
-  $('#recordPot').disabled=!state.pot.verified||m.overloaded||!(state.emf.best&&state.emf.high);
+  $('#recordPot').disabled=!state.pot.verified||!potWiringOK()||m.overloaded||!(state.emf.best&&state.emf.high);
   if(!(state.emf.best&&state.emf.high)){$('#potMessage').className='notice warn';$('#potMessage').textContent='Complete the generator-emf measurements before building the potentiometric circuit.';}
   else if(!state.pot.verified){$('#potMessage').className='notice';$('#potMessage').textContent='Verify the generator across A–C and the voltmeter across A–B before recording.';}
   else if(m.overloaded){$('#potMessage').className='notice bad';$('#potMessage').textContent='Voltmeter overload. Increase the range.';}
@@ -192,7 +220,9 @@ function updatePot(){
 }
 function verifyPot(){
   if(!(state.emf.best&&state.emf.high)){updatePot();return;}
-  state.pot.verified=true;$('#potRange').value=300;state.pot.range=300;updatePot();save();
+  if(!updatePotWiring()){updatePot();return;}
+  if(+$('#potRange').value!==300){$('#potMessage').className='notice warn';$('#potMessage').textContent='Put the voltmeter on its maximum range before the circuit is energised.';return;}
+  state.pot.verified=true;state.pot.range=300;$('#potState').textContent='Wiring verified';$('#potState').classList.add('ok');updatePot();save();
 }
 function recordPot(){
   if(!state.pot.verified)return;
@@ -240,7 +270,7 @@ function rxRead(){
 function updateRx(){
   state.rx.vRange=+$('#rxVRange').value;state.rx.iRange=+$('#rxIRange').value;const x=rxRead();
   $('#rxVm').textContent=x.vm.overloaded?'OVERLOAD':`${x.vm.value.toFixed(2)} V`;$('#rxIm').textContent=x.im.overloaded?'OVERLOAD':`${(x.im.value*1000).toFixed(2)} mA`;
-  $('#recordRx').disabled=!state.rx.verified||x.vm.overloaded||x.im.overloaded||Object.keys(state.pot.records||{}).length<12;
+  $('#recordRx').disabled=!state.rx.verified||!rxWiringOK()||x.vm.overloaded||x.im.overloaded||Object.keys(state.pot.records||{}).length<12;
   if(Object.keys(state.pot.records||{}).length<12){$('#rxMessage').className='notice warn';$('#rxMessage').textContent='Complete all twelve potentiometric-divider readings first.';}
   else if(!state.rx.verified){$('#rxMessage').className='notice';$('#rxMessage').textContent='Verify the selected topology before connecting the potentiometric source.';}
   else if(x.vm.overloaded||x.im.overloaded){$('#rxMessage').className='notice bad';$('#rxMessage').textContent='Instrument overload. Increase the affected range.';}
@@ -250,12 +280,15 @@ function updateRx(){
   }
 }
 function setMethod(method){
-  state.rx.method=method;state.rx.verified=false;$$('.method-btn').forEach(b=>b.classList.toggle('active',b.dataset.method===method));
+  state.rx.method=method;state.rx.verified=false;state.rx.wiring={ammeter:'',voltmeter:''};$('#rxAmmeterPlacement').value='';$('#rxVoltmeterSpan').value='';updateRxWiring();$('.method-btn').forEach(b=>b.classList.toggle('active',b.dataset.method===method));
   const short=method==='short';$('#voltBranch').setAttribute('d',short?'M500 82V150H605V82':'M344 82V150H605V82');$('#voltCircle').setAttribute('cx',short?'552':'474');$('#voltText').setAttribute('x',short?'552':'474');
   $('#rxVRange').value=300;$('#rxIRange').value=.3;state.rx.vRange=300;state.rx.iRange=.3;updateRx();save();
 }
 function verifyRx(){
-  if(Object.keys(state.pot.records||{}).length<12){updateRx();return;}state.rx.verified=true;$('#rxVRange').value=300;$('#rxIRange').value=.3;state.rx.vRange=300;state.rx.iRange=.3;updateRx();save();
+  if(Object.keys(state.pot.records||{}).length<12){updateRx();return;}
+  if(!updateRxWiring()){updateRx();return;}
+  if(+$('#rxVRange').value!==300||+$('#rxIRange').value!==.3){$('#rxMessage').className='notice warn';$('#rxMessage').textContent='Before energising a new circuit, put both analog instruments on their maximum ranges.';return;}
+  state.rx.verified=true;state.rx.vRange=300;state.rx.iRange=.3;updateRx();save();
 }
 function recordRx(){
   if(!state.rx.verified)return;const x=rxRead();if(x.vm.overloaded||x.im.overloaded)return;
@@ -328,9 +361,9 @@ function renderAll(){
 }
 function init(){
   load();if(!state.run)state.run=makeRun();fillRanges();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
-  $('#emfRange').addEventListener('change',updateEmf);$('#connectEmf').addEventListener('click',connectEmf);$('#recordEmf').addEventListener('click',recordEmf);$('#newSpecimen').addEventListener('click',newSpecimen);
-  $('#potRange').addEventListener('change',updatePot);$('#potSelectorSelect').addEventListener('change',e=>{state.pot.selector=+e.target.value;updatePot();save();});$('#verifyPot').addEventListener('click',verifyPot);$('#recordPot').addEventListener('click',recordPot);
-  $$('.method-btn').forEach(b=>b.addEventListener('click',()=>setMethod(b.dataset.method)));$('#rxVRange').addEventListener('change',updateRx);$('#rxIRange').addEventListener('change',updateRx);$('#verifyRx').addEventListener('click',verifyRx);$('#recordRx').addEventListener('click',recordRx);
+  ['emfVPlus','emfCOM'].forEach(id=>$('#'+id).addEventListener('change',()=>{state.emf.connected=false;updateEmfWiring();updateEmf();save();}));$('#emfRange').addEventListener('change',updateEmf);$('#connectEmf').addEventListener('click',connectEmf);$('#recordEmf').addEventListener('click',recordEmf);$('#newSpecimen').addEventListener('click',newSpecimen);
+  ['potGenPlus','potGenMinus','potVPlus','potVCom'].forEach(id=>$('#'+id).addEventListener('change',()=>{updatePotWiring();updatePot();save();}));$('#potRange').addEventListener('change',updatePot);$('#potSelectorSelect').addEventListener('change',e=>{state.pot.selector=+e.target.value;updatePot();save();});$('#verifyPot').addEventListener('click',verifyPot);$('#recordPot').addEventListener('click',recordPot);
+  $('.method-btn').forEach(b=>b.addEventListener('click',()=>setMethod(b.dataset.method)));['rxAmmeterPlacement','rxVoltmeterSpan'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateRxWiring();updateRx();save();}));$('#rxVRange').addEventListener('change',updateRx);$('#rxIRange').addEventListener('change',updateRx);$('#verifyRx').addEventListener('click',verifyRx);$('#recordRx').addEventListener('click',recordRx);
   $('#revealExact').addEventListener('click',revealExact);$('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
   ['emfConclusion','methodJustification','studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'].forEach(id=>document.getElementById(id)?.addEventListener('input',save));
   window.addEventListener('resize',drawPot);window.addEventListener('beforeunload',save);renderAll();
