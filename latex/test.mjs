@@ -13,7 +13,7 @@ const privacy = read('../privacy.html');
 
 new Script(js, {filename: 'latex/app.js'});
 new Script(
-  compiler.replace(/^export /gm, '').replace(/import\\.meta\\.url/g, "'http://example.test/latex/compiler.js'"),
+  compiler.replace(/^export /gm, '').replace(/import\.meta\.url/g, "'http://example.test/latex/compiler.js'"),
   {filename: 'latex/compiler.js'}
 );
 assert.ok(html.startsWith('<!doctype html>'), 'LaTeX Studio must be an HTML page');
