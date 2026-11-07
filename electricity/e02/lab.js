@@ -45,7 +45,7 @@ function collectText(){
   const o={};ids.forEach(id=>{const el=document.getElementById(id);if(el)o[id]=el.value;});return o;
 }
 function collectReport(){
-  const ids=['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'];
+  const ids=['reportDate','reportDiscussion','reportConclusion'];
   const o={};ids.forEach(id=>{const el=document.getElementById(id);if(el)o[id]=el.value;});return o;
 }
 function restoreFields(){
@@ -384,7 +384,7 @@ function renderAll(){
   renderPlaneResults();updatePlane();setupTargetButtons('#targetsA',state.mapA,'A');yProgress('#yProgressA',state.mapA);renderEquipATable();updateMapA();updateFieldsA();renderAxisAll();renderCylinderResults();setupTargetButtons('#targetsB',state.mapB,'B');$('#targetBSelect').value=state.mapB.target;$('#mapBYSelect').value=state.mapB.y;updateMapBControls();updateFieldM();restoreAssessment();progress();
 }
 function init(){
-  load();if(!state.run)state.run=makeRun();recomputeFields();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
+  load();if(state.report){delete state.report.studentName;delete state.report.studentGroup;try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}}if(!state.run)state.run=makeRun();recomputeFields();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
   const planeCanvas=$('#planeCanvas'),mapCanvas=$('#mapACanvas'),cylCanvas=$('#cylCanvas');
   const planeMove=e=>{if(!state.plane.connected)return;const p=eventPoint(planeCanvas,e);state.plane.x=p.x;state.plane.y=p.y;updatePlane();};
   planeCanvas.addEventListener('pointerdown',planeMove);
@@ -395,8 +395,8 @@ function init(){
   $('#recordAxisA').addEventListener('click',()=>recordAxis('A'));$('#traceCentralA').addEventListener('click',()=>{state.mapA.lines.central=true;drawPlaneCanvases();progress();save();});$('#traceEdgeA').addEventListener('click',()=>{state.mapA.lines.edge=true;drawPlaneCanvases();progress();save();});
   $('#cylXSlider').addEventListener('input',e=>{state.cyl.x=+e.target.value;updateCylinder();});$('#cylYSlider').addEventListener('input',e=>{state.cyl.y=+e.target.value;updateCylinder();});$('#measureCylinder').addEventListener('click',updateCylinder);$('#recordCylinderPotential').addEventListener('click',recordCylinder);
   $('#targetBSelect').addEventListener('change',updateMapBControls);$('#mapBYSelect').addEventListener('change',updateMapBControls);$('#markEquipB').addEventListener('click',markB);$('#traceM').addEventListener('click',()=>{if(!seedM())return;state.mapB.lines.M=true;drawCylinderCanvases();progress();save();});$('#traceN').addEventListener('click',()=>{if(!seedN())return;state.mapB.lines.N=true;drawCylinderCanvases();progress();save();});$('#recordAxisB').addEventListener('click',()=>recordAxis('B'));
-  $('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
-  ['fieldConclusionA','uniformConclusion','chargeDistribution','distortionConclusion','compareConclusion','studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'].forEach(id=>document.getElementById(id)?.addEventListener('input',save));
+  $('#buildReport').addEventListener('click',buildReport);$('#clearLocalProgress')?.addEventListener('click',()=>{if(confirm('Clear all locally saved progress for this practical on this browser?')){try{localStorage.removeItem(STORAGE);}catch(_){}location.reload();}});$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
+  ['fieldConclusionA','uniformConclusion','chargeDistribution','distortionConclusion','compareConclusion','reportDate','reportDiscussion','reportConclusion'].forEach(id=>document.getElementById(id)?.addEventListener('input',save));
   window.addEventListener('resize',()=>{drawPlaneCanvases();drawCylinderCanvases();drawAxisChart();drawCompare();});window.addEventListener('beforeunload',save);renderAll();
 }
 init();
