@@ -62,18 +62,10 @@ Physics USTHB local compiler browser test.
 
   // Practicum persistence/privacy: useful work persists, student identity does not.
   await page.goto('http://127.0.0.1:8080/electricity/e01/', {waitUntil:'domcontentloaded', timeout:30_000});
-  await page.evaluate(() => {
-    const values = {
-      studentName: 'Private Test Student',
-      studentGroup: 'Private Group',
-      reportDiscussion: 'Persisted scientific discussion'
-    };
-    for (const [id, value] of Object.entries(values)) {
-      const el = document.getElementById(id);
-      el.value = value;
-      el.dispatchEvent(new Event('input', {bubbles:true}));
-    }
-  });
+  await page.locator('[data-tab="report"]').click();
+  await page.locator('#studentName').fill('Private Test Student');
+  await page.locator('#studentGroup').fill('Private Group');
+  await page.locator('#reportDiscussion').fill('Persisted scientific discussion');
   await page.waitForTimeout(200);
   const storedTp1 = await page.evaluate(() => JSON.parse(localStorage.getItem('PhysicsUSTHB_E01_v1') || 'null'));
   assert.equal(storedTp1?.version, 2, 'TP1 did not write current state version');
