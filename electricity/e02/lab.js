@@ -17,7 +17,7 @@ let state={
   plane:{connected:false,x:0,y:0,va:null,vb:null,sym:{plus:null,minus:null}},
   mapA:{target:2,y:0,x:0,points:{},mirrored:false,lines:{central:false,edge:false}},
   axisA:{records:{}},
-  cyl:{x:0,y:0,vc:null},
+  cyl:{x:0,y:0,inside:null,surface:null,vc:null},
   mapB:{target:2,y:0,points:{},lines:{M:false,N:false}},
   axisB:{records:{}},
   assessment:null,text:{},report:{}
@@ -250,7 +250,9 @@ function recordAxis(which){
   const axis=which==='A'?state.axisA:state.axisB,field=which==='A'?fields.A:fields.B;
   if(which==='A'&&!mapComplete(state.mapA)){ $('#axisMessageA').className='notice warn';$('#axisMessageA').textContent='Complete the four equipotential maps first.';return;}
   if(which==='B'&&!mapComplete(state.mapB)){ $('#axisMessageB').className='notice warn';$('#axisMessageB').textContent='Complete the cylinder equipotential map first.';return;}
-  const x=nextAxis(axis);if(x===undefined)return;axis.records[x]={x,v:readPotential(field,x,0)};
+  const x=nextAxis(axis);if(x===undefined)return;
+  if(which==='A'){state.plane.x=x;state.plane.y=0;updatePlane();}else{state.cyl.x=x;state.cyl.y=0;updateCylinder();}
+  axis.records[x]={x,v:readPotential(field,x,0)};
   const nxt=nextAxis(axis),id=which==='A'?'#axisMessageA':'#axisMessageB';$(id).className=nxt===undefined?'notice ok':'notice';$(id).textContent=nxt===undefined?'Axial scan complete.':`Recorded x=${x} cm. Next required position: x=${nxt} cm.`;
   renderAxisProgress(which);drawAxisChart();drawCompare();progress();save();
 }
@@ -279,11 +281,23 @@ function updateCylinder(){
   const x=state.cyl.x,y=state.cyl.y,v=readPotential(fields.B,x,y),f=fieldVec(fields.B,x,y);$('#cylX').textContent=`${x.toFixed(1)} cm`;$('#cylY').textContent=`${y.toFixed(1)} cm`;$('#cylV').textContent=`${v.toFixed(2)} V`;$('#cylE').textContent=`${f.mag.toFixed(1)} V/m`;$('#cylXSlider').value=x;$('#cylYSlider').value=y;$('#cylPotentialOverlay').textContent=`VC ≈ ${fields.B.VC.toFixed(2)} V`;drawCylinderCanvases();
 }
 function recordCylinder(){
-  const x=state.cyl.x,y=state.cyl.y;if(!insideCylinder(x,y)){$('#cylMessage').className='notice warn';$('#cylMessage').textContent='Place the probe inside or on the conducting cylinder before recording VC.';return;}
-  state.cyl.vc=readPotential(fields.B,x,y);const f=fieldVec(fields.B,x,y);$('#cylMessage').className='notice ok';$('#cylMessage').textContent=`Conductor reading stored: VC=${state.cyl.vc.toFixed(2)} V; model field inside is ${f.mag.toFixed(1)} V/m.`;renderCylinderResults();progress();save();
+  const x=state.cyl.x,y=state.cyl.y,r=Math.hypot(x,y),v=readPotential(fields.B,x,y);
+  if(r<2.5){
+    state.cyl.inside={x,y,v,e:fieldVec(fields.B,x,y).mag};
+    $('#cylMessage').className='notice ok';$('#cylMessage').textContent='Interior conductor reading stored. Move the probe to the cylinder surface (r ≈ 3 cm) and record again.';
+  }else if(Math.abs(r-CYL_R)<=0.35){
+    state.cyl.surface={x,y,v,e:fieldVec(fields.B,x,y).mag};
+    $('#cylMessage').className='notice ok';$('#cylMessage').textContent='Surface conductor reading stored. Compare it with the interior value.';
+  }else{
+    $('#cylMessage').className='notice warn';$('#cylMessage').textContent='Record one point clearly inside the conductor and one point on its surface (radius 3 cm).';return;
+  }
+  if(state.cyl.inside&&state.cyl.surface)state.cyl.vc=(state.cyl.inside.v+state.cyl.surface.v)/2;
+  renderCylinderResults();progress();save();
 }
 function renderCylinderResults(){
-  $('#vcResult').textContent=state.cyl.vc==null?'—':`${state.cyl.vc.toFixed(2)} V`;$('#ecResult').textContent=state.cyl.vc==null?'—':'≈ 0 V/m';$('#compareVC').textContent=state.cyl.vc==null?'— V':`${state.cyl.vc.toFixed(2)} V`;
+  $('#vcResult').textContent=state.cyl.vc==null?'—':`${state.cyl.vc.toFixed(2)} V`;
+  $('#ecResult').textContent=state.cyl.inside?`${state.cyl.inside.e.toFixed(1)} V/m`:'—';
+  $('#compareVC').textContent=state.cyl.vc==null?'— V':`${state.cyl.vc.toFixed(2)} V`;
 }
 function updateMapBControls(){
   state.mapB.target=+$('#targetBSelect').value;state.mapB.y=+$('#mapBYSelect').value;state.cyl.y=state.mapB.y;$('#cylYSlider').value=state.cyl.y;setupTargetButtons('#targetsB',state.mapB,'B');yProgress('#yProgressB',state.mapB);updateCylinder();
@@ -346,7 +360,7 @@ function buildReport(){
 }
 function newTank(){
   if((pointCount(state.mapA)||pointCount(state.mapB)||Object.keys(state.axisA.records).length)&&!confirm('Start a new virtual tank? Existing E02 measurements will be cleared.'))return;
-  const mode=state.mode,text=state.text,report=state.report;state={version:1,mode,run:makeRun(),plane:{connected:false,x:0,y:0,va:null,vb:null,sym:{plus:null,minus:null}},mapA:{target:2,y:0,x:0,points:{},mirrored:false,lines:{central:false,edge:false}},axisA:{records:{}},cyl:{x:0,y:0,vc:null},mapB:{target:2,y:0,points:{},lines:{M:false,N:false}},axisB:{records:{}},assessment:null,text,report};recomputeFields();renderAll();save();
+  const mode=state.mode,text=state.text,report=state.report;state={version:1,mode,run:makeRun(),plane:{connected:false,x:0,y:0,va:null,vb:null,sym:{plus:null,minus:null}},mapA:{target:2,y:0,x:0,points:{},mirrored:false,lines:{central:false,edge:false}},axisA:{records:{}},cyl:{x:0,y:0,inside:null,surface:null,vc:null},mapB:{target:2,y:0,points:{},lines:{M:false,N:false}},axisB:{records:{}},assessment:null,text,report};recomputeFields();renderAll();save();
 }
 function setupTabs(){
   $$('.tabbtn').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.tab;$$('.tabbtn').forEach(x=>x.classList.toggle('active',x===b));$$('.tabpanel').forEach(p=>p.classList.toggle('active',p.id===id));drawPlaneCanvases();drawCylinderCanvases();drawAxisChart();drawCompare();}));
