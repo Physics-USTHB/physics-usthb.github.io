@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Privacy and local-data information for Physics USTHB interactive learning tools.">
+  <title>Privacy — Physics USTHB</title>
+  <link rel="stylesheet" href="assets/home.css">
+  <style>
+    .privacy-main{padding:64px 0 90px;background:#f7f9fc;min-height:75vh}.privacy-main article{max-width:850px;background:#fff;border:1px solid #dde7f0;border-radius:18px;padding:38px;box-shadow:0 12px 40px rgba(16,38,65,.05)}.privacy-main h1{font-size:clamp(2.2rem,5vw,3.6rem);letter-spacing:-.04em;margin:0 0 12px}.privacy-main h2{font-size:1.3rem;margin:34px 0 10px}.privacy-main p,.privacy-main li{color:#586c83;line-height:1.72;font-size:14px}.privacy-main strong{color:#18334f}.privacy-main .privacy-callout{background:#eaf7f8;border-left:4px solid #3bb7c8;padding:15px 17px;border-radius:8px;color:#315d68}.privacy-main code{background:#edf2f7;padding:2px 5px;border-radius:4px}.privacy-main a{color:#096a88}.privacy-main ul{padding-left:22px}@media(max-width:560px){.privacy-main{padding:38px 0 60px}.privacy-main article{padding:24px 19px;border-radius:13px}}
+  </style>
+</head>
+<body>
+<header class="site-header"><div class="container header-inner"><a class="brand" href="./"><span class="brand-symbol">Φ</span><span class="brand-text"><strong>Physics USTHB</strong><small>Interactive learning</small></span></a><nav class="top-nav" aria-label="Main navigation"><a href="./">Home</a><a href="electricity/">Physics labs</a><a href="latex/">LaTeX Studio</a></nav></div></header>
+<main class="privacy-main"><div class="container"><article>
+  <p class="section-label">PRIVACY & LOCAL DATA</p>
+  <h1>Your work should belong to you.</h1>
+  <p class="privacy-callout"><strong>Default model:</strong> this website has no student accounts, no application database, and no analytics code. Lab progress and LaTeX projects are stored in the browser that you are using. Separate devices or browser profiles have separate data.</p>
+
+  <h2>Physics practicums</h2>
+  <p>TP1–TP5 save experimental progress and report text to this browser's <code>localStorage</code> so a page can be reopened without starting again. Student name and group are deliberately <strong>not persisted</strong>; they remain only in the open page. Each practical has a <strong>Clear local data</strong> button in the Report tab.</p>
+
+  <h2>LaTeX Studio</h2>
+  <p>LaTeX Studio stores projects locally, preferring IndexedDB and falling back to localStorage when necessary. It can request browser “persistent storage” to reduce the chance of automatic eviction. ZIP export remains the safest portable backup. Clearing browser site data can delete locally stored projects.</p>
+  <p>PDF compilation runs in the browser through a WebAssembly TeX engine. The project source is not intentionally sent to a compilation server. The browser still downloads application, font, TeX-engine and package assets from the website and configured dependency hosts, so those network providers can receive ordinary connection metadata such as IP address and user agent.</p>
+
+  <h2>Shared computers</h2>
+  <p>Browser storage is isolated by website and browser profile, <strong>not by the person's identity</strong>. Two people using the same browser profile can potentially see the same saved local projects or lab progress. On a shared computer, use a separate browser/OS profile or private window where appropriate, export anything you need, then use the available clear-data controls.</p>
+
+  <h2>Many users at the same time</h2>
+  <p>The published site is static and each visitor runs an independent copy in their own browser. Many students can therefore use the practicums and LaTeX Studio simultaneously without sharing each other's work. Real-time co-editing of one LaTeX project or a shared lab session is <strong>not enabled</strong> in the current release; that requires an explicit collaboration layer with its own privacy design.</p>
+
+  <h2>Hosting and third parties</h2>
+  <ul>
+    <li>The public site is hosted by GitHub Pages. GitHub may process visitor connection data under its own policies, including IP addresses for security.</li>
+    <li>Some browser libraries are loaded from jsDelivr; the local TeX runtime can also download static engine/package assets from GitHub release infrastructure.</li>
+    <li>Following an external link takes you to that provider and its privacy policy.</li>
+  </ul>
+  <p>See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub's privacy statement</a> and <a href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net" target="_blank" rel="noopener noreferrer">jsDelivr's privacy information</a> for their practices.</p>
+
+  <h2>What this site does not currently do</h2>
+  <p>It does not require login, build a central student profile, upload lab reports to the project owner, or provide teacher access to private student work. If account sync, submissions, or real-time collaboration are introduced later, they should be opt-in and accompanied by a separate data-access and retention design before deployment.</p>
+</article></div></main>
+<footer class="site-footer"><div class="container footer-inner"><span class="footer-brand"><span>Φ</span> Physics USTHB</span><p>Independent educational project. Not an official USTHB website unless formally adopted by the university.</p><a href="./">Back to home</a></div></footer>
+</body></html>
