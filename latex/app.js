@@ -2,7 +2,7 @@
 (() => {
 'use strict';
 const $ = id => document.getElementById(id);
-const DB = 'physics-usthb-latex-v2', STORE = 'projects', ACTIVE = 'physics-usthb-latex-active-v2';
+const DB = 'physics-usthb-latex-v1', STORE = 'projects', ACTIVE = 'physics-usthb-latex-active';
 const FALLBACK_KEY = 'physics-usthb-latex-fallback-v2';
 const TEXT = /\.(tex|bib|sty|cls|bst|txt|md|cfg|def|bbx|cbx|lua|csv|json|xml|eps)$/i;
 const LIMIT = 50 * 1024 * 1024;
