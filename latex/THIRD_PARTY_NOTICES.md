@@ -1,29 +1,31 @@
 # Third-party notices — LaTeX Studio
 
-Physics USTHB LaTeX Studio uses third-party open-source software in the browser.
+## SwiftLaTeX pdfTeX WebAssembly engine
 
-## TeXlyre BusyTeX
+The browser compiler is derived from SwiftLaTeX and a small static-host compatibility patch maintained in `sean-reid/latex-preview`.
 
-- Project: https://github.com/TeXlyre/texlyre-busytex
-- Version used by the integration: **1.4.1**
-- Purpose: TeX Live 2026 WebAssembly compilation (pdfLaTeX, XeLaTeX, LuaLaTeX, BibTeX)
-- License: **GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)**
-- Build assets: https://github.com/TeXlyre/texlyre-busytex-build
+- SwiftLaTeX source: https://github.com/SwiftLaTeX/SwiftLaTeX
+- Pinned integration source revision: https://github.com/sean-reid/latex-preview/commit/f80f84659c9476e41ef7212f6d753e10f6bd4af5
+- Worker used here: `latex/vendor/swiftlatexpdftex.js`
+- Upstream engine license: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+- Local license notice: `latex/vendor/swiftlatex.LICENSE.txt`
 
-The Physics USTHB integration source is in `latex/compiler.js`. The compiler is loaded by the user's browser and compilation occurs on the user's device. The upstream source and license remain available at the links above.
+The worker is served by Physics USTHB. Its pinned WebAssembly binary and the curated TeX Live subset are fetched as static assets from the pinned upstream revision on `raw.githubusercontent.com`. LaTeX compilation itself occurs in the browser.
+
+## TeX Live subset
+
+The runtime package/font subset comes from the pinned `sean-reid/latex-preview` revision and contains TeX Live files under their respective upstream licenses, chiefly the LaTeX Project Public License and Knuth-family licenses. See that upstream repository for the harvested manifest and per-file provenance.
 
 ## JSZip
 
+- Version 3.10.1
 - Project: https://stuk.github.io/jszip/
-- Version: 3.10.1
 - Purpose: project ZIP import/export
 - License: MIT
 
 ## KaTeX
 
+- Version 0.16.11
 - Project: https://katex.org/
-- Version: 0.16.11
 - Purpose: lightweight equation preview
 - License: MIT
-
-These notices do not change the licenses of the upstream projects. For exact license terms, consult each upstream project's LICENSE file.
