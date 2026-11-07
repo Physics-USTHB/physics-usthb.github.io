@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Rigorous undergraduate virtual laboratory on current–voltage characteristics of electrical dipoles.">
-  <title>E03 — Current–Voltage Characteristics | Physics USTHB</title>
+  <meta name="description" content="USTHB-aligned undergraduate virtual laboratory on the current–voltage characteristics of passive electrical dipoles.">
+  <title>E03 — I–V Characteristics | Physics USTHB</title>
   <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="stylesheet" href="official.css">
 </head>
 <body class="lab-page">
 <header class="topbar">
@@ -21,220 +22,299 @@
       <div class="breadcrumbs">Virtual Laboratory / Electricity & Circuits / E03</div>
       <h1>Current–Voltage Characteristics of Electrical Dipoles</h1>
       <div class="labmeta">
-        <span class="pill">Undergraduate</span><span class="pill">75–100 min</span><span class="pill">DC circuits</span>
-        <span class="pill">Measurement uncertainty</span><span class="pill">Regression</span>
+        <span class="pill official-mark">USTHB TP3 core protocol</span>
+        <span class="pill">L1 SM / ST</span>
+        <span class="pill">English edition</span>
+        <span class="pill extension-mark">Advanced analysis extension</span>
       </div>
     </div>
-    <div class="mode-card no-print" aria-label="Learning mode selector">
-      <div><strong>Experiment mode</strong><div class="mini" id="modeDescription">Guidance and diagnostic hints are available.</div></div>
-      <div class="segmented" role="group" aria-label="Experiment mode">
-        <button class="modebtn active" data-mode="learn" type="button">Learn</button>
-        <button class="modebtn" data-mode="lab" type="button">Lab</button>
-      </div>
+    <div class="mode-card no-print">
+      <div><strong>Guidance mode</strong><div class="mini" id="modeDescription">Protocol guidance and interpretation prompts are visible.</div></div>
+      <div class="segmented"><button class="modebtn active" data-mode="learn" type="button">Learn</button><button class="modebtn" data-mode="lab" type="button">Lab</button></div>
     </div>
   </div>
 </section>
 
 <div class="tabs no-print">
   <div class="shell tabrow">
-    <button class="tabbtn active" data-tab="theory">1. Theory</button>
-    <button class="tabbtn" data-tab="bench">2. Virtual Bench</button>
-    <button class="tabbtn" data-tab="data">3. Data</button>
-    <button class="tabbtn" data-tab="analysis">4. Analysis</button>
-    <button class="tabbtn" data-tab="synthesis">5. Series & Parallel</button>
+    <button class="tabbtn active" data-tab="briefing">1. Briefing</button>
+    <button class="tabbtn" data-tab="bench">2. Potentiometric Bench</button>
+    <button class="tabbtn" data-tab="characteristics">3. R & Lamp</button>
+    <button class="tabbtn" data-tab="associations">4. Series & Parallel</button>
+    <button class="tabbtn" data-tab="advanced">5. Advanced Analysis</button>
     <button class="tabbtn" data-tab="assessment">6. Assessment</button>
     <button class="tabbtn" data-tab="report">7. Lab Report</button>
   </div>
 </div>
 
 <main class="shell">
-<section class="tabpanel active" id="theory">
-  <div class="grid two">
-    <article class="paper">
-      <h2>Learning outcomes</h2>
-      <p>By the end of this experiment you should be able to:</p>
+<section class="tabpanel active" id="briefing">
+  <div class="protocol-banner">
+    <div><strong>Faithful core protocol</strong><p>Part A follows the official USTHB TP3 sequence and prescribed selector positions. The uncertainty-aware analysis in Part B is an added extension and is labelled separately.</p></div>
+    <a href="https://fphy.usthb.dz/wp-content/uploads/2023/02/tp3_caracteristiques.pdf" target="_blank" rel="noopener">Official USTHB handout ↗</a>
+  </div>
+
+  <div class="progress-board" id="progressBoard"></div>
+
+  <div class="protocol-grid">
+    <article class="protocol-card">
+      <h3>Official objectives</h3>
+      <p>This virtual laboratory preserves the three central objectives of TP3:</p>
       <ol>
-        <li>measure the current–voltage characteristic of an ohmic resistor and a tungsten-filament lamp;</li>
-        <li>correct the current for voltmeter loading in the measurement topology used here;</li>
-        <li>propagate instrumental uncertainty into the corrected dipole current;</li>
-        <li>estimate resistance using uncertainty-aware linear regression and judge model adequacy using residuals and reduced χ²;</li>
-        <li>distinguish static resistance <em>V/I</em> from differential resistance <em>dV/dI</em> for a nonlinear device;</li>
-        <li>construct series and parallel characteristics from measured component characteristics.</li>
+        <li>build and use an adjustable voltage source based on a potentiometric resistance box;</li>
+        <li>plot the characteristics of passive dipoles and combinations of dipoles;</li>
+        <li>interpret the characteristics and determine resistance values.</li>
       </ol>
-      <div class="notice learn-only"><strong>Learn mode:</strong> diagnostic hints appear after measurements and analysis. Switch to Lab mode when you want a less guided run.</div>
-      <div class="notice lab-only"><strong>Lab mode:</strong> parameters and diagnostic hints remain hidden. Make and justify your own experimental decisions.</div>
+      <div class="source-equation">V<sub>AB</sub> = E · R<sub>AB</sub> / (R<sub>AC</sub> + R<sub>g</sub>)</div>
+      <p class="source-note">The official resistance box has eleven 1 Ω resistors in series between A and C, so R<sub>AC</sub> = 11 Ω. The selector sets R<sub>AB</sub> from 0 to 11 Ω.</p>
     </article>
-    <article class="paper">
-      <h2>Measurement model</h2>
-      <p>For an ideal ohmic dipole,</p>
-      <div class="formula">V = RI.</div>
-      <p>In the short-derivation connection used here, the ammeter reads the current through the dipole plus the current drawn by the voltmeter:</p>
-      <div class="formula">I<sub>m</sub> = I<sub>D</sub> + I<sub>V</sub>, &nbsp;&nbsp; I<sub>V</sub> = V/R<sub>V</sub>.</div>
-      <p>Hence</p>
-      <div class="formula">I<sub>D</sub> = I<sub>m</sub> − V/R<sub>V</sub>.</div>
-      <p>If the standard uncertainties of <em>I</em><sub>m</sub> and <em>V</em> are independent, the corrected-current uncertainty is approximated by</p>
-      <div class="formula">u(I<sub>D</sub>) = √[u(I<sub>m</sub>)² + (u(V)/R<sub>V</sub>)² + (V·u(R<sub>V</sub>)/R<sub>V</sub>²)²].</div>
+
+    <article class="protocol-card">
+      <h3>Laboratory safety and connection rules</h3>
+      <div class="safety-list">
+        <div class="safety-item"><span>✓</span><div>The generator is connected between <strong>A and C</strong>; the measurement circuit is connected between <strong>A and B</strong>.</div></div>
+        <div class="safety-item"><span>✓</span><div>The wiring is checked before the source is energised.</div></div>
+        <div class="safety-item"><span>✓</span><div>Measurement instruments are initially placed on their maximum range before changing ranges.</div></div>
+        <div class="safety-item"><span>✓</span><div>Before changing the circuit, the source is disconnected first and the wiring is then reconfigured.</div></div>
+      </div>
+      <div class="notice learn-only" style="margin-top:14px"><strong>Why this matters:</strong> the virtual bench enforces a wiring-verification step whenever you change the dipole configuration.</div>
     </article>
   </div>
 
-  <div class="grid two" style="margin-top:18px">
-    <article class="paper">
-      <h2>The filament lamp</h2>
-      <p>The lamp is modelled as a tungsten-like filament in steady thermal equilibrium. Its resistance increases with temperature, while electrical power is balanced by convective/conductive and radiative heat losses:</p>
-      <div class="formula">R(T) ≈ R<sub>0</sub>[1 + α(T − T<sub>0</sub>)]</div>
-      <div class="formula">I²R(T) = H(T − T<sub>0</sub>) + K(T⁴ − T<sub>0</sub>⁴).</div>
-      <p>This produces a nonlinear steady-state characteristic. The model is pedagogical: it captures the dominant electro-thermal feedback without claiming to reproduce a specific commercial lamp.</p>
+  <div class="protocol-grid" style="margin-top:18px">
+    <article class="protocol-card">
+      <h3>Short-derivation connection</h3>
+      <p>The voltmeter is connected directly across the dipole. The ammeter therefore measures</p>
+      <div class="formula">I<sub>m</sub> = I<sub>D</sub> + I<sub>V</sub>.</div>
+      <p>In the official TP, the graph is plotted using the measured current <strong>I<sub>m</sub></strong>. The approximation I<sub>m</sub> ≈ I<sub>D</sub> is acceptable because the voltmeter input resistance is very large compared with the tested dipoles.</p>
+      <div class="question-block">
+        <label for="shortJustification">Your justification for choosing the short-derivation connection</label>
+        <textarea id="shortJustification" placeholder="Explain which instrument-loading error is minimised and why this topology is suitable for these dipoles."></textarea>
+      </div>
     </article>
-    <article class="paper">
-      <h2>Protocol</h2>
-      <ol>
-        <li>Start near 0 V. Measure the resistor at 6–10 well-spaced source settings.</li>
-        <li>Repeat for the filament lamp. Avoid clustering all points at high voltage.</li>
-        <li>Inspect uncertainties and the loading correction in the Data tab.</li>
-        <li>Fit the resistor with the uncertainty-aware model. Inspect the residual plot and reduced χ².</li>
-        <li>Characterise the lamp using static and local differential resistance.</li>
-        <li>Use both measured datasets to synthesize series and parallel characteristics.</li>
-        <li>Complete the assessment and write the report in scientific prose.</li>
-      </ol>
-      <p class="mini">A saved experiment resumes automatically on the same browser. “New experimental run” creates a new hidden specimen/calibration state and clears the previous measurements.</p>
+    <article class="protocol-card">
+      <h3>Exact measurement programme</h3>
+      <div class="definition-list">
+        <div><strong>Resistor</strong><span>Selector positions 1, 3, 5, 7, 9, 11; plot V<sub>Rx</sub> = f(I<sub>m</sub>).</span></div>
+        <div><strong>Lamp</strong><span>All selector positions 0 through 11; plot V<sub>L</sub> = g(I<sub>m</sub>) on the same graph.</span></div>
+        <div><strong>Series</strong><span>Construct the graphical sum, then verify experimentally at selector positions 5 and 9.</span></div>
+        <div><strong>Parallel</strong><span>Construct the graphical sum, then verify experimentally at selector positions 5 and 9.</span></div>
+      </div>
     </article>
   </div>
 </section>
 
 <section class="tabpanel" id="bench">
-  <div class="lab-layout">
-    <div class="bench">
-      <div class="bench-heading"><div><div class="kicker">E03 experimental station</div><h3>Virtual DC Measurement Bench</h3></div><span class="run-badge" id="runBadge">Run —</span></div>
-      <div class="control">
-        <label for="dipole"><span>Dipole under test</span><span id="dipoleLabel">Ohmic resistor</span></label>
-        <select id="dipole"><option value="resistor">Ohmic resistor</option><option value="lamp">Tungsten-filament lamp</option></select>
+  <div class="official-bench">
+    <div class="pot-board">
+      <div class="bench-top">
+        <div><div class="bench-kicker">USTHB TP3 apparatus model</div><h3 class="bench-title">Potentiometric resistance box</h3></div>
+        <span class="wiring-state" id="wiringState">Wiring not verified</span>
       </div>
-      <div class="circuit-wrap">
-        <svg class="circuit-svg" viewBox="0 0 760 285" role="img" aria-label="DC source, ammeter, dipole and voltmeter in short-derivation connection">
-          <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#275a8f"/></marker></defs>
-          <rect x="36" y="104" width="118" height="76" rx="12" fill="#e9f3ff" stroke="#4c78a8" stroke-width="3"/>
-          <text x="95" y="135" text-anchor="middle" font-size="16" font-weight="700" fill="#17334f">DC SOURCE</text><text id="svgSource" x="95" y="160" text-anchor="middle" font-size="18" fill="#17334f">0.00 V</text>
-          <path d="M154 142 H260" stroke="#275a8f" stroke-width="4"/><circle cx="310" cy="142" r="42" fill="#f8fbff" stroke="#275a8f" stroke-width="4"/><text x="310" y="149" text-anchor="middle" font-size="30" font-weight="800" fill="#17334f">A</text>
-          <path d="M352 142 H465" stroke="#275a8f" stroke-width="4" marker-end="url(#arrow)"/><rect x="465" y="110" width="124" height="64" rx="10" fill="#fff8e8" stroke="#b67b1e" stroke-width="3"/><text id="svgDipole" x="527" y="149" text-anchor="middle" font-size="18" font-weight="800" fill="#6c4812">Rₓ</text>
-          <path d="M589 142 H685 V236 H95 V180" fill="none" stroke="#275a8f" stroke-width="4"/><path d="M465 142 V50 H589 V142" fill="none" stroke="#275a8f" stroke-width="3"/><circle cx="527" cy="50" r="34" fill="#f8fbff" stroke="#275a8f" stroke-width="3"/><text x="527" y="58" text-anchor="middle" font-size="26" font-weight="800" fill="#17334f">V</text>
+
+      <div class="core-controls">
+        <label>Configuration
+          <select id="taskSelect">
+            <option value="resistor">IV.1 — Resistor</option>
+            <option value="lamp">IV.2 — Lamp</option>
+            <option value="series">IV.3a — Resistor + lamp in series</option>
+            <option value="parallel">IV.3b — Resistor + lamp in parallel</option>
+          </select>
+        </label>
+        <label>Virtual generator
+          <select id="generatorRange" disabled><option>E = 12.0 V DC · maximum range selected</option></select>
+        </label>
+        <label class="wide">Current task
+          <select id="taskSummary" disabled><option>Record the prescribed selector positions only.</option></select>
+        </label>
+      </div>
+
+      <div class="selector-board">
+        <div class="selector-head"><span>Selector position B</span><strong id="selectorStatus">B → 1</strong></div>
+        <div class="selector-row" id="selectorRow"></div>
+      </div>
+
+      <div class="pot-readouts">
+        <div class="pot-readout"><span>RAB</span><strong id="rabReadout">1 Ω</strong></div>
+        <div class="pot-readout"><span>Unloaded VAB</span><strong id="vabReadout">— V</strong></div>
+        <div class="pot-readout"><span>RAC</span><strong>11 Ω</strong></div>
+      </div>
+
+      <div class="circuit-stage">
+        <svg viewBox="0 0 760 310" role="img" aria-label="Potentiometric source with generator across A-C and measurement circuit across A-B">
+          <path class="wire" d="M72 232H650"/>
+          <path class="wire" d="M72 232V80H164"/>
+          <path class="wire" d="M650 232V80H566"/>
+          <rect class="device" x="164" y="48" width="118" height="64" rx="10"/>
+          <text class="label" x="223" y="75" text-anchor="middle">DC generator</text><text class="small" x="223" y="96" text-anchor="middle">E, Rg</text>
+          <path class="wire" d="M282 80H566"/>
+          <text class="label" x="70" y="258">A / 0</text><text class="label" x="638" y="258">C / 11</text>
+          <g id="tapGroup"><circle cx="330" cy="232" r="8" fill="#ffb454"/><path class="wire" d="M330 232V168"/></g>
+          <text class="label" id="tapLabel" x="330" y="155" text-anchor="middle">B / 1</text>
+          <path class="wire" d="M330 168H390"/>
+          <circle class="device" cx="430" cy="168" r="34"/><text class="label" x="430" y="174" text-anchor="middle">A</text>
+          <path class="wire" d="M464 168H510"/>
+          <rect class="load" x="510" y="139" width="118" height="58" rx="9"/><text class="label" id="svgLoad" x="569" y="174" text-anchor="middle">Rx</text>
+          <path class="wire" d="M628 168H690V232"/>
+          <path class="wire" d="M510 168V102H628V168"/>
+          <circle class="device" cx="569" cy="102" r="29"/><text class="label" x="569" y="108" text-anchor="middle">V</text>
         </svg>
       </div>
-      <div class="meter-grid">
-        <div class="meter"><div class="meter-label">Voltmeter</div><div class="meter-value" id="voltmeter">0.00 V</div><div class="meter-sub">20 V DC range</div></div>
-        <div class="meter"><div class="meter-label">Ammeter</div><div class="meter-value" id="ammeter">0.0 mA</div><div class="meter-sub">200 mA DC range</div></div>
+
+      <div class="core-meters">
+        <div class="core-meter"><span>Voltmeter Vm</span><strong id="vmeter">0.00 V</strong></div>
+        <div class="core-meter"><span>Ammeter Im</span><strong id="imeter">0.0 mA</strong></div>
       </div>
-      <div class="control"><label for="source"><span>Source setting</span><span id="sourceReadout">0.0 V</span></label><input id="source" type="range" min="0" max="10" step="0.1" value="0"></div>
-      <div class="bench-actions"><button class="btn" id="takeReading" type="button">Take reading</button><button class="btn secondary" id="zeroSource" type="button">Set source to 0 V</button><button class="btn secondary" id="newRun" type="button">New experimental run</button></div>
+
+      <div class="core-actions">
+        <button class="btn secondary" id="verifyWiring" type="button">Verify wiring</button>
+        <button class="btn" id="recordReading" type="button" disabled>Record prescribed reading</button>
+        <button class="btn secondary" id="newRun" type="button">New specimen</button>
+      </div>
+      <div class="notice protocol-message" id="benchMessage">Select the resistor configuration, verify the wiring, and begin at selector position 1.</div>
     </div>
-    <aside class="sidepanel">
-      <div class="spec"><h4>Voltmeter model</h4><dl><dt>Range</dt><dd>20.00 V</dd><dt>Resolution</dt><dd>0.01 V</dd><dt>Input resistance</dt><dd>10.0 MΩ ± 1%</dd><dt>Accuracy limit</dt><dd>±(0.5% rdg + 2 digits)</dd></dl></div>
-      <div class="spec"><h4>Ammeter model</h4><dl><dt>Range</dt><dd>200.0 mA</dd><dt>Resolution</dt><dd>0.1 mA</dd><dt>Internal resistance</dt><dd>0.60 Ω</dd><dt>Accuracy limit</dt><dd>±(0.8% rdg + 2 digits)</dd></dl></div>
-      <div class="spec"><h4>DC source model</h4><dl><dt>Range</dt><dd>0–10 V</dd><dt>Output resistance</dt><dd>0.35 Ω</dd><dt>Setting resolution</dt><dd>0.1 V</dd></dl></div>
-      <div id="benchNotice" class="notice">Collect at least six well-spaced points for each dipole.</div>
-      <div class="spec learn-only" id="learnHint"><h4>Diagnostic hint</h4><p class="mini" id="hintText">Begin with the resistor and distribute measurements across the full voltage range.</p></div>
+
+    <aside class="task-panel">
+      <article class="task-card">
+        <h4 id="taskTitle">IV.1 — Resistor characteristic</h4>
+        <p id="taskInstruction">Record V<sub>Rx</sub> and I<sub>m</sub> at positions 1, 3, 5, 7, 9 and 11.</p>
+        <div class="required-list" id="requiredList"></div>
+      </article>
+      <article class="task-card">
+        <h4>Virtual instrument model</h4>
+        <p>Voltmeter: 20 V DC range, 10 MΩ input resistance. Ammeter: 300 mA DC range, finite internal resistance. Small calibration offsets and reading noise vary with each virtual specimen.</p>
+      </article>
+      <article class="task-card">
+        <h4>Lamp label</h4>
+        <p><strong>6.0 V · 0.10 A · 0.60 W</strong></p>
+        <p>Use the measured lamp characteristic to estimate its operating resistance near the nominal condition and compare it with the manufacturer's indication.</p>
+      </article>
+      <article class="task-card learn-only">
+        <h4>Protocol hint</h4>
+        <p id="protocolHint">The official graph uses the ammeter reading I<sub>m</sub>, not the loading-corrected current.</p>
+      </article>
     </aside>
   </div>
 </section>
 
-<section class="tabpanel" id="data">
-  <div class="paper">
-    <div class="section-toolbar">
-      <div><h2>Measurement table</h2><div class="mini">Uncertainties shown are standard uncertainties derived from the stated meter accuracy limits using a rectangular-distribution assumption.</div></div>
-      <div class="actions compact"><button class="btn ghost" id="downloadCsv" type="button">Export CSV</button><button class="btn danger" id="clearData" type="button">Clear data</button></div>
-    </div>
-    <div class="table-scroll"><table class="data-table"><thead><tr><th>#</th><th>Dipole</th><th>Source<br>(V)</th><th>V<br>(V)</th><th>I<sub>m</sub><br>(mA)</th><th>I<sub>V</sub><br>(µA)</th><th>I<sub>D</sub><br>(mA)</th><th>u(V)<br>(V)</th><th>u(I<sub>D</sub>)<br>(mA)</th><th></th></tr></thead><tbody id="dataBody"></tbody></table></div>
-    <div id="dataEmpty" class="notice" style="margin-top:14px">No measurements yet. Use the Virtual Bench to acquire data.</div>
-  </div>
-</section>
-
-<section class="tabpanel" id="analysis">
-  <div class="grid two analysis-grid">
-    <div class="paper"><h2>I–V characteristic</h2><div class="chartbox"><canvas id="chart" width="800" height="500" aria-label="Current-voltage characteristic with uncertainty bars"></canvas></div><div class="mini">Horizontal: corrected dipole current. Vertical: measured dipole voltage. Error bars represent ±1 standard uncertainty.</div></div>
-    <div class="paper">
-      <h2>Quantitative analysis</h2>
-      <label class="field-label" for="analysisDipole">Dataset</label><select id="analysisDipole"><option value="resistor">Ohmic resistor</option><option value="lamp">Filament lamp</option></select>
-      <div class="actions"><button class="btn" id="runFit" type="button">Run analysis</button></div>
-      <div id="fitNotice" class="notice">For the resistor, collect at least six points spanning most of the available range.</div>
-      <div class="metric-row" style="margin-top:14px">
-        <div class="metric"><div class="label">Slope / R</div><div class="value" id="slopeMetric">—</div></div>
-        <div class="metric"><div class="label">Intercept</div><div class="value" id="interceptMetric">—</div></div>
-        <div class="metric"><div class="label">Reduced χ²</div><div class="value" id="chiMetric">—</div></div>
-        <div class="metric"><div class="label">Points</div><div class="value" id="pointsMetric">0</div></div>
-      </div>
-      <div id="analysisText" class="analysis-copy"></div>
-    </div>
-  </div>
-  <div class="grid two" style="margin-top:18px">
-    <div class="paper"><h2>Residuals — resistor model</h2><div class="chartbox small"><canvas id="residualChart" width="800" height="320" aria-label="Residual plot for resistor linear model"></canvas></div><div class="mini">Residual = measured V − fitted V. A useful model should not leave a systematic pattern.</div></div>
-    <div class="paper">
-      <h2>Interpretation guide</h2>
-      <div class="definition-list">
-        <div><strong>R²</strong><span>Describes how much variation is explained by a linear relation, but does not by itself validate the model.</span></div>
-        <div><strong>Reduced χ²</strong><span>Compares residual size with stated measurement uncertainty. Values of order unity are expected when model and uncertainties are mutually consistent.</span></div>
-        <div><strong>Residual structure</strong><span>Curvature or trends can reveal model inadequacy even when R² is very high.</span></div>
-        <div><strong>Fit used here</strong><span>Iterative effective-variance weighted least squares with σ²<sub>eff</sub>=u(V)²+[m·u(I)]².</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="tabpanel" id="synthesis">
+<section class="tabpanel" id="characteristics">
   <div class="grid two">
-    <div class="paper">
-      <h2>Construct a combined characteristic</h2>
-      <p>Use your measured resistor and lamp characteristics. The program interpolates only within the region covered by both datasets; it does not extrapolate beyond your measurements.</p>
-      <label class="field-label" for="networkType">Connection</label>
-      <select id="networkType"><option value="series">Series: add voltages at equal current</option><option value="parallel">Parallel: add currents at equal voltage</option></select>
-      <div class="actions"><button class="btn" id="buildSynthesis" type="button">Construct from measured data</button></div>
-      <div id="synthesisNotice" class="notice">Acquire at least six resistor points and six lamp points first.</div>
-      <div id="synthesisEquations" class="analysis-copy"></div>
-    </div>
-    <div class="paper"><h2>Combined characteristic</h2><div class="chartbox"><canvas id="synthesisChart" width="800" height="500" aria-label="Synthesized series or parallel current-voltage characteristic"></canvas></div><div class="mini" id="synthesisCaption">No synthesized characteristic yet.</div></div>
+    <article class="paper">
+      <div class="section-toolbar"><div><h2>Resistor — official readings</h2><div class="mini">Required positions: 1, 3, 5, 7, 9, 11.</div></div><span class="completion-badge" id="resistorBadge">0 / 6</span></div>
+      <div class="core-table-wrap"><table class="core-table"><thead><tr><th>Selector</th><th>V<sub>Rx</sub> / V</th><th>I<sub>m</sub> / mA</th></tr></thead><tbody id="resistorBody"></tbody></table></div>
+    </article>
+    <article class="paper">
+      <div class="section-toolbar"><div><h2>Lamp — official readings</h2><div class="mini">Required positions: every selector position 0–11.</div></div><span class="completion-badge" id="lampBadge">0 / 12</span></div>
+      <div class="core-table-wrap"><table class="core-table"><thead><tr><th>Selector</th><th>V<sub>L</sub> / V</th><th>I<sub>m</sub> / mA</th></tr></thead><tbody id="lampBody"></tbody></table></div>
+    </article>
   </div>
+
+  <div class="analysis-split" style="margin-top:18px">
+    <article class="paper">
+      <h2>Official characteristic graph</h2>
+      <div class="core-chart"><canvas id="coreChart" width="900" height="520"></canvas></div>
+      <div class="graph-note">Horizontal axis: measured ammeter current I<sub>m</sub>. Vertical axis: measured voltage. Resistor and lamp are plotted on the same graph, as required by the TP.</div>
+    </article>
+    <article class="paper">
+      <h2>Interpretation</h2>
+      <div class="result-box">
+        <h4>Resistor from the official graph</h4>
+        <div class="result-grid"><div><span>Graphical slope</span><strong id="officialR">— Ω</strong></div><div><span>Linearity R²</span><strong id="officialR2">—</strong></div></div>
+      </div>
+      <div class="result-box" style="margin-top:12px">
+        <h4>Lamp at nominal operation</h4>
+        <div class="result-grid"><div><span>Estimated V/I near 6 V</span><strong id="lampR">— Ω</strong></div><div><span>Label expectation</span><strong>60 Ω</strong></div></div>
+      </div>
+      <div class="compare-panel" id="lampCompare" style="margin-top:12px">Complete the lamp readings to compare the graph with the 6 V / 0.10 A virtual manufacturer label.</div>
+      <div class="question-block"><label for="resistorInterpretation">What does the resistor graph suggest?</label><textarea id="resistorInterpretation" placeholder="Discuss linearity, passage near the origin, and the resistance obtained from the slope."></textarea></div>
+      <div class="question-block"><label for="lampInterpretation">What does the lamp graph suggest?</label><textarea id="lampInterpretation" placeholder="Discuss the curvature and the change of filament resistance with operating condition."></textarea></div>
+    </article>
+  </div>
+</section>
+
+<section class="tabpanel" id="associations">
+  <div class="grid two">
+    <article class="paper">
+      <div class="section-toolbar"><div><h2>Series verification</h2><div class="mini">Official experimental checks: selector positions 5 and 9.</div></div><span class="completion-badge" id="seriesBadge">0 / 2</span></div>
+      <p>At equal current, construct the sum graphically using</p><div class="formula">V<sub>S</sub>(I) = V<sub>Rx</sub>(I) + V<sub>L</sub>(I).</div>
+      <div class="core-table-wrap"><table class="core-table"><thead><tr><th>Selector</th><th>Measured V<sub>m</sub> / V</th><th>Measured I<sub>m</sub> / mA</th><th>Graphical V<sub>S</sub> / V</th><th>Difference / V</th></tr></thead><tbody id="seriesBody"></tbody></table></div>
+      <div class="question-block"><label for="seriesJustification">Justify the series addition principle</label><textarea id="seriesJustification" placeholder="Explain why the current is common and the voltages add."></textarea></div>
+    </article>
+    <article class="paper">
+      <div class="section-toolbar"><div><h2>Parallel verification</h2><div class="mini">Official experimental checks: selector positions 5 and 9.</div></div><span class="completion-badge" id="parallelBadge">0 / 2</span></div>
+      <p>At equal voltage, construct the sum graphically using</p><div class="formula">I<sub>P</sub>(V) = I<sub>Rx</sub>(V) + I<sub>L</sub>(V).</div>
+      <div class="core-table-wrap"><table class="core-table"><thead><tr><th>Selector</th><th>Measured V<sub>m</sub> / V</th><th>Measured I<sub>m</sub> / mA</th><th>Graphical I<sub>P</sub> / mA</th><th>Difference / mA</th></tr></thead><tbody id="parallelBody"></tbody></table></div>
+      <div class="question-block"><label for="parallelJustification">Justify the parallel addition principle</label><textarea id="parallelJustification" placeholder="Explain why the voltage is common and the branch currents add."></textarea></div>
+    </article>
+  </div>
+
+  <article class="paper" style="margin-top:18px">
+    <h2>Graphical addition and experimental verification</h2>
+    <div class="core-chart"><canvas id="sumChart" width="900" height="520"></canvas></div>
+    <div class="graph-note">The constructed series curve and parallel curve are derived from the measured resistor and lamp characteristics. Experimental series points are shown as circles; parallel verification points are shown as squares.</div>
+  </article>
+</section>
+
+<section class="tabpanel" id="advanced">
+  <div class="protocol-banner">
+    <div><strong>Part B — Advanced experimental analysis</strong><p>This section is an extension beyond the official TP3 handout. It does not replace the official V=f(I<sub>m</sub>) treatment above.</p></div>
+    <span class="pill extension-mark">Extension</span>
+  </div>
+  <div class="grid two">
+    <article class="paper">
+      <h2>Voltmeter-loading correction</h2>
+      <p>Because the ammeter reads the dipole current plus the voltmeter current, a refined estimate is</p>
+      <div class="formula">I<sub>D</sub> = I<sub>m</sub> − V/R<sub>V</sub>.</div>
+      <p>With R<sub>V</sub> = 10 MΩ, the correction is small but measurable in principle. The table below shows the correction and propagated standard uncertainty for the resistor data.</p>
+      <div class="core-table-wrap"><table class="core-table"><thead><tr><th>Selector</th><th>I<sub>m</sub> / mA</th><th>I<sub>V</sub> / µA</th><th>I<sub>D</sub> / mA</th><th>u(V) / V</th><th>u(I<sub>D</sub>) / mA</th></tr></thead><tbody id="advancedBody"></tbody></table></div>
+    </article>
+    <article class="paper">
+      <h2>Uncertainty-aware resistor fit</h2>
+      <button class="btn" id="runAdvancedFit" type="button">Run effective-variance fit</button>
+      <div class="notice" id="advancedNotice" style="margin-top:12px">Complete the official resistor dataset first.</div>
+      <div class="result-grid" style="margin-top:12px"><div><span>Corrected R</span><strong id="advancedR">— Ω</strong></div><div><span>Intercept</span><strong id="advancedB">— V</strong></div><div><span>Reduced χ²</span><strong id="advancedChi">—</strong></div><div><span>Difference from official slope</span><strong id="advancedDelta">—</strong></div></div>
+      <div class="analysis-copy" id="advancedText"></div>
+    </article>
+  </div>
+  <article class="paper" style="margin-top:18px"><h2>Residuals of the corrected-current fit</h2><div class="core-chart"><canvas id="residualChart" width="900" height="360"></canvas></div></article>
 </section>
 
 <section class="tabpanel" id="assessment">
-  <div class="paper">
-    <h2>Conceptual and quantitative assessment</h2>
-    <p>Complete this after measurement and analysis. In Lab mode, feedback is withheld until submission.</p>
+  <article class="paper">
+    <h2>Post-laboratory assessment</h2>
     <form id="quiz">
-      <fieldset class="question"><legend>1. In the short-derivation circuit, why is the ammeter reading slightly larger than the dipole current?</legend><label class="choice"><input type="radio" name="q1" value="a"> The ammeter creates current.</label><label class="choice"><input type="radio" name="q1" value="b"> It measures the sum of dipole current and voltmeter current.</label><label class="choice"><input type="radio" name="q1" value="c"> The resistor releases stored charge.</label></fieldset>
-      <fieldset class="question"><legend>2. Which statement best describes an ohmic resistor over the tested range?</legend><label class="choice"><input type="radio" name="q2" value="a"> V is proportional to I within experimental uncertainty.</label><label class="choice"><input type="radio" name="q2" value="b"> I is independent of V.</label><label class="choice"><input type="radio" name="q2" value="c"> Resistance must decrease as current increases.</label></fieldset>
-      <fieldset class="question"><legend>3. Why is the lamp characteristic nonlinear?</legend><label class="choice"><input type="radio" name="q3" value="a"> The filament resistance changes as its temperature rises.</label><label class="choice"><input type="radio" name="q3" value="b"> Ohm’s law is dimensionally incorrect.</label><label class="choice"><input type="radio" name="q3" value="c"> A voltmeter can measure only nonlinear voltages.</label></fieldset>
-      <fieldset class="question"><legend>4. For two dipoles in series, their combined characteristic is obtained by:</legend><label class="choice"><input type="radio" name="q4" value="a"> Adding currents at equal voltage.</label><label class="choice"><input type="radio" name="q4" value="b"> Adding voltages at equal current.</label><label class="choice"><input type="radio" name="q4" value="c"> Multiplying both voltages and currents.</label></fieldset>
-      <fieldset class="question"><legend>5. Which observation is strongest evidence that a straight-line model is inadequate?</legend><label class="choice"><input type="radio" name="q5" value="a"> A high R².</label><label class="choice"><input type="radio" name="q5" value="b"> A systematic curved pattern in the residuals.</label><label class="choice"><input type="radio" name="q5" value="c"> More than six measurements.</label></fieldset>
-      <fieldset class="question"><legend>6. Using your resistor fit, enter the resistance in Ω to the nearest 0.1 Ω.</legend><input id="q6" name="q6" type="number" step="0.1" inputmode="decimal" placeholder="Run the resistor analysis first"></fieldset>
+      <fieldset class="question"><legend>1. In the potentiometric box, what must be connected between A and C?</legend><label class="choice"><input type="radio" name="q1" value="a"> The voltmeter only.</label><label class="choice"><input type="radio" name="q1" value="b"> The DC generator.</label><label class="choice"><input type="radio" name="q1" value="c"> The lamp only.</label></fieldset>
+      <fieldset class="question"><legend>2. Which selector positions are prescribed for the resistor characteristic?</legend><label class="choice"><input type="radio" name="q2" value="a"> 1, 3, 5, 7, 9, 11.</label><label class="choice"><input type="radio" name="q2" value="b"> 0, 2, 4, 6, 8, 10.</label><label class="choice"><input type="radio" name="q2" value="c"> Only 5 and 9.</label></fieldset>
+      <fieldset class="question"><legend>3. Why is I<sub>m</sub> not exactly equal to the current through a single dipole in the short-derivation connection?</legend><label class="choice"><input type="radio" name="q3" value="a"> The ammeter also includes the voltmeter current.</label><label class="choice"><input type="radio" name="q3" value="b"> The generator has no emf.</label><label class="choice"><input type="radio" name="q3" value="c"> Current is not conserved.</label></fieldset>
+      <fieldset class="question"><legend>4. For two dipoles in series, the graphical sum is formed by:</legend><label class="choice"><input type="radio" name="q4" value="a"> Adding currents at equal voltage.</label><label class="choice"><input type="radio" name="q4" value="b"> Adding voltages at equal current.</label><label class="choice"><input type="radio" name="q4" value="c"> Multiplying the two resistances at each point.</label></fieldset>
+      <fieldset class="question"><legend>5. For two dipoles in parallel, the graphical sum is formed by:</legend><label class="choice"><input type="radio" name="q5" value="a"> Adding currents at equal voltage.</label><label class="choice"><input type="radio" name="q5" value="b"> Adding voltages at equal current.</label><label class="choice"><input type="radio" name="q5" value="c"> Subtracting the lamp current from the resistor current.</label></fieldset>
+      <fieldset class="question"><legend>6. Why is the lamp characteristic nonlinear?</legend><label class="choice"><input type="radio" name="q6" value="a"> Its filament resistance changes substantially as the filament heats.</label><label class="choice"><input type="radio" name="q6" value="b"> Voltage has no physical meaning for lamps.</label><label class="choice"><input type="radio" name="q6" value="c"> The resistance box contains eleven resistors.</label></fieldset>
       <button class="btn" type="submit">Submit assessment</button>
     </form>
     <div id="quizResult" style="margin-top:14px"></div>
-  </div>
+  </article>
 </section>
 
 <section class="tabpanel" id="report">
-  <div class="paper no-print">
-    <h2>Laboratory report builder</h2>
-    <p>Use concise scientific prose. Your complete measurement table, graph, fit statistics and assessment result are inserted automatically.</p>
-    <div class="report-grid identity-grid">
-      <label>Student name<input id="studentName" type="text" autocomplete="name"></label>
+  <article class="paper no-print">
+    <h2>Laboratory report</h2>
+    <p>The report keeps the official TP3 results separate from the optional advanced-analysis extension.</p>
+    <div class="report-grid">
+      <label>Student name<input id="studentName" type="text"></label>
       <label>Group / section<input id="studentGroup" type="text"></label>
       <label>Date<input id="reportDate" type="date"></label>
-      <label>Experiment mode<input id="reportMode" type="text" readonly></label>
-    </div>
-    <div class="report-grid" style="margin-top:15px">
-      <label>Objective<textarea id="reportObjective">To investigate the current–voltage characteristics of an ohmic resistor and a tungsten-filament lamp, quantify measurement loading and uncertainty, and construct combined characteristics from experimental data.</textarea></label>
-      <label>Method<textarea id="reportMethod" placeholder="Describe the circuit topology, measurement sequence, and correction applied to the ammeter reading..."></textarea></label>
-      <label>Discussion<textarea id="reportDiscussion" placeholder="Interpret the resistor fit, reduced χ², residuals, lamp nonlinearity, and series/parallel construction..."></textarea></label>
-      <label>Sources of uncertainty<textarea id="reportUncertainty" placeholder="Discuss meter accuracy, resolution, loading, random variation, model limitations, and interpolation..."></textarea></label>
-      <label class="wide">Conclusion<textarea id="reportConclusion" placeholder="State the principal quantitative result and the physical conclusions supported by your data..."></textarea></label>
+      <label>Mode<input id="reportMode" type="text" readonly></label>
+      <label class="wide">Discussion<textarea id="reportDiscussion" placeholder="Discuss the resistor characteristic, lamp nonlinearity, manufacturer comparison, and experimental verification of the series/parallel constructions."></textarea></label>
+      <label class="wide">Conclusion<textarea id="reportConclusion" placeholder="State the resistance obtained from the official graph and the conclusions supported by the measurements."></textarea></label>
     </div>
     <div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button></div>
-  </div>
-  <div class="report-preview" id="reportPreview"><h2>Laboratory Report — E03</h2><p class="mini">Build the report to populate this section with your measurements and analysis.</p></div>
+  </article>
+  <div class="report-preview" id="reportPreview"><h2>Laboratory Report — E03</h2><p class="mini">Complete the prescribed measurements and build the report.</p></div>
 </section>
 <section class="tabpanel" id="printable-report"><div class="report-preview" id="printOnlyPreview"></div></section>
 </main>
 
-<footer class="footer"><div class="shell">E03 • Electricity & Circuits • Physics USTHB • Interactive undergraduate laboratory</div></footer>
-<script src="lab.js"></script>
+<footer class="footer"><div class="shell">E03 • USTHB-aligned TP3 core protocol • Physics USTHB interactive laboratory</div></footer>
+<script src="official.js"></script>
 </body>
 </html>
