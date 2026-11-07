@@ -34,7 +34,7 @@ function makeRun(){
   };
 }
 function persistState(){
-  persistState()
+  try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}
 }
 function save(){
   state.text=collectText();state.report=collectReport();
