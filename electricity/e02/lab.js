@@ -5,15 +5,15 @@ const NX=101, NY=121;
 const XMIN=-10, XMAX=10, YMIN=-12, YMAX=12;
 const DX=(XMAX-XMIN)/(NX-1), DY=(YMAX-YMIN)/(NY-1);
 const ELEC_HALF=8, CYL_R=3;
-const TARGETS=[2,4,6,8], YLINES=[0,2,5,8], AXIS_X=[-10,-8,-6,-4,-2,0,2,4,6,8,10];
-const STORAGE='PhysicsUSTHB_E02_v1';
+const TARGETS=[2,4,6,8], REQUIRED_MAP_POINTS=4, AXIS_X=[-10,-8,-6,-4,-2,0,2,4,6,8,10];
+const STORAGE='PhysicsUSTHB_E02_v2';
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const idx=(i,j)=>j*NX+i;
 
 let state={
-  version:1,mode:'learn',run:null,
+  version:2,mode:'learn',run:null,
   plane:{connected:false,x:0,y:0,va:null,vb:null,sym:{plus:null,minus:null}},
   mapA:{target:2,y:0,x:0,points:{},mirrored:false,lines:{central:false,edge:false}},
   axisA:{records:{}},
@@ -38,7 +38,7 @@ function save(){
   try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}
 }
 function load(){
-  try{const s=JSON.parse(localStorage.getItem(STORAGE)||'null');if(s?.version===1)state={...state,...s};}catch(_){}
+  try{const s=JSON.parse(localStorage.getItem(STORAGE)||'null');if(s?.version===2)state={...state,...s};}catch(_){}
 }
 function collectText(){
   const ids=['fieldConclusionA','uniformConclusion','chargeDistribution','distortionConclusion','compareConclusion'];
@@ -116,8 +116,10 @@ function applyMode(mode){
   $('#modeDescription').textContent=state.mode==='learn'?'Protocol guidance and interpretation prompts are visible.':'Minimal guidance; follow the mapping protocol independently.';
   $('#reportMode').value=state.mode==='learn'?'Learn mode':'Lab mode';save();
 }
-function pointCount(map){return TARGETS.reduce((n,t)=>n+YLINES.filter(y=>map.points?.[t]?.[y]).length,0)}
-function mapComplete(map){return pointCount(map)===TARGETS.length*YLINES.length}
+function targetPoints(map,t){return Object.values(map.points?.[t]||{}).sort((a,b)=>a.y-b.y)}
+function targetComplete(map,t){const pts=targetPoints(map,t);return pts.some(p=>Math.abs(p.y)<.01)&&pts.filter(p=>p.y>0).length>=REQUIRED_MAP_POINTS-1}
+function pointCount(map){return TARGETS.reduce((n,t)=>n+Math.min(REQUIRED_MAP_POINTS,targetPoints(map,t).length),0)}
+function mapComplete(map){return TARGETS.every(t=>targetComplete(map,t))}
 function axisComplete(axis){return AXIS_X.every(x=>axis.records?.[x])}
 function progress(){
   const setup=state.plane.va!=null&&state.plane.vb!=null&&state.plane.sym.plus&&state.plane.sym.minus;
@@ -152,7 +154,7 @@ function drawTank(canvas,field,probe,map,lines=[]){
   const colors={2:'#246fb5',4:'#168b78',6:'#a16a16',8:'#a34472'};
   if(map?.points){
     for(const t of TARGETS){
-      const pts=[];for(const y of YLINES){const q=map.points?.[t]?.[y];if(q){pts.push(q);if(map.mirrored||field.withCylinder)pts.push({...q,y:-q.y});}}
+      const pts=[];for(const q of targetPoints(map,t)){pts.push(q);if((map.mirrored||field.withCylinder)&&q.y>0)pts.push({...q,y:-q.y});}
       pts.sort((a,b)=>a.y-b.y);if(pts.length){ctx.strokeStyle=colors[t];ctx.lineWidth=2;ctx.beginPath();pts.forEach((q,i)=>i?ctx.lineTo(px(q.x),py(q.y)):ctx.moveTo(px(q.x),py(q.y)));ctx.stroke();ctx.fillStyle=colors[t];pts.forEach(q=>{ctx.beginPath();ctx.arc(px(q.x),py(q.y),4,0,Math.PI*2);ctx.fill();});}
     }
   }
@@ -201,25 +203,32 @@ function renderPlaneResults(){
 
 function setupTargetButtons(container,map,key){
   const el=$(container);el.innerHTML='';
-  TARGETS.forEach(t=>{const b=document.createElement('button');b.className='target-btn';b.type='button';b.textContent=`${t} V`;if(map.target===t)b.classList.add('active');if(YLINES.every(y=>map.points?.[t]?.[y]))b.classList.add('done');b.addEventListener('click',()=>{map.target=t;if(key==='A')updateMapA();else{$('#targetBSelect').value=t;updateMapBControls();}save();});el.appendChild(b);});
+  TARGETS.forEach(t=>{const b=document.createElement('button');b.className='target-btn';b.type='button';b.textContent=`${t} V`;if(map.target===t)b.classList.add('active');if(targetComplete(map,t))b.classList.add('done');b.addEventListener('click',()=>{map.target=t;if(key==='A')updateMapA();else{$('#targetBSelect').value=t;updateMapBControls();}save();});el.appendChild(b);});
 }
 function yProgress(container,map){
-  $(container).innerHTML=YLINES.map(y=>`<span class="y-chip ${map.points?.[map.target]?.[y]?'done':''}">y=+${y} cm</span>`).join('');
+  const pts=targetPoints(map,map.target),ys=pts.map(p=>p.y);
+  const axis=ys.some(y=>Math.abs(y)<.01),positive=ys.filter(y=>y>0);
+  const chips=[`<span class="y-chip ${axis?'done':''}">x-axis ${axis?'✓':'required'}</span>`,...positive.map(y=>`<span class="y-chip done">y=+${y.toFixed(1)} cm</span>`)];
+  while(chips.length<REQUIRED_MAP_POINTS)chips.push('<span class="y-chip">choose y &gt; 0</span>');
+  $(container).innerHTML=chips.join('');
 }
-function mapPointStore(map,t,y,p){if(!map.points[t])map.points[t]={};map.points[t][y]=p;}
+function mapPointStore(map,t,y,p){if(!map.points[t])map.points[t]={};map.points[t][Number(y).toFixed(1)]=p;}
 function mapAProbe(){
   const x=state.mapA.x,y=state.mapA.y,v=readPotential(fields.A,x,y);return{x,y,v,error:v-state.mapA.target};
 }
 function updateMapA(){
-  state.mapA.y=+$('#mapAYSelect').value;$('#mapAXSlider').value=state.mapA.x;
+  state.mapA.y=+$('#mapAYSelect').value;$('#mapAXSlider').value=state.mapA.x;$('#mapAYLineLabel').textContent=`${state.mapA.y.toFixed(1)} cm`;
   const q=mapAProbe();$('#mapAX').textContent=`${q.x.toFixed(2)} cm`;$('#mapAY').textContent=`${q.y.toFixed(1)} cm`;$('#mapAV').textContent=`${q.v.toFixed(2)} V`;$('#mapAError').textContent=`${q.error>=0?'+':''}${q.error.toFixed(2)} V`;$('#targetOverlay').textContent=`Target: ${state.mapA.target} V`;
   setupTargetButtons('#targetsA',state.mapA,'A');yProgress('#yProgressA',state.mapA);renderEquipATable();drawPlaneCanvases();updateFieldsA();
 }
 function markA(){
   if(!state.plane.connected){$('#mapAMessage').className='notice warn';$('#mapAMessage').textContent='Connect the plane-electrode configuration first.';return;}
+  const t=state.mapA.target,y=state.mapA.y,pts=targetPoints(state.mapA,t);
+  if(!pts.some(p=>Math.abs(p.y)<.01)&&Math.abs(y)>.01){$('#mapAMessage').className='notice warn';$('#mapAMessage').textContent='As in the handout, locate the equipotential on x′Ox (y=0) first.';return;}
+  if(y>0&&pts.some(p=>Math.abs(p.y-y)<.25)){$('#mapAMessage').className='notice warn';$('#mapAMessage').textContent='Choose a different positive constant-y line for the next point.';return;}
   const q=mapAProbe();if(Math.abs(q.error)>.10){$('#mapAMessage').className='notice warn';$('#mapAMessage').textContent=state.mode==='learn'?`Reading is ${Math.abs(q.error).toFixed(2)} V from target. ${q.error<0?'Move toward electrode B (right).':'Move toward electrode A (left).'}`:'Current reading is outside the ±0.10 V acceptance band.';return;}
-  mapPointStore(state.mapA,state.mapA.target,state.mapA.y,{x:q.x,y:q.y,v:q.v});$('#mapAMessage').className='notice ok';$('#mapAMessage').textContent=`${state.mapA.target} V point stored at y=+${state.mapA.y} cm.`;
-  const nextY=YLINES.find(y=>!state.mapA.points?.[state.mapA.target]?.[y]);if(nextY!==undefined){state.mapA.y=nextY;$('#mapAYSelect').value=nextY;}else{const nt=TARGETS.find(t=>!YLINES.every(y=>state.mapA.points?.[t]?.[y]));if(nt!==undefined){state.mapA.target=nt;$('#mapAYSelect').value=0;state.mapA.y=0;}}
+  mapPointStore(state.mapA,t,y,{x:q.x,y:q.y,v:q.v});$('#mapAMessage').className='notice ok';$('#mapAMessage').textContent=`${t} V point stored at y=${y.toFixed(1)} cm. ${targetComplete(state.mapA,t)?'This equipotential has enough upper-half points.':'Choose another positive constant-y line.'}`;
+  if(targetComplete(state.mapA,t)){const nt=TARGETS.find(v=>!targetComplete(state.mapA,v));if(nt!==undefined){state.mapA.target=nt;state.mapA.y=0;$('#mapAYSelect').value=0;}}
   updateMapA();progress();save();
 }
 function mirrorA(){
@@ -228,11 +237,12 @@ function mirrorA(){
 }
 function renderEquipATable(){
   const body=$('#equipABody');body.innerHTML='';
-  TARGETS.forEach(t=>YLINES.forEach(y=>{const d=state.mapA.points?.[t]?.[y],tr=document.createElement('tr');tr.innerHTML=d?`<td>${t} V</td><td>+${y}</td><td>${d.x.toFixed(2)}</td><td>${d.v.toFixed(2)}</td>`:`<td>${t} V</td><td>+${y}</td><td>—</td><td>—</td>`;body.appendChild(tr);}));
+  TARGETS.forEach(t=>{const pts=targetPoints(state.mapA,t);if(!pts.length){const tr=document.createElement('tr');tr.innerHTML=`<td>${t} V</td><td>—</td><td>—</td><td>—</td>`;body.appendChild(tr);return;}pts.forEach(d=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${t} V</td><td>${d.y>=0?'+':''}${d.y.toFixed(1)}</td><td>${d.x.toFixed(2)}</td><td>${d.v.toFixed(2)}</td>`;body.appendChild(tr);});});
 }
 
+function axisPoint(map,t){return targetPoints(map,t).find(p=>Math.abs(p.y)<.01)}
 function fieldMetricsA(){
-  const xs=TARGETS.map(t=>state.mapA.points?.[t]?.[0]?.x);
+  const xs=TARGETS.map(t=>axisPoint(state.mapA,t)?.x);
   if(xs.some(x=>x==null))return null;
   const points=[-10,...xs],out=[];
   for(let i=0;i<4;i++){const dxm=(points[i+1]-points[i])/100;out.push(2/Math.abs(dxm));}
@@ -300,22 +310,26 @@ function renderCylinderResults(){
   $('#compareVC').textContent=state.cyl.vc==null?'— V':`${state.cyl.vc.toFixed(2)} V`;
 }
 function updateMapBControls(){
-  state.mapB.target=+$('#targetBSelect').value;state.mapB.y=+$('#mapBYSelect').value;state.cyl.y=state.mapB.y;$('#cylYSlider').value=state.cyl.y;setupTargetButtons('#targetsB',state.mapB,'B');yProgress('#yProgressB',state.mapB);updateCylinder();
+  state.mapB.target=+$('#targetBSelect').value;state.mapB.y=+$('#mapBYSelect').value;state.cyl.y=state.mapB.y;$('#cylYSlider').value=state.cyl.y;$('#mapBYLineLabel').textContent=`${state.mapB.y.toFixed(1)} cm`;setupTargetButtons('#targetsB',state.mapB,'B');yProgress('#yProgressB',state.mapB);updateCylinder();
 }
 function markB(){
   if(!axisComplete(state.axisA)){ $('#cylMessage').className='notice warn';$('#cylMessage').textContent='Complete Configuration A, including the axial scan, before mapping Configuration B.';return;}
   if(state.cyl.vc==null){$('#cylMessage').className='notice warn';$('#cylMessage').textContent='Record the conductor potential first.';return;}
-  const t=+$('#targetBSelect').value,y=+$('#mapBYSelect').value,x=state.cyl.x,v=readPotential(fields.B,x,y),err=v-t;if(Math.abs(err)>.10){$('#cylMessage').className='notice warn';$('#cylMessage').textContent=state.mode==='learn'?`Reading differs from target by ${Math.abs(err).toFixed(2)} V. ${err<0?'Move right toward B.':'Move left toward A.'}`:'Current point is outside the ±0.10 V target band.';return;}
-  mapPointStore(state.mapB,t,y,{x,y,v});$('#cylMessage').className='notice ok';$('#cylMessage').textContent=`${t} V point stored at y=+${y} cm.`;setupTargetButtons('#targetsB',state.mapB,'B');yProgress('#yProgressB',state.mapB);updateFieldM();drawCylinderCanvases();progress();save();
+  const t=+$('#targetBSelect').value,y=+$('#mapBYSelect').value,pts=targetPoints(state.mapB,t);
+  if(!pts.some(p=>Math.abs(p.y)<.01)&&Math.abs(y)>.01){$('#cylMessage').className='notice warn';$('#cylMessage').textContent='Locate this equipotential on x′Ox (y=0) first.';return;}
+  if(y>0&&pts.some(p=>Math.abs(p.y-y)<.25)){$('#cylMessage').className='notice warn';$('#cylMessage').textContent='Choose a different positive constant-y line, unless you are deliberately adding the y=5 cm point required for B.4.';return;}
+  const x=state.cyl.x,v=readPotential(fields.B,x,y),err=v-t;if(Math.abs(err)>.10){$('#cylMessage').className='notice warn';$('#cylMessage').textContent=state.mode==='learn'?`Reading differs from target by ${Math.abs(err).toFixed(2)} V. ${err<0?'Move right toward B.':'Move left toward A.'}`:'Current point is outside the ±0.10 V target band.';return;}
+  mapPointStore(state.mapB,t,y,{x,y,v});$('#cylMessage').className='notice ok';$('#cylMessage').textContent=`${t} V point stored at y=${y.toFixed(1)} cm. ${targetComplete(state.mapB,t)?'Core mapping complete for this equipotential.':'Choose another positive constant-y line.'}`;setupTargetButtons('#targetsB',state.mapB,'B');yProgress('#yProgressB',state.mapB);updateFieldM();drawCylinderCanvases();progress();save();
 }
+function pointAtY(map,t,y){return targetPoints(map,t).find(p=>Math.abs(p.y-y)<.1)}
 function seedM(){
-  const a=state.mapB.points?.[6]?.[5],b=state.mapB.points?.[8]?.[5];return a&&b?{x:(a.x+b.x)/2,y:5}:null;
+  const a=pointAtY(state.mapB,6,5),b=pointAtY(state.mapB,8,5);return a&&b?{x:(a.x+b.x)/2,y:5}:null;
 }
 function seedN(){
-  const a=state.mapB.points?.[2]?.[5],b=state.mapB.points?.[4]?.[5];return a&&b?{x:(a.x+b.x)/2,y:-5}:null;
+  const a=pointAtY(state.mapB,2,5),b=pointAtY(state.mapB,4,5);return a&&b?{x:(a.x+b.x)/2,y:-5}:null;
 }
 function updateFieldM(){
-  const a=state.mapB.points?.[6]?.[5],b=state.mapB.points?.[8]?.[5];if(a&&b){const E=2/(Math.abs(b.x-a.x)/100);$('#fieldM').textContent=`${E.toFixed(1)} V/m`;}else $('#fieldM').textContent='— V/m';
+  const a=pointAtY(state.mapB,6,5),b=pointAtY(state.mapB,8,5);if(a&&b){const E=2/(Math.abs(b.x-a.x)/100);$('#fieldM').textContent=`${E.toFixed(1)} V/m`;}else $('#fieldM').textContent='record Eq3 & Eq4 at y=5 cm';
 }
 function cylLines(){
   const lines=[];if(state.mapB.lines.M&&seedM())lines.push(traceLine(fields.B,seedM().x,seedM().y));if(state.mapB.lines.N&&seedN())lines.push(traceLine(fields.B,seedN().x,seedN().y));return lines;
@@ -341,7 +355,7 @@ function restoreAssessment(){if(!state.assessment)return;$('#quizResult').classN
 function escapeHtml(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 function prose(s){return escapeHtml(s||'').replace(/\n/g,'<br>')||'<em>Not completed.</em>';}
 function equipSummary(map){
-  return `<table class="equip-table"><thead><tr><th>Eq</th><th>y / cm</th><th>x / cm</th><th>V / V</th></tr></thead><tbody>${TARGETS.flatMap(t=>YLINES.map(y=>{const d=map.points?.[t]?.[y];return d?`<tr><td>${t}</td><td>+${y}</td><td>${d.x.toFixed(2)}</td><td>${d.v.toFixed(2)}</td></tr>`:`<tr><td>${t}</td><td>+${y}</td><td>—</td><td>—</td></tr>`;})).join('')}</tbody></table>`;
+  return `<table class="equip-table"><thead><tr><th>Eq</th><th>y / cm</th><th>x / cm</th><th>V / V</th></tr></thead><tbody>${TARGETS.flatMap(t=>{const pts=targetPoints(map,t);return pts.length?pts.map(d=>`<tr><td>${t}</td><td>${d.y>=0?'+':''}${d.y.toFixed(1)}</td><td>${d.x.toFixed(2)}</td><td>${d.v.toFixed(2)}</td></tr>`):[`<tr><td>${t}</td><td>—</td><td>—</td><td>—</td></tr>`];}).join('')}</tbody></table>`;
 }
 function axisSummary(axis){return `<table class="equip-table"><thead><tr><th>x / cm</th><th>V / V</th></tr></thead><tbody>${AXIS_X.map(x=>axis.records?.[x]?`<tr><td>${x}</td><td>${axis.records[x].v.toFixed(2)}</td></tr>`:`<tr><td>${x}</td><td>—</td></tr>`).join('')}</tbody></table>`;}
 function buildReport(){
@@ -361,7 +375,7 @@ function buildReport(){
 }
 function newTank(){
   if((pointCount(state.mapA)||pointCount(state.mapB)||Object.keys(state.axisA.records).length)&&!confirm('Start a new virtual tank? Existing E02 measurements will be cleared.'))return;
-  const mode=state.mode,text=state.text,report=state.report;state={version:1,mode,run:makeRun(),plane:{connected:false,x:0,y:0,va:null,vb:null,sym:{plus:null,minus:null}},mapA:{target:2,y:0,x:0,points:{},mirrored:false,lines:{central:false,edge:false}},axisA:{records:{}},cyl:{x:0,y:0,inside:null,surface:null,vc:null},mapB:{target:2,y:0,points:{},lines:{M:false,N:false}},axisB:{records:{}},assessment:null,text,report};recomputeFields();renderAll();save();
+  const mode=state.mode,text=state.text,report=state.report;state={version:2,mode,run:makeRun(),plane:{connected:false,x:0,y:0,va:null,vb:null,sym:{plus:null,minus:null}},mapA:{target:2,y:0,x:0,points:{},mirrored:false,lines:{central:false,edge:false}},axisA:{records:{}},cyl:{x:0,y:0,inside:null,surface:null,vc:null},mapB:{target:2,y:0,points:{},lines:{M:false,N:false}},axisB:{records:{}},assessment:null,text,report};recomputeFields();renderAll();save();
 }
 function setupTabs(){
   $$('.tabbtn').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.tab;$$('.tabbtn').forEach(x=>x.classList.toggle('active',x===b));$$('.tabpanel').forEach(p=>p.classList.toggle('active',p.id===id));drawPlaneCanvases();drawCylinderCanvases();drawAxisChart();drawCompare();}));
