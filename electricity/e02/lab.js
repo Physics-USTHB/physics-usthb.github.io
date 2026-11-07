@@ -33,9 +33,12 @@ function makeRun(){
     seed:Math.random()*1000
   };
 }
+function persistState(){
+  try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}
+}
 function save(){
   state.text=collectText();state.report=collectReport();
-  try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}
+  persistState()
 }
 function load(){
   try{const s=JSON.parse(localStorage.getItem(STORAGE)||'null');if(s?.version===2)state={...state,...s};}catch(_){}
@@ -45,7 +48,7 @@ function collectText(){
   const o={};ids.forEach(id=>{const el=document.getElementById(id);if(el)o[id]=el.value;});return o;
 }
 function collectReport(){
-  const ids=['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'];
+  const ids=['reportDate','reportDiscussion','reportConclusion'];
   const o={};ids.forEach(id=>{const el=document.getElementById(id);if(el)o[id]=el.value;});return o;
 }
 function restoreFields(){
@@ -361,7 +364,7 @@ function axisSummary(axis){return `<table class="equip-table"><thead><tr><th>x /
 function buildReport(){
   drawPlaneCanvases();drawCylinderCanvases();drawAxisChart();drawCompare();state.report=collectReport();state.text=collectText();const e=fieldMetricsA(),mapAimg=$('#mapACanvas').toDataURL(),mapBimg=$('#cylCanvas').toDataURL(),axisImg=$('#compareChart').toDataURL();
   const html=`<h2>Laboratory Report — E02</h2><p><strong>Rheographic Tank — Electric Potential & Field Mapping</strong></p>
-  <p><strong>Student:</strong> ${escapeHtml(state.report.studentName||'—')} &nbsp; <strong>Group:</strong> ${escapeHtml(state.report.studentGroup||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(state.report.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
+  <p><strong>Student:</strong> ${escapeHtml($('#studentName')?.value||'—')} &nbsp; <strong>Group:</strong> ${escapeHtml($('#studentGroup')?.value||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(state.report.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
   <h3>A — Two plane electrodes</h3><p>V_A=${state.plane.va==null?'—':state.plane.va.toFixed(2)} V; V_B=${state.plane.vb==null?'—':state.plane.vb.toFixed(2)} V. Symmetry difference: ${state.plane.sym.plus&&state.plane.sym.minus?Math.abs(state.plane.sym.plus.v-state.plane.sym.minus.v).toFixed(2)+' V':'—'}.</p>
   <h4>Equipotential map</h4>${equipSummary(state.mapA)}<img src="${mapAimg}" style="max-width:100%" alt="Plane-electrode equipotential map">
   <h4>Mean fields</h4><p>${e?e.map((v,i)=>`E${i+1}=${v.toFixed(1)} V/m`).join('; '):'Not determined'}.</p><p>${prose(state.text.fieldConclusionA)}</p>
@@ -383,8 +386,20 @@ function setupTabs(){
 function renderAll(){
   renderPlaneResults();updatePlane();setupTargetButtons('#targetsA',state.mapA,'A');yProgress('#yProgressA',state.mapA);renderEquipATable();updateMapA();updateFieldsA();renderAxisAll();renderCylinderResults();setupTargetButtons('#targetsB',state.mapB,'B');$('#targetBSelect').value=state.mapB.target;$('#mapBYSelect').value=state.mapB.y;updateMapBControls();updateFieldM();restoreAssessment();progress();
 }
+function bindPersistentFields(){
+  const bind=(id,bucket)=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.addEventListener('input',()=>{
+      state[bucket]=state[bucket]||{};
+      state[bucket][id]=el.value;
+      persistState();
+    });
+  };
+  ["fieldConclusionA","uniformConclusion","chargeDistribution","distortionConclusion","compareConclusion"].forEach(id=>bind(id,'text'));
+  ["reportDate","reportDiscussion","reportConclusion"].forEach(id=>bind(id,'report'));
+}
 function init(){
-  load();if(!state.run)state.run=makeRun();recomputeFields();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
+  load();bindPersistentFields();if(state.report){delete state.report.studentName;delete state.report.studentGroup;persistState()}if(!state.run)state.run=makeRun();recomputeFields();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
   const planeCanvas=$('#planeCanvas'),mapCanvas=$('#mapACanvas'),cylCanvas=$('#cylCanvas');
   const planeMove=e=>{if(!state.plane.connected)return;const p=eventPoint(planeCanvas,e);state.plane.x=p.x;state.plane.y=p.y;updatePlane();};
   planeCanvas.addEventListener('pointerdown',planeMove);
@@ -395,8 +410,7 @@ function init(){
   $('#recordAxisA').addEventListener('click',()=>recordAxis('A'));$('#traceCentralA').addEventListener('click',()=>{state.mapA.lines.central=true;drawPlaneCanvases();progress();save();});$('#traceEdgeA').addEventListener('click',()=>{state.mapA.lines.edge=true;drawPlaneCanvases();progress();save();});
   $('#cylXSlider').addEventListener('input',e=>{state.cyl.x=+e.target.value;updateCylinder();});$('#cylYSlider').addEventListener('input',e=>{state.cyl.y=+e.target.value;updateCylinder();});$('#measureCylinder').addEventListener('click',updateCylinder);$('#recordCylinderPotential').addEventListener('click',recordCylinder);
   $('#targetBSelect').addEventListener('change',updateMapBControls);$('#mapBYSelect').addEventListener('change',updateMapBControls);$('#markEquipB').addEventListener('click',markB);$('#traceM').addEventListener('click',()=>{if(!seedM())return;state.mapB.lines.M=true;drawCylinderCanvases();progress();save();});$('#traceN').addEventListener('click',()=>{if(!seedN())return;state.mapB.lines.N=true;drawCylinderCanvases();progress();save();});$('#recordAxisB').addEventListener('click',()=>recordAxis('B'));
-  $('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
-  ['fieldConclusionA','uniformConclusion','chargeDistribution','distortionConclusion','compareConclusion','studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'].forEach(id=>document.getElementById(id)?.addEventListener('input',save));
+  $('#buildReport').addEventListener('click',buildReport);$('#clearLocalProgress')?.addEventListener('click',()=>{if(confirm('Clear all locally saved progress for this practical on this browser?')){try{localStorage.removeItem(STORAGE);}catch(_){}location.reload();}});$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
   window.addEventListener('resize',()=>{drawPlaneCanvases();drawCylinderCanvases();drawAxisChart();drawCompare();});window.addEventListener('beforeunload',save);renderAll();
 }
 init();

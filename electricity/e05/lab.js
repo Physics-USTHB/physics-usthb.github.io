@@ -26,9 +26,12 @@ function makeRun(){
     scopeBias:(Math.random()-.5)*.005
   };
 }
-function save(){state.report=collectReport();try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}}
+function persistState(){
+  try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}
+}
+function save(){state.report=collectReport();persistState()}
 function load(){try{const x=JSON.parse(localStorage.getItem(STORAGE)||'null');if(x?.version===2)state={...state,...x};}catch(_){}}
-function collectReport(){const ids=['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'],o={};ids.forEach(id=>{const el=document.getElementById(id);if(el)o[id]=el.value;});return o}
+function collectReport(){const ids=['reportDate','reportDiscussion','reportConclusion'],o={};ids.forEach(id=>{const el=document.getElementById(id);if(el)o[id]=el.value;});return o}
 function restoreReport(){Object.entries(state.report||{}).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.value=v||''});if(!$('#reportDate').value)$('#reportDate').value=new Date().toISOString().slice(0,10)}
 function applyMode(mode){
   state.mode=mode==='lab'?'lab':'learn';document.body.classList.toggle('mode-lab',state.mode==='lab');document.body.classList.toggle('mode-learn',state.mode==='learn');
@@ -208,7 +211,7 @@ function resultText(task){
 }
 function buildReport(){
   draw();drawSummary();state.report=collectReport();const wave=$('#transientCanvas').toDataURL(),sum=$('#summaryChart').toDataURL();
-  const html=`<h2>Laboratory Report — E05</h2><p><strong>RC & RL Circuits in the Transient Regime</strong></p><p><strong>Student:</strong> ${escapeHtml(state.report.studentName||'—')} &nbsp; <strong>Group:</strong> ${escapeHtml(state.report.studentGroup||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(state.report.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
+  const html=`<h2>Laboratory Report — E05</h2><p><strong>RC & RL Circuits in the Transient Regime</strong></p><p><strong>Student:</strong> ${escapeHtml($('#studentName')?.value||'—')} &nbsp; <strong>Group:</strong> ${escapeHtml($('#studentGroup')?.value||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(state.report.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
   <h3>4.1 — Known R, known C</h3><p>${resultText('knownRC')}</p><h3>4.2 — Unknown resistance</h3><p>${resultText('unknownR')}</p><h3>4.3 — Unknown capacitance</h3><p>${resultText('unknownC')}</p><h3>4.4 — Unknown inductance</h3><p>${resultText('unknownL')}</p>
   <h3>Representative transient</h3><img src="${wave}" style="max-width:100%" alt="Transient oscilloscope trace"><h3>Time-constant comparison</h3><img src="${sum}" style="max-width:100%" alt="Measured time constants">
   <h3>Discussion</h3><p>${prose(state.report.reportDiscussion)}</p><h3>Conclusion</h3><p>${prose(state.report.reportConclusion)}</p><p><strong>Assessment:</strong> ${state.assessment?state.assessment.score+'/'+state.assessment.total:'not submitted'}.</p><hr><p class="mini">The core sequence follows the USTHB RC–RL transient practical. Hidden component values and small display noise are virtual-laboratory parameters.</p>`;
@@ -221,14 +224,26 @@ function newRun(){
 function setupTabs(){
   $$('.tabbtn').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.tab;$$('.tabbtn').forEach(x=>x.classList.toggle('active',x===b));$$('.tabpanel').forEach(p=>p.classList.toggle('active',p.id===id));draw();drawSummary()}))
 }
+function bindPersistentFields(){
+  const bind=(id,bucket)=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.addEventListener('input',()=>{
+      state[bucket]=state[bucket]||{};
+      state[bucket][id]=el.value;
+      persistState();
+    });
+  };
+  [].forEach(id=>bind(id,'text'));
+  ["reportDate","reportDiscussion","reportConclusion"].forEach(id=>bind(id,'report'));
+}
 function init(){
-  load();if(!state.run)state.run=makeRun();restoreReport();setupTabs();setupQuiz();applyMode(state.mode);renderResults();renderFit();progress();drawSummary();restoreAssessment();
+  load();bindPersistentFields();if(state.report){delete state.report.studentName;delete state.report.studentGroup;persistState()}if(!state.run)state.run=makeRun();restoreReport();setupTabs();setupQuiz();applyMode(state.mode);renderResults();renderFit();progress();drawSummary();restoreAssessment();
   $('#e05CircuitType').value=state.wiring?.circuit||'';$('#e05ProbeAcross').value=state.wiring?.probe||'';$('#e05SourceWave').value=state.wiring?.source||'';$('#e05Ground').value=state.wiring?.ground||'';updateWiring();if(state.wiring?.verified&&wiringOK()){state.wiring.verified=true;$('#e05WiringStatus').className='transient-wiring-status ok';$('#e05WiringStatus').textContent='Saved circuit verification restored.';}
   ['e05CircuitType','e05ProbeAcross','e05SourceWave','e05Ground'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateWiring();syncUI();save()}));$('#e05VerifyWiring').addEventListener('click',verifyWiring);
   $('#taskSelect').addEventListener('change',taskChanged);$('#frequency').addEventListener('change',e=>{state.settings.frequency=+e.target.value;syncUI();save()});$('#sourceAmp').addEventListener('input',e=>{state.settings.sourceAmp=+e.target.value;syncUI();save()});$('#timeDiv').addEventListener('change',e=>{state.settings.timeDiv=+e.target.value;syncUI();save()});$('#voltsDiv').addEventListener('change',e=>{state.settings.voltsDiv=+e.target.value;syncUI();save()});$('#tauMethod').addEventListener('change',e=>{state.method=e.target.value;syncUI();save()});$('#cursorTime').addEventListener('input',e=>{state.settings.cursor=+e.target.value;updateCursor();save()});
   $('#recordTau').addEventListener('click',recordTau);$('#autoCentre').addEventListener('click',recommended);$('#newRun').addEventListener('click',newRun);$('#runFit').addEventListener('click',fitCurrent);
-  $('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print()});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
-  ['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'].forEach(id=>$('#'+id).addEventListener('input',save));window.addEventListener('resize',()=>{draw();drawSummary()});window.addEventListener('beforeunload',save);syncUI()
+  $('#buildReport').addEventListener('click',buildReport);$('#clearLocalProgress')?.addEventListener('click',()=>{if(confirm('Clear all locally saved progress for this practical on this browser?')){try{localStorage.removeItem(STORAGE);}catch(_){}location.reload();}});$('#printReport').addEventListener('click',()=>{buildReport();window.print()});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
+  ['reportDate','reportDiscussion','reportConclusion'].forEach(id=>$('#'+id).addEventListener('input',save));window.addEventListener('resize',()=>{draw();drawSummary()});window.addEventListener('beforeunload',save);syncUI()
 }
 init();
 })();

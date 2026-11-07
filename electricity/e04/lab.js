@@ -25,13 +25,16 @@ function makeRun(){
     readingBias:(Math.random()-.5)*.006
   };
 }
+function persistState(){
+  try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}
+}
 function save(){
   state.report=collectReport();
-  try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}
+  persistState()
 }
 function load(){try{const x=JSON.parse(localStorage.getItem(STORAGE)||'null');if(x?.version===2)state={...state,...x};}catch(_){}}
 function collectReport(){
-  const ids=['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'];
+  const ids=['reportDate','reportDiscussion','reportConclusion'];
   const o={};ids.forEach(id=>{const el=document.getElementById(id);if(el)o[id]=el.value;});return o;
 }
 function restoreReport(){
@@ -248,7 +251,7 @@ function prose(s){return escapeHtml(s||'').replace(/\n/g,'<br>')||'<em>Not compl
 function buildReport(){
   drawXY();drawSweep();updateResistor();updateCap();state.report=collectReport();
   const r=state.resistor.balance,c=state.capacitor.balance,s=state.sweep.measurement,xyImg=$('#xyCanvas').toDataURL(),swImg=$('#sweepCanvas').toDataURL(),rImg=$('#resistorCanvas').toDataURL(),cImg=$('#capacitorCanvas').toDataURL();
-  const html=`<h2>Laboratory Report — E04</h2><p><strong>The Oscilloscope</strong></p><p><strong>Student:</strong> ${escapeHtml(state.report.studentName||'—')} &nbsp; <strong>Group:</strong> ${escapeHtml(state.report.studentGroup||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(state.report.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
+  const html=`<h2>Laboratory Report — E04</h2><p><strong>The Oscilloscope</strong></p><p><strong>Student:</strong> ${escapeHtml($('#studentName')?.value||'—')} &nbsp; <strong>Group:</strong> ${escapeHtml($('#studentGroup')?.value||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(state.report.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
   <h3>3 — XY mode</h3><p>Recorded observation combinations: ${Object.keys(state.xy.observed||{}).length}/9.</p><img src="${xyImg}" style="max-width:100%" alt="XY-mode oscilloscope trace">
   <h3>4 — Sweep & synchronisation</h3><p>Sweep calibration: ${state.sweep.calChecked?'verified at 0.5 s/div (10 div = 5 s)':'not completed'}. Frequency measurement: ${s?`T=${formatTime(s.T)}, f=${s.f.toFixed(1)} Hz; generator=${s.generator} Hz`:'not completed'}.</p><img src="${swImg}" style="max-width:100%" alt="Sweep-mode waveform">
   <h3>5.1 — Unknown resistance</h3><p>${r?`Balanced decade resistance R_d=${r.rd.toFixed(0)} Ω; therefore R_x≈${r.rd.toFixed(0)} Ω. Phase: ${r.phiSweep.toFixed(1)}° by sweep and ${r.phiXY.toFixed(1)}° by XY.`:'Not completed.'}</p><img src="${rImg}" style="max-width:100%" alt="Unknown resistance oscilloscope trace">
@@ -261,14 +264,26 @@ function buildReport(){
 function setupTabs(){
   $$('.tabbtn').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.tab;$$('.tabbtn').forEach(x=>x.classList.toggle('active',x===b));$$('.tabpanel').forEach(p=>p.classList.toggle('active',p.id===id));drawXY();drawSweep();updateResistor();updateCap();}));
 }
+function bindPersistentFields(){
+  const bind=(id,bucket)=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.addEventListener('input',()=>{
+      state[bucket]=state[bucket]||{};
+      state[bucket][id]=el.value;
+      persistState();
+    });
+  };
+  [].forEach(id=>bind(id,'text'));
+  ["reportDate","reportDiscussion","reportConclusion"].forEach(id=>bind(id,'report'));
+}
 function init(){
-  load();if(!state.run)state.run=makeRun();restoreReport();setupTabs();setupQuiz();applyMode(state.mode);renderXYObs();progress();restoreAssessment();
+  load();bindPersistentFields();if(state.report){delete state.report.studentName;delete state.report.studentGroup;persistState()}if(!state.run)state.run=makeRun();restoreReport();setupTabs();setupQuiz();applyMode(state.mode);renderXYObs();progress();restoreAssessment();
   ['xyWave','xyFreq','xyRoute','xyVdiv1','xyVdiv2','xyAmp','xyIntensity','xyFocus','xyXPos','xyYPos','xyModeControl'].forEach(id=>$('#'+id).addEventListener('input',()=>{drawXY();save();}));$('#recordXYObservation').addEventListener('click',recordXY);$('#centerSpot').addEventListener('click',()=>{state.xy.xPos=0;state.xy.yPos=0;$('#xyXPos').value=0;$('#xyYPos').value=0;drawXY();$('#xyMessage').className='notice ok';$('#xyMessage').textContent='Spot centred using commands (8) and (6B).';save();});
   ['sweepWave','sweepFreq','timeDiv','sweepVdiv','triggerLevel','triggerMode','triggerSource','sweepCoupling','sweepDisplayMode'].forEach(id=>$('#'+id).addEventListener('input',drawSweep));$('#toggleSweepCal').addEventListener('click',()=>{state.sweep.cal=!state.sweep.cal;drawSweep();save();});$('#toggleCh1Cal').addEventListener('click',()=>{state.sweep.ch1Cal=!state.sweep.ch1Cal;drawSweep();save();});$('#toggleXMag').addEventListener('click',()=>{state.sweep.xMag=!state.sweep.xMag;drawSweep();save();});$('#recordSweep').addEventListener('click',recordSweep);
   ['rFreq','rVdiv','rTimeDiv','rDecade','rCH1Point','rCH2Point','rGroundPoint','rCoupling1','rCoupling2','rInvert2'].forEach(id=>$('#'+id).addEventListener('input',updateResistor));$('#recordResistorBalance').addEventListener('click',recordRBalance);$('#switchResistorXY').addEventListener('click',()=>{state.resistor.xy=!state.resistor.xy;if(state.resistor.xy&&state.resistor.balance)state.resistor.xyVerified=true;updateResistor();progress();save();});
   ['cFreq','cVdiv','cTimeDiv','cDecade','cCH1Point','cCH2Point','cGroundPoint','cCoupling1','cCoupling2','cInvert2'].forEach(id=>$('#'+id).addEventListener('input',updateCap));$('#recordCapBalance').addEventListener('click',recordCBalance);$('#switchCapXY').addEventListener('click',()=>{state.capacitor.xy=!state.capacitor.xy;if(state.capacitor.xy&&state.capacitor.balance)state.capacitor.xyVerified=true;updateCap();progress();save();});
-  $('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
-  ['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'].forEach(id=>$('#'+id).addEventListener('input',save));
+  $('#buildReport').addEventListener('click',buildReport);$('#clearLocalProgress')?.addEventListener('click',()=>{if(confirm('Clear all locally saved progress for this practical on this browser?')){try{localStorage.removeItem(STORAGE);}catch(_){}location.reload();}});$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
+  ['reportDate','reportDiscussion','reportConclusion'].forEach(id=>$('#'+id).addEventListener('input',save));
   window.addEventListener('resize',()=>{drawXY();drawSweep();updateResistor();updateCap();});window.addEventListener('beforeunload',save);
   $('#xyIntensity').value=state.xy.intensity;$('#xyFocus').value=state.xy.focus;$('#xyXPos').value=state.xy.xPos;$('#xyYPos').value=state.xy.yPos;$('#xyModeControl').value=state.xy.mode;
   drawXY();drawSweep();updateResistor();updateCap();

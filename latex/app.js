@@ -1,13 +1,13 @@
-/* Physics USTHB LaTeX Studio v1 — local-first application. */
+/* Physics USTHB LaTeX Studio — local-first editor with verified persistence and browser-local PDF compilation. */
 (() => {
 'use strict';
 const $ = id => document.getElementById(id);
 const DB = 'physics-usthb-latex-v1', STORE = 'projects', ACTIVE = 'physics-usthb-latex-active';
+const FALLBACK_KEY = 'physics-usthb-latex-fallback-v2';
 const TEXT = /\.(tex|bib|sty|cls|bst|txt|md|cfg|def|bbx|cbx|lua|csv|json|xml|eps)$/i;
 const LIMIT = 50 * 1024 * 1024;
 const templates = {
 article: String.raw`\documentclass[11pt,a4paper]{article}
-\usepackage[margin=2.5cm]{geometry}
 \usepackage{amsmath,amssymb,graphicx}
 \title{An Introduction to Scientific Writing}
 \author{Your Name}
@@ -30,8 +30,7 @@ Summarise the main result and its limitations.
 \end{document}
 `,
 lab: String.raw`\documentclass[11pt,a4paper]{article}
-\usepackage[margin=2.4cm]{geometry}
-\usepackage{amsmath,amssymb,booktabs}
+\usepackage{amsmath,amssymb}
 \title{Physics Laboratory Report}
 \author{Student: Your Name \\ Group: Your Group}
 \date{\today}
@@ -44,12 +43,12 @@ List the apparatus, circuit configuration, measurement ranges and procedure.
 \section{Measurements}
 \begin{center}
 \begin{tabular}{ccc}
-\toprule
+\hline
 Voltage (V) & Current (A) & Resistance ($\Omega$)\\
-\midrule
+\hline
 2.0 & 0.10 & 20.0\\
 4.0 & 0.20 & 20.0\\
-\bottomrule
+\hline
 \end{tabular}
 \end{center}
 \section{Analysis and uncertainties}
@@ -63,25 +62,23 @@ Discuss instrument limits and compare with theory.
 Explain what the results demonstrate.
 \end{document}
 `,
-beamer: String.raw`\documentclass{beamer}
-\usetheme{default}
-\title{Scientific Presentation}
+report: String.raw`\documentclass[11pt,a4paper]{report}
+\usepackage{amsmath,amssymb,graphicx}
+\title{Scientific Report}
 \author{Your Name}
 \date{\today}
 \begin{document}
-\frame{\titlepage}
-\begin{frame}{Research Question}
-What are we trying to measure or explain?
+\maketitle
+\chapter{Introduction}
+State the problem and objectives.
+\chapter{Method}
+Describe the method and apparatus.
+\chapter{Results}
 \[
-E=mc^2
+E = mc^2
 \]
-\end{frame}
-\begin{frame}{Conclusion}
-\begin{itemize}
-\item Main finding
-\item Remaining uncertainty
-\end{itemize}
-\end{frame}
+\chapter{Conclusion}
+Summarise the findings and limitations.
 \end{document}
 `,
 blank: String.raw`\documentclass{article}
@@ -90,9 +87,14 @@ Hello, LaTeX!
 \end{document}
 `
 };
-let db, projects = [], current = null, activeFile = 'main.tex', dirty = false, saveTimer = null, previewTimer = null, pendingAction = null;
+
+let db = null, storageMode = 'memory', projects = [], current = null, activeFile = 'main.tex';
+let dirty = false, saveTimer = null, previewTimer = null, pendingAction = null;
+let compiledPdf = null, pdfUrl = null, compiling = false;
+const channel = 'BroadcastChannel' in window ? new BroadcastChannel('physics-usthb-latex-v2') : null;
+
 const stamp = () => new Date().toISOString();
-const uid = () => crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2);
+const uid = () => globalThis.crypto?.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2);
 const cleanName = s => s.replace(/[^a-zA-Z0-9._ -]/g,'_').replace(/^\.+/,'').slice(0,90) || 'project';
 const safePath = s => {
   if (!s || s.includes('\\') || s.startsWith('/') || s.length > 220) return null;
@@ -103,35 +105,117 @@ const safePath = s => {
 const inform = s => { $('status').textContent = s; };
 const fail = e => { console.error(e); inform('Error: '+(e?.message || e)); };
 const fileNames = () => Object.keys(current?.files || {}).sort((a,b)=>a.localeCompare(b));
+
+function u8ToB64(bytes) {
+  let out = '';
+  const chunk = 0x8000;
+  for (let i=0;i<bytes.length;i+=chunk) out += String.fromCharCode(...bytes.subarray(i,i+chunk));
+  return btoa(out);
+}
+function b64ToU8(value) {
+  const binary = atob(value), bytes = new Uint8Array(binary.length);
+  for (let i=0;i<binary.length;i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+function encodeProject(p) {
+  const files = {};
+  for (const [name,value] of Object.entries(p.files || {})) files[name] =
+    typeof value === 'string' ? {kind:'text',value} : {kind:'binary',value:u8ToB64(value)};
+  return {id:p.id,name:p.name,files,main:p.main,updated:p.updated};
+}
+function decodeProject(p) {
+  const files = {};
+  for (const [name,item] of Object.entries(p.files || {})) files[name] =
+    item?.kind === 'binary' ? b64ToU8(item.value) : (item?.value ?? '');
+  return {id:p.id,name:p.name,files,main:p.main,updated:p.updated};
+}
+function fallbackRead() {
+  try { return JSON.parse(localStorage.getItem(FALLBACK_KEY)||'[]').map(decodeProject); }
+  catch (_) { return []; }
+}
+function fallbackWrite(list) {
+  localStorage.setItem(FALLBACK_KEY, JSON.stringify(list.map(encodeProject)));
+}
 function openDb() {
  return new Promise((res,rej) => {
    const r = indexedDB.open(DB,1);
    r.onupgradeneeded = () => r.result.createObjectStore(STORE,{keyPath:'id'});
    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+   r.onblocked = () => rej(new Error('Browser database is blocked by another tab.'));
  });
 }
-function store(mode,method,value) {
+function idbOperation(mode, method, value) {
  return new Promise((res,rej) => {
    const tx = db.transaction(STORE,mode), s = tx.objectStore(STORE);
-   const r = method==='getAll'? s.getAll() : method==='delete'?s.delete(value):s.put(value);
+   const r = method==='getAll' ? s.getAll() :
+     method==='delete' ? s.delete(value) :
+     method==='clear' ? s.clear() : s.put(value);
    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); tx.onerror=()=>rej(tx.error);
  });
+}
+async function store(mode, method, value) {
+  if (storageMode === 'indexeddb') return idbOperation(mode,method,value);
+  if (storageMode === 'localStorage') {
+    let list = fallbackRead();
+    if (method === 'getAll') return list;
+    if (method === 'put') {
+      const i = list.findIndex(x=>x.id===value.id);
+      if (i>=0) list[i]=value; else list.push(value);
+      fallbackWrite(list); return value;
+    }
+    if (method === 'delete') { list=list.filter(x=>x.id!==value); fallbackWrite(list); return; }
+    if (method === 'clear') { localStorage.removeItem(FALLBACK_KEY); return; }
+  }
+  if (method === 'getAll') return projects;
+  return value;
 }
 function copy(p){ return {id:p.id,name:p.name,files:{...p.files},main:p.main,updated:p.updated}; }
 function makeProject(name,type='article'){
  return {id:uid(),name:name.trim().slice(0,80)||'Untitled document',files:{'main.tex':templates[type]||templates.article},main:'main.tex',updated:stamp()};
 }
+async function initialiseStorage() {
+  try {
+    db = await openDb();
+    storageMode = 'indexeddb';
+    return await store('readonly','getAll');
+  } catch (idbError) {
+    console.warn('IndexedDB unavailable, using localStorage fallback', idbError);
+    try {
+      localStorage.setItem('__latex_storage_test__','1'); localStorage.removeItem('__latex_storage_test__');
+      storageMode = 'localStorage';
+      return await store('readonly','getAll');
+    } catch (localError) {
+      console.warn('Persistent browser storage unavailable', localError);
+      storageMode = 'memory';
+      return [];
+    }
+  }
+}
+async function updateStorageDetails() {
+  const modeText = storageMode === 'indexeddb' ? 'IndexedDB' : storageMode === 'localStorage' ? 'localStorage fallback' : 'memory only';
+  let extra = '';
+  try {
+    if (navigator.storage?.estimate) {
+      const {usage=0,quota=0} = await navigator.storage.estimate();
+      extra = ' · '+(usage/1048576).toFixed(1)+' MB used of '+(quota/1048576).toFixed(0)+' MB available';
+    }
+    if (navigator.storage?.persisted) extra += (await navigator.storage.persisted()) ? ' · persistent storage granted' : ' · storage may be evicted by the browser';
+  } catch (_) {}
+  $('storage-details').textContent = 'Storage: '+modeText+extra+'.';
+}
 function markDirty(){
  dirty=true; $('dirty-indicator').textContent='Unsaved'; $('dirty-indicator').style.color='#f6bc83';
- clearTimeout(saveTimer); saveTimer=setTimeout(()=>save().catch(fail),600);
+ clearTimeout(saveTimer); saveTimer=setTimeout(()=>save().catch(fail),500);
 }
 async function save(){
  if(!current)return;
  clearTimeout(saveTimer);
  current.updated=stamp();
- await store('readwrite','put',copy(current));
- dirty=false;$('dirty-indicator').textContent='Saved locally';$('dirty-indicator').style.color='';
- inform('Saved in this browser · '+new Date().toLocaleTimeString());
+ if (storageMode !== 'memory') await store('readwrite','put',copy(current));
+ dirty=false;$('dirty-indicator').textContent=storageMode==='memory'?'Not persisted':'Saved locally';$('dirty-indicator').style.color=storageMode==='memory'?'#f6bc83':'';
+ inform(storageMode==='memory'?'Browser storage is unavailable. Export a ZIP to keep your work.':'Saved locally · '+new Date().toLocaleTimeString());
+ channel?.postMessage({type:'saved',id:current.id,updated:current.updated});
+ updateStorageDetails();
 }
 function renderProjects(){
  const s=$('project-select');s.replaceChildren();
@@ -183,12 +267,14 @@ async function activate(id){
  if(current && dirty)await save();
  current=projects.find(p=>p.id===id);
  if(!current)return;
- localStorage.setItem(ACTIVE,id);
+ try{localStorage.setItem(ACTIVE,id);}catch(_){}
  activeFile=Object.hasOwn(current.files,current.main)?current.main:fileNames()[0];
- renderProjects();selectFile(activeFile);inform('Editing '+current.name+' · local browser storage');
+ renderProjects();selectFile(activeFile);inform('Editing '+current.name+' · '+(storageMode==='memory'?'temporary session':'local browser storage'));
 }
 async function addProject(p){
- projects.push(p);await store('readwrite','put',copy(p));await activate(p.id);
+ projects.push(p);
+ if(storageMode!=='memory')await store('readwrite','put',copy(p));
+ await activate(p.id);
 }
 function insert(text,offset=0){
  if(!current || typeof current.files[activeFile]!=='string')return;
@@ -201,7 +287,7 @@ function ask(title,message,action){
  pendingAction=action;$('confirm-title').textContent=title;
  $('confirm-text').textContent=message;$('confirm-dialog').showModal();
 }
-function zipLib(){if(!window.JSZip)throw new Error('ZIP library unavailable. Connect to the internet and reload.');return new JSZip();}
+function zipLib(){if(!window.JSZip)throw new Error('ZIP library unavailable. Check your connection and reload.');return new JSZip();}
 function download(name,content){
  const url=URL.createObjectURL(content),a=document.createElement('a');
  a.href=url;a.download=cleanName(name);document.body.append(a);a.click();a.remove();
@@ -213,7 +299,7 @@ async function exportZip(){
  for(const n of fileNames())z.file(n,current.files[n]);
  z.file('PHYSICS-USTHB-README.txt','LaTeX Studio export\nProject: '+current.name+'\nMain: '+current.main+'\nDate: '+stamp()+'\n');
  const blob=await z.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}});
- download(cleanName(current.name)+'.zip',blob);inform('Project ZIP exported. Keep backups outside this browser.');
+ download(cleanName(current.name)+'.zip',blob);inform('Project ZIP exported. Keep a backup outside this browser.');
 }
 async function importZip(file){
  if(file.size>LIMIT)throw new Error('ZIP exceeds the 50 MB safety limit.');
@@ -237,7 +323,7 @@ async function importZip(file){
  if(!names.length)throw new Error('ZIP has no importable files.');
  const main=names.find(n=>/(^|\/)main\.tex$/i.test(n))||names.find(n=>/\.tex$/i.test(n))||names[0];
  await addProject({id:uid(),name:file.name.replace(/\.zip$/i,'').slice(0,80),files,main,updated:stamp()});
- inform('ZIP imported as new project. Confirm your main .tex file and export a backup.');
+ inform('ZIP imported locally. Confirm the ★ main file and compile.');
 }
 async function importFiles(input){
  for(const file of [...input]){
@@ -250,29 +336,49 @@ async function importFiles(input){
    if(/\.tex$/i.test(n) && !/\.tex$/i.test(current.main))current.main=n;
    activeFile=n;markDirty();
  }
- await save();selectFile(activeFile);inform('Files imported locally. Export a ZIP to keep a backup.');
+ await save();selectFile(activeFile);inform('Files imported locally.');
 }
-function compile(){
- if(!current)return;
- const main=current.files[current.main];
- if(typeof main!=='string'||!/\.tex$/i.test(current.main)){
-   inform('Choose a text .tex main file (★).');return;
- }
- if(/\\(?:input|include|includegraphics|bibliography|addbibresource)\s*(?:\[.*?\])?\s*\{/.test(main)){
-   inform('Online compiler cannot access local project attachments. Use TeXlyre for multi-file projects.');return;
- }
- const encoded=encodeURIComponent(main);
- if(encoded.length>7000){
-   inform('Document is too long for URL-based compilation. Export the ZIP and use TeXlyre.');return;
- }
- ask('Send source to external compiler?',
-   'This sends your main .tex source to latexonline.cc in a URL. The URL can appear in browser and server logs. Do not send confidential or unpublished work. Continue?',
-   ()=>{
-     const url='https://latexonline.cc/compile?text='+encoded+'&command='+encodeURIComponent($('engine').value)+
-       '&download='+encodeURIComponent(cleanName(current.name)+'.pdf');
-     window.open(url,'_blank','noopener,noreferrer');
-     inform('Opened external PDF compiler. Output or compilation errors appear in the new tab.');
-   });
+function setCompileBusy(value) {
+  compiling=value;
+  for(const id of ['compile','compile-side']) { const b=$(id); if(b){b.disabled=value;b.textContent=value?'Compiling…':(id==='compile'?'Compile PDF':'Compile locally');} }
+}
+function setPdf(pdfBytes, log='') {
+  if(pdfUrl) URL.revokeObjectURL(pdfUrl);
+  compiledPdf = new Blob([pdfBytes],{type:'application/pdf'});
+  pdfUrl = URL.createObjectURL(compiledPdf);
+  $('pdf-frame').src=pdfUrl;$('pdf-frame').hidden=false;$('pdf-empty').hidden=true;
+  $('download-pdf').disabled=false;$('compile-log').textContent=log||'Compilation succeeded.';
+}
+async function compile(){
+ if(!current || compiling)return;
+ if(typeof current.files[current.main]!=='string' || !/\.tex$/i.test(current.main)){inform('Choose a text .tex file as the ★ main document.');return;}
+ setCompileBusy(true);$('compile-log').textContent='Starting browser-local compiler…';
+ try{
+   await save();
+   const module=await import('./compiler.js');
+   const result=await module.compileProject({engine:$('engine').value,main:current.main,files:current.files,onStatus:inform});
+   setPdf(result.pdf,result.log);
+   inform('PDF compiled locally in this browser. Document source was not uploaded.');
+ }catch(e){
+   console.error(e);
+   $('compile-log').textContent=(e.log?e.log+'\n\n':'')+(e.stack||e.message||String(e));
+   inform('Compilation failed — open the compilation log for details.');
+ }finally{setCompileBusy(false);}
+}
+async function requestPersistentStorage() {
+  if(!navigator.storage?.persist){inform('This browser does not provide the persistent-storage API. Use ZIP exports for durable backups.');return;}
+  try{
+    const granted=await navigator.storage.persist();
+    inform(granted?'Browser granted persistent local storage.':'Browser did not grant persistent storage; ZIP backups remain recommended.');
+    await updateStorageDetails();
+  }catch(e){fail(e);}
+}
+async function clearLocalProjects() {
+  await store('readwrite','clear');
+  try{localStorage.removeItem(ACTIVE);}catch(_){}
+  projects=[];current=null;dirty=false;
+  await addProject(makeProject('My first scientific article'));
+  renderProjects();inform('Local projects cleared. A new blank workspace was created.');
 }
 function wire(){
  $('source').oninput=()=>{
@@ -301,9 +407,8 @@ function wire(){
    if(projects.length<=1){inform('Create a second project before deleting this one.');return;}
    const id=current.id;
    ask('Delete project permanently?','This removes "'+current.name+'" from this browser. Export a ZIP first.',()=>{
-     (async()=>{clearTimeout(saveTimer);dirty=false;await store('readwrite','delete',id);
-       projects=projects.filter(p=>p.id!==id);current=null;await activate(projects[0].id);
-       inform('Project deleted locally.');})().catch(fail);
+     (async()=>{clearTimeout(saveTimer);dirty=false;if(storageMode!=='memory')await store('readwrite','delete',id);
+       projects=projects.filter(p=>p.id!==id);current=null;await activate(projects[0].id);inform('Project deleted locally.');})().catch(fail);
    });
  };
  $('new-file').onclick=()=>{
@@ -340,22 +445,39 @@ function wire(){
  $('insert-equation').onclick=()=>insert('\n\\[\n  E = mc^2\n\\]\n',-4);
  $('insert-section').onclick=()=>insert('\n\\section{New section}\n');
  $('compile').onclick=compile;$('compile-side').onclick=compile;
+ $('download-pdf').onclick=()=>{if(compiledPdf)download(cleanName(current.name)+'.pdf',compiledPdf);};
+ $('persist-storage').onclick=requestPersistentStorage;
+ $('clear-local-data').onclick=()=>ask('Clear all local LaTeX projects?','This deletes every LaTeX Studio project saved by this browser. Export important projects first.',()=>clearLocalProjects().catch(fail));
  $('confirm-cancel').onclick=()=>{pendingAction=null;$('confirm-dialog').close();};
- $('confirm-form').onsubmit=e=>{
-   e.preventDefault();$('confirm-dialog').close();
-   const fn=pendingAction;pendingAction=null;if(fn)fn();
- };
+ $('confirm-form').onsubmit=e=>{e.preventDefault();$('confirm-dialog').close();const fn=pendingAction;pendingAction=null;if(fn)fn();};
  $('confirm-dialog').addEventListener('close',()=>{pendingAction=null;});
  window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&dirty)save().catch(()=>{});});
+ channel?.addEventListener('message', async event=>{
+   const msg=event.data;
+   if(msg?.type!=='saved'||!current||msg.id!==current.id)return;
+   if(dirty){inform('This project changed in another tab. Save/export before refreshing to avoid overwriting it.');return;}
+   try{
+     const all=await store('readonly','getAll');
+     const newer=all.find(p=>p.id===current.id);
+     if(newer&&newer.updated>current.updated){
+       const index=projects.findIndex(p=>p.id===newer.id);if(index>=0)projects[index]=newer;
+       current=newer;selectFile(Object.hasOwn(newer.files,activeFile)?activeFile:newer.main);
+       inform('Updated from another browser tab.');
+     }
+   }catch(e){console.warn(e);}
+ });
 }
 async function boot(){
  wire();
- try{
-   db=await openDb();projects=await store('readonly','getAll');
-   if(!projects.length)await addProject(makeProject('My first scientific article'));
-   else await activate(projects.find(p=>p.id===localStorage.getItem(ACTIVE))?.id||projects[0].id);
-   inform('Ready — projects stay in this browser until you export them.');
- }catch(e){fail(e);alert('LaTeX Studio needs browser storage. Enable IndexedDB or use a normal window.');}
+ projects=await initialiseStorage();
+ if(!projects.length)await addProject(makeProject('My first scientific article'));
+ else {
+   let active=null;try{active=localStorage.getItem(ACTIVE);}catch(_){}
+   await activate(projects.find(p=>p.id===active)?.id||projects[0].id);
+ }
+ await updateStorageDetails();
+ inform(storageMode==='memory'?'Ready, but persistent storage is unavailable — export ZIP backups.':'Ready — autosave is active in this browser.');
 }
-boot();
+boot().catch(e=>{fail(e);alert('LaTeX Studio could not start: '+(e?.message||e));});
 })();

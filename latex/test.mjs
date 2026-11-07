@@ -5,16 +5,31 @@ import assert from 'node:assert/strict';
 const read = path => readFileSync(new URL(path, import.meta.url), 'utf8');
 const html = read('./index.html');
 const js = read('./app.js');
+const compiler = read('./compiler.js');
 const css = read('./styles.css');
 const home = read('../index.html');
 const rootCss = read('../assets/home.css');
+const privacy = read('../privacy.html');
 
 new Script(js, {filename: 'latex/app.js'});
+new Script(
+  compiler.replace(/^export /gm, '').replace(/import\.meta\.url/g, "'http://example.test/latex/compiler.js'"),
+  {filename: 'latex/compiler.js'}
+);
 assert.ok(html.startsWith('<!doctype html>'), 'LaTeX Studio must be an HTML page');
 assert.ok(home.includes('href="latex/"'), 'Homepage must link LaTeX Studio');
 assert.ok(html.includes('src="app.js"'), 'Studio must load application script');
 assert.ok(html.includes('src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"'), 'ZIP dependency missing');
 assert.ok(html.includes('src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"'), 'KaTeX dependency missing');
+assert.ok(html.includes('id="pdf-frame"'), 'Internal PDF preview missing');
+assert.ok(html.includes('id="storage-details"'), 'Storage diagnostics missing');
+assert.ok(!html.includes('latexonline.cc'), 'External compile service must not be used');
+assert.equal((html.match(/<option value=\"pdflatex\"/g) || []).length, 1, 'Only verified pdfLaTeX engine should be offered');
+assert.ok(!html.includes('value="xelatex"') && !html.includes('value="lualatex"'), 'Unverified engines must not be advertised');
+assert.match(compiler, /f80f84659c9476e41ef7212f6d753e10f6bd4af5/, 'Pinned SwiftLaTeX asset revision missing');
+assert.match(compiler, /sourceUpload:\s*false/, 'Compiler privacy declaration missing');
+assert.match(compiler, /SwiftLaTeX pdfTeX WebAssembly/, 'Internal pdfTeX engine missing');
+assert.ok(!compiler.includes('TeXlyre/texlyre-busytex-build/releases'), 'Broken release-asset CORS path must be removed');
 
 const ids = new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(m => m[1]));
 const referenced = [...js.matchAll(/\$\('([^']+)'\)/g)].map(m => m[1]);
@@ -22,8 +37,10 @@ for (const id of referenced) assert.ok(ids.has(id), 'Missing HTML element ID: ' 
 
 const checks = [
   [/indexedDB\.open\(DB,1\)/, 'indexedDB storage'],
-  [/window\.open\(url,'_blank'/, 'external compiler navigation'],
-  [/ask\('Send source to external compiler\?'/, 'compiler consent'],
+  [/FALLBACK_KEY/, 'localStorage persistence fallback'],
+  [/BroadcastChannel/, 'cross-tab update handling'],
+  [/import\('\.\/compiler\.js'\)/, 'browser compiler module'],
+  [/navigator\.storage\.persist/, 'persistent storage request'],
   [/Object\.hasOwn/, 'safe filename lookup'],
   [/async function importZip/, 'ZIP import'],
   [/async function exportZip/, 'ZIP export'],
@@ -46,9 +63,32 @@ for (const n of ['e01','e02','e03','e04','e05']) {
  assert.ok(home.includes('href="electricity/' + n + '/"'), 'Missing direct TP link ' + n);
 }
 assert.ok(home.includes('href="assets/home.css"'), 'Homepage must use isolated stylesheet');
+assert.ok(home.includes('href="privacy.html"'), 'Homepage must link privacy page');
+assert.ok(privacy.includes('Many students can therefore use'), 'Privacy page must explain simultaneous independent use');
+assert.ok(privacy.includes('not persisted'), 'Privacy page must explain identity persistence policy');
 
 for (const n of ['e01','e02','e03','e04','e05']) {
-  const path = new URL('../electricity/' + n + '/index.html', import.meta.url);
-  assert.ok(existsSync(path), 'Existing physics practical missing: ' + n);
+  const htmlPath = new URL('../electricity/' + n + '/index.html', import.meta.url);
+  assert.ok(existsSync(htmlPath), 'Existing physics practical missing: ' + n);
+  const labHtml = read('../electricity/' + n + '/index.html');
+  assert.ok(labHtml.includes('id="clearLocalProgress"'), n + ' must offer clear-local-data control');
+  assert.ok(labHtml.includes('name and group stay only in this open page'), n + ' must disclose identity policy');
+  const scriptName = n === 'e03' ? 'official.js' : 'lab.js';
+  const labJs = read('../electricity/' + n + '/' + scriptName);
+  new Script(labJs, {filename: n + '/' + scriptName});
+  assert.doesNotMatch(labJs, /const ids=\['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'\]/, n + ' must not persist identity fields');
+  assert.match(labJs, /localStorage\.removeItem\(STORAGE\)/, n + ' must clear its own local progress');
 }
-console.log('LaTeX Studio smoke checks passed: JS syntax, DOM references, links, import/export, privacy consent, templates, layout, and five unchanged TP entrypoints.');
+const e01 = read('../electricity/e01/lab.js');
+assert.match(e01, /x\?\.version===2/, 'TP1 must reload the same state version it saves');
+assert.match(e01, /function bindPersistentFields\(\)/, 'TP1 must bind report fields directly to persistence');
+const e03 = read('../electricity/e03/official.js');
+assert.match(e03, /s\?\.version===5/, 'TP3 must reload the same state version it saves');
+for (const n of ['e01','e02','e03','e04','e05']) {
+  const scriptName = n === 'e03' ? 'official.js' : 'lab.js';
+  const labJs = read('../electricity/' + n + '/' + scriptName);
+  assert.match(labJs, /function persistState\(\)/, n + ' must have direct persistence helper');
+  assert.doesNotMatch(labJs, /function persistState\(\)\{\s*persistState\(\)/, n + ' persistence helper must not recurse');
+  assert.match(labJs, /function bindPersistentFields\(\)/, n + ' must bind editable text fields directly');
+}
+console.log('LaTeX Studio smoke checks passed: JS syntax, DOM references, resilient storage, local compiler wiring, privacy UI, homepage links, and TP persistence.');

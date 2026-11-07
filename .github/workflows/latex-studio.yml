@@ -1,19 +1,23 @@
-name: LaTeX Studio smoke checks
+name: LaTeX Studio checks
 
 on:
   pull_request:
     paths:
       - "latex/**"
+      - "electricity/**"
+      - "privacy.html"
       - "index.html"
-      - "assets/styles.css"
+      - "assets/home.css"
       - ".github/workflows/latex-studio.yml"
   push:
     branches:
-      - "feature/latex-studio-v1"
+      - "fix/latex-local-privacy-persistence"
     paths:
       - "latex/**"
+      - "electricity/**"
+      - "privacy.html"
       - "index.html"
-      - "assets/styles.css"
+      - "assets/home.css"
       - ".github/workflows/latex-studio.yml"
 
 permissions:
@@ -30,5 +34,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Check JavaScript and UI wiring
+      - name: Check JavaScript, privacy and persistence wiring
         run: node latex/test.mjs
+
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.65.0
+          npx playwright install --with-deps chromium
+      - name: Serve the site
+        run: |
+          python3 -m http.server 8080 --bind 127.0.0.1 >/tmp/physics-usthb-http.log 2>&1 &
+          echo $! > /tmp/physics-usthb-http.pid
+      - name: Test save, reload and browser-local PDF compilation
+        run: node latex/browser-test.mjs

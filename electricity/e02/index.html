@@ -161,13 +161,14 @@
 </section>
 
 <section class="tabpanel" id="report">
-  <article class="paper no-print"><h2>Laboratory report</h2><div class="report-grid"><label>Student name<input id="studentName" type="text"></label><label>Group / section<input id="studentGroup" type="text"></label><label>Date<input id="reportDate" type="date"></label><label>Mode<input id="reportMode" type="text" readonly></label><label class="wide">Discussion<textarea id="reportDiscussion" placeholder="Discuss symmetry, equipotential geometry, field uniformity, edge effects, the conducting cylinder and the V₁/V₂ comparison."></textarea></label><label class="wide">Conclusion<textarea id="reportConclusion" placeholder="Summarise the main experimental conclusions about E = −∇V and conductor behaviour."></textarea></label></div><div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button></div></article>
+  <article class="paper no-print"><h2>Laboratory report</h2>
+    <p class="mini"><strong>Privacy:</strong> student name and group stay only in this open page and are not saved. Measurements and report text autosave locally in this browser.</p><div class="report-grid"><label>Student name<input id="studentName" type="text"></label><label>Group / section<input id="studentGroup" type="text"></label><label>Date<input id="reportDate" type="date"></label><label>Mode<input id="reportMode" type="text" readonly></label><label class="wide">Discussion<textarea id="reportDiscussion" placeholder="Discuss symmetry, equipotential geometry, field uniformity, edge effects, the conducting cylinder and the V₁/V₂ comparison."></textarea></label><label class="wide">Conclusion<textarea id="reportConclusion" placeholder="Summarise the main experimental conclusions about E = −∇V and conductor behaviour."></textarea></label></div><div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button><button class="btn ghost" id="clearLocalProgress" type="button">Clear local data</button></div></article>
   <div class="report-preview" id="reportPreview"><h2>Laboratory Report — E02</h2><p class="mini">Complete the mapping and analysis before building the report.</p></div>
 </section>
 <section class="tabpanel" id="printable-report"><div class="report-preview" id="printOnlyPreview"></div></section>
 </main>
 
-<footer class="footer"><div class="shell">E02 • Rheographic Tank • Physics USTHB interactive laboratory</div></footer>
+<footer class="footer"><div class="shell">E02 • Rheographic Tank • Physics USTHB interactive laboratory · <a href="../../privacy.html">Privacy</a></div></footer>
 <script src="lab.js"></script>
 </body>
 </html>

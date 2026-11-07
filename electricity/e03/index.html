@@ -327,6 +327,7 @@
 <section class="tabpanel" id="report">
   <article class="paper no-print">
     <h2>Laboratory report</h2>
+    <p class="mini"><strong>Privacy:</strong> student name and group stay only in this open page and are not saved. Measurements and report text autosave locally in this browser.</p>
     <p>The report keeps the official TP3 results separate from the optional advanced-analysis extension.</p>
     <div class="report-grid">
       <label>Student name<input id="studentName" type="text"></label>
@@ -336,14 +337,14 @@
       <label class="wide">Discussion<textarea id="reportDiscussion" placeholder="Discuss the resistor characteristic, lamp nonlinearity, manufacturer comparison, and experimental verification of the series/parallel constructions."></textarea></label>
       <label class="wide">Conclusion<textarea id="reportConclusion" placeholder="State the resistance obtained from the official graph and the conclusions supported by the measurements."></textarea></label>
     </div>
-    <div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button></div>
+    <div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button><button class="btn ghost" id="clearLocalProgress" type="button">Clear local data</button></div>
   </article>
   <div class="report-preview" id="reportPreview"><h2>Laboratory Report — E03</h2><p class="mini">Complete the prescribed measurements and build the report.</p></div>
 </section>
 <section class="tabpanel" id="printable-report"><div class="report-preview" id="printOnlyPreview"></div></section>
 </main>
 
-<footer class="footer"><div class="shell">E03 • USTHB-aligned TP3 core protocol • Physics USTHB interactive laboratory</div></footer>
+<footer class="footer"><div class="shell">E03 • USTHB-aligned TP3 core protocol • Physics USTHB interactive laboratory · <a href="../../privacy.html">Privacy</a></div></footer>
 <script src="official.js"></script>
 </body>
 </html>

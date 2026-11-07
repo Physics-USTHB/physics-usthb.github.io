@@ -44,19 +44,22 @@ function makeRun(){
     iParallax:(Math.random()-.5)*0.36
   };
 }
-function save(){
-  state.text=collectText();state.report=collectReport();
+function persistState(){
   try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}
 }
+function save(){
+  state.text=collectText();state.report=collectReport();
+  persistState()
+}
 function load(){
-  try{const x=JSON.parse(localStorage.getItem(STORAGE)||'null');if(x?.version===1)state={...state,...x};}catch(_){}
+  try{const x=JSON.parse(localStorage.getItem(STORAGE)||'null');if(x?.version===2)state={...state,...x};}catch(_){}
 }
 function collectText(){
   const ids=['emfConclusion','methodJustification'];
   const out={};ids.forEach(id=>{const el=document.getElementById(id);if(el)out[id]=el.value;});return out;
 }
 function collectReport(){
-  const ids=['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'];
+  const ids=['reportDate','reportDiscussion','reportConclusion'];
   const out={};ids.forEach(id=>{const el=document.getElementById(id);if(el)out[id]=el.value;});return out;
 }
 function restoreFields(){
@@ -357,7 +360,7 @@ function buildReport(){
   drawPot();state.report=collectReport();state.text=collectText();const e=state.emf.best,h=state.emf.high,p=potFit(),pr=preferredRx(),img=$('#potChart').toDataURL('image/png');
   const d10=state.pot.records[10],di=p&&d10?p.m*(d10.deltaV/Math.max(d10.v,1e-12)+BOX_REL):NaN;
   const html=`<h2>Laboratory Report — E01</h2><p><strong>Electrical Measurements & Resistance</strong></p>
-  <p><strong>Student:</strong> ${escapeHtml(state.report.studentName||'—')} &nbsp; <strong>Group:</strong> ${escapeHtml(state.report.studentGroup||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(state.report.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
+  <p><strong>Student:</strong> ${escapeHtml($('#studentName')?.value||'—')} &nbsp; <strong>Group:</strong> ${escapeHtml($('#studentGroup')?.value||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(state.report.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
   <h3>7.1 — Generator emf</h3><p>Appropriate range: ${e?e.label+', E = '+e.value.toFixed(2)+' ± '+e.delta.toFixed(2)+' V':'not completed'}. Immediately higher range: ${h?h.label+', E′ = '+h.value.toFixed(2)+' ± '+h.delta.toFixed(2)+' V':'not completed'}.</p><p>${prose(state.text.emfConclusion)}</p>
   <h3>7.2 — Potentiometric source</h3>${potTableHtml()}<p>Slope-derived current: <strong>${p?p.m.toFixed(4)+' A':'not determined'}</strong>${Number.isFinite(di)?', ΔI ≈ '+di.toFixed(4)+' A':''}; R² = ${p?p.r2.toFixed(5):'—'}.</p><img src="${img}" style="max-width:100%" alt="VAB versus RAB graph">
   <h3>7.3 — Unknown resistance</h3>${rxTableHtml()}<p>Preferred method: <strong>${pr?pr.method+' derivation':'not determined'}</strong>. Preferred result: ${pr?pr.corrected.toFixed(1)+' ± '+pr.dR.toFixed(1)+' Ω':'—'}.</p><p>${prose(state.text.methodJustification)}</p>
@@ -377,13 +380,24 @@ function renderAll(){
   renderEmfResults();updateEmf();renderPotTable();drawPot();updatePot();renderRx();updateRx();restoreAssessment();progress();summary();
   if(state.exactShown)revealExact();
 }
+function bindPersistentFields(){
+  const bind=(id,bucket)=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.addEventListener('input',()=>{
+      state[bucket]=state[bucket]||{};
+      state[bucket][id]=el.value;
+      persistState();
+    });
+  };
+  ["emfConclusion","methodJustification"].forEach(id=>bind(id,'text'));
+  ["reportDate","reportDiscussion","reportConclusion"].forEach(id=>bind(id,'report'));
+}
 function init(){
-  load();if(!state.run)state.run=makeRun();fillRanges();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
+  load();bindPersistentFields();if(state.report){delete state.report.studentName;delete state.report.studentGroup;persistState()}if(!state.run)state.run=makeRun();fillRanges();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
   ['emfVPlus','emfCOM'].forEach(id=>$('#'+id).addEventListener('change',()=>{state.emf.connected=false;updateEmfWiring();updateEmf();save();}));$('#emfRange').addEventListener('change',()=>{$('#emfStudentN').value='';$('#emfStudentValue').value='';$('#emfStudentUnc').value='';updateEmf();});$('#connectEmf').addEventListener('click',connectEmf);$('#recordEmf').addEventListener('click',recordEmf);$('#newSpecimen').addEventListener('click',newSpecimen);
   ['potGenPlus','potGenMinus','potVPlus','potVCom'].forEach(id=>$('#'+id).addEventListener('change',()=>{updatePotWiring();updatePot();save();}));$('#potRange').addEventListener('change',updatePot);$('#potSelectorSelect').addEventListener('change',e=>{state.pot.selector=+e.target.value;updatePot();save();});$('#verifyPot').addEventListener('click',verifyPot);$('#recordPot').addEventListener('click',recordPot);
   $('.method-btn').forEach(b=>b.addEventListener('click',()=>setMethod(b.dataset.method)));['rxAmmeterPlacement','rxVoltmeterSpan'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateRxWiring();updateRx();save();}));$('#rxVRange').addEventListener('change',updateRx);$('#rxIRange').addEventListener('change',updateRx);$('#verifyRx').addEventListener('click',verifyRx);$('#recordRx').addEventListener('click',recordRx);
-  $('#revealExact').addEventListener('click',revealExact);$('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
-  ['emfConclusion','methodJustification','studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'].forEach(id=>document.getElementById(id)?.addEventListener('input',save));
+  $('#revealExact').addEventListener('click',revealExact);$('#buildReport').addEventListener('click',buildReport);$('#clearLocalProgress')?.addEventListener('click',()=>{if(confirm('Clear all locally saved progress for this practical on this browser?')){try{localStorage.removeItem(STORAGE);}catch(_){}location.reload();}});$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
   window.addEventListener('resize',drawPot);window.addEventListener('beforeunload',save);renderAll();
 }
 init();
