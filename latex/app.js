@@ -62,25 +62,25 @@ Discuss instrument limits and compare with theory.
 Explain what the results demonstrate.
 \end{document}
 `,
-report: String.raw\`\\documentclass[11pt,a4paper]{report}
-\\usepackage{amsmath,amssymb,graphicx}
-\\title{Scientific Report}
-\\author{Your Name}
-\\date{\\today}
-\\begin{document}
-\\maketitle
-\\chapter{Introduction}
+report: String.raw`\documentclass[11pt,a4paper]{report}
+\usepackage{amsmath,amssymb,graphicx}
+\title{Scientific Report}
+\author{Your Name}
+\date{\today}
+\begin{document}
+\maketitle
+\chapter{Introduction}
 State the problem and objectives.
-\\chapter{Method}
+\chapter{Method}
 Describe the method and apparatus.
-\\chapter{Results}
-\\[
+\chapter{Results}
+\[
 E = mc^2
-\\]
-\\chapter{Conclusion}
+\]
+\chapter{Conclusion}
 Summarise the findings and limitations.
-\\end{document}
-\`,
+\end{document}
+`,
 blank: String.raw`\documentclass{article}
 \begin{document}
 Hello, LaTeX!
