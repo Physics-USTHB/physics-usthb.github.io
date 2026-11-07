@@ -74,6 +74,18 @@
         <div class="transient-overlay"><span id="timeDivLabel">50 µs/div</span><span id="voltsDivLabel">1 V/div</span><span id="methodLabel">5-square method</span></div>
       </div>
 
+      <div class="transient-wiring">
+        <div class="transient-wiring-head"><strong>Build the transient circuit</strong><span>Choose the topology and oscilloscope connection before energising the generator.</span></div>
+        <div class="transient-wiring-grid">
+          <label>Series circuit<select id="e05CircuitType"><option value="">Choose…</option><option value="RC">R–C series</option><option value="RL">R–L series</option></select></label>
+          <label>Oscilloscope measures<select id="e05ProbeAcross"><option value="">Choose…</option><option value="C">Voltage across C</option><option value="R">Voltage across R</option><option value="L">Voltage across L</option></select></label>
+          <label>Generator waveform<select id="e05SourceWave"><option value="">Choose…</option><option value="step">Symmetric square / step signal</option><option value="sine">Sine wave</option></select></label>
+          <label>Oscilloscope common<select id="e05Ground"><option value="">Choose…</option><option value="return">Circuit return / generator common</option><option value="middle">R–C / R–L junction</option></select></label>
+        </div>
+        <div class="transient-wiring-status" id="e05WiringStatus">Circuit not verified.</div>
+        <button class="btn secondary" id="e05VerifyWiring" type="button">Verify circuit</button>
+      </div>
+
       <div class="transient-controls">
         <div class="transient-control"><label>Experiment</label><select id="taskSelect"><option value="knownRC">4.1 · known R, known C</option><option value="unknownR">4.2 · unknown R, known C</option><option value="unknownC">4.3 · known R, unknown C</option><option value="unknownL">4.4 · known R, unknown L</option></select></div>
         <div class="transient-control"><label>Generator frequency</label><select id="frequency"><option value="100">100 Hz</option><option value="200">200 Hz</option><option value="500" selected>500 Hz</option><option value="1000">1 kHz</option><option value="2000">2 kHz</option><option value="5000">5 kHz</option></select></div>
