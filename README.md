@@ -38,6 +38,31 @@ Virtual analogue meter specifications and hidden component values are explicit s
 Live E01:
 https://physics-usthb.github.io/electricity/e01/
 
+## E02 — Rheographic Tank / Electric Potential Mapping
+
+E02 is implemented as a virtual version of the USTHB rheographic-tank practical. The current USTHB course listing identifies it as **TP2 — Cuve rhéographique**.
+
+The virtual laboratory preserves the published task sequence:
+
+- two finite plane electrodes driven by an approximately 11 V AC source;
+- electrode-potential measurements and symmetry check V(x,y)=V(x,−y);
+- 2 V, 4 V, 6 V and 8 V equipotential mapping;
+- upper-half mapping followed by symmetry construction;
+- four mean-field estimates on x′Ox from neighbouring equipotentials;
+- V₁(x) measurements every 2 cm;
+- central and edge field-line tracing;
+- insertion of a 6 cm conducting cylinder at the tank centre;
+- verification that the conductor is equipotential and that its internal field is approximately zero;
+- remapping of the same four equipotentials;
+- field-line construction through the prescribed y=+5 cm and y=−5 cm regions;
+- V₂(x) measurements every 2 cm and comparison with V₁(x);
+- post-lab assessment and English laboratory report.
+
+The browser solves the two-dimensional Laplace equation on a finite-difference grid for each configuration. The tank dimensions and small probe-calibration effects are transparent simulation parameters rather than values claimed by the handout.
+
+Live E02:
+https://physics-usthb.github.io/electricity/e02/
+
 ## E03 — current status
 
 E03 now has two explicitly separated layers.
@@ -97,6 +122,10 @@ physics-usthb.github.io/
 │   │   ├── index.html
 │   │   ├── e01.css
 │   │   └── lab.js
+│   ├── e02/
+│   │   ├── index.html
+│   │   ├── e02.css
+│   │   └── lab.js
 │   └── e03/
 │       ├── index.html
 │       ├── official.css
@@ -120,7 +149,7 @@ Before using the project for formally assessed coursework, it should still under
 1. Instructor/pedagogical review of the revised USTHB-aligned E03.
 2. Complete automated browser interaction tests and accessibility audit.
 3. Instructor review of E01 and E03.
-4. E02 — Rheographic Tank / Electric Potential Mapping, aligned with TP2.
+4. Instructor review of E02 field geometry and measurement workflow.
 5. E04 — Oscilloscope, aligned with TP4.
 6. E05 — RC–RL Transients, aligned with TP5.
 7. English-for-Physicists pathway integrated with laboratory vocabulary and reporting.
