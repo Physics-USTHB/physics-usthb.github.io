@@ -60,7 +60,7 @@ function save(){
 function load(){
   try{
     const s=JSON.parse(localStorage.getItem(STORAGE)||'null');
-    if(s?.version===4) state={...state,...s};
+    if(s?.version===5) state={...state,...s};
   }catch(_){}
 }
 function collectText(){
