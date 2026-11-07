@@ -33,9 +33,12 @@ function makeRun(){
     seed:Math.random()*1000
   };
 }
+function persistState(){
+  persistState()
+}
 function save(){
   state.text=collectText();state.report=collectReport();
-  try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}
+  persistState()
 }
 function load(){
   try{const s=JSON.parse(localStorage.getItem(STORAGE)||'null');if(s?.version===2)state={...state,...s};}catch(_){}
@@ -383,8 +386,20 @@ function setupTabs(){
 function renderAll(){
   renderPlaneResults();updatePlane();setupTargetButtons('#targetsA',state.mapA,'A');yProgress('#yProgressA',state.mapA);renderEquipATable();updateMapA();updateFieldsA();renderAxisAll();renderCylinderResults();setupTargetButtons('#targetsB',state.mapB,'B');$('#targetBSelect').value=state.mapB.target;$('#mapBYSelect').value=state.mapB.y;updateMapBControls();updateFieldM();restoreAssessment();progress();
 }
+function bindPersistentFields(){
+  const bind=(id,bucket)=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.addEventListener('input',()=>{
+      state[bucket]=state[bucket]||{};
+      state[bucket][id]=el.value;
+      persistState();
+    });
+  };
+  ["fieldConclusionA","uniformConclusion","chargeDistribution","distortionConclusion","compareConclusion"].forEach(id=>bind(id,'text'));
+  ["reportDate","reportDiscussion","reportConclusion"].forEach(id=>bind(id,'report'));
+}
 function init(){
-  load();if(state.report){delete state.report.studentName;delete state.report.studentGroup;try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}}if(!state.run)state.run=makeRun();recomputeFields();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
+  load();bindPersistentFields();if(state.report){delete state.report.studentName;delete state.report.studentGroup;persistState()}if(!state.run)state.run=makeRun();recomputeFields();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
   const planeCanvas=$('#planeCanvas'),mapCanvas=$('#mapACanvas'),cylCanvas=$('#cylCanvas');
   const planeMove=e=>{if(!state.plane.connected)return;const p=eventPoint(planeCanvas,e);state.plane.x=p.x;state.plane.y=p.y;updatePlane();};
   planeCanvas.addEventListener('pointerdown',planeMove);
@@ -396,7 +411,6 @@ function init(){
   $('#cylXSlider').addEventListener('input',e=>{state.cyl.x=+e.target.value;updateCylinder();});$('#cylYSlider').addEventListener('input',e=>{state.cyl.y=+e.target.value;updateCylinder();});$('#measureCylinder').addEventListener('click',updateCylinder);$('#recordCylinderPotential').addEventListener('click',recordCylinder);
   $('#targetBSelect').addEventListener('change',updateMapBControls);$('#mapBYSelect').addEventListener('change',updateMapBControls);$('#markEquipB').addEventListener('click',markB);$('#traceM').addEventListener('click',()=>{if(!seedM())return;state.mapB.lines.M=true;drawCylinderCanvases();progress();save();});$('#traceN').addEventListener('click',()=>{if(!seedN())return;state.mapB.lines.N=true;drawCylinderCanvases();progress();save();});$('#recordAxisB').addEventListener('click',()=>recordAxis('B'));
   $('#buildReport').addEventListener('click',buildReport);$('#clearLocalProgress')?.addEventListener('click',()=>{if(confirm('Clear all locally saved progress for this practical on this browser?')){try{localStorage.removeItem(STORAGE);}catch(_){}location.reload();}});$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
-  ['fieldConclusionA','uniformConclusion','chargeDistribution','distortionConclusion','compareConclusion','reportDate','reportDiscussion','reportConclusion'].forEach(id=>document.getElementById(id)?.addEventListener('input',save));
   window.addEventListener('resize',()=>{drawPlaneCanvases();drawCylinderCanvases();drawAxisChart();drawCompare();});window.addEventListener('beforeunload',save);renderAll();
 }
 init();
