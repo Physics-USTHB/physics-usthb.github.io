@@ -31,7 +31,7 @@ function save(){
 }
 function load(){try{const x=JSON.parse(localStorage.getItem(STORAGE)||'null');if(x?.version===2)state={...state,...x};}catch(_){}}
 function collectReport(){
-  const ids=['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'];
+  const ids=['reportDate','reportDiscussion','reportConclusion'];
   const o={};ids.forEach(id=>{const el=document.getElementById(id);if(el)o[id]=el.value;});return o;
 }
 function restoreReport(){
@@ -262,13 +262,13 @@ function setupTabs(){
   $$('.tabbtn').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.tab;$$('.tabbtn').forEach(x=>x.classList.toggle('active',x===b));$$('.tabpanel').forEach(p=>p.classList.toggle('active',p.id===id));drawXY();drawSweep();updateResistor();updateCap();}));
 }
 function init(){
-  load();if(!state.run)state.run=makeRun();restoreReport();setupTabs();setupQuiz();applyMode(state.mode);renderXYObs();progress();restoreAssessment();
+  load();if(state.report){delete state.report.studentName;delete state.report.studentGroup;try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}}if(!state.run)state.run=makeRun();restoreReport();setupTabs();setupQuiz();applyMode(state.mode);renderXYObs();progress();restoreAssessment();
   ['xyWave','xyFreq','xyRoute','xyVdiv1','xyVdiv2','xyAmp','xyIntensity','xyFocus','xyXPos','xyYPos','xyModeControl'].forEach(id=>$('#'+id).addEventListener('input',()=>{drawXY();save();}));$('#recordXYObservation').addEventListener('click',recordXY);$('#centerSpot').addEventListener('click',()=>{state.xy.xPos=0;state.xy.yPos=0;$('#xyXPos').value=0;$('#xyYPos').value=0;drawXY();$('#xyMessage').className='notice ok';$('#xyMessage').textContent='Spot centred using commands (8) and (6B).';save();});
   ['sweepWave','sweepFreq','timeDiv','sweepVdiv','triggerLevel','triggerMode','triggerSource','sweepCoupling','sweepDisplayMode'].forEach(id=>$('#'+id).addEventListener('input',drawSweep));$('#toggleSweepCal').addEventListener('click',()=>{state.sweep.cal=!state.sweep.cal;drawSweep();save();});$('#toggleCh1Cal').addEventListener('click',()=>{state.sweep.ch1Cal=!state.sweep.ch1Cal;drawSweep();save();});$('#toggleXMag').addEventListener('click',()=>{state.sweep.xMag=!state.sweep.xMag;drawSweep();save();});$('#recordSweep').addEventListener('click',recordSweep);
   ['rFreq','rVdiv','rTimeDiv','rDecade','rCH1Point','rCH2Point','rGroundPoint','rCoupling1','rCoupling2','rInvert2'].forEach(id=>$('#'+id).addEventListener('input',updateResistor));$('#recordResistorBalance').addEventListener('click',recordRBalance);$('#switchResistorXY').addEventListener('click',()=>{state.resistor.xy=!state.resistor.xy;if(state.resistor.xy&&state.resistor.balance)state.resistor.xyVerified=true;updateResistor();progress();save();});
   ['cFreq','cVdiv','cTimeDiv','cDecade','cCH1Point','cCH2Point','cGroundPoint','cCoupling1','cCoupling2','cInvert2'].forEach(id=>$('#'+id).addEventListener('input',updateCap));$('#recordCapBalance').addEventListener('click',recordCBalance);$('#switchCapXY').addEventListener('click',()=>{state.capacitor.xy=!state.capacitor.xy;if(state.capacitor.xy&&state.capacitor.balance)state.capacitor.xyVerified=true;updateCap();progress();save();});
-  $('#buildReport').addEventListener('click',buildReport);$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
-  ['studentName','studentGroup','reportDate','reportDiscussion','reportConclusion'].forEach(id=>$('#'+id).addEventListener('input',save));
+  $('#buildReport').addEventListener('click',buildReport);$('#clearLocalProgress')?.addEventListener('click',()=>{if(confirm('Clear all locally saved progress for this practical on this browser?')){try{localStorage.removeItem(STORAGE);}catch(_){}location.reload();}});$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
+  ['reportDate','reportDiscussion','reportConclusion'].forEach(id=>$('#'+id).addEventListener('input',save));
   window.addEventListener('resize',()=>{drawXY();drawSweep();updateResistor();updateCap();});window.addEventListener('beforeunload',save);
   $('#xyIntensity').value=state.xy.intensity;$('#xyFocus').value=state.xy.focus;$('#xyXPos').value=state.xy.xPos;$('#xyYPos').value=state.xy.yPos;$('#xyModeControl').value=state.xy.mode;
   drawXY();drawSweep();updateResistor();updateCap();
