@@ -10,6 +10,10 @@ A GitHub Pages project for rigorous undergraduate physics learning in English.
 - Electricity laboratory: https://physics-usthb.github.io/electricity/
 - E03 — Current–Voltage Characteristics: https://physics-usthb.github.io/electricity/e03/
 
+## LaTeX Studio (proposed first release)
+
+The `feature/latex-studio-v1` branch adds a local-first LaTeX editor at `/latex/` with project management, ZIP import/export, Prism-source migration, equations preview, and an explicit opt-in external PDF compiler for short single-file projects. The main branch's live website does **not** include this feature until the pull request is merged. See [`latex/README.md`](latex/README.md) for privacy limits, deployment scope and testing instructions.
+
 ## Fidelity policy
 
 The development priority is now:
