@@ -29,6 +29,19 @@ Physics USTHB local compiler browser test.
   await page.waitForFunction(() => document.querySelector('#status')?.textContent.includes('Ready'), null, {timeout:15_000});
   assert.equal(await page.locator('#source').inputValue(), source, 'Saved source did not survive reload');
 
+  // A separate browser context represents another user/device profile.
+  // Its storage must be independent even while both sessions are open.
+  const otherContext = await browser.newContext();
+  try {
+    const otherPage = await otherContext.newPage();
+    await otherPage.goto('http://127.0.0.1:8080/latex/', {waitUntil:'domcontentloaded', timeout:30_000});
+    await otherPage.waitForFunction(() => document.querySelector('#status')?.textContent.includes('Ready'), null, {timeout:15_000});
+    const otherSource = await otherPage.locator('#source').inputValue();
+    assert.notEqual(otherSource, source, 'A second user context saw the first user\'s saved LaTeX source');
+  } finally {
+    await otherContext.close();
+  }
+
   await page.locator('#compile').click();
   await page.waitForFunction(() => {
     const frame = document.querySelector('#pdf-frame');
@@ -46,7 +59,7 @@ Physics USTHB local compiler browser test.
 
   const leaked = outbound.filter(url => url.includes('Physics%20USTHB%20local%20compiler') || url.includes('Physics+USTHB+local+compiler'));
   assert.deepEqual(leaked, [], 'Document source appeared in an outbound request URL');
-  console.log('Browser test passed: persistence reload + browser-local PDF compilation + preview.');
+  console.log('Browser test passed: persistence reload + isolated concurrent user context + browser-local PDF compilation + preview.');
 } finally {
   await browser.close();
 }
