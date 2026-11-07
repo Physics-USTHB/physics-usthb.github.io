@@ -131,3 +131,19 @@ button,input,select,textarea{font:inherit}
   .navlinks .nav-cta{display:none}.site-hero{padding-top:48px}.hero-copy h1{font-size:3.15rem}.hero-lead{font-size:.98rem}.hero-facts{display:grid;grid-template-columns:1fr}.hero-facts div{padding-top:11px}.hero-visual{min-height:350px;padding:12px;border-radius:20px}.scope-panel{height:220px}.visual-topline{font-size:.55rem}.scope-readout{gap:9px}.pathway-card{padding:24px;min-height:400px}.section-title{font-size:2.45rem}.discipline{min-height:145px}.electricity-copy h1{font-size:3.8rem}.electricity-meta{gap:20px}.circuit-poster{min-height:310px}.poster-axis{display:none}.experiment-card{min-height:380px}.labmast{padding-top:34px}.labmast h1{font-size:2.6rem}.mode-card{width:100%;flex-direction:column;align-items:stretch}.segmented{width:100%}.modebtn{flex:1}.tabbtn{padding-inline:12px}.paper{padding:20px}.meter-grid,.metric-row,.sidepanel{grid-template-columns:1fr}.bench{padding:16px}.bench-actions .btn{width:100%}.chartbox canvas{height:300px}.report-preview{padding:20px}
 }
 @media print{.topbar,.tabs,.no-print,.footer{display:none!important}.lab-page{background:#fff}.tabpanel{display:none!important}.tabpanel#printable-report{display:block!important;padding:0}.report-preview{border:0;box-shadow:none;margin:0}.shell{width:100%;max-width:none}.labmast{display:none}}
+
+/* ---------- Home: live Electricity suite ---------- */
+.home-suite-section{background:#eef3f8;border-top:1px solid #dde6ef;border-bottom:1px solid #dde6ef}
+.home-tp-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.home-tp-card{position:relative;min-height:275px;padding:22px 20px;border-radius:20px;border:1px solid #d8e2ec;background:#fff;text-decoration:none;display:flex;flex-direction:column;box-shadow:0 9px 28px rgba(8,28,49,.045);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.home-tp-card:hover{transform:translateY(-4px);box-shadow:0 22px 55px rgba(8,28,49,.11);border-color:#a9c8e8}
+.home-tp-card:before{content:"";position:absolute;left:20px;right:20px;top:0;height:3px;border-radius:0 0 999px 999px;background:linear-gradient(90deg,#2f7df4,#58d9ef);opacity:.8}
+.home-tp-code{font-family:var(--mono);font-size:.65rem;letter-spacing:.08em;color:#2771c7;font-weight:900;margin-bottom:38px}
+.home-tp-card strong{font-size:1.06rem;line-height:1.2;letter-spacing:-.025em}
+.home-tp-card p{font-size:.79rem;color:#687b8f;line-height:1.65;margin:10px 0 18px}
+.home-tp-card small{margin-top:auto;font-size:.68rem;color:#1e66b8;font-weight:850}
+.suite-disclaimer{margin-top:18px;padding:14px 16px;border:1px solid #d5e0ea;border-radius:13px;background:rgba(255,255,255,.72);color:#65788b;font-size:.78rem;line-height:1.65}
+.suite-disclaimer strong{color:#294c6d}
+@media(max-width:1100px){.home-tp-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:820px){.home-tp-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.home-tp-grid{grid-template-columns:1fr}.home-tp-card{min-height:220px}.home-tp-code{margin-bottom:24px}}
