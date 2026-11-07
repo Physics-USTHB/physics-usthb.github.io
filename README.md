@@ -87,6 +87,28 @@ Core tasks include:
 Live E04:
 https://physics-usthb.github.io/electricity/e04/
 
+## E05 — RC & RL Transients
+
+E05 is implemented from the Belhous–El-Mehdaoui RC/RL transient handout corresponding to the current **TP5 — RC–RL** listing.
+
+Core tasks include:
+
+- RC charging/discharging and RL current-establishment/decay theory;
+- generator internal resistance r_g = 50 Ω in the circuit model;
+- requirement that the transient be essentially complete before the next half-period;
+- 6-division / 4-square τ measurement;
+- 8-division / 5-square τ measurement;
+- display-quality checks for frequency, TIME/DIV and VOLTS/DIV;
+- 4.1 known R + known C validation against τ=R_T C;
+- 4.2 unknown R_x with known C;
+- 4.3 unknown C_x with known R;
+- 4.4 unknown L_x with known R and coil resistance;
+- optional whole-transient exponential fitting as a clearly labelled extension;
+- post-lab assessment and English laboratory report.
+
+Live E05:
+https://physics-usthb.github.io/electricity/e05/
+
 ## E03 — current status
 
 E03 now has two explicitly separated layers.
@@ -154,6 +176,10 @@ physics-usthb.github.io/
 │   │   ├── index.html
 │   │   ├── e04.css
 │   │   └── lab.js
+│   ├── e05/
+│   │   ├── index.html
+│   │   ├── e05.css
+│   │   └── lab.js
 │   └── e03/
 │       ├── index.html
 │       ├── official.css
@@ -179,5 +205,5 @@ Before using the project for formally assessed coursework, it should still under
 3. Instructor review of E01 and E03.
 4. Instructor review of E02 field geometry and measurement workflow.
 5. Instructor review of E04 oscilloscope controls and measurement workflow.
-6. E05 — RC–RL Transients, aligned with TP5.
+6. Instructor review of E05 transient settings and time-constant workflow.
 7. English-for-Physicists pathway integrated with laboratory vocabulary and reporting.
