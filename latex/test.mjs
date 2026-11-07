@@ -88,6 +88,7 @@ for (const n of ['e01','e02','e03','e04','e05']) {
   const scriptName = n === 'e03' ? 'official.js' : 'lab.js';
   const labJs = read('../electricity/' + n + '/' + scriptName);
   assert.match(labJs, /function persistState\(\)/, n + ' must have direct persistence helper');
+  assert.doesNotMatch(labJs, /function persistState\(\)\{\s*persistState\(\)/, n + ' persistence helper must not recurse');
   assert.match(labJs, /function bindPersistentFields\(\)/, n + ' must bind editable text fields directly');
 }
 console.log('LaTeX Studio smoke checks passed: JS syntax, DOM references, resilient storage, local compiler wiring, privacy UI, homepage links, and TP persistence.');
