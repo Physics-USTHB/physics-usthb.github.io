@@ -79,6 +79,14 @@
       <div class="scope-head"><div><div class="scope-kicker">3 — Operating in XY mode</div><h3>Spot-motion familiarisation</h3></div><span class="scope-state" id="xyState">XY mode</span></div>
       <div class="scope-screen"><canvas id="xyCanvas" width="900" height="580"></canvas><div class="scope-overlay"><span id="xyCH1Label">CH1/X</span><span id="xyCH2Label">CH2/Y</span></div></div>
 
+      <div class="front-panel-grid">
+        <div class="front-control"><b>(2)</b><label>Intensity</label><input id="xyIntensity" type="range" min="0.1" max="1" step="0.05" value="0.35"><span id="xyIntensityLabel">35%</span></div>
+        <div class="front-control"><b>(3)</b><label>Focus</label><input id="xyFocus" type="range" min="0.2" max="1" step="0.05" value="0.9"><span id="xyFocusLabel">fine</span></div>
+        <div class="front-control"><b>(8)</b><label>Horizontal position</label><input id="xyXPos" type="range" min="-2" max="2" step="0.1" value="0"><span id="xyXPosLabel">0.0 div</span></div>
+        <div class="front-control"><b>(6B)</b><label>Vertical position</label><input id="xyYPos" type="range" min="-2" max="2" step="0.1" value="0"><span id="xyYPosLabel">0.0 div</span></div>
+        <div class="front-control"><b>(12)</b><label>Horizontal mode</label><select id="xyModeControl"><option value="sweep">Sweep</option><option value="xy" selected>XY</option></select><span>TIME/DIV → XY</span></div>
+      </div>
+
       <div class="scope-controls">
         <div class="scope-control"><label>Generator waveform</label><select id="xyWave"><option value="sine">Sine</option><option value="triangle">Triangle</option><option value="square">Square</option></select></div>
         <div class="scope-control"><label>Low frequency</label><select id="xyFreq"><option value="0.5">0.5 Hz</option><option value="1">1 Hz</option><option value="2">2 Hz</option></select></div>
@@ -94,6 +102,7 @@
 
     <aside class="scope-side">
       <article class="scope-card"><h4>Required observations</h4><div class="obs-grid" id="xyObservations"></div></article>
+      <article class="scope-card"><h4>Front-panel setup required by the handout</h4><div class="setup-checklist" id="xySetupChecklist"></div></article>
       <article class="scope-card learn-only"><h4>What to notice</h4><ul><li>Sine motion slows near the turning points.</li><li>Triangle motion has nearly constant speed in each direction.</li><li>Square input makes the spot jump between two positions.</li><li>The same signal on X and Y produces a straight diagonal trace.</li></ul></article>
     </aside>
   </div>
@@ -110,7 +119,10 @@
         <div class="scope-control"><label>TIME/DIV</label><select id="timeDiv"><option value=".5">0.5 s/div</option><option value=".2">0.2 s/div</option><option value=".1">0.1 s/div</option><option value=".05">50 ms/div</option><option value=".02">20 ms/div</option><option value=".01">10 ms/div</option><option value=".005">5 ms/div</option><option value=".002">2 ms/div</option><option value=".001">1 ms/div</option></select></div>
         <div class="scope-control"><label>CH1 VOLTS/DIV</label><select id="sweepVdiv"><option value=".2">0.2</option><option value=".5">0.5</option><option value="1" selected>1</option><option value="2">2</option><option value="5">5</option></select><strong>V/div</strong></div>
         <div class="scope-control"><label>Trigger LEVEL</label><input id="triggerLevel" type="range" min="-2" max="2" step=".1" value="0"><strong id="triggerLevelLabel">0.0 V</strong></div>
-        <div class="scope-control"><label>Trigger mode</label><select id="triggerMode"><option value="free">Free-run</option><option value="auto">AUTO · CH1 rising</option></select></div>
+        <div class="scope-control"><label>Trigger mode</label><select id="triggerMode"><option value="free">Free-run</option><option value="auto">AUTO · rising</option></select></div>
+        <div class="scope-control"><label>Trigger source</label><select id="triggerSource"><option value="ch1" selected>CH1</option><option value="ch2">CH2</option><option value="ext">EXT</option></select></div>
+        <div class="scope-control"><label>CH1 coupling (5A)</label><select id="sweepCoupling"><option value="gnd">GND</option><option value="dc" selected>DC</option><option value="ac">AC</option></select></div>
+        <div class="scope-control"><label>Display mode (13)</label><select id="sweepDisplayMode"><option value="ch1" selected>CH1</option><option value="ch2">CH2</option><option value="dual">DUAL</option></select></div>
       </div>
       <div class="knobrow"><div class="knob"><span>Sweep CAL</span><strong id="sweepCalLabel">CAL</strong></div><div class="knob"><span>CH1 fine</span><strong id="ch1CalLabel">CAL</strong></div><div class="knob"><span>X magnifier</span><strong id="xMagLabel">×1</strong></div><div class="knob"><span>Coupling</span><strong>DC</strong></div></div>
       <div class="scope-actions"><button class="btn secondary" id="toggleSweepCal" type="button">Toggle sweep CAL</button><button class="btn secondary" id="toggleCh1Cal" type="button">Toggle CH1 CAL</button><button class="btn secondary" id="toggleXMag" type="button">Toggle X10</button><button class="btn" id="recordSweep" type="button">Record measurement</button></div>
@@ -134,6 +146,18 @@
         <div class="scope-control"><label>Both channels</label><select id="rVdiv"><option value=".2">0.2 V/div</option><option value=".5">0.5 V/div</option><option value="1" selected>1 V/div</option><option value="2">2 V/div</option></select></div>
         <div class="scope-control"><label>TIME/DIV</label><select id="rTimeDiv"><option value=".0001">0.1 ms/div</option><option value=".0002" selected>0.2 ms/div</option><option value=".0005">0.5 ms/div</option><option value=".001">1 ms/div</option></select></div>
       </div>
+      <div class="connection-panel">
+        <div class="connection-title"><strong>Figure 5 connections</strong><span>Set the oscilloscope exactly as on the USTHB sheet before balancing.</span></div>
+        <div class="connection-grid">
+          <label>CH1 probe<select id="rCH1Point"><option value="A" selected>A</option><option value="B">B</option><option value="C">C</option></select></label>
+          <label>CH2 probe<select id="rCH2Point"><option value="A">A</option><option value="B">B</option><option value="C" selected>C</option></select></label>
+          <label>Common ground<select id="rGroundPoint"><option value="A">A</option><option value="B" selected>B</option><option value="C">C</option></select></label>
+          <label>CH1 coupling (5A)<select id="rCoupling1"><option value="dc">DC</option><option value="ac" selected>AC</option><option value="gnd">GND</option></select></label>
+          <label>CH2 coupling (5B)<select id="rCoupling2"><option value="dc">DC</option><option value="ac" selected>AC</option><option value="gnd">GND</option></select></label>
+          <label>CH2 command (18)<select id="rInvert2"><option value="normal">Normal</option><option value="invert" selected>INVERT</option></select></label>
+        </div>
+        <div class="connection-status" id="rConnectionStatus">Figure 5 connection ready.</div>
+      </div>
       <div class="decade-box" style="margin-top:14px"><label>Decade resistance R<sub>d</sub><input id="rDecade" type="range" min="100" max="5000" step="10" value="1000"></label><div><span class="mini">Current setting</span><div class="decade-readout" id="rDecadeLabel">1000 Ω</div></div></div>
       <div class="scope-actions"><button class="btn" id="recordResistorBalance" type="button">Record balanced condition</button><button class="btn ghost" id="switchResistorXY" type="button">Toggle sweep / XY</button></div>
       <div class="notice" id="resistorMessage">Adjust the decade resistance until the two sinusoidal amplitudes are equal.</div>
@@ -154,6 +178,18 @@
         <div class="scope-control"><label>Frequency f</label><select id="cFreq"><option value="500">500 Hz</option><option value="1000" selected>1.00 kHz</option><option value="1500">1.50 kHz</option></select></div>
         <div class="scope-control"><label>Both channels</label><select id="cVdiv"><option value=".2">0.2 V/div</option><option value=".5">0.5 V/div</option><option value="1" selected>1 V/div</option><option value="2">2 V/div</option></select></div>
         <div class="scope-control"><label>TIME/DIV</label><select id="cTimeDiv"><option value=".0001">0.1 ms/div</option><option value=".0002" selected>0.2 ms/div</option><option value=".0005">0.5 ms/div</option><option value=".001">1 ms/div</option></select></div>
+      </div>
+      <div class="connection-panel">
+        <div class="connection-title"><strong>Figure 6 connections</strong><span>Use the same oscilloscope convention as the USTHB sheet.</span></div>
+        <div class="connection-grid">
+          <label>CH1 probe<select id="cCH1Point"><option value="A" selected>A</option><option value="B">B</option><option value="C">C</option></select></label>
+          <label>CH2 probe<select id="cCH2Point"><option value="A">A</option><option value="B">B</option><option value="C" selected>C</option></select></label>
+          <label>Common ground<select id="cGroundPoint"><option value="A">A</option><option value="B" selected>B</option><option value="C">C</option></select></label>
+          <label>CH1 coupling (5A)<select id="cCoupling1"><option value="dc">DC</option><option value="ac" selected>AC</option><option value="gnd">GND</option></select></label>
+          <label>CH2 coupling (5B)<select id="cCoupling2"><option value="dc">DC</option><option value="ac" selected>AC</option><option value="gnd">GND</option></select></label>
+          <label>CH2 command (18)<select id="cInvert2"><option value="normal">Normal</option><option value="invert" selected>INVERT</option></select></label>
+        </div>
+        <div class="connection-status" id="cConnectionStatus">Figure 6 connection ready.</div>
       </div>
       <div class="decade-box" style="margin-top:14px"><label>Decade resistance R<sub>d</sub><input id="cDecade" type="range" min="100" max="3000" step="10" value="700"></label><div><span class="mini">Current setting</span><div class="decade-readout" id="cDecadeLabel">700 Ω</div></div></div>
       <div class="scope-actions"><button class="btn" id="recordCapBalance" type="button">Record balanced condition</button><button class="btn ghost" id="switchCapXY" type="button">Toggle sweep / XY</button></div>
