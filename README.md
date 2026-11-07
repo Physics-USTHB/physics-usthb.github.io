@@ -2,47 +2,59 @@
 
 A GitHub Pages project for rigorous undergraduate physics learning in English.
 
-> **Status:** independent educational prototype. It is not an official USTHB website unless formally adopted or authorised by the university.
+> **Status:** independent educational project. It is not an official USTHB website unless formally adopted or authorised by the university.
 
-## Current prototype — E03 v0.3 (visual-design pass)
+## Live site
 
-The repository currently includes a designed main landing page, a designed Electricity & Circuits laboratory catalogue, and a substantial implementation of **E03 — Current–Voltage Characteristics of Electrical Dipoles**. The v0.3 pass introduces a coherent responsive visual system across all three surfaces while preserving the scientific/interactive functionality.
+- Home: https://physics-usthb.github.io/
+- Electricity laboratory: https://physics-usthb.github.io/electricity/
+- E03 — Current–Voltage Characteristics: https://physics-usthb.github.io/electricity/e03/
 
-### E03 features
+## E03 — current status
 
-- Learn Mode and Lab Mode.
-- Ohmic resistor and a steady-state electro-thermal filament-lamp model.
-- Non-ideal voltmeter, ammeter and DC-source models.
-- Voltmeter loading correction:
-  - `I_D = I_m - V/R_V`.
-- Standard-uncertainty estimates from stated instrument accuracy limits.
-- Propagation of uncertainty into corrected dipole current.
-- Persistent experiment state using browser `localStorage`.
-- Measurement table with raw and corrected quantities.
-- CSV export.
-- I–V plotting with horizontal and vertical uncertainty bars.
-- Iterative effective-variance weighted linear regression for the resistor:
-  - `sigma_eff^2 = u(V)^2 + [m u(I)]^2`.
-- Slope/intercept uncertainties, R² and reduced chi-square.
-- Residual plot for model checking.
-- Static and approximate local differential resistance for the nonlinear lamp.
-- Series and parallel characteristic construction from measured data only, using interpolation without extrapolation.
-- Six-question conceptual/quantitative assessment.
-- Report builder that inserts:
-  - student metadata;
-  - the full measurement table;
-  - experimental graph;
-  - regression results;
-  - residual graph;
-  - synthesized series/parallel graph when available;
-  - assessment result.
-- Print / Save-as-PDF workflow from the browser.
+E03 now has two explicitly separated layers.
 
-## Important academic note
+### Part A — USTHB TP3 core protocol
 
-The virtual lab is designed to develop quantitative reasoning, data analysis, model validation and scientific communication. It does **not** reproduce every physical skill of a real laboratory, such as wiring faults, contact resistance, probe handling, equipment alignment, component damage, thermal time response, or safe operation of real instruments.
+The core sequence is aligned with the published USTHB Faculty of Physics TP3 handout, translated into English and implemented as an interactive virtual experiment:
 
-The filament model is deliberately pedagogical. It captures electro-thermal feedback through temperature-dependent resistance plus convective/conductive and radiative losses, but is not a calibrated model of a specific commercial lamp.
+- potentiometric resistance box with eleven 1 Ω sections between A and C;
+- generator connected across A–C and the utilisation circuit across A–B;
+- selector positions 0 through 11;
+- short-derivation voltmeter/ammeter topology;
+- resistor measurements at positions **1, 3, 5, 7, 9, 11**;
+- official graph **V_Rx = f(I_m)**;
+- lamp measurements at **all selector positions 0–11**;
+- lamp graph **V_L = g(I_m)** on the same axes;
+- graphical series construction using **V_S(I)=V_R(I)+V_L(I)**;
+- experimental series checks at selector positions **5 and 9**;
+- graphical parallel construction using **I_P(V)=I_R(V)+I_L(V)**;
+- experimental parallel checks at selector positions **5 and 9**;
+- laboratory safety/connection rules and a wiring-verification step before measurements;
+- student written justification for the short-derivation connection and for series/parallel addition;
+- English-language laboratory report.
+
+Official source:
+https://fphy.usthb.dz/wp-content/uploads/2023/02/tp3_caracteristiques.pdf
+
+### Part B — advanced analysis extension
+
+This is deliberately labelled as an extension beyond the official handout:
+
+- voltmeter-loading correction: `I_D = I_m - V/R_V`;
+- standard-uncertainty estimates from instrument specifications;
+- propagated uncertainty in corrected current;
+- iterative effective-variance weighted fit;
+- fitted resistance and intercept uncertainties;
+- reduced chi-square;
+- residual plot;
+- comparison between the official `V=f(I_m)` slope and the loading-corrected fit.
+
+## Virtual apparatus model
+
+The digital bench uses a 12 V virtual DC generator and a realistic Thevenin model of the selected potentiometer tap. The physical sequence matches the USTHB handout, while the exact numerical generator/meter/specimen parameters are simulation parameters rather than values claimed by the handout.
+
+The lamp is a pedagogical electro-thermal model with a virtual manufacturer label of **6.0 V, 0.10 A, 0.60 W**. This supports the handout's requirement that students compare graph-derived operating resistance with manufacturer indications.
 
 ## Repository structure
 
@@ -55,38 +67,28 @@ physics-usthb.github.io/
 │   ├── index.html
 │   └── e03/
 │       ├── index.html
-│       └── lab.js
+│       ├── official.css
+│       └── official.js
 ├── .nojekyll
 └── README.md
 ```
 
-## Deploy on GitHub Pages
+## Validation completed
 
-The repository is owned by the GitHub account `Physics-USTHB` and named `physics-usthb.github.io`, so the public site address is:
+- JavaScript syntax validation passed.
+- All JavaScript DOM ID references were checked against the E03 HTML.
+- No duplicate E03 HTML IDs were found.
+- Numerical range checks keep every prescribed measurement within the selected virtual instrument ranges; the largest prescribed current is the parallel verification near selector position 9 and remains below the 300 mA range.
+- GitHub Pages deploys from the `main` branch.
 
-`https://physics-usthb.github.io/`
-
-GitHub Pages should publish from the `main` branch at `/ (root)`.
-
-## Validation performed for v0.3
-
-- `node --check` passes for `electricity/e03/lab.js`.
-- Direct DOM ID references in the JavaScript have matching elements in the E03 HTML.
-- No duplicate IDs were found in the E03 page.
-- Local CSS/JS/navigation paths referenced by E03 resolve in the project tree.
-- Representative numerical checks keep the virtual lamp below the 200 mA ammeter range over the 0–10 V source range.
-- Desktop and 390 px mobile layouts were rendered in Chromium for visual inspection.
-- A browser interaction check acquired six resistor measurements and successfully completed the uncertainty-aware fit without page errors.
-
-A complete automated browser interaction suite and formal accessibility audit are **not yet included**. These should be added before treating the project as production instructional software.
+Before using the project for formally assessed coursework, it should still undergo instructor review, a complete cross-browser interaction test suite, and an accessibility audit.
 
 ## Next development sequence
 
-1. Instructor review of E03 scientific assumptions, wording and expected student workflow.
-2. Align E03 core protocol exactly with the official USTHB TP3 sequence and apparatus.
-3. Automated browser tests and accessibility audit.
-4. E01 — Electrical Measurements & Resistance.
-5. E02 — Electric Potential Mapping / Rheographic Tank.
-6. E04 — Oscilloscope.
-7. E05 — RC and RL Transients.
-8. English-for-Physicists pathway integrated with the laboratory vocabulary and reporting tasks.
+1. Instructor/pedagogical review of the revised USTHB-aligned E03.
+2. Complete automated browser interaction tests and accessibility audit.
+3. E01 — Electrical Measurements & Resistance, aligned with the official USTHB TP1.
+4. E02 — Rheographic Tank / Electric Potential Mapping, aligned with TP2.
+5. E04 — Oscilloscope, aligned with TP4.
+6. E05 — RC–RL Transients, aligned with TP5.
+7. English-for-Physicists pathway integrated with laboratory vocabulary and reporting.
