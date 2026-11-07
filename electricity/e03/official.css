@@ -47,3 +47,7 @@
 .e03-wiring-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.e03-wiring-grid label{font-size:.58rem;color:#8ba3b4;text-transform:uppercase;letter-spacing:.05em;font-weight:800}.e03-wiring-grid select{width:100%;margin-top:5px;border:1px solid #36556b;background:#07131c;color:#eaf9ff;border-radius:8px;padding:7px}
 .e03-wiring-status{margin-top:9px;padding:8px 9px;border-radius:8px;background:#142635;border:1px solid #31516b;color:#a8bfce;font-size:.68rem}.e03-wiring-status.ok{background:#0a2a22;border-color:#2c765f;color:#8de9c4}.e03-wiring-status.bad{background:#2a161b;border-color:#84404f;color:#ffb8c5}
 @media(max-width:900px){.e03-wiring-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.e03-wiring-grid{grid-template-columns:1fr}.e03-wiring-head{flex-direction:column}}
+
+/* TP3 fidelity: student graphical construction */
+.construction-entry{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:end;margin:12px 0}.construction-entry label{font-size:.63rem;font-weight:800;color:#5f7488}.construction-entry input{width:100%;margin-top:5px;border:1px solid #d5e0eb;border-radius:9px;padding:8px;background:#fff}.construction-entry .btn{padding:9px 11px;font-size:.7rem}.construction-table{margin-top:10px}.construction-table .core-table{min-width:470px}
+@media(max-width:760px){.construction-entry{grid-template-columns:1fr 1fr}.construction-entry .btn{grid-column:1/-1}}@media(max-width:480px){.construction-entry{grid-template-columns:1fr}}
