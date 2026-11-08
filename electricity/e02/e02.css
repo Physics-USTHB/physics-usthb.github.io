@@ -22,3 +22,15 @@
 @media(max-width:1080px){.tank-layout{grid-template-columns:1fr}.side-stack-e02{display:grid;grid-template-columns:repeat(2,1fr)}.side-stack-e02 .wide-side{grid-column:1/-1}}
 @media(max-width:780px){.e02-progress{grid-template-columns:1fr 1fr}.probe-readout,.field-metrics{grid-template-columns:1fr 1fr}.side-stack-e02{grid-template-columns:1fr}.electrode-results{grid-template-columns:1fr}.e02-chart canvas{height:320px}}
 @media(max-width:520px){.e02-progress,.probe-readout,.field-metrics,.probe-controls,.config-switch{grid-template-columns:1fr}.target-grid{grid-template-columns:1fr 1fr}}
+
+
+/* Practical 2 review: physical wiring and student-owned field analysis */
+.e02-wiring{margin:12px 0 14px;padding:12px;border:1px solid #31576a;border-radius:13px;background:#061722}
+.e02-wiring-title{display:flex;justify-content:space-between;gap:16px;align-items:baseline}.e02-wiring-title strong{font-size:.78rem}.e02-wiring-title span{font-size:.62rem;color:#8ba8b4}
+.e02-wiring-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.e02-wiring-grid label{font-size:.57rem;text-transform:uppercase;letter-spacing:.05em;color:#91acb8;font-weight:800}.e02-wiring-grid select{width:100%;margin-top:5px;padding:7px;border-radius:8px;border:1px solid #36596a;background:#081c27;color:#e9fbff}
+.e02-wiring-status{margin-top:9px;padding:8px 9px;border:1px solid #31576a;border-radius:8px;color:#9ab4c0;background:#0b2230;font-size:.68rem}.e02-wiring-status.ok{background:#082a22;border-color:#26816a;color:#84edca}.e02-wiring-status.bad{background:#2a161b;border-color:#84404f;color:#ffb8c5}
+.field-calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:13px 0}.field-calc-grid label,.axis-analysis label{font-size:.66rem;color:#617789;font-weight:800}.field-calc-grid input,.axis-analysis input,.axis-analysis select{width:100%;margin-top:5px;border:1px solid #d2dde6;border-radius:9px;background:#fff;padding:8px;color:#173b59}
+.axis-analysis{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-top:15px;padding:13px;border:1px solid #dce5ee;border-radius:13px;background:#f8fafc}.axis-analysis .btn{white-space:nowrap}
+.axis-probe-control{display:block;margin:12px 0 10px;font-size:.68rem;color:#60778a;font-weight:800}.axis-probe-control strong{float:right;font-family:var(--mono);color:#1d5365}.axis-probe-control input{width:100%;margin-top:7px}
+@media(max-width:860px){.e02-wiring-grid,.field-calc-grid{grid-template-columns:1fr 1fr}.axis-analysis{grid-template-columns:1fr 1fr}.axis-analysis .btn{grid-column:1/-1}}
+@media(max-width:520px){.e02-wiring-title{flex-direction:column}.e02-wiring-grid,.field-calc-grid,.axis-analysis{grid-template-columns:1fr}}
