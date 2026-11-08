@@ -1,5 +1,6 @@
 import {validateUnit, gradeItem, nextReview, summarizeEvidence, weaknessHypothesis, shuffledOptions} from "./assessment.mjs";
 import {mountSpeaking} from "./speaking.mjs";
+import {mountWriting, validateWritingCatalog, validateWritingRecords} from "./writing.mjs";
 // English for Physicists — local-first development preview.
 // All sample exercises are formative and NOT eligible for CEFR/mastery claims.
 const UNITS=[
@@ -32,6 +33,9 @@ $("lesson").after(authoredRoot);
 const recorderMount=document.createElement("div");
 $("lesson").closest(".card").after(recorderMount);
 const speaking=mountSpeaking(recorderMount);
+const writingMount=document.createElement("div");
+recorderMount.before(writingMount);
+let writingWorkshop=null;
 function renderReadingContent(container,paragraph,title){
  const lines=paragraph.split("\n").map(x=>x.trim()).filter(Boolean);
  const tableStart=lines.findIndex(x=>/^\|.*\|$/.test(x));
@@ -204,12 +208,13 @@ async function loadAuthoredUnits(){
 }
 
 const normalize=s=>String(s).trim().toLowerCase().replace(/\s+/g," ").replace(/[.!?]+$/,"");
-let selected=0, db=null, store="memory", state={schema:1,attempts:[],reviews:{}};
+let selected=0, db=null, store="memory", state={schema:1,attempts:[],reviews:{},writing:{}};
 
 function validHistory(h){
  if(!h || h.schema!==1 || !Array.isArray(h.attempts) || h.attempts.length>50000)return false;
  if(!h.attempts.every(a=>a && allowed.has(a.id) && typeof a.at==="string" && a.at.length<=40 &&
   typeof a.answer==="string" && a.answer.length<=300 && typeof a.first==="boolean" && typeof a.correct==="boolean"))return false;
+ if(!validateWritingRecords(h.writing,writingWorkshop?.getTaskIds()))return false;
  if(h.reviews===undefined)return true; // historical exports before review scheduling
  return h.reviews && typeof h.reviews==="object" && !Array.isArray(h.reviews) &&
   Object.keys(h.reviews).length<=500 &&
@@ -218,7 +223,7 @@ function validHistory(h){
    typeof r.dueAt==="string" && !Number.isNaN(Date.parse(r.dueAt)) &&
    typeof r.reviewedAt==="string" && !Number.isNaN(Date.parse(r.reviewedAt)));
 }
-function withReviews(h){return {schema:1,attempts:h.attempts,reviews:h.reviews||{}};}
+function withReviews(h){return {schema:1,attempts:h.attempts,reviews:h.reviews||{},writing:h.writing||{}};}
 function updatePracticeReview(id,correct,first,at){
  const prior=state.reviews?.[id];
  // Reattempting the same item on the same day never advances spacing.
@@ -323,9 +328,10 @@ async function load(){
 }
 async function save(){
  try{
-  if(store==="indexeddb")await saveDB(state);
-  if(store==="localStorage")localStorage.setItem("physics-usthb-english-preview-v1",JSON.stringify(state));
- }catch(_){store="memory";$("storage-status").textContent="Local save failed. Progress is temporary; export now.";}
+  if(store==="indexeddb"){await saveDB(state);return true;}
+  if(store==="localStorage"){localStorage.setItem("physics-usthb-english-preview-v1",JSON.stringify(state));return true;}
+  return false;
+ }catch(_){store="memory";$("storage-status").textContent="Local save failed. Progress is temporary; export now.";return false;}
 }
 function renderUnits(){
  const target=$("units");target.replaceChildren();
@@ -391,7 +397,9 @@ function render(){
  "This unit has draft authoring material but is not approved or activated in the application.";
  $("lesson").hidden=true; // The authored A2.12 unit now replaces the four-question UI demonstration.
  authoredRoot.hidden=!unit;
- renderUnits();if(unit)renderAuthored();renderStats();
+ renderUnits();if(unit)renderAuthored();
+ writingWorkshop?.setUnit("A2."+String(selected+1).padStart(2,"0"));
+ renderStats();
 }
 $("export").onclick=()=>{
  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
@@ -407,14 +415,14 @@ $("import-file").onchange=async e=>{
   if(file.size>5_000_000)throw Error("File too large");
   const h=JSON.parse(await file.text());
   if(!validHistory(h))throw Error("Incompatible or invalid file");
-  state=withReviews(h);await save();render();
+  state=withReviews(h);await save();render();writingWorkshop?.refresh();
   $("notice").textContent="Progress imported; previous preview history replaced.";
  }catch(err){$("notice").textContent="Import failed: "+err.message;}
  e.target.value="";
 };
 $("clear").onclick=async()=>{
  if(!confirm("Clear all English preview progress stored in this browser profile?"))return;
- state={schema:1,attempts:[],reviews:{}};await save();render();
+ state={schema:1,attempts:[],reviews:{},writing:{}};await save();render();writingWorkshop?.refresh();
  $("notice").textContent="Local preview progress cleared.";
 };
 async function boot(){
@@ -422,6 +430,19 @@ async function boot(){
   const response=await fetch("./data/concepts.json",{cache:"no-cache"});
   if(response.ok){const data=await response.json();if(data.schemaVersion===1&&data.units&&typeof data.units==="object")lessonNotes=data.units;}
  }catch(_){/* Always allow self-contained practice without the optional notes. */}
+ try{
+  const response=await fetch("./data/writing.json",{cache:"no-cache"});
+  if(!response.ok)throw Error("Writing task file unavailable");
+  const catalog=await response.json();
+  const errors=validateWritingCatalog(catalog);
+  if(errors.length)throw Error(errors.slice(0,3).join("; "));
+  writingWorkshop=mountWriting(writingMount,{
+   catalog,
+   getRecord:id=>state.writing?.[id],
+   onChange:(id,record)=>{state.writing??={};state.writing[id]=record;},
+   onSave:save
+  });
+ }catch(err){$("notice").textContent="Writing workshop unavailable: "+err.message;}
  await loadAuthoredUnits();await load();
 }
 boot();
