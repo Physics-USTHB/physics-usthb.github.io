@@ -26,3 +26,13 @@
 .transient-wiring-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.transient-wiring-grid label{font-size:.58rem;color:#8ba3b4;text-transform:uppercase;letter-spacing:.05em;font-weight:800}.transient-wiring-grid select{width:100%;margin-top:5px;border:1px solid #36556b;background:#07131c;color:#eaf9ff;border-radius:8px;padding:7px}
 .transient-wiring-status{margin:9px 0;padding:8px 9px;border-radius:8px;background:#142635;border:1px solid #31516b;color:#a8bfce;font-size:.68rem}.transient-wiring-status.ok{background:#0a2a22;border-color:#2c765f;color:#8de9c4}.transient-wiring-status.bad{background:#2a161b;border-color:#84404f;color:#ffb8c5}
 @media(max-width:900px){.transient-wiring-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.transient-wiring-grid{grid-template-columns:1fr}.transient-wiring-head{flex-direction:column}}
+
+
+/* Practical 5 review: source discipline and student-owned calculations */
+.source-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.source-actions .btn{font-size:.72rem;padding:8px 10px}
+.result-calc-grid{display:grid;grid-template-columns:repeat(3,1fr) auto;gap:8px;align-items:end;margin-top:12px;padding:12px;border:1px solid #dce5ed;border-radius:11px;background:#f8fafc}
+.result-calc-grid.compact{grid-template-columns:1fr auto}
+.result-calc-grid label{font-size:.64rem;color:#617789;font-weight:800}.result-calc-grid input{width:100%;margin-top:5px;padding:8px;border:1px solid #d3dee8;border-radius:9px;background:#fff;color:#183d60}
+.result-calc-grid .btn{padding:9px 11px;font-size:.7rem;white-space:nowrap}
+@media(max-width:820px){.result-calc-grid{grid-template-columns:1fr 1fr}.result-calc-grid .btn{grid-column:1/-1}.result-calc-grid.compact{grid-template-columns:1fr auto}.result-calc-grid.compact .btn{grid-column:auto}}
+@media(max-width:520px){.result-calc-grid,.result-calc-grid.compact{grid-template-columns:1fr}.result-calc-grid .btn,.result-calc-grid.compact .btn{grid-column:auto}}
