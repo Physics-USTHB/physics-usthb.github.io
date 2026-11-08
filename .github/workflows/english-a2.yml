@@ -1,0 +1,28 @@
+name: English A2 draft validation
+
+on:
+  pull_request:
+    paths:
+      - "english/**"
+      - ".github/workflows/english-a2.yml"
+  push:
+    paths:
+      - "english/**"
+      - ".github/workflows/english-a2.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check assessment syntax
+        run: node --check english/assessment.mjs
+      - name: Run privacy, schema and evidence-model tests
+        run: node --test english/test/*.test.mjs
