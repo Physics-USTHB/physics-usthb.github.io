@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import {readFileSync,readdirSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 import {dirname,resolve} from "node:path";
-import {normalizeAnswer,validateUnit,gradeItem,nextReview,summarizeEvidence,weaknessHypothesis} from "../assessment.mjs";
+import {normalizeAnswer,validateUnit,gradeItem,nextReview,summarizeEvidence,weaknessHypothesis,shuffledOptions} from "../assessment.mjs";
 const dir=dirname(fileURLToPath(import.meta.url));
 const unit=JSON.parse(readFileSync(resolve(dir,"../data/a2-01.json"),"utf8"));
 const unit2=JSON.parse(readFileSync(resolve(dir,"../data/a2-02.json"),"utf8"));
@@ -135,4 +135,28 @@ test("teaching notes exist for all A2 units without proficiency promises",()=>{
   assert.ok(entry?.pronunciation.length>=20);
   assert.ok(entry?.notes.length>=3);
  }
+});
+
+
+test("choice shuffling preserves the answer set and never modifies source arrays",()=>{
+ const choices=["correct","distractor1","distractor2"];
+ const shuffled=shuffledOptions(choices,()=>0);
+ assert.deepEqual(choices,["correct","distractor1","distractor2"]);
+ assert.deepEqual([...shuffled].sort(),[...choices].sort());
+ assert.throws(()=>shuffledOptions(choices,()=>2),/Invalid random source/);
+});
+
+test("production entry point links to a clearly-labeled A2 beta and privacy is explicit",()=>{
+ const home=readFileSync(resolve(dir,"../../index.html"),"utf8");
+ const html=readFileSync(resolve(dir,"../index.html"),"utf8");
+ const privacy=readFileSync(resolve(dir,"../../privacy.html"),"utf8");
+ const recorder=readFileSync(resolve(dir,"../speaking.mjs"),"utf8");
+ assert.match(home,/href="english\/"/);
+ assert.match(home,/A2 beta preview/);
+ assert.match(html,/not a CEFR examination or certification/i);
+ assert.match(privacy,/English for Physicists — A2 beta/);
+ assert.match(privacy,/microphone permission/);
+ assert.match(recorder,/getUserMedia/);
+ assert.match(recorder,/MediaRecorder/);
+ assert.doesNotMatch(recorder,/\bfetch\s*\(|\bXMLHttpRequest\b|\bsendBeacon\b/);
 });
