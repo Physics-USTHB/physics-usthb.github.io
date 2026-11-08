@@ -20,8 +20,9 @@ export function validateListeningCatalog(catalog){
    if(typeof scene.title!=="string"||scene.title.length<8 ||
       !Array.isArray(scene.turns)||scene.turns.length<2 ||
       scene.turns.some(t=>typeof t.speaker!=="string"||!t.speaker.trim()||
-         typeof t.text!=="string"||t.text.length<20))errors.push(expected+": incomplete spoken script");
+         typeof t.text!=="string"||t.text.length<8))errors.push(expected+": incomplete spoken script");
    const text=(scene.turns||[]).map(t=>t.text||"").join(" ");
+   if(text.length<120)errors.push(expected+": dialogue too short");
    const p=scene.pronunciation;
    if(!p||p.assessment!=="self_review_only"||typeof p.phrase!=="string"||
       p.phrase.length<20||!text.includes(p.phrase)||
@@ -168,7 +169,7 @@ export function mountListeningPractice(container,{catalog,getAttempts,onAttempt,
      const correct=q.accepted.some(a=>normalizeAnswer(a)===normalizeAnswer(answer));
      const attempt={
       id:q.id,at:new Date().toISOString(),answer,first,correct,
-      independent:false,hintsUsed:transcriptUsed?1:0,activityMode:"synthetic_or_transcript_comprehension"
+      independent:false,hintsUsed:(transcriptUsed||transcript.open)?1:0,activityMode:"synthetic_or_transcript_comprehension"
      };
      const saved=await onAttempt(attempt);
      feedback.className="feedback "+(correct?"good":"bad");
