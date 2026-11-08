@@ -57,6 +57,18 @@ export function gradeItem(item, answer, ctx={}) {
   return {correct,independent,qualityEligible,skill:item.skill,family:item.family,reviewStatus:item.status};
 }
 
+export function shuffledOptions(options, random=Math.random){
+ if(!Array.isArray(options))throw Error("Options required");
+ const out=options.slice();
+ for(let i=out.length-1;i>0;i--){
+  const r=random();
+  if(!Number.isFinite(r)||r<0||r>=1)throw Error("Invalid random source");
+  const j=Math.floor(r*(i+1));
+  [out[i],out[j]]=[out[j],out[i]];
+ }
+ return out;
+}
+
 export function nextReview(previous, correct, nowIso) {
   const now=new Date(nowIso);
   if(!Number.isFinite(now.getTime()))throw Error("Invalid clock");
