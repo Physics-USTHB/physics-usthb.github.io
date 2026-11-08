@@ -1,0 +1,644 @@
+{
+  "schemaVersion": 1,
+  "id": "A2.01",
+  "title": "Being a Physics Student",
+  "status": "draft",
+  "language": "en-US",
+  "license": "original-course-content",
+  "pedagogicalStatus": "Unreviewed author draft; formative practice only",
+  "sources": [
+    {
+      "id": "R1",
+      "title": "Meet Maya — a Student Profile",
+      "paragraphs": [
+        "My name is Maya Brooks, and I am a first-year physics student at North Valley College. I am nineteen years old. I live near the campus with my sister. My sister studies chemistry, but I study physics. We often walk to college together.",
+        "My classes start at nine o'clock on Monday, Tuesday, and Thursday. On Wednesday, my first class starts at ten. I have a mathematics class on Monday morning and an introductory physics class on Tuesday morning. We have a laboratory session on Thursday afternoon.",
+        "Our physics instructor is Ms. Reed. She explains new words before every activity. I do not always understand the instructions the first time, so I sometimes ask her to repeat a sentence.",
+        "After class, I usually review my notes at the library. On Friday, I study at home. I want to understand physics and communicate clearly in English."
+      ]
+    },
+    {
+      "id": "R2",
+      "title": "Two Students in One Class",
+      "paragraphs": [
+        "Daniel is a second-year physics student. He lives in a small apartment and takes the bus to campus. On Tuesdays, he meets his study group in the library.",
+        "His classmate Lina is also a physics student. She usually walks to university. She has a laboratory session on Mondays, but not on Fridays. She enjoys reading short articles about stars. Daniel prefers experiments about motion.",
+        "They attend the same English workshop. They work together on Wednesday afternoons and help each other with physics vocabulary."
+      ]
+    },
+    {
+      "id": "R3",
+      "title": "Physics Department — Welcome Session",
+      "paragraphs": [
+        "Monday, 9:00 a.m.: Meet your class in Room 12.",
+        "Monday, 10:15 a.m.: Visit the science library.",
+        "Tuesday, 11:00 a.m.: Introductory physics lecture in Hall B.",
+        "Thursday, 2:00 p.m.: Laboratory introduction in Lab 3.",
+        "Bring your student card and a notebook. You do not need laboratory equipment for the welcome session."
+      ]
+    },
+    {
+      "id": "R4",
+      "title": "An Academic Email (fictional)",
+      "paragraphs": [
+        "To: course.assistant@example.org. Subject: Question about the laboratory introduction.",
+        "Dear Course Assistant,",
+        "My name is Jordan Lee, and I am a new physics student. Does Thursday's laboratory introduction start at 2:00 p.m.? Is it in Lab 3?",
+        "Thank you for your help.",
+        "Best regards, Jordan Lee.",
+        "The address in this teaching example is fictional. Please do not send messages to it."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "A2.01.BE.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.01.BE.agreement",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: I ___ a physics student.",
+      "accepted": [
+        "am"
+      ],
+      "options": [
+        "am",
+        "is",
+        "are"
+      ],
+      "feedback": "Use am with I."
+    },
+    {
+      "id": "A2.01.BE.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.01.BE.agreement",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: She ___ in our physics class.",
+      "accepted": [
+        "is"
+      ],
+      "options": [
+        "is",
+        "am",
+        "are"
+      ],
+      "feedback": "A singular third-person subject takes is."
+    },
+    {
+      "id": "A2.01.BE.003",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.01.BE.agreement",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: They ___ first-year students.",
+      "accepted": [
+        "are"
+      ],
+      "feedback": "They takes are in the present."
+    },
+    {
+      "id": "A2.01.BE.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.01.BE.negative",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct negative statement.",
+      "accepted": [
+        "He is not a student."
+      ],
+      "options": [
+        "He not is a student.",
+        "He is not a student.",
+        "He does not a student."
+      ],
+      "feedback": "Put not after the verb is."
+    },
+    {
+      "id": "A2.01.BE.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.01.BE.questions",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct question.",
+      "accepted": [
+        "Is this the laboratory?"
+      ],
+      "options": [
+        "Does this the laboratory?",
+        "Is this the laboratory?",
+        "This is the laboratory?"
+      ],
+      "feedback": "A yes/no question with be begins with is, are or am."
+    },
+    {
+      "id": "A2.01.BE.006",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.01.BE.questions",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: ___ they in Lab 3?",
+      "accepted": [
+        "Are"
+      ],
+      "feedback": "Put are before they to ask about location."
+    },
+    {
+      "id": "A2.01.BE.007",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.01.BE.short-reply",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: Are you ready? Yes, I ___.",
+      "accepted": [
+        "am"
+      ],
+      "feedback": "Use Yes, I am to answer Are you...?"
+    },
+    {
+      "id": "A2.01.HAVE.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.01.HAVE.agreement",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: I ___ a scientific calculator.",
+      "accepted": [
+        "have"
+      ],
+      "options": [
+        "have",
+        "has",
+        "am"
+      ],
+      "feedback": "Use have with I."
+    },
+    {
+      "id": "A2.01.HAVE.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.01.HAVE.agreement",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: Daniel ___ a notebook.",
+      "accepted": [
+        "has"
+      ],
+      "options": [
+        "has",
+        "have",
+        "is"
+      ],
+      "feedback": "Third-person singular usually takes has."
+    },
+    {
+      "id": "A2.01.HAVE.003",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.01.HAVE.questions",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: ___ you have a physics class today?",
+      "accepted": [
+        "Do"
+      ],
+      "feedback": "Use Do you have...? to ask a present-simple question."
+    },
+    {
+      "id": "A2.01.ROUTINE.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.01.ROUTINE.third-person",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: Maya ___ her notes after class. (review)",
+      "accepted": [
+        "reviews"
+      ],
+      "options": [
+        "review",
+        "reviews",
+        "reviewing"
+      ],
+      "feedback": "In the present simple, add -s with she or Maya."
+    },
+    {
+      "id": "A2.01.ROUTINE.002",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.01.ROUTINE.third-person",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: Daniel ___ the bus to campus. (take)",
+      "accepted": [
+        "takes"
+      ],
+      "feedback": "Use takes for a regular routine with Daniel."
+    },
+    {
+      "id": "A2.01.ROUTINE.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.01.ROUTINE.negative",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: Lina ___ have a lab on Friday.",
+      "accepted": [
+        "doesn't"
+      ],
+      "options": [
+        "doesn't",
+        "don't",
+        "isn't"
+      ],
+      "feedback": "Use doesn't + base verb with she or Lina."
+    },
+    {
+      "id": "A2.01.ROUTINE.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.01.ROUTINE.frequency",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the word that means 'on most days'.",
+      "accepted": [
+        "usually"
+      ],
+      "options": [
+        "never",
+        "usually",
+        "rarely"
+      ],
+      "feedback": "Usually describes something that happens regularly."
+    },
+    {
+      "id": "A2.01.QUEST.001",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.01.QUEST.yesno",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: ___ you study physics?",
+      "accepted": [
+        "Do"
+      ],
+      "feedback": "Do starts a present-simple yes/no question with you."
+    },
+    {
+      "id": "A2.01.QUEST.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.01.QUEST.wh",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct question.",
+      "accepted": [
+        "Where does Maya study?"
+      ],
+      "options": [
+        "Where Maya studies?",
+        "Where does Maya study?",
+        "Where does Maya studies?"
+      ],
+      "feedback": "Use where + does + subject + base verb."
+    },
+    {
+      "id": "A2.01.QUEST.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.01.QUEST.be-vs-do",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct question about a place.",
+      "accepted": [
+        "Where is Lab 3?"
+      ],
+      "options": [
+        "Where does Lab 3?",
+        "Where is Lab 3?",
+        "Where Lab 3 is?"
+      ],
+      "feedback": "Use Where is...? to ask where a place is."
+    },
+    {
+      "id": "A2.01.VOCAB.001",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.01.VOCAB.words",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What is a notebook used for in class?",
+      "accepted": [
+        "writing notes"
+      ],
+      "options": [
+        "writing notes",
+        "measuring voltage",
+        "charging a battery"
+      ],
+      "feedback": "A notebook is used for writing or recording notes."
+    },
+    {
+      "id": "A2.01.VOCAB.002",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.01.VOCAB.words",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What is a lecture?",
+      "accepted": [
+        "a class presentation"
+      ],
+      "options": [
+        "a class presentation",
+        "a laboratory wire",
+        "a scientific unit"
+      ],
+      "feedback": "A lecture is an instructional presentation."
+    },
+    {
+      "id": "A2.01.VOCAB.003",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.01.VOCAB.collocations",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the natural phrase.",
+      "accepted": [
+        "attend a lecture"
+      ],
+      "options": [
+        "attend a lecture",
+        "make a lecture attendance",
+        "listen a lecture"
+      ],
+      "feedback": "Attend a lecture is the natural collocation."
+    },
+    {
+      "id": "A2.01.VOCAB.004",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.01.VOCAB.collocations",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: Please ___ notes during the explanation.",
+      "accepted": [
+        "take"
+      ],
+      "options": [
+        "take",
+        "make up",
+        "bring about"
+      ],
+      "feedback": "Take notes is the usual collocation."
+    },
+    {
+      "id": "A2.01.READ.001",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.01.READ.R1.identity",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What subject does Maya study?",
+      "accepted": [
+        "Physics"
+      ],
+      "options": [
+        "Physics",
+        "Biology",
+        "Chemistry"
+      ],
+      "feedback": "Maya says that she studies physics.",
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.01.READ.002",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.01.READ.R1.identity",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Who studies chemistry?",
+      "accepted": [
+        "Maya's sister"
+      ],
+      "options": [
+        "Maya's sister",
+        "Maya",
+        "Ms. Reed"
+      ],
+      "feedback": "The passage says that Maya's sister studies chemistry.",
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.01.READ.003",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.01.READ.R1.schedule",
+      "status": "draft",
+      "media": "text",
+      "prompt": "On which day is Maya's laboratory session?",
+      "accepted": [
+        "Thursday"
+      ],
+      "options": [
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "feedback": "Maya describes a laboratory session on Thursday afternoon.",
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.01.READ.004",
+      "skill": "reading",
+      "type": "short_answer",
+      "family": "A2.01.READ.R1.schedule",
+      "status": "draft",
+      "media": "text",
+      "prompt": "At what time does Maya's first class begin on Wednesday?",
+      "accepted": [
+        "ten o'clock",
+        "10:00",
+        "10 a.m.",
+        "10:00 a.m."
+      ],
+      "feedback": "Her first class on Wednesday starts at ten.",
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.01.READ.005",
+      "skill": "reading",
+      "type": "short_answer",
+      "family": "A2.01.READ.R1.habits",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Where does Maya usually review her notes?",
+      "accepted": [
+        "at the library",
+        "in the library"
+      ],
+      "feedback": "The last paragraph says she reviews notes at the library.",
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.01.READ.006",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.01.READ.R2.habits",
+      "status": "draft",
+      "media": "text",
+      "prompt": "How does Daniel travel to campus?",
+      "accepted": [
+        "By bus"
+      ],
+      "options": [
+        "On foot",
+        "By train",
+        "By bus"
+      ],
+      "feedback": "Daniel takes the bus to campus.",
+      "sourceId": "R2"
+    },
+    {
+      "id": "A2.01.READ.007",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.01.READ.R2.habits",
+      "status": "draft",
+      "media": "text",
+      "prompt": "When do Daniel and Lina work together?",
+      "accepted": [
+        "Wednesday afternoons"
+      ],
+      "options": [
+        "Friday mornings",
+        "Wednesday afternoons",
+        "Monday evenings"
+      ],
+      "feedback": "The text says Wednesday afternoons.",
+      "sourceId": "R2"
+    },
+    {
+      "id": "A2.01.READ.008",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.01.READ.R3.schedule",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Where is the Tuesday physics lecture?",
+      "accepted": [
+        "Hall B"
+      ],
+      "options": [
+        "Lab 3",
+        "Room 12",
+        "Hall B"
+      ],
+      "feedback": "The Tuesday lecture is listed in Hall B.",
+      "sourceId": "R3"
+    },
+    {
+      "id": "A2.01.READ.009",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.01.READ.R3.requirements",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What should students bring to the welcome session?",
+      "accepted": [
+        "Student card and notebook"
+      ],
+      "options": [
+        "Laptop and cables",
+        "Student card and notebook",
+        "Laboratory equipment"
+      ],
+      "feedback": "The welcome notice requests a student card and a notebook.",
+      "sourceId": "R3"
+    },
+    {
+      "id": "A2.01.READ.010",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.01.READ.R3.schedule",
+      "status": "draft",
+      "media": "text",
+      "prompt": "At what time is the Thursday laboratory introduction?",
+      "accepted": [
+        "2:00 p.m."
+      ],
+      "options": [
+        "9:00 a.m.",
+        "2:00 p.m.",
+        "11:00 a.m."
+      ],
+      "feedback": "The Thursday introduction is scheduled for 2:00 p.m.",
+      "sourceId": "R3"
+    },
+    {
+      "id": "A2.01.READ.011",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.01.READ.R4.email",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Who wrote the email?",
+      "accepted": [
+        "Jordan Lee"
+      ],
+      "options": [
+        "Course Assistant",
+        "Jordan Lee",
+        "Ms. Reed"
+      ],
+      "feedback": "The sender signs as Jordan Lee.",
+      "sourceId": "R4"
+    },
+    {
+      "id": "A2.01.READ.012",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.01.READ.R4.email",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What does Jordan want to confirm?",
+      "accepted": [
+        "Time and place"
+      ],
+      "options": [
+        "Time and place",
+        "Laboratory grade",
+        "Library hours"
+      ],
+      "feedback": "Jordan asks about the laboratory time and location.",
+      "sourceId": "R4"
+    },
+    {
+      "id": "A2.01.READ.013",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.01.READ.R4.style",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which expression closes the email?",
+      "accepted": [
+        "Best regards"
+      ],
+      "options": [
+        "Best regards",
+        "Good morning",
+        "I'm late"
+      ],
+      "feedback": "Best regards is the email closing.",
+      "sourceId": "R4"
+    }
+  ]
+}
