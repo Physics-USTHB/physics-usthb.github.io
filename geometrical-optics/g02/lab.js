@@ -17,7 +17,7 @@ function makeRun(){
   const A=59.9+Math.random()*.25,n0=1.586+Math.random()*.008,B=.0092+Math.random()*.001,theta0=18+Math.random()*18,theta1=116+Math.random()*28,theta2=wrap(theta1+2*A);
   return{A,n0,B,theta0,theta1,theta2,unknown:[435.8+Math.random()*4,546.1+Math.random()*3,650+Math.random()*20]};
 }
-const old=U.load(OLD,null),loaded=U.load(K,null)||old||{};
+const current=U.load(K,null),old=U.load(OLD,null),migrating=!current&&!!old,loaded=current||old||{};
 let s={
   version:2,
   run:loaded.run||makeRun(),
@@ -36,6 +36,10 @@ let s={
   }
 };
 for(const q of Object.values(s.hg)){if(q&&q.n!=null&&!Number.isFinite(+q.n))q.n=null}
+if(migrating){
+  for(const q of Object.values(s.hg)){if(q)q.n=null}
+  s.hgDraft={};s.unknown={};s.unknownDraft={};s.analysis={green:null,cauchy:null,unknown:null};
+}
 function save(){U.save(K,s)}
 function fmt(a){a=wrap(a);let d=Math.floor(a),m=Math.round((a-d)*60);if(m===60){d=(d+1)%360;m=0}return d+'°'+String(m).padStart(2,'0')+'′'}
 function roundMin(a){return Math.round(a*60)/60}
@@ -51,7 +55,7 @@ function signedOffset(target,angle){
 function drawScope(canvas,target,angle,color='#65dfe8'){
   const{x,w,h}=U.canvas(canvas);x.fillStyle='#09151e';x.fillRect(0,0,w,h);
   const d=scopeScore(angle,target),off=Math.max(-w*.35,Math.min(w*.35,signedOffset(target,angle)*12)),blur=focusGood()?3:10,width=slitGood()?5:18;
-  x.fillStyle=color;x.globalAlpha=d<5?Math.max(.15,1-d/5):.08;x.filter='blur('+blur+'px';x.fillRect(w/2+off-width/2,h*.18,width,h*.64);x.filter='none';x.globalAlpha=1;
+  x.fillStyle=color;x.globalAlpha=d<5?Math.max(.15,1-d/5):.08;x.filter='blur('+blur+'px)';x.fillRect(w/2+off-width/2,h*.18,width,h*.64);x.filter='none';x.globalAlpha=1;
 }
 function renderAdjust(){
   const a=+E('scopeAngle').value,d=scopeScore(a,s.run.theta0);
