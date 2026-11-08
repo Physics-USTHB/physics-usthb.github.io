@@ -1,0 +1,373 @@
+{
+  "schemaVersion": 1,
+  "language": "en-US",
+  "reviewStatus": "draft_for_self_review_only",
+  "rubric": {
+    "task": "My response directly addresses the prompt and uses the specified source.",
+    "language": "My sentences use the target grammar and have readable punctuation.",
+    "physics": "I checked values, units, and the difference between source evidence and prediction.",
+    "clarity": "My ideas are in a clear order and a classmate could understand them."
+  },
+  "units": {
+    "A2.01": [
+      {
+        "id": "A2.01.WRITE.01",
+        "title": "Introduce yourself to a physics study group",
+        "prompt": "Write a short introduction with your name (or an invented name), academic interests, the classes you take, your typical study routine, and one polite question for a classmate.",
+        "languageReminder": "Use present simple correctly; include a greeting; ask one clear question.",
+        "physicsReminder": "Do not include real personal details unless you wish to.",
+        "targetWords": [
+          55,
+          110
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      },
+      {
+        "id": "A2.01.WRITE.02",
+        "title": "Ask about a class schedule",
+        "prompt": "Write a polite email to a fictional course assistant to confirm the location and start time of Thursday's laboratory introduction. Use the welcome-session notice in reading R3.",
+        "languageReminder": "Include a subject line, Dear..., two clear questions, and an appropriate closing.",
+        "physicsReminder": "Mention 2:00 p.m. and Lab 3 as the details you are checking, rather than inventing a different schedule.",
+        "targetWords": [
+          45,
+          100
+        ],
+        "format": "email",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      }
+    ],
+    "A2.02": [
+      {
+        "id": "A2.02.WRITE.01",
+        "title": "Describe a set of quantities",
+        "prompt": "Describe the sample values in reading R1 using four short sentences. Include at least a length, a mass, a time interval, and a voltage.",
+        "languageReminder": "Write a space between each value and SI unit symbol; use correct unit names and plural forms.",
+        "physicsReminder": "The values in R1 are illustrative, not results from a real experiment.",
+        "targetWords": [
+          55,
+          110
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      },
+      {
+        "id": "A2.02.WRITE.02",
+        "title": "Explain equipment and measurements",
+        "prompt": "Write a paragraph about Nora's desk in reading R2. Explain how many instruments she has and which measurements she records.",
+        "languageReminder": "Use there is/there are, some equipment, how many or how much, and at least two numerical values with units.",
+        "physicsReminder": "Separate instrument count from measurement count.",
+        "targetWords": [
+          45,
+          100
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      }
+    ],
+    "A2.03": [
+      {
+        "id": "A2.03.WRITE.01",
+        "title": "Describe the arrangement of equipment",
+        "prompt": "Using reading R1 or the virtual equipment scene, describe where at least four items are located in relation to one another.",
+        "languageReminder": "Use there is/are, next to, on, under, between, or to the left/right of; give a clear reference direction.",
+        "physicsReminder": "Describe only positions supported by the reading or scene.",
+        "targetWords": [
+          55,
+          110
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      },
+      {
+        "id": "A2.03.WRITE.02",
+        "title": "Guide a new student",
+        "prompt": "Write numbered instructions that help a classmate identify items in a fictional teaching-room layout, without handling powered apparatus.",
+        "languageReminder": "Use first, next, then and finally; write three to five short imperative sentences.",
+        "physicsReminder": "Do not turn these language exercises into real equipment operating instructions.",
+        "targetWords": [
+          45,
+          100
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      }
+    ],
+    "A2.04": [
+      {
+        "id": "A2.04.WRITE.01",
+        "title": "Describe motion shown by a model",
+        "prompt": "Describe a simulated moving cart from a provided source in your reading library. State what it is doing now and how it usually moves in the example.",
+        "languageReminder": "Use present simple and present continuous in distinct sentences.",
+        "physicsReminder": "Avoid claiming an exact speed unless the source provides it.",
+        "targetWords": [
+          55,
+          110
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      },
+      {
+        "id": "A2.04.WRITE.02",
+        "title": "Describe two classroom activities",
+        "prompt": "Write about a routine in a physics class and a different activity happening now. An invented teaching example is acceptable if clearly described as fictional.",
+        "languageReminder": "Use adverbs such as usually and now, plus two verbs describing change.",
+        "physicsReminder": "Keep the time references consistent with your verb forms.",
+        "targetWords": [
+          45,
+          100
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      }
+    ],
+    "A2.05": [
+      {
+        "id": "A2.05.WRITE.01",
+        "title": "Compare two cable lengths",
+        "prompt": "In a fictional virtual model, Cable X is 60 cm long and Cable Y is 80 cm long. Compare their lengths and explain which cable is longer.",
+        "languageReminder": "Use longer than, shorter than, as ... as (where relevant), and correct cm formatting.",
+        "physicsReminder": "Do not use the word more accurate unless you have a valid accuracy reference.",
+        "targetWords": [
+          55,
+          110
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      },
+      {
+        "id": "A2.05.WRITE.02",
+        "title": "Write a measurement comparison",
+        "prompt": "Choose two values from one A2.05 reading source. Write a short paragraph comparing the quantities and identifying their units.",
+        "languageReminder": "Use one comparative and one complete sentence explaining a difference.",
+        "physicsReminder": "Do not compare different physical quantities as though they had the same unit.",
+        "targetWords": [
+          45,
+          100
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      }
+    ],
+    "A2.06": [
+      {
+        "id": "A2.06.WRITE.01",
+        "title": "Rewrite fictional room rules",
+        "prompt": "Write a short, clear notice for a fictional teaching room. Include an obligation, a prohibition, and a recommendation.",
+        "languageReminder": "Use must/have to, must not, and should correctly.",
+        "physicsReminder": "This exercise does not replace real instructor-led laboratory safety policies.",
+        "targetWords": [
+          55,
+          110
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      },
+      {
+        "id": "A2.06.WRITE.02",
+        "title": "Ask for clarification",
+        "prompt": "Write a brief conversation between a student and an instructor about a confusing instruction in a virtual lab.",
+        "languageReminder": "Use Can I...?, Could you repeat...?, and a clear response.",
+        "physicsReminder": "Do not suggest proceeding with an uncertain or potentially dangerous real-life procedure.",
+        "targetWords": [
+          45,
+          100
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      }
+    ],
+    "A2.07": [
+      {
+        "id": "A2.07.WRITE.01",
+        "title": "Report a completed virtual experiment",
+        "prompt": "Using one supplied reading source, describe four steps that took place in the completed fictional experiment.",
+        "languageReminder": "Use simple past forms, including at least one regular and one irregular verb.",
+        "physicsReminder": "Report actions from the source, not imaginary laboratory results.",
+        "targetWords": [
+          55,
+          110
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      },
+      {
+        "id": "A2.07.WRITE.02",
+        "title": "Summarize an observation",
+        "prompt": "Write a short paragraph about what was recorded and what was observed during the fictional experiment.",
+        "languageReminder": "Use yesterday, then, and finally where appropriate; separate process from observation.",
+        "physicsReminder": "Do not describe the observation as a proven physical explanation.",
+        "targetWords": [
+          45,
+          100
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      }
+    ],
+    "A2.08": [
+      {
+        "id": "A2.08.WRITE.01",
+        "title": "Explain an interruption",
+        "prompt": "Write four sentences about a fictional student working on a virtual experiment when the display suddenly stopped responding.",
+        "languageReminder": "Use was/were + -ing and one completed simple-past event with when or while.",
+        "physicsReminder": "Distinguish the interruption from an unverified explanation of its cause.",
+        "targetWords": [
+          55,
+          110
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      },
+      {
+        "id": "A2.08.WRITE.02",
+        "title": "Request technical help",
+        "prompt": "Write a polite message describing a virtual lab issue, when it happened, and what was happening at the time.",
+        "languageReminder": "Use an accurate past time reference and a request for clarification or help.",
+        "physicsReminder": "Do not prescribe real electrical troubleshooting procedures.",
+        "targetWords": [
+          45,
+          100
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      }
+    ],
+    "A2.09": [
+      {
+        "id": "A2.09.WRITE.01",
+        "title": "Write a progress update",
+        "prompt": "Write a short message to a fictional project partner saying what you have already completed and what you have not finished yet.",
+        "languageReminder": "Use have/has + past participle with already and yet.",
+        "physicsReminder": "Make it clear that these are fictional course tasks rather than real results.",
+        "targetWords": [
+          55,
+          110
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      },
+      {
+        "id": "A2.09.WRITE.02",
+        "title": "Compare past and recent work",
+        "prompt": "Write about one activity completed at a specific past time and another activity completed recently.",
+        "languageReminder": "Use simple past with a finished time and present perfect when the exact finished time is unimportant.",
+        "physicsReminder": "Avoid inventing actual experimental evidence.",
+        "targetWords": [
+          45,
+          100
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      }
+    ],
+    "A2.10": [
+      {
+        "id": "A2.10.WRITE.01",
+        "title": "Explain a simple cause and effect",
+        "prompt": "Using the assumptions in a supplied source, explain one simple cause-and-effect relationship in a virtual physics model.",
+        "languageReminder": "Use because and so in two separate sentences.",
+        "physicsReminder": "State the model's conditions explicitly and distinguish model behavior from measurement.",
+        "targetWords": [
+          55,
+          110
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      },
+      {
+        "id": "A2.10.WRITE.02",
+        "title": "Make a conditional prediction",
+        "prompt": "Write three short conditional statements about simple physics situations provided in the reading.",
+        "languageReminder": "Use if + present simple and a clearly formed result clause.",
+        "physicsReminder": "Do not assert predictions outside the source assumptions.",
+        "targetWords": [
+          45,
+          100
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      }
+    ],
+    "A2.11": [
+      {
+        "id": "A2.11.WRITE.01",
+        "title": "Describe the simulated graph",
+        "prompt": "Use the displayed virtual cart graph or its accessible data table. Describe the horizontal axis, vertical axis, and increasing trend from 0 s to 4 s.",
+        "languageReminder": "Include the labels Time (s) and Position (m), and use increased from ... to ... correctly.",
+        "physicsReminder": "The graph uses simulated numbers; do not call them measured values.",
+        "targetWords": [
+          55,
+          110
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      },
+      {
+        "id": "A2.11.WRITE.02",
+        "title": "Predict carefully",
+        "prompt": "Describe the trend in one source graph, then write a cautious sentence about what might happen next.",
+        "languageReminder": "Use may or might, and clearly identify the prediction.",
+        "physicsReminder": "Do not present an extrapolation as an observed data point.",
+        "targetWords": [
+          45,
+          100
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      }
+    ],
+    "A2.12": [
+      {
+        "id": "A2.12.WRITE.01",
+        "title": "Integrated virtual-lab mini report",
+        "prompt": "Write a short report about the virtual cart model using the graph and data table. Include a title, source, process, observations and a cautious conclusion.",
+        "languageReminder": "Include numerical values and units, sequence words, past-tense or present-tense descriptions consistently, and one clear limitation.",
+        "physicsReminder": "Say simulated/model values rather than measured experimental evidence.",
+        "targetWords": [
+          55,
+          110
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      },
+      {
+        "id": "A2.12.WRITE.02",
+        "title": "Explain the result to a classmate",
+        "prompt": "Write a friendly explanation for a classmate of what the virtual-cart graph shows and what it does not prove.",
+        "languageReminder": "Use simple graph language and a comparison or cause-and-effect sentence supported by the source.",
+        "physicsReminder": "Clearly separate an observation, a model assumption and a prediction.",
+        "targetWords": [
+          45,
+          100
+        ],
+        "format": "paragraph",
+        "reviewStatus": "draft",
+        "automaticGrade": false
+      }
+    ]
+  }
+}

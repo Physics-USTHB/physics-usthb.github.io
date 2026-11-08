@@ -21,6 +21,7 @@ export function mountSpeaking(container){
  root.append(heading,description,task,controls,player,prompt,status);
  container.append(root);
  let mediaRecorder=null,stream=null,chunks=[],blob=null,url=null,limit=null;
+ let discardPending=false,disposed=false;
  function revoke(){
   if(url){URL.revokeObjectURL(url);url=null;}
   player.pause();player.removeAttribute("src");player.hidden=true;
@@ -35,16 +36,18 @@ export function mountSpeaking(container){
   status.textContent="Microphone recording is unavailable in this browser. You can still practise speaking without recording.";
  }
  start.addEventListener("click",async()=>{
-  if(mediaRecorder?.state==="recording")return;
+  if(disposed||mediaRecorder?.state==="recording")return;
   try{
-   revoke();chunks=[];
+   revoke();chunks=[];discardPending=false;
    stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+   if(disposed){stopTracks();return;}
    mediaRecorder=new MediaRecorder(stream);
-   mediaRecorder.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data);};
+   mediaRecorder.ondataavailable=e=>{if(!discardPending&&!disposed&&e.data?.size)chunks.push(e.data);};
    mediaRecorder.onerror=()=>{status.textContent="Recording error. No file was uploaded.";stopTracks();start.disabled=false;stop.disabled=true;};
    mediaRecorder.onstop=()=>{
     stopTracks();
-    start.disabled=false;stop.disabled=true;
+    start.disabled=disposed;stop.disabled=true;
+    if(discardPending||disposed){chunks=[];revoke();return;}
     const output=new Blob(chunks,{type:mediaRecorder.mimeType||"audio/webm"});chunks=[];
     if(!output.size){status.textContent="No usable audio was recorded.";return;}
     blob=output;url=URL.createObjectURL(blob);
@@ -52,7 +55,7 @@ export function mountSpeaking(container){
     status.textContent="Recording is ready for private playback. It was not automatically scored or uploaded.";
    };
    mediaRecorder.start();
-   start.disabled=true;stop.disabled=false;
+   start.disabled=true;stop.disabled=false;discard.disabled=false;
    status.textContent="Recording in progress. Press Stop when ready (maximum two minutes).";
    limit=setTimeout(()=>{if(mediaRecorder?.state==="recording")mediaRecorder.stop();},120000);
   }catch(e){
@@ -61,7 +64,12 @@ export function mountSpeaking(container){
   }
  });
  stop.addEventListener("click",()=>{if(mediaRecorder?.state==="recording")mediaRecorder.stop();});
- discard.addEventListener("click",()=>{if(mediaRecorder?.state==="recording")mediaRecorder.stop();revoke();status.textContent="Recording discarded from this session.";});
+ discard.addEventListener("click",()=>{
+  discardPending=true;
+  if(mediaRecorder?.state==="recording"){try{mediaRecorder.stop();}catch(_){}}
+  stopTracks();chunks=[];revoke();stop.disabled=true;start.disabled=disposed;
+  status.textContent="Recording discarded from this session.";
+ });
  download.addEventListener("click",()=>{
   if(!blob)return;
   const fileUrl=URL.createObjectURL(blob),a=document.createElement("a");
@@ -70,7 +78,7 @@ export function mountSpeaking(container){
   a.click();setTimeout(()=>URL.revokeObjectURL(fileUrl),2000);
   status.textContent="Recording saved by your browser. It remains your private file.";
  });
- const dispose=()=>{try{if(mediaRecorder?.state==="recording")mediaRecorder.stop();}catch(_){}stopTracks();revoke();};
+ const dispose=()=>{disposed=true;discardPending=true;try{if(mediaRecorder?.state==="recording")mediaRecorder.stop();}catch(_){}stopTracks();chunks=[];revoke();};
  window.addEventListener("pagehide",dispose,{once:true});
  return {setPrompt(value){task.textContent=value;}};
 }

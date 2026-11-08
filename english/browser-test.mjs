@@ -13,6 +13,8 @@ try{
  await page.waitForFunction(()=>document.querySelector("#unit-status")?.textContent.includes("34 text questions"),null,{timeout:25_000});
  assert.equal(await page.locator("#units button").count(),12,"All twelve units must be navigable");
  assert.equal(await page.locator("#authored-lesson form").count(),34,"First unit practice missing");
+ assert.equal(await page.locator("#authored-lesson button").filter({hasText:"Hear reading"}).count(),4,"Four optional synthetic reading aids should be available");
+ assert.equal(await page.locator("#writing-task option").count(),2,"Each unit should offer two writing assignments");
  assert.match(await page.locator("body").innerText(),/A2 beta — formative learning only/);
  const first=page.locator("#practice-A2\\.01\\.BE\\.001");
  await first.locator('input[value="am"]').check();
@@ -22,6 +24,13 @@ try{
  await page.reload({waitUntil:"domcontentloaded"});
  await page.waitForFunction(()=>document.querySelector("#total-attempts")?.textContent==="1",{timeout:20000});
  assert.equal(await page.locator("#first-correct").innerText(),"1","First attempt did not survive reload");
+ const draft="My name is Nora. I study physics and I work with my classmates. I usually read notes at home. Is our class on Tuesday?";
+ await page.locator("#writing-text").fill(draft);
+ await page.locator("#guided-writing button").filter({hasText:"Save draft now"}).click();
+ await page.waitForFunction(()=>document.querySelector("#writing-status")?.textContent.includes("Draft saved"));
+ await page.reload({waitUntil:"domcontentloaded"});
+ await page.waitForFunction(()=>document.querySelector("#writing-text")?.value?.includes("I study physics"),null,{timeout:20_000});
+ assert.equal(await page.locator("#writing-text").inputValue(),draft,"Guided writing draft did not persist");
 
  const otherContext=await browser.newContext();
  try{
@@ -29,6 +38,7 @@ try{
   await other.goto("http://127.0.0.1:8080/english/",{waitUntil:"domcontentloaded"});
   await other.waitForFunction(()=>document.querySelector("#unit-status")?.textContent.includes("34 text questions"));
   assert.equal(await other.locator("#total-attempts").innerText(),"0","Progress leaked into another browser profile");
+  assert.equal(await other.locator("#writing-text").inputValue(),"","Writing draft leaked into another browser profile");
  }finally{await otherContext.close();}
 
  await page.locator("#units button").nth(10).click();
@@ -47,10 +57,44 @@ try{
  page.once("dialog",async d=>await d.accept());
  await page.locator("#clear").click();
  await page.waitForFunction(()=>document.querySelector("#total-attempts")?.textContent==="0");
+ await page.locator("#units button").first().click();
+ assert.equal(await page.locator("#writing-text").inputValue(),"","Clearing progress did not clear the writing draft");
 
- const saved={schema:1,attempts:[{id:"A2.01.BE.001",at:"2026-11-08T12:00:00.000Z",answer:"am",first:true,correct:true}],reviews:{}};
+ const saved={schema:1,attempts:[{id:"A2.01.BE.001",at:"2026-11-08T12:00:00.000Z",answer:"am",first:true,correct:true}],reviews:{},writing:{"A2.01.WRITE.01":{text:"Imported private English draft.",checked:["task","clarity"],updatedAt:"2026-11-09T00:00:00.000Z"}}};
  await page.locator("#import-file").setInputFiles({name:"history.json",mimeType:"application/json",buffer:Buffer.from(JSON.stringify(saved))});
  await page.waitForFunction(()=>document.querySelector("#total-attempts")?.textContent==="1");
+ assert.equal(await page.locator("#writing-text").inputValue(),"Imported private English draft.","Writing import did not restore the draft");
+
+ // Simulate a microphone permission grant and recorder completion without real hardware.
+ // Discarding while active must not resurrect a recording from onstop events.
+ const audioContext=await browser.newContext();
+ try{
+  await audioContext.addInitScript(()=>{
+   Object.defineProperty(navigator,"mediaDevices",{configurable:true,value:{
+    getUserMedia:async()=>({getTracks:()=>[{stop(){}}]})
+   }});
+   window.MediaRecorder=class {
+    constructor(stream){this.state="inactive";this.mimeType="audio/webm";}
+    start(){this.state="recording";}
+    stop(){
+     this.state="inactive";
+     queueMicrotask(()=>{
+      this.ondataavailable?.({data:new Blob(["sensitive microphone data"],{type:"audio/webm"})});
+      this.onstop?.();
+     });
+    }
+   };
+  });
+  const audioPage=await audioContext.newPage();
+  await audioPage.goto("http://127.0.0.1:8080/english/",{waitUntil:"domcontentloaded"});
+  await audioPage.waitForFunction(()=>document.querySelector("#unit-status")?.textContent.includes("34 text questions"));
+  await audioPage.getByRole("button",{name:"Start recording"}).click();
+  await audioPage.getByRole("button",{name:"Discard recording"}).click();
+  await audioPage.waitForTimeout(80);
+  assert.equal(await audioPage.locator('audio[aria-label="Listen to your local speaking practice recording"]').isHidden(),true);
+  assert.equal(await audioPage.getByRole("button",{name:"Save recording to my device"}).isDisabled(),true);
+ }finally{await audioContext.close();}
+
  assert.deepEqual(outbound,[],"Assessment content unexpectedly requested a third-party service");
  console.log("English A2 browser checks passed: 12 units, feedback, persistence, privacy isolation, graph, export, deletion and import.");
 }finally{

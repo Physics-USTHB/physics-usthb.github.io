@@ -28,6 +28,8 @@ jobs:
         run: |
           node --check english/app.js
           node --check english/speaking.mjs
+          node --check english/writing.mjs
+          node --check english/read-aloud.mjs
       - name: Run privacy, schema and evidence-model tests
         run: node --test english/test/*.test.mjs
 
