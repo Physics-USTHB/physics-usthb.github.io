@@ -1,32 +1,48 @@
-# English for Physicists — A2 implementation foundation
+# English for Physicists — A2 development branch
 
-**Status:** development preview only; not an operational A2 course and not approved for production.
+**Version:** implementation slice 0.2 (draft, unmerged PR #3). **Do not merge to production yet.**
 
-This branch is the first GitHub implementation step following the completion of twelve *draft* A2 authoring packages. The current draft inventory contains 2,555 candidate exercises across A2.01–A2.12. The public site on `main` is intentionally unchanged.
+## Working in the feature branch
 
-## Implemented in this branch
+- Standalone English development entry point; physics practicums and LaTeX Studio untouched.
+- Navigation for all 12 A2 units.
+- **A2.01: 34 unreviewed text-only formative exercises** for basic grammar, vocabulary and reading, supported by four original sources.
+- **A2.02: 34 unreviewed text-only formative exercises** for scientific numbers, grammar, SI units and reading, supported by four original sources.
+- Four additional simulation-based sample questions under A2.12, not a complete capstone.
+- Shared versioned JSON schema for active draft units, validated in-browser before activation.
+- First-attempt and retry tracking, with draft items explicitly excluded from verified proficiency evidence.
+- Deterministic constrained-response grading, conservative weakness hypotheses, evidence summaries and local practice scheduling.
+- Initial review intervals of 1, 3, 7, 14, 30 and 60 days, subject to future calibration.
+- Browser-local IndexedDB progress with localStorage fallback and backup export/import/clear.
+- Node regression tests and dedicated English GitHub Actions workflow.
 
-- Isolated `/english/` preview, with A2.01–A2.12 navigation and planned topic summaries.
-- Four illustrative text-only practice questions using fictional simulated cart data.
-- Immediate formative feedback, with first-attempt and retry records kept separate.
-- Local-first IndexedDB progress, with localStorage fallback and explicit in-memory fallback warning.
-- JSON import/export and local deletion controls. Browser profile separation is not individual identity isolation.
-- Accessible labels, a semantic data table, keyboard-operable buttons and live feedback status.
-- Clear prohibition on assigning CEFR mastery, pronunciation quality, or official certification from sample practice.
+## Audit scope
+
+The **2,555 A2 candidates** in 12 previous authoring packages are **not fully implemented** in this branch. Only 68 unreviewed text practice questions are integrated (plus 4 demonstrations). A2.03–A2.11 remain authoring-only; A2.12 remains a demonstration.
+
+The adaptive engine does **not** assign CEFR proficiency, speaking or writing grades, or verified mastery using draft content. It does not intentionally transmit exercise responses to an application server.
+
+## Canonical item schema v1
+
+Each unit contains schemaVersion, id, title, sources and items. Each item has a stable ID, tagged skill, item family, draft/reviewed status, modality, prompt, accepted answers, feedback and optional sourceId. Only single_choice and short_answer are currently rendered. The remaining exercise types must receive tested renderers.
+
+Static answer keys are inspectable, so this is **not a secure high-stakes examination system**.
 
 ## Release blockers
 
-1. **Editorial/physics sign-off:** all 2,555 candidates, answer alternatives, explanations and physics examples remain draft/unreviewed.
-2. **Canonical schema:** the earlier units use differing format names (`single_choice` vs `choice`, other authoring fields); migrate carefully before import.
-3. **Original audio:** listening and model-pronunciation assessment cannot be activated until reviewed American-English recordings and transcript controls exist.
-4. **Accessibility:** create accessible SVG/chart alternatives and verify screen-reader and keyboard workflows.
-5. **Adaptive evidence:** mastery, weakness hypotheses, review scheduling and remediation must be tested with independent item families and appropriate false-positive controls.
-6. **Privacy and durability:** test IndexedDB/localStorage fallbacks, shared-computer use, migration, export/import and data removal.
-7. **Browser QA:** automated cross-browser and accessibility checks are required before merging.
-8. **Answer security:** because this is a static website, exam answers are publicly inspectable; do not describe it as a secure accredited examination.
+1. Independent linguistic, physics, pedagogy and answer-key review.
+2. Safe normalization of all remaining draft questions, without silent semantic changes.
+3. Original American-English audio, aligned transcripts and accessible listening controls.
+4. Speaking/writing/mediation rubrics and trustworthy self/human assessment.
+5. Human-labeled evaluation of misconception detection, including false positives.
+6. Automated browser/keyboard/screen-reader/storage/privacy regression testing.
+7. Held-out independent item banks and CEFR descriptor-traceability review.
+8. Student/instructor pilot before asserting efficacy or awarding proficiency certificates.
 
-The completed A2 authoring archive is held separately from this repository preview until quality gates pass. Do not link this route from the production homepage or merge this PR before the gates above are resolved.
+## Testing
 
-## Next build slice
+From repository root: node --test english/test/*.test.mjs
 
-Build a canonical schema validator and importer for A2.01–A2.12, validate all draft item references, and then integrate the **reviewed** text-only learning items. Add the audio, writing and speaking layers only when their evidence and privacy contracts can be honored.
+GitHub Actions runs the same command for changes in the English directory.
+
+**Privacy:** local progress belongs to a browser profile, not a verified individual. Two people sharing a profile can access each other's progress. The live site and production homepage are unchanged by this draft PR.
