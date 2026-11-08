@@ -1,0 +1,343 @@
+{
+  "schemaVersion": 1,
+  "reviewStatus": "draft",
+  "purpose": "Optional, formative practice suggestions from first attempts only; not a diagnostic or CEFR assessment.",
+  "units": {
+    "A2.01": {
+      "grammar": {
+        "title": "Present simple and classroom questions",
+        "steps": [
+          "For I, use am; for she or he, use is. In routines, add -s to he/she verbs.",
+          "Use do/does + subject + base verb to form present-simple questions."
+        ],
+        "example": "Does Maya study physics? Yes, she does."
+      },
+      "vocabulary": {
+        "title": "University learning words",
+        "steps": [
+          "Identify the purpose of a lecture, notebook and laboratory session.",
+          "Practise useful collocations: take notes, attend a lecture, review your notes."
+        ],
+        "example": "I take notes during the physics lecture."
+      },
+      "reading": {
+        "title": "Find exact facts in a profile",
+        "steps": [
+          "Read the question first, then locate the matching day, location or person in the source.",
+          "Answer only with information stated in the source. Reopen the reading if necessary."
+        ],
+        "example": "If the notice says 2:00 p.m., do not replace it with 12:00 p.m."
+      }
+    },
+    "A2.02": {
+      "grammar": {
+        "title": "Articles, plurals and quantities",
+        "steps": [
+          "Use a/an for a new singular countable object and the when the object is already known.",
+          "Equipment is uncountable; measurements are countable. Use how much for time and how many for measurements."
+        ],
+        "example": "There is some equipment, and there are three instruments."
+      },
+      "vocabulary": {
+        "title": "Correct SI unit names and symbols",
+        "steps": [
+          "Match mass with kg, time with s, voltage with V, and temperature with K.",
+          "Keep case-sensitive SI symbols and insert a space between the number and its unit."
+        ],
+        "example": "0.35 m, 4.5 V and 295 K"
+      },
+      "reading": {
+        "title": "Read numerical data carefully",
+        "steps": [
+          "Return to the sample table and find the requested row or measurement.",
+          "Copy the quantity and the unit exactly; do not treat a demonstration as a real measurement."
+        ],
+        "example": "Sample A: length 0.35 m (virtual value)."
+      },
+      "mathematical-english": {
+        "title": "Scientific numbers in spoken English",
+        "steps": [
+          "Read each digit after the decimal point: 0.05 is zero point zero five.",
+          "Distinguish thirteen (13) and thirty (30), and compare decimals by place value."
+        ],
+        "example": "0.6 is greater than 0.06."
+      }
+    },
+    "A2.03": {
+      "grammar": {
+        "title": "Existence, position and instructions",
+        "steps": [
+          "Use there is with a singular item and there are with plural items.",
+          "Use this/these, that/those correctly, and keep directions relative to the supplied scene."
+        ],
+        "example": "There are two timers next to the notebook."
+      },
+      "vocabulary": {
+        "title": "Equipment and spatial descriptions",
+        "steps": [
+          "Match equipment names to descriptions before placing them in a sentence.",
+          "Practise left/right, above/below, between and next to using the reading source."
+        ],
+        "example": "The ruler is next to the notebook."
+      },
+      "reading": {
+        "title": "Locate apparatus in the source",
+        "steps": [
+          "Open the relevant room description and check the stated positions.",
+          "Do not invent a location that is not shown or described."
+        ],
+        "example": "Describe the source's arrangement, not an assumed real laboratory."
+      }
+    },
+    "A2.04": {
+      "grammar": {
+        "title": "Habit versus action happening now",
+        "steps": [
+          "Use the present simple for routines and usual behaviors.",
+          "Use am/is/are + -ing for what is happening at this moment."
+        ],
+        "example": "The cart usually moves slowly. It is moving right now."
+      },
+      "vocabulary": {
+        "title": "Motion and change verbs",
+        "steps": [
+          "Select the verb matching the stated movement: rise, fall, turn, speed up or stop.",
+          "Do not infer a precise speed from an unlabeled picture."
+        ],
+        "example": "The cart is moving to the right."
+      },
+      "reading": {
+        "title": "Find tense clues in a text",
+        "steps": [
+          "Look for now, at this moment, every week or usually.",
+          "Identify what the source explicitly describes and then select the tense."
+        ],
+        "example": "“Every Thursday” is a routine; “right now” is current."
+      }
+    },
+    "A2.05": {
+      "grammar": {
+        "title": "Comparisons and sufficiency",
+        "steps": [
+          "Use shorter than, longer than, higher than, or lower than to compare two quantities of the same kind.",
+          "Use as ... as for equal comparisons, and enough/too for suitability statements."
+        ],
+        "example": "80 cm is longer than 60 cm."
+      },
+      "vocabulary": {
+        "title": "Measurement words",
+        "steps": [
+          "Check the difference between length, mass, temperature and time.",
+          "Avoid claiming accuracy without a trustworthy reference measurement."
+        ],
+        "example": "The second cable is longer, but no accuracy claim follows."
+      },
+      "reading": {
+        "title": "Check both values before comparing",
+        "steps": [
+          "Find the two numerical values and their units in the source.",
+          "Do not combine unrelated quantities or invent missing measurements."
+        ],
+        "example": "A difference of 20 cm is not 20 m."
+      }
+    },
+    "A2.06": {
+      "grammar": {
+        "title": "Safety requirements and requests",
+        "steps": [
+          "Must/have to express obligations; should expresses advice.",
+          "Must not prohibits an action; don't have to means it is not required. Could you...? is a polite request."
+        ],
+        "example": "You must not look directly into a laser beam."
+      },
+      "vocabulary": {
+        "title": "Read laboratory warning verbs",
+        "steps": [
+          "Distinguish report, avoid, stop, ask and check in safety notices.",
+          "For actual equipment, always follow the instructor and locally applicable rules."
+        ],
+        "example": "Report a damaged cable to an instructor."
+      },
+      "reading": {
+        "title": "Separate notices from general advice",
+        "steps": [
+          "Identify which instructions are requirements and which are recommendations.",
+          "Apply only the fictional scenario in the exercise; it cannot substitute for real lab safety rules."
+        ],
+        "example": "Must not is prohibition, not optional advice."
+      }
+    },
+    "A2.07": {
+      "grammar": {
+        "title": "Completed actions in the simple past",
+        "steps": [
+          "For a finished event, use the simple past rather than the present continuous.",
+          "Check regular -ed endings and irregular verbs such as take/took and write/wrote."
+        ],
+        "example": "Yesterday, we recorded the simulated values."
+      },
+      "vocabulary": {
+        "title": "Reporting procedure words",
+        "steps": [
+          "Review verbs such as measured, recorded, checked and observed.",
+          "Distinguish what someone did from what the source shows."
+        ],
+        "example": "We recorded a value; we did not establish a theory."
+      },
+      "reading": {
+        "title": "Track the sequence of an experiment",
+        "steps": [
+          "Use yesterday, first, next, then and finally to follow events.",
+          "Locate past actions from the source without inventing results."
+        ],
+        "example": "A source saying “checked” does not necessarily say “replaced”."
+      }
+    },
+    "A2.08": {
+      "grammar": {
+        "title": "Past continuous and interruptions",
+        "steps": [
+          "Use was/were + -ing for an action in progress at a past time.",
+          "Use simple past for a completed interruption, often introduced by when."
+        ],
+        "example": "She was writing when the display went dark."
+      },
+      "vocabulary": {
+        "title": "Describe a problem without guessing",
+        "steps": [
+          "Use verbs such as stopped, restarted and appeared when the source supports them.",
+          "Separate the observed problem from an uncertain cause."
+        ],
+        "example": "The display stopped responding; the cause was unknown."
+      },
+      "reading": {
+        "title": "Identify simultaneous and interrupted actions",
+        "steps": [
+          "Check which action was continuing and which event happened.",
+          "Read the when/while details before answering."
+        ],
+        "example": "“While she was watching” describes an ongoing action."
+      }
+    },
+    "A2.09": {
+      "grammar": {
+        "title": "Present perfect versus simple past",
+        "steps": [
+          "Use have/has + past participle to describe results relevant now, or experience without a finished time.",
+          "Use the simple past with explicit finished times such as yesterday or on Monday."
+        ],
+        "example": "We have finished the table. We finished it on Monday."
+      },
+      "vocabulary": {
+        "title": "Progress and experience language",
+        "steps": [
+          "Distinguish already, just, yet, ever and never.",
+          "Use words that match the fictional progress report, not an invented experiment."
+        ],
+        "example": "I have already checked the values, but I have not written the report yet."
+      },
+      "reading": {
+        "title": "Check what was actually completed",
+        "steps": [
+          "Search for evidence that a task is finished, pending or recently done.",
+          "Do not call a planned action a completed result."
+        ],
+        "example": "Not yet finished is different from already finished."
+      }
+    },
+    "A2.10": {
+      "grammar": {
+        "title": "Causes, consequences and conditions",
+        "steps": [
+          "Because gives a reason; so introduces a result.",
+          "Use present simple in an if-clause, and will + base verb for a possible future outcome."
+        ],
+        "example": "If the model keeps the same rate, the position will increase."
+      },
+      "vocabulary": {
+        "title": "Cause-effect vocabulary",
+        "steps": [
+          "Review increase, decrease, lead to and result in using the provided model.",
+          "State assumptions before asserting a physics relationship."
+        ],
+        "example": "The voltage increased in the fictional model."
+      },
+      "reading": {
+        "title": "Follow the source's condition",
+        "steps": [
+          "Find the model's assumption or if-statement first.",
+          "Avoid presenting model predictions as measurements."
+        ],
+        "example": "A predicted value is not an observed data point."
+      }
+    },
+    "A2.11": {
+      "grammar": {
+        "title": "Future forms and cautious predictions",
+        "steps": [
+          "Use will or be going to appropriately for predictions.",
+          "Use may or might when uncertainty is meaningful."
+        ],
+        "example": "The graph may continue to rise if the same trend holds."
+      },
+      "vocabulary": {
+        "title": "Graph and trend vocabulary",
+        "steps": [
+          "Identify axis, slope, rise, fall and remain constant in a labelled graph.",
+          "Always name the quantity and unit together."
+        ],
+        "example": "The vertical axis is Position (m)."
+      },
+      "reading": {
+        "title": "Read the stated graph interval",
+        "steps": [
+          "Identify the axes, units, displayed time range and numerical values.",
+          "Separate what the graph shows from what might happen later."
+        ],
+        "example": "A value at 5 s cannot be read from a graph ending at 4 s."
+      },
+      "mathematical-english": {
+        "title": "Describe numerical changes clearly",
+        "steps": [
+          "Increased from 2 to 5 states two endpoints; increased by 3 states the difference.",
+          "Check units before comparing and keep predictions separate from observed values."
+        ],
+        "example": "The value increased from 2 m to 5 m, a change of 3 m."
+      }
+    },
+    "A2.12": {
+      "grammar": {
+        "title": "Combine A2 sentence patterns",
+        "steps": [
+          "Use past forms for completed actions and present forms for descriptions of the current model.",
+          "Check that because, if and comparison sentences express the intended relation."
+        ],
+        "example": "The graph rises because the modeled cart moves at a constant speed."
+      },
+      "vocabulary": {
+        "title": "Report the virtual experiment accurately",
+        "steps": [
+          "Use simulation, position, time, quantity and unit correctly.",
+          "Distinguish observation, assumption and prediction."
+        ],
+        "example": "The virtual model displays a position of 3.0 m at 2 s."
+      },
+      "reading": {
+        "title": "Recheck the project sources",
+        "steps": [
+          "Find the model, procedure and numerical evidence in the corresponding source.",
+          "Do not turn simulated displays into claims about a real laboratory."
+        ],
+        "example": "The table displays a simulated value; it is not a physical measurement."
+      },
+      "mathematical-english": {
+        "title": "Write complete graph data statements",
+        "steps": [
+          "Read axis labels, a time and a position with correct units.",
+          "Describe the trend only across the displayed interval."
+        ],
+        "example": "Position increases from 0 m at 0 s to 4.5 m at 3 s."
+      }
+    }
+  }
+}
