@@ -30,7 +30,7 @@ authoredRoot.id="authored-lesson";
 authoredRoot.hidden=true;
 $("lesson").after(authoredRoot);
 const recorderMount=document.createElement("div");
-authoredRoot.after(recorderMount);
+$("lesson").closest(".card").after(recorderMount);
 const speaking=mountSpeaking(recorderMount);
 function renderReadingContent(container,paragraph,title){
  const lines=paragraph.split("\n").map(x=>x.trim()).filter(Boolean);
