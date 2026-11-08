@@ -1,170 +1,190 @@
-(()=>{
-'use strict';
-const U=ThermoUI,E=id=>document.getElementById(id),K='THERMO_T03_v3',CP=4180,TAU_HEAT=600;
-
-function q(x,step){return Math.round(x/step)*step}
-function makeRun(){
-  const Mcal=q(104+Math.random()*22,.1),mw=q(175+Math.random()*40,.1),W=q(18+Math.random()*13,.1);
-  const Ta=q(22.5+Math.random()*2.2,.1),R=q(7.4+Math.random()*1.8,.01),U=q(11.6+Math.random()*1.0,.01);
-  const k=0.42+Math.random()*.24,T0=Ta-(.7+Math.random()*.7);
-  return{id:'T03-'+Math.random().toString(36).slice(2,7).toUpperCase(),Mcal,Mfilled:q(Mcal+mw,.1),mw,W,Ta,R,U,k,T0,temps:null};
+(()=>{ 'use strict';
+const U=ThermoUI,E=id=>document.getElementById(id),K='THERMO_T03_v4',CP=4180;
+const MIX_READINGS={
+  Mcal:{label:'Empty calorimeter mass Mcal',instrument:'Digital balance',unit:'g',kind:'M'},
+  Mcold:{label:'Calorimeter + cold water mass',instrument:'Digital balance',unit:'g',kind:'M'},
+  Mhot:{label:'Calorimeter + hot water mass',instrument:'Digital balance',unit:'g',kind:'M'},
+  Tcold:{label:'Cold-water temperature',instrument:'Thermometer',unit:'°C',kind:'T'},
+  Thot:{label:'Hot-water temperature',instrument:'Thermometer',unit:'°C',kind:'T'},
+  Tfinal:{label:'Equilibrium temperature',instrument:'Thermometer',unit:'°C',kind:'T'},
+  Mfinal:{label:'Final calorimeter + mixture mass',instrument:'Digital balance',unit:'g',kind:'M'}
+};
+const MIX_ACTIONS={
+  fillCold:'Fill one calorimeter to about one third with cold water.',
+  fillHot:'Fill the second calorimeter to about one third with hot water about 20°C above room temperature.',
+  hotToCold:'Immediately add the hot water to the cold water.',
+  coldToHot:'Immediately add the cold water to the hot water.',
+  stir:'Stir the mixture continuously with the thermometer until equilibrium.'
+};
+const METAL_READINGS={
+  M:{label:'Metal-sample mass M',instrument:'Digital balance',unit:'g',kind:'M'},
+  P:{label:'Atmospheric pressure P',instrument:'Barometer',unit:'hPa',kind:'P'},
+  m:{label:'Water mass m in calorimeter',instrument:'Digital balance',unit:'g',kind:'M'},
+  Ti:{label:'Initial water temperature Ti',instrument:'Thermometer',unit:'°C',kind:'T'},
+  Tf:{label:'Equilibrium temperature Tf',instrument:'Thermometer',unit:'°C',kind:'T'}
+};
+const METAL_ACTIONS={
+  beads:'Fill the beaker bottom with about 3 cm of glass beads.',
+  boil:'Place the metal in boiling water without letting it touch the beaker bottom.',
+  wait:'Wait about 10 minutes for the metal to reach the boiling-water temperature.',
+  water:'Put a measured mass of water into the calorimeter.',
+  transfer:'Transfer the hot metal into the calorimeter water.',
+  stir:'Stir until thermal equilibrium is reached.'
+};
+function q(x,step=.1){return Math.round(x/step)*step}
+function boilT(P){const d=P-1013;return 100+0.276*d-17e-6*d*d}
+function makeTrial(i){
+  const Ta=22.5+Math.random()*2,Mcal=q(105+Math.random()*18),mc=q(75+Math.random()*50),mh=q(75+Math.random()*50);
+  const Tcold=q(14+Math.random()*6),Thot=q(Ta+18+Math.random()*5),ideal=(mc*Tcold+mh*Thot)/(mc+mh);
+  const Tfinal=q(ideal+(Ta-ideal)*(0.01+Math.random()*.025));
+  const spill=q(.1+Math.random()*.4);
+  return{Mcal,Mcold:q(Mcal+mc),Mhot:q(Mcal+mh),Tcold,Thot,Tfinal,Mfinal:q(Mcal+mc+mh-spill),direction:i===0?'hotToCold':'coldToHot'};
 }
-function generateTemps(run){
-  const C=(run.mw+run.W)/1000*CP,P=run.U*run.U/run.R,vals=[];
-  let T=run.T0;
-  for(let sec=0;sec<=40*60;sec++){
-    if(sec%60===0){
-      const m=sec/60,noise=.025*Math.sin(m*1.73+run.Mcal*.07)+.012*Math.sin(m*.51+run.R);
-      vals[m]=q(T+noise,.1);
-    }
-    if(sec===40*60)break;
-    const min=sec/60,heater=(min>=15&&min<25),power=heater?P:0;
-    T+=(power-run.k*(T-run.Ta))/C;
-  }
-  return vals;
+function makeMetal(){
+  const cps=[385,450,900],cTrue=cps[Math.floor(Math.random()*cps.length)]*(.985+Math.random()*.03),M=q(45+Math.random()*35),P=q(985+Math.random()*45,.1),T0=boilT(P),m=q(120+Math.random()*60),Ti=q(18+Math.random()*6);
+  const ideal=(M/1000*cTrue*T0+m/1000*CP*Ti)/(M/1000*cTrue+m/1000*CP),Ta=23.5,Tf=q(ideal+(Ta-ideal)*(0.01+Math.random()*.02));
+  return{M,P,T0,m,Ti,Tf,cTrue};
 }
+function makeRun(){return{id:'T03-'+Math.random().toString(36).slice(2,7).toUpperCase(),trials:[0,1,2].map(makeTrial),metal:makeMetal()}}
+function mixFlow(i){
+  const dir=i===0?'hotToCold':'coldToHot';
+  return[
+    {type:'reading',key:'Mcal',...MIX_READINGS.Mcal},
+    {type:'action',key:'fillCold',label:MIX_ACTIONS.fillCold},
+    {type:'reading',key:'Mcold',...MIX_READINGS.Mcold},
+    {type:'action',key:'fillHot',label:MIX_ACTIONS.fillHot},
+    {type:'reading',key:'Mhot',...MIX_READINGS.Mhot},
+    {type:'reading',key:'Tcold',...MIX_READINGS.Tcold},
+    {type:'reading',key:'Thot',...MIX_READINGS.Thot},
+    {type:'action',key:dir,label:MIX_ACTIONS[dir]},
+    {type:'action',key:'stir',label:MIX_ACTIONS.stir},
+    {type:'reading',key:'Tfinal',...MIX_READINGS.Tfinal},
+    {type:'reading',key:'Mfinal',...MIX_READINGS.Mfinal}
+  ];
+}
+function metalFlow(){return[
+  {type:'reading',key:'M',...METAL_READINGS.M},
+  {type:'action',key:'beads',label:METAL_ACTIONS.beads},
+  {type:'action',key:'boil',label:METAL_ACTIONS.boil},
+  {type:'action',key:'wait',label:METAL_ACTIONS.wait},
+  {type:'reading',key:'P',...METAL_READINGS.P},
+  {type:'action',key:'water',label:METAL_ACTIONS.water},
+  {type:'reading',key:'m',...METAL_READINGS.m},
+  {type:'reading',key:'Ti',...METAL_READINGS.Ti},
+  {type:'action',key:'transfer',label:METAL_ACTIONS.transfer},
+  {type:'action',key:'stir',label:METAL_ACTIONS.stir},
+  {type:'reading',key:'Tf',...METAL_READINGS.Tf}
+]}
 let s=U.load(K,null);
-if(!s||s.version!==3){
-  const run=makeRun();run.temps=generateTemps(run);
-  s={version:3,run,prepared:false,minute:0,recordings:{},analysis:null,sources:''};
-}
-if(!Array.isArray(s.run?.temps))s.run.temps=generateTemps(s.run);
-s.recordings=s.recordings||{};s.sources=s.sources||'';
-
+if(!s||s.version!==4)s={version:4,run:makeRun(),mix:[0,1,2].map(()=>({step:0,readings:{},analysis:null})),metal:{step:0,readings:{},analysis:null},hypT:null,energyComment:'',metalComment:''};
 function save(){U.save(K,s)}
-function expectedHeater(min=s.minute){return min>=15&&min<25?'on':'off'}
-function stage(min=s.minute){return min<15?'pre-heating':min<25?'Joule heating':'post-heating'}
-function allTemps(){return Array.from({length:41},(_,i)=>s.recordings[i]).every(v=>v!=null)}
-
-function setupCanvas(){
-  const c=E('benchCanvas'),d=window.devicePixelRatio||1,w=c.clientWidth||900,h=c.clientHeight||390;
-  c.width=w*d;c.height=h*d;const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,w,h);return{x,w,h};
+function trialIndex(){return +E('trialSelect').value}
+function fmt(step,v){return step.kind==='M'?v.toFixed(1)+' g':step.kind==='P'?v.toFixed(1)+' hPa':v.toFixed(1)+' °C'}
+function mixCurrent(){const i=trialIndex(),flow=mixFlow(i),st=s.mix[i];return{i,flow,st,step:flow[Math.min(st.step,flow.length-1)],done:st.step>=flow.length}}
+function metalCurrent(){const flow=metalFlow(),st=s.metal;return{flow,st,step:flow[Math.min(st.step,flow.length-1)],done:st.step>=flow.length}}
+function canvas(id){const c=E(id),d=window.devicePixelRatio||1,w=c.clientWidth||900,h=c.clientHeight||360;c.width=w*d;c.height=h*d;const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,w,h);return{x,w,h}}
+function drawMix(){
+  const{x,w,h}=canvas('mixCanvas'),i=trialIndex(),t=s.run.trials[i],st=s.mix[i];x.fillStyle='#071713';x.fillRect(0,0,w,h);
+  x.fillStyle='#aebdc4';x.fillRect(w*.16,h*.44,w*.20,h*.28);x.fillRect(w*.64,h*.44,w*.20,h*.28);
+  x.fillStyle='#65a8d2';x.globalAlpha=.75;x.fillRect(w*.18,h*.55,w*.16,h*.14);x.fillStyle='#df8a52';x.fillRect(w*.66,h*.55,w*.16,h*.14);x.globalAlpha=1;
+  x.fillStyle='#dce8ec';x.font='700 12px system-ui';x.fillText('cold-water calorimeter',w*.14,h*.39);x.fillText('hot-water calorimeter',w*.62,h*.39);
+  x.fillStyle='#9ec0ca';x.font='600 12px system-ui';x.fillText('Trial '+(i+1)+' · '+(i===0?'hot water is poured into cold water':'cold water is poured into hot water'),18,25);
+  if(st.step>=7){x.strokeStyle='#f0c36f';x.lineWidth=4;x.beginPath();x.moveTo(i===0?w*.68:w*.30,h*.52);x.lineTo(i===0?w*.36:w*.64,h*.52);x.stroke();}
+  if(st.step>=8){x.fillStyle='#f0d18b';x.font='700 12px system-ui';x.fillText('stirring',w*.47,h*.80);}
 }
-function drawBench(){
-  const{x,w,h}=setupCanvas(),on=E('heater').value==='on',T=s.run.temps[s.minute];
-  x.fillStyle='#071713';x.fillRect(0,0,w,h);
-  x.fillStyle='#273c43';x.fillRect(w*.11,h*.68,w*.78,h*.08);
-  x.fillStyle='#a9bac0';x.fillRect(w*.34,h*.29,w*.32,h*.38);
-  x.fillStyle='#c7d6da';x.fillRect(w*.37,h*.32,w*.26,h*.31);
-  const frac=Math.max(.12,Math.min(.92,(T-s.run.Ta+4)/17));
-  x.fillStyle='rgba(79,174,210,.75)';x.fillRect(w*.39,h*(.60-.22*frac),w*.22,h*.22*frac);
-  x.strokeStyle=on?'#ff9a58':'#6f8790';x.lineWidth=6;x.beginPath();x.moveTo(w*.43,h*.56);x.lineTo(w*.57,h*.56);x.stroke();
-  x.fillStyle=on?'#ff9a58':'#8da0a8';x.font='700 11px system-ui';x.fillText(on?'HEATER ON':'HEATER OFF',w*.445,h*.64);
-  x.strokeStyle='#e5eef1';x.lineWidth=4;x.beginPath();x.moveTo(w*.59,h*.20);x.lineTo(w*.59,h*.51);x.stroke();
-  x.fillStyle='#eef6f8';x.fillRect(w*.57,h*.16,w*.04,h*.06);
-  x.fillStyle='#10272e';x.fillRect(w*.70,h*.28,w*.19,h*.30);x.strokeStyle='#507481';x.lineWidth=2;x.strokeRect(w*.70,h*.28,w*.19,h*.30);
-  x.fillStyle='#91efc9';x.font='700 18px ui-monospace,monospace';x.textAlign='center';x.fillText(T.toFixed(1)+' °C',w*.795,h*.43);
-  x.fillStyle='#a9c2cc';x.font='600 11px system-ui';x.fillText('THERMOMETER',w*.795,h*.50);
-  x.textAlign='left';x.fillStyle='#d9e7eb';x.font='700 13px system-ui';x.fillText('Electrical calorimeter · minute '+s.minute,18,25);
-  x.fillStyle='#91aeb8';x.font='600 12px system-ui';x.fillText(stage()+' · expected switch: '+expectedHeater().toUpperCase(),18,46);
+function drawMetal(){
+  const{x,w,h}=canvas('metalCanvas'),st=s.metal;x.fillStyle='#071713';x.fillRect(0,0,w,h);
+  x.fillStyle='#b8c6ca';x.fillRect(w*.12,h*.43,w*.24,h*.31);x.fillStyle='#ef9a5e';x.globalAlpha=.72;x.fillRect(w*.14,h*.54,w*.20,h*.17);x.globalAlpha=1;
+  for(let k=0;k<6;k++){x.fillStyle='#8ea1a8';x.beginPath();x.arc(w*(.15+.035*k),h*.68,7,0,Math.PI*2);x.fill();}
+  x.fillStyle='#dbe7ea';x.font='700 12px system-ui';x.fillText('boiling-water beaker + glass beads',w*.10,h*.38);
+  x.fillStyle='#aebdc4';x.fillRect(w*.64,h*.43,w*.20,h*.30);x.fillStyle='#6aa7cc';x.globalAlpha=.72;x.fillRect(w*.66,h*.55,w*.16,h*.14);x.globalAlpha=1;x.fillStyle='#dbe7ea';x.fillText('calorimeter water',w*.66,h*.38);
+  if(st.step>=8){x.strokeStyle='#d58a50';x.lineWidth=6;x.beginPath();x.moveTo(w*.30,h*.42);x.lineTo(w*.70,h*.52);x.stroke();x.fillStyle='#f0c16d';x.fillText('hot metal transferred',w*.41,h*.34);}
 }
-function renderPrep(){
-  E('mcalRead').textContent=s.run.Mcal.toFixed(1)+' g';E('mfilledRead').textContent=s.run.Mfilled.toFixed(1)+' g';E('taRead').textContent=s.run.Ta.toFixed(1)+' °C';E('rRead').textContent=s.run.R.toFixed(2)+' Ω';E('uRead').textContent=s.run.U.toFixed(2)+' V';
+function renderMix(){
+  const q=mixCurrent(),truth=s.run.trials[q.i];E('mixStepName').value=q.done?'Completed':q.step.label;
+  const action=!q.done&&q.step.type==='action';E('mixInstrument').value=q.done?'—':action?'procedure':fmt(q.step,truth[q.step.key]);E('mixUnit').value=q.done||action?'—':q.step.unit;E('mixStudentReading').disabled=q.done||action;E('mixRecord').disabled=q.done||action;
+  E('mixActionBox').style.display=action?'grid':'none';E('mixPerformAction').disabled=!action;
+  if(action){const keys=['fillCold','fillHot',q.i===0?'hotToCold':'coldToHot','stir'];E('mixActionChoice').innerHTML='<option value="">Select the operation you would perform…</option>'+keys.map(k=>'<option value="'+k+'">'+MIX_ACTIONS[k]+'</option>').join('');E('mixActionChoice').value='';}
+  E('mixProgress').innerHTML=q.flow.map((z,k)=>'<div class="item '+(k<q.st.step?'done':'')+'">'+(k<q.st.step?'✓':'○')+' '+z.label+'</div>').join('');
+  const keys=['Mcal','Mcold','Mhot','Tcold','Thot','Tfinal','Mfinal'];E('mixReadingsBody').innerHTML=keys.map(k=>'<tr><td>'+MIX_READINGS[k].label+'</td>'+[0,1,2].map(i=>{const v=s.mix[i].readings[k];return'<td>'+(v==null?'—':fmt(MIX_READINGS[k],+v))+'</td>'}).join('')+'</tr>').join('');
+  loadMixAnalysisFields();drawMix();
 }
-function renderClock(){
-  E('clockRead').value=s.minute+' min';E('thermoRead').value=s.run.temps[s.minute].toFixed(1)+' °C';E('stageOut').textContent=stage();
-  const done=s.recordings[s.minute]!=null;E('recordTemp').disabled=!s.prepared||done;E('advance').disabled=!s.prepared||!done||s.minute>=40;E('heater').disabled=!s.prepared;
+function recordMix(){
+  const q=mixCurrent();if(q.done||q.step.type!=='reading')return;const raw=E('mixStudentReading').value.trim(),v=+raw,truth=s.run.trials[q.i][q.step.key];if(raw===''||!Number.isFinite(v)){E('mixMsg').className='notice warn';E('mixMsg').textContent='Enter the displayed instrument reading.';return}
+  const tol=q.step.kind==='M'?.11:q.step.kind==='P'?.11:.11;if(Math.abs(v-truth)>tol){E('mixMsg').className='notice warn';E('mixMsg').textContent='Re-read the '+q.step.instrument.toLowerCase()+' at the stated resolution.';return}
+  q.st.readings[q.step.key]=v;q.st.step++;q.st.analysis=null;E('mixStudentReading').value='';E('mixMsg').className='notice ok';E('mixMsg').textContent=q.st.step>=q.flow.length?'Trial complete. Calculate the water masses and heat exchanges.':'Reading accepted. Continue with the next step.';renderMix();renderAnalysis();save();
 }
-function renderTable(){
-  const rows=Object.keys(s.recordings).map(Number).sort((a,b)=>a-b);
-  E('tempBody').innerHTML=rows.length?rows.map(m=>'<tr><td>'+m+'</td><td>'+expectedHeater(m)+'</td><td>'+Number(s.recordings[m]).toFixed(1)+'</td></tr>').join(''):'<tr><td colspan="3">No accepted temperature readings yet.</td></tr>';
-  E('tempCount').textContent=rows.length+' / 41';
+function performMixAction(){
+  const q=mixCurrent();if(q.done||q.step.type!=='action')return;const c=E('mixActionChoice').value;if(c!==q.step.key){E('mixMsg').className='notice warn';E('mixMsg').textContent='That operation is out of sequence for this trial.';return}
+  q.st.step++;q.st.analysis=null;E('mixMsg').className='notice ok';E('mixMsg').textContent='Operation completed. Continue immediately with the next measurement/procedure step.';renderMix();renderAnalysis();save();
 }
-function prepare(){
-  const vals=[+E('studentMcal').value,+E('studentMfilled').value,+E('studentTa').value,+E('studentR').value,+E('studentU').value];
-  if(vals.some(v=>!Number.isFinite(v))){E('benchMsg').className='notice warn';E('benchMsg').textContent='Enter all five preparation measurements.';return}
-  const [mc,mf,ta,r,u]=vals;
-  if(Math.abs(mc-s.run.Mcal)>.11){E('benchMsg').className='notice warn';E('benchMsg').textContent='Re-read the empty-calorimeter mass to 0.1 g.';return}
-  if(Math.abs(mf-s.run.Mfilled)>.11){E('benchMsg').className='notice warn';E('benchMsg').textContent='Re-read the filled-calorimeter mass to 0.1 g.';return}
-  if(Math.abs(ta-s.run.Ta)>.11){E('benchMsg').className='notice warn';E('benchMsg').textContent='Re-read room temperature to 0.1°C.';return}
-  if(Math.abs(r-s.run.R)>.015){E('benchMsg').className='notice warn';E('benchMsg').textContent='Re-read the heater resistance to 0.01 Ω.';return}
-  if(Math.abs(u-s.run.U)>.015){E('benchMsg').className='notice warn';E('benchMsg').textContent='Re-read the heater voltage to 0.01 V.';return}
-  s.prepared=true;s.minute=0;s.recordings={};s.analysis=null;E('heater').value='off';E('studentTemp').value='';
-  E('benchMsg').className='notice ok';E('benchMsg').textContent='Preparation accepted. Keep the heater OFF and record the temperature at minute 0.';
-  renderAll();save();
+function restartMix(){
+  const i=trialIndex();if((s.mix[i].step||Object.keys(s.mix[i].readings).length)&&!confirm('Restart Trial '+(i+1)+' and clear its readings/calculations?'))return;s.mix[i]={step:0,readings:{},analysis:null};E('mixStudentReading').value='';E('mixMsg').className='notice';E('mixMsg').textContent='Trial restarted. Begin by weighing the empty calorimeter.';renderMix();renderAnalysis();save();
 }
-function recordTemp(){
-  if(!s.prepared)return;
-  const required=expectedHeater(),actual=E('heater').value;
-  if(actual!==required){E('benchMsg').className='notice warn';E('benchMsg').textContent='At minute '+s.minute+' the heater must be '+required.toUpperCase()+'. Set the switch correctly before recording.';return}
-  const v=+E('studentTemp').value,e=s.run.temps[s.minute];
-  if(!Number.isFinite(v)){E('benchMsg').className='notice warn';E('benchMsg').textContent='Read the thermometer and enter the current temperature.';return}
-  if(Math.abs(v-e)>.11){E('benchMsg').className='notice warn';E('benchMsg').textContent='Re-read the thermometer to 0.1°C.';return}
-  s.recordings[s.minute]=v;s.analysis=null;E('studentTemp').value='';
-  if(s.minute===40){E('benchMsg').className='notice ok';E('benchMsg').textContent='All 41 temperatures are recorded. Proceed to the corrected-rise analysis.';}
-  else if(s.minute===14){E('benchMsg').className='notice ok';E('benchMsg').textContent='Pre-heating record complete. Advance to minute 15 and switch the heater ON before recording.';}
-  else if(s.minute===24){E('benchMsg').className='notice ok';E('benchMsg').textContent='Ten-minute heating interval complete. Advance to minute 25 and switch the heater OFF before recording.';}
-  else{E('benchMsg').className='notice ok';E('benchMsg').textContent='Temperature accepted. Advance one minute and continue.';}
-  renderAll();save();
+function mixExpected(i){
+  const r=s.mix[i].readings;if(['Mcal','Mcold','Mhot','Tcold','Thot','Tfinal','Mfinal'].some(k=>r[k]==null))return null;
+  const mc=r.Mcold-r.Mcal,mh=r.Mhot-r.Mcal,dC=r.Tfinal-r.Tcold,dH=r.Tfinal-r.Thot,Qc=mc/1000*CP*dC,Qh=mh/1000*CP*dH,res=100*Math.abs(Qc+Qh)/((Math.abs(Qc)+Math.abs(Qh))/2);
+  return{mc,mh,dC,dH,Qc,Qh,res};
 }
-function advance(){
-  if(s.recordings[s.minute]==null){E('benchMsg').className='notice warn';E('benchMsg').textContent='Record the current minute before advancing the clock.';return}
-  if(s.minute>=40)return;s.minute++;E('studentTemp').value='';
-  if(s.minute===15)E('heater').value='on';if(s.minute===25)E('heater').value='off';
-  E('benchMsg').className='notice';E('benchMsg').textContent='Minute '+s.minute+': verify the heater is '+expectedHeater().toUpperCase()+', then read the thermometer.';
-  renderAll();save();
+function loadMixAnalysisFields(){
+  const a=s.mix[trialIndex()].analysis,ids=['mixColdMass','mixHotMass','mixDeltaCold','mixDeltaHot','mixQCold','mixQHot','mixResidual'];ids.forEach(id=>E(id).value='');if(!a)return;[a.mc,a.mh,a.dC,a.dH,a.Qc,a.Qh,a.res].forEach((v,k)=>E(ids[k]).value=v);
 }
-function restart(){
-  if((s.prepared||Object.keys(s.recordings).length)&&!confirm('Start a new Practical 3 specimen? Existing temperature data and analysis will be cleared.'))return;
-  const run=makeRun();run.temps=generateTemps(run);s={version:3,run,prepared:false,minute:0,recordings:{},analysis:null,sources:''};
-  ['studentMcal','studentMfilled','studentTa','studentR','studentU','studentTemp','studentPreMid','studentPostMid','studentDelta','studentWaterMass','studentW','studentUW'].forEach(id=>E(id).value='');
-  E('sources').value='';E('heater').value='off';E('benchMsg').className='notice';E('benchMsg').textContent='New specimen loaded. Measure and validate the five preparation quantities first.';renderAll();save();
+function checkMix(){
+  const i=trialIndex(),e=mixExpected(i);if(!e){E('mixAnalysisMsg').className='notice warn';E('mixAnalysisMsg').textContent='Complete the selected trial first.';return}
+  const ids=['mixColdMass','mixHotMass','mixDeltaCold','mixDeltaHot','mixQCold','mixQHot','mixResidual'],v=ids.map(id=>+E(id).value);if(v.some(x=>!Number.isFinite(x))){E('mixAnalysisMsg').className='notice warn';E('mixAnalysisMsg').textContent='Enter all seven calculated quantities.';return}
+  const [mc,mh,dC,dH,Qc,Qh,res]=v;
+  if(Math.abs(mc-e.mc)>.21||Math.abs(mh-e.mh)>.21){E('mixAnalysisMsg').className='notice warn';E('mixAnalysisMsg').textContent='Recalculate each water mass by subtracting the empty-calorimeter mass.';return}
+  if(Math.abs(dC-e.dC)>.12||Math.abs(dH-e.dH)>.12){E('mixAnalysisMsg').className='notice warn';E('mixAnalysisMsg').textContent='Use ΔT = Tfinal − Tinitial, keeping the hot-water temperature change negative.';return}
+  if(Math.abs(Qc-e.Qc)>Math.max(8,.018*Math.abs(e.Qc))||Math.abs(Qh-e.Qh)>Math.max(8,.018*Math.abs(e.Qh))){E('mixAnalysisMsg').className='notice warn';E('mixAnalysisMsg').textContent='Recalculate ΔQ = m c ΔT with masses in kilograms.';return}
+  if(Math.abs(res-e.res)>.35){E('mixAnalysisMsg').className='notice warn';E('mixAnalysisMsg').textContent='Recalculate the energy residual from |Qcold+Qhot| relative to the mean heat magnitude.';return}
+  s.mix[i].analysis={mc,mh,dC,dH,Qc,Qh,res};E('mixAnalysisMsg').className='notice ok';E('mixAnalysisMsg').textContent='Trial analysis accepted. Repeat until all three trials are complete.';renderAnalysis();save();
 }
-function linearFit(points){
-  const n=points.length,mx=points.reduce((a,p)=>a+p.x,0)/n,my=points.reduce((a,p)=>a+p.y,0)/n;
-  let Sxx=0,Sxy=0;for(const p of points){Sxx+=(p.x-mx)*(p.x-mx);Sxy+=(p.x-mx)*(p.y-my)}
-  const b=Sxy/Sxx,a=my-b*mx,res=points.map(p=>p.y-(a+b*p.x)),sse=res.reduce((z,e)=>z+e*e,0),sy=Math.sqrt(sse/Math.max(1,n-2));
-  return{a,b,n,mx,Sxx,sy,predict(x){return a+b*x},uMean(x){return sy*Math.sqrt(1/n+(x-mx)*(x-mx)/Sxx)}};
+function renderMetal(){
+  const q=metalCurrent(),truth=s.run.metal;E('metalStepName').value=q.done?'Completed':q.step.label;const action=!q.done&&q.step.type==='action';E('metalInstrument').value=q.done?'—':action?'procedure':fmt(q.step,truth[q.step.key]);E('metalUnit').value=q.done||action?'—':q.step.unit;E('metalStudentReading').disabled=q.done||action;E('metalRecord').disabled=q.done||action;E('metalActionBox').style.display=action?'grid':'none';E('metalPerformAction').disabled=!action;
+  if(action){const keys=['beads','boil','wait','water','transfer','stir'];E('metalActionChoice').innerHTML='<option value="">Select the operation you would perform…</option>'+keys.map(k=>'<option value="'+k+'">'+METAL_ACTIONS[k]+'</option>').join('');E('metalActionChoice').value='';}
+  E('metalProgress').innerHTML=q.flow.map((z,k)=>'<div class="item '+(k<q.st.step?'done':'')+'">'+(k<q.st.step?'✓':'○')+' '+z.label+'</div>').join('');
+  const keys=['M','P','m','Ti','Tf'];E('metalReadingsBody').innerHTML=keys.map(k=>{const v=s.metal.readings[k];return'<tr><th>'+METAL_READINGS[k].label+'</th><td>'+(v==null?'—':fmt(METAL_READINGS[k],+v))+'</td></tr>'}).join('');
+  const a=s.metal.analysis;E('boilTOut').textContent=a?a.T0.toFixed(2)+'°C':'—';E('metalCOut').textContent=a?a.c.toFixed(0)+' J·kg⁻¹·K⁻¹':'—';E('metalUOut').textContent=a?a.u.toFixed(0)+' J·kg⁻¹·K⁻¹':'—';drawMetal();
 }
-function analysisExpected(){
-  if(!allTemps())return null;
-  const pre=[],post=[];for(let m=0;m<=14;m++)pre.push({x:m,y:+s.recordings[m]});for(let m=26;m<=40;m++)post.push({x:m,y:+s.recordings[m]});
-  const fp=linearFit(pre),fq=linearFit(post),pre20=fp.predict(20),post20=fq.predict(20),delta=post20-pre20,m=(s.run.Mfilled-s.run.Mcal)/1000,EJ=s.run.U*s.run.U*TAU_HEAT/s.run.R,W=EJ/(CP*delta)-m;
-  const uU=.01/Math.sqrt(3),uR=.01/Math.sqrt(3),uMass=Math.sqrt(2)*.1/Math.sqrt(3)/1000,uTherm=.1/Math.sqrt(3);
-  const uPre=Math.sqrt(fp.uMean(20)**2+uTherm*uTherm),uPost=Math.sqrt(fq.uMean(20)**2+uTherm*uTherm),uDelta=Math.sqrt(uPre*uPre+uPost*uPost),uE=EJ*Math.sqrt(Math.pow(2*uU/s.run.U,2)+Math.pow(uR/s.run.R,2));
-  const uW=Math.sqrt(Math.pow(uE/(CP*delta),2)+Math.pow(EJ*uDelta/(CP*delta*delta),2)+uMass*uMass);
-  return{pre20,post20,delta,m:m*1000,W:W*1000,uW:uW*1000,fp,fq,EJ,uDelta};
+function recordMetal(){
+  const q=metalCurrent();if(q.done||q.step.type!=='reading')return;const raw=E('metalStudentReading').value.trim(),v=+raw,truth=s.run.metal[q.step.key];if(raw===''||!Number.isFinite(v)){E('metalMsg').className='notice warn';E('metalMsg').textContent='Enter the displayed reading.';return}
+  const tol=q.step.kind==='P'?.11:.11;if(Math.abs(v-truth)>tol){E('metalMsg').className='notice warn';E('metalMsg').textContent='Re-read the '+q.step.instrument.toLowerCase()+' at the stated resolution.';return}
+  q.st.readings[q.step.key]=v;q.st.step++;q.st.analysis=null;E('metalStudentReading').value='';E('metalMsg').className='notice ok';E('metalMsg').textContent=q.st.step>=q.flow.length?'Metal experiment complete. Calculate T₀ and c′.':'Reading accepted. Continue with the next procedure step.';renderMetal();renderAnalysis();save();
 }
-function checkAnalysis(){
-  const e=analysisExpected();if(!e){E('analysisMsg').className='notice warn';E('analysisMsg').textContent='Complete all 41 temperature readings first.';return}
-  const vals=['studentPreMid','studentPostMid','studentDelta','studentWaterMass','studentW','studentUW'].map(id=>+E(id).value);
-  if(vals.some(v=>!Number.isFinite(v))){E('analysisMsg').className='notice warn';E('analysisMsg').textContent='Enter both extrapolated midpoint temperatures, corrected rise, water mass, W and u(W).';return}
-  const [p,q,d,m,W,uW]=vals;
-  if(Math.abs(p-e.pre20)>.08){E('analysisMsg').className='notice warn';E('analysisMsg').textContent='Refit the 0–14 min pre-heating data and extrapolate its straight line to tM=20 min.';return}
-  if(Math.abs(q-e.post20)>.08){E('analysisMsg').className='notice warn';E('analysisMsg').textContent='Refit the 26–40 min cooling data and extrapolate its straight line backward to tM=20 min.';return}
-  if(Math.abs(d-(q-p))>.04){E('analysisMsg').className='notice warn';E('analysisMsg').textContent='Recalculate ΔTcorr = Tpost(tM) − Tpre(tM).';return}
-  if(Math.abs(m-(s.run.Mfilled-s.run.Mcal))>.21){E('analysisMsg').className='notice warn';E('analysisMsg').textContent='Recalculate the water mass as Mfilled−Mcal.';return}
-  const calcW=s.run.U*s.run.U*TAU_HEAT/(s.run.R*CP*d)-m/1000;
-  if(Math.abs(W-calcW*1000)>Math.max(.8,.035*Math.abs(calcW*1000))){E('analysisMsg').className='notice warn';E('analysisMsg').textContent='Recalculate W=U²τ/(R c ΔTcorr)−m, using τ=600 s and mass in kg.';return}
-  if(Math.abs(uW-e.uW)>Math.max(.6,.22*Math.max(e.uW,.5))){E('analysisMsg').className='notice warn';E('analysisMsg').textContent='Recalculate u(W) from voltage, resistance, mass and extrapolated-temperature uncertainties.';return}
-  s.analysis={pre20:p,post20:q,delta:d,m,W,uW};E('analysisMsg').className='notice ok';E('analysisMsg').textContent='Corrected temperature rise, water equivalent and uncertainty accepted.';renderAll();save();
+function performMetalAction(){
+  const q=metalCurrent();if(q.done||q.step.type!=='action')return;const c=E('metalActionChoice').value;if(c!==q.step.key){E('metalMsg').className='notice warn';E('metalMsg').textContent='That operation is out of sequence.';return}
+  q.st.step++;q.st.analysis=null;E('metalMsg').className='notice ok';E('metalMsg').textContent=q.step.key==='wait'?'Ten-minute heating period completed. Measure atmospheric pressure for the boiling-point correction.':'Operation completed. Continue with the next step.';renderMetal();renderAnalysis();save();
 }
-function blankChart(){
-  const q=U.canvas(E('tempChart'));q.x.fillStyle='#fff';q.x.fillRect(0,0,q.w,q.h);q.x.fillStyle='#687d90';q.x.font='600 13px system-ui';q.x.textAlign='center';q.x.fillText('Record temperatures to build T(t).',q.w/2,q.h/2);
+function restartMetal(){if((s.metal.step||Object.keys(s.metal.readings).length)&&!confirm('Restart the metal experiment?'))return;s.metal={step:0,readings:{},analysis:null};['studentBoilT','studentMetalC','studentMetalU'].forEach(id=>E(id).value='');E('metalMsg').className='notice';E('metalMsg').textContent='Metal experiment restarted. Begin by weighing the sample.';renderMetal();renderAnalysis();save()}
+function metalExpected(){
+  const r=s.metal.readings;if(['M','P','m','Ti','Tf'].some(k=>r[k]==null))return null;const T0=boilT(r.P),M=r.M/1000,m=r.m/1000,c=m*CP*(r.Tf-r.Ti)/(M*(T0-r.Tf));
+  const res={M:.1,P:.1,m:.1,Ti:.1,Tf:.1};let u=0;
+  for(const key of Object.keys(res)){const rp={...r,[key]:r[key]+res[key]},rm={...r,[key]:r[key]-res[key]},calc=z=>{const bt=boilT(z.P),MM=z.M/1000,mm=z.m/1000;return mm*CP*(z.Tf-z.Ti)/(MM*(bt-z.Tf))};u+=Math.abs(calc(rp)-calc(rm))/2}
+  return{T0,c,u};
 }
-function drawChart(){
-  const rows=Object.keys(s.recordings).map(Number).sort((a,b)=>a-b);if(!rows.length){blankChart();return}
-  const series=[{pts:rows.map(m=>({x:m,y:+s.recordings[m]})),color:'#2baac3'}];
-  if(allTemps()){
-    const e=analysisExpected(),xs=[0,40];series.push({pts:xs.map(x=>({x,y:e.fp.predict(x)})),color:'#9b6ac4'});series.push({pts:xs.map(x=>({x,y:e.fq.predict(x)})),color:'#df8746'});
-  }
-  U.plot(E('tempChart'),series,{xlabel:'time / min',ylabel:'temperature / °C',xmin:0,xmax:40});
+function checkMetal(){
+  const e=metalExpected();if(!e){E('metalAnalysisMsg').className='notice warn';E('metalAnalysisMsg').textContent='Complete the metal experiment first.';return}
+  const T0=+E('studentBoilT').value,c=+E('studentMetalC').value,u=+E('studentMetalU').value;if([T0,c,u].some(v=>!Number.isFinite(v))||c<=0||u<=0){E('metalAnalysisMsg').className='notice warn';E('metalAnalysisMsg').textContent='Enter T₀, c′ and its estimated uncertainty.';return}
+  if(Math.abs(T0-e.T0)>.08){E('metalAnalysisMsg').className='notice warn';E('metalAnalysisMsg').textContent='Recalculate the boiling temperature from atmospheric pressure using the handout correction.';return}
+  if(Math.abs(c-e.c)>Math.max(8,.025*e.c)){E('metalAnalysisMsg').className='notice warn';E('metalAnalysisMsg').textContent='Rearrange Qmetal+Qwater=0 to solve for c′.';return}
+  if(Math.abs(u-e.u)>Math.max(2,.10*e.u)){E('metalAnalysisMsg').className='notice warn';E('metalAnalysisMsg').textContent='Propagate the ±0.1 g, ±0.1 hPa and ±0.1°C direct-reading resolutions through c′.';return}
+  s.metal.analysis={T0,c,u};E('metalAnalysisMsg').className='notice ok';E('metalAnalysisMsg').textContent='Metal specific heat accepted. Compare it with likely material values in your interpretation.';renderMetal();renderAnalysis();save();
 }
+function checkHyp(){const v=+E('studentHypT').value,e=(200*85+150*15)/350;if(!Number.isFinite(v)){E('hypMsg').className='notice warn';E('hypMsg').textContent='Enter the calculated equilibrium temperature.';return}if(Math.abs(v-e)>.11){E('hypMsg').className='notice warn';E('hypMsg').textContent='Apply m₁c(T−T₁)+m₂c(T−T₂)=0.';return}s.hypT=v;E('hypMsg').className='notice ok';E('hypMsg').textContent='Equilibrium-temperature calculation accepted.';renderAnalysis();save()}
 function renderAnalysis(){
-  const a=s.analysis;E('deltaOut').textContent=a?a.delta.toFixed(3)+' K':'—';E('wOut').textContent=a?a.W.toFixed(1)+' g':'—';E('uwOut').textContent=a?a.uW.toFixed(1)+' g':'—';
-  const words=s.sources.trim().length>=55;E('progress').innerHTML='<div class="item '+(allTemps()?'done':'')+'">'+(allTemps()?'✓':'○')+' 41-point temperature record</div><div class="item '+(a?'done':'')+'">'+(a?'✓':'○')+' corrected water-equivalent calculation</div><div class="item '+(words?'done':'')+'">'+(words?'✓':'○')+' error analysis</div>';
+  E('summaryBody').innerHTML=[0,1,2].map(i=>{const a=s.mix[i].analysis;return'<tr><td>'+(i+1)+'</td><td>'+(a?a.Qc.toFixed(0):'—')+'</td><td>'+(a?a.Qh.toFixed(0):'—')+'</td><td>'+(a?a.res.toFixed(1):'—')+'</td></tr>'}).join('');
+  E('hypTOut').textContent=s.hypT!=null?Number(s.hypT).toFixed(1)+'°C':'—';
+  const doneMix=s.mix.filter(q=>q.analysis).length,comments=s.energyComment.trim().length>=60&&s.metalComment.trim().length>=60;E('overallProgress').innerHTML='<div class="item '+(doneMix===3?'done':'')+'">'+(doneMix===3?'✓':'○')+' three water-mixing analyses ('+doneMix+'/3)</div><div class="item '+(s.hypT!=null?'done':'')+'">'+(s.hypT!=null?'✓':'○')+' handout equilibrium-temperature question</div><div class="item '+(s.metal.analysis?'done':'')+'">'+(s.metal.analysis?'✓':'○')+' metal specific heat</div><div class="item '+(comments?'done':'')+'">'+(comments?'✓':'○')+' interpretation of energy residuals and metal result</div>';
 }
-function renderAll(){renderPrep();drawBench();renderClock();renderTable();drawChart();renderAnalysis()}
 function buildReport(){
-  const a=s.analysis,summary='<p><b>Run:</b> '+U.esc(s.run.id)+'. <b>Electrical settings:</b> U='+s.run.U.toFixed(2)+' V, R='+s.run.R.toFixed(2)+' Ω, heating time=600 s.</p><p><b>Water mass:</b> '+(a?a.m.toFixed(1)+' g':'not validated')+'. <b>Corrected rise:</b> '+(a?a.delta.toFixed(3)+' K':'not validated')+'. <b>Water equivalent:</b> '+(a?a.W.toFixed(1)+' ± '+a.uW.toFixed(1)+' g':'not validated')+'.</p><p><b>Thermal-loss/error discussion:</b> '+U.esc(s.sources||'Not completed.')+'</p>';
-  return U.report('Laboratory Practical 3 — Water Equivalent of a Calorimeter',summary);
+  const mix=s.mix.map((q,i)=>q.analysis?'Trial '+(i+1)+': Qcold='+q.analysis.Qc.toFixed(0)+' J, Qhot='+q.analysis.Qh.toFixed(0)+' J, residual='+q.analysis.res.toFixed(1)+'%':'Trial '+(i+1)+': incomplete').join(' · '),m=s.metal.analysis;
+  const summary='<p><b>Run:</b> '+U.esc(s.run.id)+'.</p><p><b>Water mixing:</b> '+mix+'.</p><p><b>Handout equilibrium question:</b> '+(s.hypT!=null?Number(s.hypT).toFixed(1)+'°C':'not completed')+'.</p><p><b>Metal:</b> '+(m?'T₀='+m.T0.toFixed(2)+'°C, c′='+m.c.toFixed(0)+' ± '+m.u.toFixed(0)+' J·kg⁻¹·K⁻¹':'not validated')+'.</p><p><b>Energy-conservation comment:</b> '+U.esc(s.energyComment||'Not completed.')+'</p><p><b>Metal interpretation:</b> '+U.esc(s.metalComment||'Not completed.')+'</p>';
+  return U.report('Laboratory Practical 3 — Calorimetry',summary);
 }
-
-U.tabs();E('sources').value=s.sources;
-E('prepare').onclick=prepare;E('recordTemp').onclick=recordTemp;E('advance').onclick=advance;E('restart').onclick=restart;E('checkAnalysis').onclick=checkAnalysis;
-E('heater').addEventListener('change',drawBench);E('sources').addEventListener('input',e=>{s.sources=e.target.value;renderAnalysis();save()});
-E('buildReport').onclick=buildReport;E('printReport').onclick=()=>{if(buildReport())window.print()};
-if(s.analysis){E('studentPreMid').value=s.analysis.pre20;E('studentPostMid').value=s.analysis.post20;E('studentDelta').value=s.analysis.delta;E('studentWaterMass').value=s.analysis.m;E('studentW').value=s.analysis.W;E('studentUW').value=s.analysis.uW}
-if(!E('reportDate').value)E('reportDate').value=new Date().toISOString().slice(0,10);
-window.addEventListener('resize',()=>{drawBench();drawChart()});renderAll();save();
+function renderAll(){renderMix();renderMetal();renderAnalysis()}
+U.tabs();E('energyComment').value=s.energyComment;E('metalComment').value=s.metalComment;if(s.hypT!=null)E('studentHypT').value=s.hypT;if(s.metal.analysis){E('studentBoilT').value=s.metal.analysis.T0;E('studentMetalC').value=s.metal.analysis.c;E('studentMetalU').value=s.metal.analysis.u}
+E('trialSelect').addEventListener('change',()=>{E('mixStudentReading').value='';renderMix()});E('mixRecord').onclick=recordMix;E('mixPerformAction').onclick=performMixAction;E('mixRestart').onclick=restartMix;E('mixCheck').onclick=checkMix;
+E('metalRecord').onclick=recordMetal;E('metalPerformAction').onclick=performMetalAction;E('metalRestart').onclick=restartMetal;E('checkMetal').onclick=checkMetal;E('checkHypT').onclick=checkHyp;
+E('energyComment').addEventListener('input',e=>{s.energyComment=e.target.value;renderAnalysis();save()});E('metalComment').addEventListener('input',e=>{s.metalComment=e.target.value;renderAnalysis();save()});
+E('buildReport').onclick=buildReport;E('printReport').onclick=()=>{if(buildReport())window.print()};if(!E('reportDate').value)E('reportDate').value=new Date().toISOString().slice(0,10);window.addEventListener('resize',()=>{drawMix();drawMetal()});renderAll();save();
 })();
