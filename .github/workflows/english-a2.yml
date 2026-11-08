@@ -24,5 +24,9 @@ jobs:
           node-version: "22"
       - name: Check assessment syntax
         run: node --check english/assessment.mjs
+      - name: Check application and speaking syntax
+        run: |
+          node --check english/app.js
+          node --check english/speaking.mjs
       - name: Run privacy, schema and evidence-model tests
         run: node --test english/test/*.test.mjs
