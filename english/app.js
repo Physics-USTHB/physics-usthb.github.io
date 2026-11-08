@@ -22,22 +22,22 @@ const QUESTIONS=[
 {id:"A2.demo.math.1",type:"choice",skill:"mathematical English",prompt:"Which label correctly describes the horizontal axis?",options:["Time (s)","Position (s)"],accepted:["Time (s)"],feedback:"Time is on the horizontal axis; seconds (s) is its unit."}
 ];
 const $=id=>document.getElementById(id), allowed=new Set(QUESTIONS.map(q=>q.id));
-let a201=null;
+const authoredUnits=new Map();
 const authoredRoot=document.createElement("section");
 authoredRoot.id="authored-lesson";
 authoredRoot.hidden=true;
 $("lesson").after(authoredRoot);
 function renderAuthored(){
  authoredRoot.replaceChildren();
- if(!a201)return;
+ const current=authoredUnits.get(selected);if(!current)return;
  const label=document.createElement("h3");
- label.textContent="A2.01 — Original readings and formative practice";authoredRoot.append(label);
+ label.textContent=current.id+" — Original readings and formative practice";authoredRoot.append(label);
  const warning=document.createElement("p");warning.className="muted minor";
- warning.textContent="34 draft questions. Correct responses are recorded for practice, not counted as verified proficiency. Listening and pronunciation media are not yet available.";
+ warning.textContent=current.items.length+" draft questions. Correct responses are recorded for practice, not verified proficiency. Listening and pronunciation media are not yet available.";
  authoredRoot.append(warning);
  const sources=document.createElement("section"),sourceTitle=document.createElement("h3");
  sourceTitle.textContent="Reading library";sources.append(sourceTitle);
- for(const source of a201.sources){
+ for(const source of current.sources){
   const details=document.createElement("details");
   details.open=source.id==="R1";
   const summary=document.createElement("summary");
@@ -47,7 +47,7 @@ function renderAuthored(){
  }
  authoredRoot.append(sources);
  let lastSkill="";
- for(const item of a201.items){
+ for(const item of current.items){
   if(item.skill!==lastSkill){
    const group=document.createElement("h3");group.textContent=item.skill[0].toUpperCase()+item.skill.slice(1)+" practice";
    authoredRoot.append(group);lastSkill=item.skill;
@@ -98,16 +98,20 @@ function renderAuthored(){
   authoredRoot.append(form);
  }
 }
-async function loadAuthoredUnit(){
- try{
-  const response=await fetch("./data/a2-01.json",{cache:"no-cache"});
-  if(!response.ok)throw Error("Could not load A2.01 data");
-  const unit=await response.json(),issues=validateUnit(unit);
-  if(issues.length)throw Error("A2.01 data validation failed: "+issues.slice(0,3).join("; "));
-  a201=unit;
-  for(const item of a201.items)allowed.add(item.id);
- }catch(error){
-  a201=null;const note=$("notice");note.textContent="A2.01 draft material could not load: "+error.message;
+async function loadAuthoredUnits(){
+ for(const n of [1,2]){
+  const id="A2."+String(n).padStart(2,"0");
+  try{
+   const response=await fetch("./data/a2-"+String(n).padStart(2,"0")+".json",{cache:"no-cache"});
+   if(!response.ok)throw Error("Could not load "+id+" data");
+   const unit=await response.json(),issues=validateUnit(unit);
+   if(issues.length)throw Error(id+" data validation failed: "+issues.slice(0,3).join("; "));
+   authoredUnits.set(n-1,unit);
+   for(const item of unit.items)allowed.add(item.id);
+  }catch(error){
+   const note=$("notice");
+   note.textContent=(note.textContent?note.textContent+" ":"")+id+" draft unavailable: "+error.message;
+  }
  }
 }
 
@@ -152,11 +156,13 @@ function renderAdaptivePanels(){
   const list=document.createElement("ul");
   for(const [id] of due.slice(0,8)){
    const li=document.createElement("li"),link=document.createElement("a");
-   const isAuthored=id.startsWith("A2.01.");
+   const matched=id.match(/^A2\.(\d{2})\./);
+   const targetIndex=matched?Number(matched[1])-1:11;
+   const isAuthored=matched && authoredUnits.has(targetIndex);
    link.href=isAuthored?"#practice-"+id:"#lesson";
    link.textContent="Review "+id;
-   if((isAuthored&&selected!==0)||(!isAuthored&&selected!==11)){
-    link.addEventListener("click",()=>{selected=isAuthored?0:11;render();});
+   if(selected!==targetIndex){
+    link.addEventListener("click",()=>{selected=targetIndex;render();});
    }
    li.append(link);list.append(li);
   }
@@ -165,9 +171,10 @@ function renderAdaptivePanels(){
  const note=document.createElement("p");note.className="muted minor";
  note.textContent="These are formative practice reminders, not CEFR mastery or certified weakness diagnoses.";
  adaptivePanel.append(note);
- if(a201){
-  const summary=summarizeEvidence(state.attempts,a201.items);
-  const evidenceTitle=document.createElement("h3");evidenceTitle.textContent="A2.01 first-attempt practice evidence";
+ const current=authoredUnits.get(selected);
+ if(current){
+  const summary=summarizeEvidence(state.attempts,current.items);
+  const evidenceTitle=document.createElement("h3");evidenceTitle.textContent=current.id+" first-attempt practice evidence";
   adaptivePanel.append(evidenceTitle);
   const list=document.createElement("ul");
   for(const [skill,e] of Object.entries(summary)){
@@ -176,7 +183,7 @@ function renderAdaptivePanels(){
    list.append(li);
   }
   adaptivePanel.append(list);
-  const signal=weaknessHypothesis(state.attempts,a201.items,"grammar");
+  const signal=weaknessHypothesis(state.attempts,current.items,"grammar");
   const guard=document.createElement("p");guard.className="muted minor";
   guard.textContent="Verified weakness detection is inactive while all source questions are drafts (diagnostic status: "+signal.status+").";
   adaptivePanel.append(guard);
@@ -236,7 +243,7 @@ function renderUnits(){
   const b=document.createElement("button");b.type="button";b.setAttribute("aria-current",String(i===selected));
   b.textContent="A2."+String(i+1).padStart(2,"0")+" — "+title;
   const meta=document.createElement("small");
-  meta.textContent=i===11?"Development sample":"Draft awaiting review";b.append(meta);
+  meta.textContent=authoredUnits.has(i)?"Draft practice enabled":i===11?"Development sample":"Draft awaiting review";b.append(meta);
   b.onclick=()=>{selected=i;render();};target.append(b);
  });
 }
@@ -286,12 +293,13 @@ function render(){
  const [title,description]=UNITS[selected];
  $("unit-title").textContent="A2."+String(selected+1).padStart(2,"0")+" — "+title;
  $("unit-description").textContent=description;
- $("unit-status").textContent=selected===0?(a201?"Draft authoring preview: 34 text questions. All competence claims disabled.":"A2.01 draft material is temporarily unavailable."):
+ const unit=authoredUnits.get(selected);
+ $("unit-status").textContent=unit?"Draft authoring preview: "+unit.items.length+" text questions. All proficiency claims disabled.":
  selected===11?"Limited demo: four text exercises, no automatic CEFR mastery.":
  "This unit has draft authoring material but is not approved or activated in the application.";
  $("lesson").hidden=selected!==11;
- authoredRoot.hidden=selected!==0 || !a201;
- renderUnits();if(selected===11)renderQuestions();if(selected===0 && a201)renderAuthored();renderStats();
+ authoredRoot.hidden=!unit;
+ renderUnits();if(selected===11)renderQuestions();if(unit)renderAuthored();renderStats();
 }
 $("export").onclick=()=>{
  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
@@ -317,5 +325,5 @@ $("clear").onclick=async()=>{
  state={schema:1,attempts:[],reviews:{}};await save();render();
  $("notice").textContent="Local preview progress cleared.";
 };
-async function boot(){await loadAuthoredUnit();await load();}
+async function boot(){await loadAuthoredUnits();await load();}
 boot();
