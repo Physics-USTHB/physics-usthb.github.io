@@ -30,3 +30,21 @@ jobs:
           node --check english/speaking.mjs
       - name: Run privacy, schema and evidence-model tests
         run: node --test english/test/*.test.mjs
+
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install browser test dependencies
+        run: |
+          npm install --no-save playwright@1.65.0
+          npx playwright install --with-deps chromium
+      - name: Start local site server
+        run: |
+          python3 -m http.server 8080 --bind 127.0.0.1 >/tmp/english-a2-http.log 2>&1 &
+      - name: Verify English course, local progress and browser privacy
+        run: node english/browser-test.mjs
