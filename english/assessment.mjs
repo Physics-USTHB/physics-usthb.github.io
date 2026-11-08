@@ -9,6 +9,11 @@ export function normalizeAnswer(value) {
     .replace(/[\u2018\u2019]/g,"'").replace(/\s+/g," ").replace(/[.!?]+$/,"");
 }
 
+export function normalizeCaseSensitive(value){
+  return String(value ?? "").normalize("NFKC").trim()
+    .replace(/[\u2018\u2019]/g,"'").replace(/\s+/g," ").replace(/[.!?]+$/,"");
+}
+
 export function validateUnit(unit) {
   const errors=[];
   if(!unit || unit.schemaVersion!==1 || !/^A2\.\d{2}$/.test(unit.id||"")) return ["Invalid unit identity or schemaVersion"];
@@ -34,8 +39,9 @@ export function validateUnit(unit) {
     if(!Array.isArray(item.accepted)||!item.accepted.length||item.accepted.some(a=>typeof a!=="string"||!a.trim()))errors.push(at+" invalid answers");
     if(typeof item.feedback!=="string"||item.feedback.trim().length<12) errors.push(at+" missing feedback");
     if(item.type==="single_choice") {
-      if(!Array.isArray(item.options)||item.options.length<2||new Set(item.options.map(normalizeAnswer)).size!==item.options.length)errors.push(at+" invalid choices");
-      else if(item.accepted.some(a=>!item.options.some(o=>normalizeAnswer(o)===normalizeAnswer(a))))errors.push(at+" answer absent from choices");
+      const norm=item.caseSensitive===true?normalizeCaseSensitive:normalizeAnswer;
+      if(!Array.isArray(item.options)||item.options.length<2||new Set(item.options.map(norm)).size!==item.options.length)errors.push(at+" invalid choices");
+      else if(item.accepted.some(a=>!item.options.some(o=>norm(o)===norm(a))))errors.push(at+" answer absent from choices");
     }
   }
   return errors;
@@ -43,8 +49,9 @@ export function validateUnit(unit) {
 
 export function gradeItem(item, answer, ctx={}) {
   if(!item || !ITEM_TYPES.includes(item.type) || !Array.isArray(item.accepted)) throw Error("Unscoreable item");
-  const normalized=normalizeAnswer(answer);
-  const correct=item.accepted.some(a=>normalizeAnswer(a)===normalized);
+  const norm=item.caseSensitive===true?normalizeCaseSensitive:normalizeAnswer;
+  const normalized=norm(answer);
+  const correct=item.accepted.some(a=>norm(a)===normalized);
   const independent=(ctx.firstAttempt===true && ctx.hintsUsed===0 && ctx.solutionShown!==true);
   const qualityEligible=independent && item.status==="reviewed" && item.media==="text";
   return {correct,independent,qualityEligible,skill:item.skill,family:item.family,reviewStatus:item.status};
