@@ -7,6 +7,8 @@ const RG = 0.35;
 const RV = 10_000_000;
 const RA = 0.55;
 const STORAGE = 'PhysicsUSTHB_E03_official_v5';
+const V_RANGES=[{cal:1,step:.001,label:'1 V'},{cal:2,step:.001,label:'2 V'},{cal:5,step:.001,label:'5 V'},{cal:10,step:.01,label:'10 V'},{cal:20,step:.01,label:'20 V'}];
+const I_RANGES=[{cal:.01,step:.00001,label:'10 mA'},{cal:.03,step:.00001,label:'30 mA'},{cal:.1,step:.0001,label:'100 mA'},{cal:.3,step:.0001,label:'300 mA'}];
 const REQUIRED = {
   resistor:[1,3,5,7,9,11],
   lamp:[0,1,2,3,4,5,6,7,8,9,10,11],
@@ -26,8 +28,10 @@ const mean = a => a.length ? a.reduce((s,x)=>s+x,0)/a.length : NaN;
 const quantize = (x,step) => Math.round(x/step)*step;
 
 let state = {
-  version:5, mode:'learn', selector:1, task:'resistor', verified:false,
+  version:5, mode:'learn', selector:1, task:'resistor', verified:false, connected:false,
   wiring:{source:'',use:'',ammeter:'',voltmeter:''},
+  meter:{vRange:20,iRange:.3},
+  coreAnalysis:{resistorR:null,lampR:null},
   construction:{series:[],parallel:[]},
   data:{resistor:{},lamp:{},series:{},parallel:{}},
   run:null, advanced:null, assessment:null,
@@ -40,7 +44,7 @@ function gaussian(){
 }
 function newRunObject(){
   return {
-    id:'TP3-'+Math.random().toString(36).slice(2,7).toUpperCase(),
+    id:'E03-'+Math.random().toString(36).slice(2,7).toUpperCase(),
     resistorR:98+Math.random()*5,
     lampR0:11.1+Math.random()*1.5,
     lampAlpha:0.00415+Math.random()*0.00028,
@@ -67,7 +71,7 @@ function load(){
   }catch(_){}
 }
 function collectText(){
-  const ids=['shortJustification','resistorInterpretation','lampInterpretation','seriesJustification','parallelJustification'];
+  const ids=['shortJustification','resistorInterpretation','lampInterpretation','seriesJustification','seriesConfirmation','parallelJustification','parallelConfirmation'];
   const o={}; ids.forEach(id=>{const el=document.getElementById(id);if(el)o[id]=el.value;}); return o;
 }
 function collectReport(){
@@ -128,22 +132,24 @@ function solveCircuit(n,task){
   const v=(lo+hi)/2,branch=branchCurrent(v,task),iv=v/RV;
   return{vth:vt,rth:rth(n),v,branch,iv,im:branch+iv};
 }
+function rangeByCal(ranges,cal){return ranges.find(r=>Math.abs(r.cal-cal)<1e-12)||ranges.at(-1);}
+function appropriateRange(ranges,value){return ranges.find(r=>value<=r.cal+1e-12)||ranges.at(-1);}
+function maxRangesSelected(){return Math.abs(state.meter.vRange-20)<1e-12&&Math.abs(state.meter.iRange-.3)<1e-12;}
 function meterUnc(vm,im){
-  const vLimit=.005*Math.abs(vm)+.02;
-  const iLimit=.008*Math.abs(im)+.0002;
+  const vr=rangeByCal(V_RANGES,state.meter.vRange),ir=rangeByCal(I_RANGES,state.meter.iRange);
+  const vLimit=.005*Math.abs(vm)+vr.step*2;
+  const iLimit=.008*Math.abs(im)+ir.step*2;
   return{uV:vLimit/Math.sqrt(3),uIm:iLimit/Math.sqrt(3)};
 }
 function measure(n,task){
-  const x=solveCircuit(n,task);
-  let vm=x.v*(1+state.run.vScale)+state.run.vZero+gaussian()*(.0012+.0004*x.v);
-  let im=x.im*(1+state.run.iScale)+state.run.iZero+gaussian()*(.000008+.0005*x.im);
-  vm=quantize(Math.max(0,vm),.01); im=quantize(Math.max(0,im),.0001);
+  const x=solveCircuit(n,task),vr=rangeByCal(V_RANGES,state.meter.vRange),ir=rangeByCal(I_RANGES,state.meter.iRange);
+  let vm=x.v*(1+state.run.vScale)+state.run.vZero;
+  let im=x.im*(1+state.run.iScale)+state.run.iZero;
   if(n===0){vm=0;im=0;}
-  const {uV,uIm}=meterUnc(vm,im);
-  const iv=vm/RV, id=Math.max(0,im-iv);
-  const uRV=RV*.01/Math.sqrt(3);
-  const uId=Math.sqrt(uIm*uIm+(uV/RV)**2+(vm*uRV/(RV*RV))**2);
-  return{selector:n,task,vm,im,iv,id,uV,uIm,uId,ts:new Date().toISOString()};
+  const vOver=vm>vr.cal*(1+1e-10),iOver=im>ir.cal*(1+1e-10);
+  vm=quantize(Math.max(0,vm),vr.step);im=quantize(Math.max(0,im),ir.step);
+  const {uV,uIm}=meterUnc(vm,im),iv=vm/RV,id=Math.max(0,im-iv),uRV=RV*.01/Math.sqrt(3),uId=Math.sqrt(uIm*uIm+(uV/RV)**2+(vm*uRV/(RV*RV))**2);
+  return{selector:n,task,vm,im,iv,id,uV,uIm,uId,vOver,iOver,vRange:vr.label,iRange:ir.label,ts:new Date().toISOString()};
 }
 
 function taskComplete(task){return REQUIRED[task].every(n=>state.data[task]?.[n]);}
@@ -217,12 +223,20 @@ function updateTapGraphic(){
   $('#tapLabel').setAttribute('x',x); $('#tapLabel').textContent=`B / ${state.selector}`;
 }
 function updateLiveMeters(){
-  const x=solveCircuit(state.selector,state.task);
-  $('#selectorStatus').textContent=`B → ${state.selector}`;
-  $('#rabReadout').textContent=`${state.selector} Ω`;
-  $('#vabReadout').textContent=`${x.vth.toFixed(2)} V`;
-  $('#vmeter').textContent=`${x.v.toFixed(2)} V`;
-  $('#imeter').textContent=`${(x.im*1000).toFixed(1)} mA`;
+  const x=solveCircuit(state.selector,state.task),m=measure(state.selector,state.task),vr=rangeByCal(V_RANGES,state.meter.vRange),ir=rangeByCal(I_RANGES,state.meter.iRange);
+  $('#selectorStatus').textContent=`B → ${state.selector}`;$('#rabReadout').textContent=`${state.selector} Ω`;$('#vabReadout').textContent=`${x.vth.toFixed(2)} V`;
+  $('#vRangeLabel').textContent=`${vr.label} range`;$('#iRangeLabel').textContent=`${ir.label} range`;
+  if(!state.connected){$('#vmeter').textContent='SOURCE OFF';$('#imeter').textContent='SOURCE OFF';}
+  else{$('#vmeter').textContent=m.vOver?'OVERLOAD':`${m.vm.toFixed(vr.step<.01?3:2)} V`;$('#imeter').textContent=m.iOver?'OVERLOAD':`${(m.im*1000).toFixed(ir.step<.0001?2:1)} mA`;}
+  const range=$('#rangeStatus');
+  if(!state.connected){
+    range.className='range-rule '+(maxRangesSelected()?'ok':'warn');range.textContent=maxRangesSelected()?'Maximum ranges selected — safe for circuit verification and connection.':'Before verification or changing circuit, return both instruments to 20 V and 300 mA.';
+  }else if(m.vOver||m.iOver){
+    range.className='range-rule bad';range.textContent='Instrument overload: increase the affected range before recording.';
+  }else{
+    const vb=appropriateRange(V_RANGES,Math.max(0,x.v)),ib=appropriateRange(I_RANGES,Math.max(0,x.im)),optimal=vb.cal===vr.cal&&ib.cal===ir.cal;
+    range.className='range-rule '+(optimal?'ok':'warn');range.textContent=optimal?'Ranges are well matched to this reading.':`Safe reading. For better resolution, suitable ranges are about ${vb.label} and ${ib.label}.`;
+  }
 }
 
 function e03WiringOK(){const w=state.wiring||{};return w.source==='AC'&&w.use==='AB'&&w.ammeter==='total'&&w.voltmeter==='load'}
@@ -231,17 +245,21 @@ function updateE03Wiring(){
   state.verified=false;const w=state.wiring,el=$('#e03WiringStatus');
   if(!w.source||!w.use||!w.ammeter||!w.voltmeter){el.className='e03-wiring-status';el.textContent='Complete all four wiring choices before verification.';return false;}
   if(w.source==='AB'){el.className='e03-wiring-status bad';el.textContent='DANGEROUS: the official sheet explicitly forbids connecting the generator across A–B of the low-resistance box.';return false;}
-  const ok=e03WiringOK();el.className=ok?'e03-wiring-status ok':'e03-wiring-status bad';el.textContent=ok?'Correct TP3 wiring: generator A–C, utilisation A–B, ammeter reads I_m, voltmeter across the tested dipole/network.':'This connection does not reproduce the official TP3 topology.';return ok;
+  const ok=e03WiringOK();el.className=ok?'e03-wiring-status ok':'e03-wiring-status bad';el.textContent=ok?'Correct Practical 3 wiring: generator A–C, utilisation A–B, ammeter reads I_m, voltmeter across the tested dipole/network.':'This connection does not reproduce the official Practical 3 topology.';return ok;
 }
 
 function updateWiring(){
-  const s=$('#wiringState');
-  s.textContent=state.verified?'Wiring verified':'Wiring not verified';
-  s.classList.toggle('ok',state.verified);
-  $('#recordReading').disabled=!state.verified||!e03WiringOK()||!prereq(state.task)||!REQUIRED[state.task].includes(state.selector);
+  const badge=$('#wiringState'),m=measure(state.selector,state.task);
+  badge.textContent=state.connected?'Source connected':state.verified?'Circuit verified · source off':'Circuit not verified';
+  badge.classList.toggle('ok',state.verified||state.connected);
+  $('#verifyWiring').disabled=state.connected;
+  $('#connectSource').disabled=state.connected||!state.verified||!e03WiringOK()||!prereq(state.task)||!maxRangesSelected();
+  $('#disconnectSource').disabled=!state.connected;
+  $('#recordReading').disabled=!state.connected||!state.verified||!e03WiringOK()||!prereq(state.task)||!REQUIRED[state.task].includes(state.selector)||m.vOver||m.iOver;
+  $('#taskSelect').disabled=state.connected;
 }
 function updateBenchMessage(){
-  const msg=$('#benchMessage');
+  const msg=$('#benchMessage'),m=measure(state.selector,state.task);
   if(!prereq(state.task)){
     msg.className='notice warn protocol-message';
     if(state.task==='lamp')msg.textContent='Complete the six prescribed resistor readings before replacing the resistor by the lamp.';
@@ -250,15 +268,11 @@ function updateBenchMessage(){
     else if(state.task==='parallel')msg.textContent='Construct at least four parallel-addition points graphically before the experimental checks at positions 5 and 9.';
     return;
   }
-  if(!state.verified){
-    msg.className='notice protocol-message'; msg.textContent='Verify the wiring before taking a measurement.'; return;
-  }
-  if(!REQUIRED[state.task].includes(state.selector)){
-    msg.className='notice warn protocol-message'; msg.textContent=`Selector position ${state.selector} is not prescribed for this part of TP3.`; return;
-  }
-  const exists=state.data[state.task]?.[state.selector];
-  msg.className='notice '+(exists?'ok':'');
-  msg.textContent=exists?`A reading is already stored at position ${state.selector}. Recording again will replace it.`:`Ready to record the prescribed reading at selector position ${state.selector}.`;
+  if(!state.verified){msg.className='notice protocol-message';msg.textContent=maxRangesSelected()?'Verify the circuit before connecting the source.':'Return both instruments to their maximum ranges before circuit verification.';return;}
+  if(!state.connected){msg.className='notice protocol-message';msg.textContent='Circuit verified. Keep both instruments on maximum range and connect the source.';return;}
+  if(!REQUIRED[state.task].includes(state.selector)){msg.className='notice warn protocol-message';msg.textContent=`Selector position ${state.selector} is not prescribed for this part of Practical 3.`;return;}
+  if(m.vOver||m.iOver){msg.className='notice bad protocol-message';msg.textContent='A meter is overloaded. Increase its range before recording.';return;}
+  const exists=state.data[state.task]?.[state.selector];msg.className='notice '+(exists?'ok':'');msg.textContent=exists?`A reading is already stored at position ${state.selector}. Recording again will replace it.`:`Read both meters and record the prescribed measurement at selector position ${state.selector}.`;
 }
 function updateHint(){
   if(state.mode!=='learn')return;
@@ -277,30 +291,37 @@ function renderAllBench(){
 }
 
 function verifyWiring(){
+  if(state.connected){updateBenchMessage();return;}
   if(!prereq(state.task)){updateBenchMessage();return;}
+  if(!maxRangesSelected()){$('#benchMessage').className='notice warn protocol-message';$('#benchMessage').textContent='Set the voltmeter to 20 V and ammeter to 300 mA before circuit verification.';return;}
   if(!updateE03Wiring()){updateWiring();updateBenchMessage();return;}
   state.verified=true;updateWiring();updateBenchMessage();save();
 }
+function connectSource(){
+  if(state.connected||!state.verified||!e03WiringOK()||!maxRangesSelected())return;
+  state.connected=true;updateLiveMeters();updateWiring();updateBenchMessage();save();
+}
+function disconnectSource(){
+  if(!state.connected)return;state.connected=false;updateLiveMeters();updateWiring();updateBenchMessage();save();
+}
+function resetWiringUI(){
+  state.wiring={source:'',use:'',ammeter:'',voltmeter:''};['e03SourcePair','e03UsePair','e03AmmeterTopo','e03VoltmeterTopo'].forEach(id=>{const el=$('#'+id);if(el)el.value='';});updateE03Wiring();
+}
 function changeTask(task){
-  state.task=task;state.verified=false;
-  const miss=nextMissing(task);state.selector=miss===undefined?REQUIRED[task][0]:miss;
-  renderAllBench();save();
+  if(state.connected){$('#taskSelect').value=state.task;$('#benchMessage').className='notice warn protocol-message';$('#benchMessage').textContent='Disconnect the source before changing the circuit configuration.';return;}
+  if(!maxRangesSelected()){$('#taskSelect').value=state.task;$('#benchMessage').className='notice warn protocol-message';$('#benchMessage').textContent='Return both instruments to maximum range before changing the circuit.';return;}
+  state.task=task;state.verified=false;resetWiringUI();const miss=nextMissing(task);state.selector=miss===undefined?REQUIRED[task][0]:miss;renderAllBench();save();
 }
 function recordReading(){
-  if(!state.verified||!prereq(state.task)||!REQUIRED[state.task].includes(state.selector))return;
-  state.data[state.task][state.selector]=measure(state.selector,state.task);
-  state.advanced=null; state.assessment=null;
-  state.verified=true;
-  renderEverything();
-  const next=nextMissing(state.task);
-  if(next!==undefined)state.selector=next;
-  renderAllBench();
-  save();
+  if(!state.connected||!state.verified||!prereq(state.task)||!REQUIRED[state.task].includes(state.selector))return;
+  const m=measure(state.selector,state.task);if(m.vOver||m.iOver){updateBenchMessage();return;}
+  state.data[state.task][state.selector]=m;state.advanced=null;state.assessment=null;
+  renderEverything();const next=nextMissing(state.task);if(next!==undefined)state.selector=next;renderAllBench();save();
 }
 function newSpecimen(){
   if(totalReadings()&& !confirm('Start a new specimen? All measurements and analysis for this run will be cleared.'))return;
-  state.run=newRunObject();state.selector=1;state.task='resistor';state.verified=false;state.wiring={source:'',use:'',ammeter:'',voltmeter:''};state.construction={series:[],parallel:[]};
-  state.data={resistor:{},lamp:{},series:{},parallel:{}};state.advanced=null;state.assessment=null;
+  state.run=newRunObject();state.selector=1;state.task='resistor';state.verified=false;state.connected=false;state.wiring={source:'',use:'',ammeter:'',voltmeter:''};state.meter={vRange:20,iRange:.3};state.coreAnalysis={resistorR:null,lampR:null};state.construction={series:[],parallel:[]};
+  state.data={resistor:{},lamp:{},series:{},parallel:{}};state.advanced=null;state.assessment=null;['e03SourcePair','e03UsePair','e03AmmeterTopo','e03VoltmeterTopo'].forEach(id=>{const el=$('#'+id);if(el)el.value='';});$('#e03VRange').value=20;$('#e03IRange').value=.3;$('#studentOfficialR').value='';$('#studentLampR').value='';
   renderEverything();renderAllBench();save();
 }
 function totalReadings(){return Object.values(state.data).reduce((n,o)=>n+Object.keys(o||{}).length,0);}
@@ -348,12 +369,24 @@ function lampAt6(){
   return{current:i,R:6/i};
 }
 function updateInterpretationMetrics(){
-  const f=officialFit();$('#officialR').textContent=f?`${f.m.toFixed(2)} Ω`:'— Ω';$('#officialR2').textContent=f?f.r2.toFixed(5):'—';
-  const l=lampAt6();$('#lampR').textContent=l?`${l.R.toFixed(1)} Ω`:'— Ω';
-  if(l){
-    const diff=100*(l.R-60)/60;
-    $('#lampCompare').textContent=`At 6.0 V, interpolation of your measured characteristic gives I ≈ ${(l.current*1000).toFixed(1)} mA and V/I ≈ ${l.R.toFixed(1)} Ω. This differs from the 60 Ω nominal hot resistance by ${Math.abs(diff).toFixed(1)}%.`;
-  }else $('#lampCompare').textContent='Complete the lamp readings to compare the graph with the 6 V / 0.10 A virtual manufacturer label.';
+  const f=officialFit(),l=lampAt6(),ca=state.coreAnalysis||{};
+  $('#officialR').textContent=ca.resistorR!=null?`${ca.resistorR.toFixed(1)} Ω`:'— Ω';$('#officialR2').textContent=f?f.r2.toFixed(5):'—';
+  $('#lampR').textContent=ca.lampR!=null?`${ca.lampR.toFixed(1)} Ω`:'— Ω';
+  if(ca.lampR!=null){const diff=100*(ca.lampR-60)/60;$('#lampCompare').textContent=`Your accepted graph reading gives a lamp operating resistance of ${ca.lampR.toFixed(1)} Ω near 6 V, ${Math.abs(diff).toFixed(1)}% ${diff>=0?'above':'below'} the 60 Ω nominal hot resistance.`;}
+  else if(l)$('#lampCompare').textContent='The lamp dataset is complete. Read the current near 6 V from the graph, calculate V/I, and submit your value.';
+  else $('#lampCompare').textContent='Complete both characteristics, then read R_x from the resistor slope and the lamp operating resistance near 6 V.';
+}
+function checkOfficialR(){
+  const f=officialFit(),v=+$('#studentOfficialR').value;if(!f){$('#lampCompare').textContent='Complete the resistor characteristic first.';return;}
+  if(!Number.isFinite(v)||v<=0){$('#lampCompare').textContent='Enter the resistance you read from the slope of V_Rx=f(I_m).';return;}
+  if(Math.abs(v-f.m)>Math.max(4,.06*f.m)){$('#lampCompare').textContent='Re-read the resistor slope from the graph: use ΔV/ΔI with current in amperes.';return;}
+  state.coreAnalysis=state.coreAnalysis||{};state.coreAnalysis.resistorR=v;$('#lampCompare').textContent='Resistor graph reading accepted. Now complete/read the lamp characteristic near 6 V.';updateInterpretationMetrics();save();
+}
+function checkLampR(){
+  const l=lampAt6(),v=+$('#studentLampR').value;if(!l){$('#lampCompare').textContent='Complete the lamp characteristic first.';return;}
+  if(!Number.isFinite(v)||v<=0){$('#lampCompare').textContent='Enter V/I near the 6 V operating point from your graph.';return;}
+  if(Math.abs(v-l.R)>Math.max(5,.08*l.R)){$('#lampCompare').textContent='Re-read the lamp current near 6 V and calculate R=V/I.';return;}
+  state.coreAnalysis=state.coreAnalysis||{};state.coreAnalysis.lampR=v;updateInterpretationMetrics();save();
 }
 
 function canvasSetup(c,hFallback=420){
@@ -504,25 +537,26 @@ function tableHtml(task,extra=false){
   return `<table class="core-table"><thead><tr><th>Selector</th><th>V / V</th><th>I_m / mA</th>${extra?'<th>I_D / mA</th>':''}</tr></thead><tbody>${rr.map(d=>`<tr><td>${d.selector}</td><td>${d.vm.toFixed(2)}</td><td>${(d.im*1000).toFixed(1)}</td>${extra?`<td>${(d.id*1000).toFixed(3)}</td>`:''}</tr>`).join('')}</tbody></table>`;
 }
 function buildReport(){
-  drawCore();drawSum();drawResidual();state.report=collectReport();state.text=collectText();const r=state.report,o=officialFit(),lamp=lampAt6(),coreImg=$('#coreChart').toDataURL(),sumImg=$('#sumChart').toDataURL(),resImg=state.advanced?$('#residualChart').toDataURL():null;
+  const emailEl=$('#studentEmail'),email=(emailEl?.value||'').trim();if(!emailEl||!email||!emailEl.checkValidity()){if(emailEl)emailEl.focus();$('#reportPreview').innerHTML='<div class="notice warn"><strong>Email required.</strong> Enter a valid student email before building the report.</div>';return false;}
+  drawCore();drawSum();drawResidual();state.report=collectReport();state.text=collectText();const r=state.report,ca=state.coreAnalysis||{},coreImg=$('#coreChart').toDataURL(),sumImg=$('#sumChart').toDataURL(),resImg=state.advanced?$('#residualChart').toDataURL():null;
   const advanced=state.advanced?`<p>Corrected-current effective-variance fit: R = ${state.advanced.m.toFixed(2)} ± ${state.advanced.sm.toFixed(2)} Ω; intercept = ${state.advanced.b.toFixed(3)} ± ${state.advanced.sb.toFixed(3)} V; reduced χ² = ${state.advanced.redChi.toFixed(2)}.</p>${resImg?`<img src="${resImg}" style="max-width:100%" alt="Advanced-fit residuals">`:''}`:'<p><em>Advanced extension not completed.</em></p>';
-  const html=`<h2>Laboratory Report — E03</h2>
+  const html=`<h2>Laboratory Practical 3 Report — E03</h2>
   <p><strong>Current–Voltage Characteristics of Electrical Dipoles</strong></p>
-  <p><strong>Student:</strong> ${escapeHtml($('#studentName')?.value||'—')} &nbsp; <strong>Group:</strong> ${escapeHtml($('#studentGroup')?.value||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(r.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
-  <h3>Part A — USTHB TP3 core protocol</h3>
+  <p><strong>Student:</strong> ${escapeHtml($('#studentName')?.value||'—')} &nbsp; <strong>Email:</strong> ${escapeHtml(email)} &nbsp; <strong>Group:</strong> ${escapeHtml($('#studentGroup')?.value||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(r.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
+  <h3>Part A — USTHB Practical 3 core protocol</h3>
   <h4>Short-derivation justification</h4><p>${prose(state.text.shortJustification)}</p>
-  <h4>Resistor measurements</h4>${tableHtml('resistor')}<p><strong>Resistance from official V=f(I_m) graph:</strong> ${o?o.m.toFixed(2)+' Ω':'not determined'}.</p>
-  <h4>Lamp measurements</h4>${tableHtml('lamp')}<p><strong>Operating resistance near 6 V:</strong> ${lamp?lamp.R.toFixed(1)+' Ω':'not determined'}; virtual manufacturer label implies 60 Ω.</p>
+  <h4>Resistor measurements</h4>${tableHtml('resistor')}<p><strong>Student resistance from V=f(I_m) graph:</strong> ${ca.resistorR!=null?ca.resistorR.toFixed(1)+' Ω':'not validated'}.</p>
+  <h4>Lamp measurements</h4>${tableHtml('lamp')}<p><strong>Student operating resistance near 6 V:</strong> ${ca.lampR!=null?ca.lampR.toFixed(1)+' Ω':'not validated'}; virtual manufacturer label implies 60 Ω.</p>
   <img src="${coreImg}" style="max-width:100%" alt="Resistor and lamp official characteristic graph">
   <h4>Interpretation</h4><p>${prose(state.text.resistorInterpretation)}</p><p>${prose(state.text.lampInterpretation)}</p>
-  <h4>Series verification</h4>${tableHtml('series')}<p>${prose(state.text.seriesJustification)}</p>
-  <h4>Parallel verification</h4>${tableHtml('parallel')}<p>${prose(state.text.parallelJustification)}</p>
+  <h4>Series verification</h4>${tableHtml('series')}<p>${prose(state.text.seriesJustification)}</p><p><strong>Experimental confirmation:</strong> ${prose(state.text.seriesConfirmation)}</p>
+  <h4>Parallel verification</h4>${tableHtml('parallel')}<p>${prose(state.text.parallelJustification)}</p><p><strong>Experimental confirmation:</strong> ${prose(state.text.parallelConfirmation)}</p>
   <img src="${sumImg}" style="max-width:100%" alt="Series and parallel graphical additions">
   <h3>Part B — Advanced analysis extension</h3>${advanced}
   <h3>Discussion</h3><p>${prose(r.reportDiscussion)}</p><h3>Conclusion</h3><p>${prose(r.reportConclusion)}</p>
   <p><strong>Assessment:</strong> ${state.assessment?state.assessment.score+'/'+state.assessment.total:'not submitted'}.</p>
-  <hr><p class="mini">Part A follows the published USTHB TP3 sequence. Part B is an additional digital extension for uncertainty-aware analysis.</p>`;
-  $('#reportPreview').innerHTML=html;$('#printOnlyPreview').innerHTML=html;save();
+  <hr><p class="mini">Part A follows the published USTHB Practical 3 sequence. Part B is an additional digital extension for uncertainty-aware analysis.</p>`;
+  $('#reportPreview').innerHTML=html;$('#printOnlyPreview').innerHTML=html;save();return true;
 }
 
 function renderEverything(){
@@ -540,15 +574,20 @@ function bindPersistentFields(){
       persistState();
     });
   };
-  ["shortJustification","resistorInterpretation","lampInterpretation","seriesJustification","parallelJustification"].forEach(id=>bind(id,'text'));
+  ["shortJustification","resistorInterpretation","lampInterpretation","seriesJustification","seriesConfirmation","parallelJustification","parallelConfirmation"].forEach(id=>bind(id,'text'));
   ["reportDate","reportDiscussion","reportConclusion"].forEach(id=>bind(id,'report'));
 }
 function init(){
-  load();bindPersistentFields();if(state.report){delete state.report.studentName;delete state.report.studentGroup;persistState()}if(!state.run)state.run=newRunObject();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
-  $('#taskSelect').value=state.task;$('#e03SourcePair').value=state.wiring?.source||'';$('#e03UsePair').value=state.wiring?.use||'';$('#e03AmmeterTopo').value=state.wiring?.ammeter||'';$('#e03VoltmeterTopo').value=state.wiring?.voltmeter||'';updateE03Wiring();
-  $('#taskSelect').addEventListener('change',e=>changeTask(e.target.value));['e03SourcePair','e03UsePair','e03AmmeterTopo','e03VoltmeterTopo'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateE03Wiring();renderAllBench();save();}));
-  $('#verifyWiring').addEventListener('click',verifyWiring);$('#recordReading').addEventListener('click',recordReading);$('#newRun').addEventListener('click',newSpecimen);
-  $('#addSeriesConstruct').addEventListener('click',addSeriesConstruction);$('#addParallelConstruct').addEventListener('click',addParallelConstruction);$('#runAdvancedFit').addEventListener('click',runAdvanced);$('#buildReport').addEventListener('click',buildReport);$('#clearLocalProgress')?.addEventListener('click',()=>{if(confirm('Clear all locally saved progress for this practical on this browser?')){try{localStorage.removeItem(STORAGE);}catch(_){}location.reload();}});$('#printReport').addEventListener('click',()=>{buildReport();window.print();});
+  load();bindPersistentFields();if(state.report){delete state.report.studentName;delete state.report.studentGroup;delete state.report.studentEmail;persistState()}if(!state.run)state.run=newRunObject();
+  state.connected=false;state.verified=false;state.meter=state.meter||{vRange:20,iRange:.3};state.coreAnalysis=state.coreAnalysis||{resistorR:null,lampR:null};restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
+  $('#taskSelect').value=state.task;$('#e03SourcePair').value=state.wiring?.source||'';$('#e03UsePair').value=state.wiring?.use||'';$('#e03AmmeterTopo').value=state.wiring?.ammeter||'';$('#e03VoltmeterTopo').value=state.wiring?.voltmeter||'';$('#e03VRange').value=state.meter.vRange;$('#e03IRange').value=state.meter.iRange;
+  if(state.coreAnalysis.resistorR!=null)$('#studentOfficialR').value=state.coreAnalysis.resistorR;if(state.coreAnalysis.lampR!=null)$('#studentLampR').value=state.coreAnalysis.lampR;
+  updateE03Wiring();state.verified=false;
+  $('#taskSelect').addEventListener('change',e=>changeTask(e.target.value));['e03SourcePair','e03UsePair','e03AmmeterTopo','e03VoltmeterTopo'].forEach(id=>$('#'+id).addEventListener('change',()=>{if(state.connected){$('#e03SourcePair').value=state.wiring.source;$('#e03UsePair').value=state.wiring.use;$('#e03AmmeterTopo').value=state.wiring.ammeter;$('#e03VoltmeterTopo').value=state.wiring.voltmeter;updateBenchMessage();return;}updateE03Wiring();renderAllBench();save();}));
+  $('#e03VRange').addEventListener('change',e=>{state.meter.vRange=+e.target.value;if(!state.connected)state.verified=false;renderAllBench();save();});$('#e03IRange').addEventListener('change',e=>{state.meter.iRange=+e.target.value;if(!state.connected)state.verified=false;renderAllBench();save();});
+  $('#verifyWiring').addEventListener('click',verifyWiring);$('#connectSource').addEventListener('click',connectSource);$('#disconnectSource').addEventListener('click',disconnectSource);$('#recordReading').addEventListener('click',recordReading);$('#newRun').addEventListener('click',newSpecimen);
+  $('#checkOfficialR').addEventListener('click',checkOfficialR);$('#checkLampR').addEventListener('click',checkLampR);
+  $('#addSeriesConstruct').addEventListener('click',addSeriesConstruction);$('#addParallelConstruct').addEventListener('click',addParallelConstruction);$('#runAdvancedFit').addEventListener('click',runAdvanced);$('#buildReport').addEventListener('click',buildReport);$('#clearLocalProgress')?.addEventListener('click',()=>{if(confirm('Clear all locally saved progress for this practical on this browser?')){try{localStorage.removeItem(STORAGE);}catch(_){}location.reload();}});$('#printReport').addEventListener('click',()=>{if(buildReport())window.print();});
   $$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
   restoreAdvanced();restoreAssessment();renderEverything();renderAllBench();
   window.addEventListener('resize',()=>{drawCore();drawSum();drawResidual();});window.addEventListener('beforeunload',save);
