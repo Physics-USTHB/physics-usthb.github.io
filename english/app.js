@@ -1,6 +1,7 @@
 import {validateUnit, gradeItem, nextReview, summarizeEvidence, weaknessHypothesis, shuffledOptions} from "./assessment.mjs";
 import {mountSpeaking} from "./speaking.mjs";
 import {mountWriting, validateWritingCatalog, validateWritingRecords} from "./writing.mjs";
+import {createReadingAloud} from "./read-aloud.mjs";
 // English for Physicists — local-first development preview.
 // All sample exercises are formative and NOT eligible for CEFR/mastery claims.
 const UNITS=[
@@ -33,6 +34,7 @@ $("lesson").after(authoredRoot);
 const recorderMount=document.createElement("div");
 $("lesson").closest(".card").after(recorderMount);
 const speaking=mountSpeaking(recorderMount);
+const readAloud=createReadingAloud();
 const writingMount=document.createElement("div");
 recorderMount.before(writingMount);
 let writingWorkshop=null;
@@ -102,6 +104,7 @@ function renderVirtualGraph(container,unitId){
 }
 
 function renderAuthored(){
+ readAloud.stop();
  authoredRoot.replaceChildren();
  const current=authoredUnits.get(selected);if(!current)return;
  const label=document.createElement("h3");
@@ -131,6 +134,7 @@ function renderAuthored(){
   const summary=document.createElement("summary");
   summary.textContent=source.id+" — "+source.title;details.append(summary);
   for(const paragraph of source.paragraphs){renderReadingContent(details,paragraph,source.title);}
+  readAloud.attach(details,source.paragraphs,source.title);
   sources.append(details);
  }
  authoredRoot.append(sources);
