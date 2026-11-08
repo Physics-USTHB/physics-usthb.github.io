@@ -77,7 +77,7 @@ export function mountWriting(container,{catalog,getRecord,onChange,onSave}){
   picker.style.padding="10px";picker.style.margin="9px 0";
   for(const t of tasks){const option=document.createElement("option");option.value=t.id;option.textContent=t.title;picker.append(option);}
   const task=tasks.find(t=>t.id===lastTask[unitId])||tasks[0];picker.value=task.id;
-  picker.onchange=()=>{lastTask[unitId]=picker.value;renderTask(unitId);};
+  picker.onchange=()=>{if(pending!==null){clearTimer();void onSave();}lastTask[unitId]=picker.value;renderTask(unitId);};
   root.append(label,picker);
   const sub=document.createElement("h3");sub.textContent=task.title;
   const prompt=document.createElement("p");prompt.textContent=task.prompt;
@@ -140,7 +140,7 @@ export function mountWriting(container,{catalog,getRecord,onChange,onSave}){
   root.append(disclaimer);
  }
  return {
-  setUnit(unitId){if(unitId!==currentUnit){clearTimer();renderTask(unitId);}else if(!root.children.length)renderTask(unitId);},
+  setUnit(unitId){if(unitId!==currentUnit){if(pending!==null){clearTimer();void onSave();}renderTask(unitId);}else if(!root.children.length)renderTask(unitId);},
   getTaskIds(){return new Set(Object.values(tasksByUnit).flat().map(t=>t.id));}
  };
 }
