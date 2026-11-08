@@ -1,3 +1,4 @@
+import {validateUnit, gradeItem} from "./assessment.mjs";
 // English for Physicists — local-first development preview.
 // All sample exercises are formative and NOT eligible for CEFR/mastery claims.
 const UNITS=[
@@ -21,8 +22,94 @@ const QUESTIONS=[
 {id:"A2.demo.math.1",type:"choice",skill:"mathematical English",prompt:"Which label correctly describes the horizontal axis?",options:["Time (s)","Position (s)"],accepted:["Time (s)"],feedback:"Time is on the horizontal axis; seconds (s) is its unit."}
 ];
 const $=id=>document.getElementById(id), allowed=new Set(QUESTIONS.map(q=>q.id));
+let a201=null;
+const authoredRoot=document.createElement("section");
+authoredRoot.id="authored-lesson";
+authoredRoot.hidden=true;
+$("lesson").after(authoredRoot);
+function renderAuthored(){
+ authoredRoot.replaceChildren();
+ if(!a201)return;
+ const label=document.createElement("h3");
+ label.textContent="A2.01 — Original readings and formative practice";authoredRoot.append(label);
+ const warning=document.createElement("p");warning.className="muted minor";
+ warning.textContent="34 draft questions. Correct responses are recorded for practice, not counted as verified proficiency. Listening and pronunciation media are not yet available.";
+ authoredRoot.append(warning);
+ const sources=document.createElement("section"),sourceTitle=document.createElement("h3");
+ sourceTitle.textContent="Reading library";sources.append(sourceTitle);
+ for(const source of a201.sources){
+  const details=document.createElement("details");
+  details.open=source.id==="R1";
+  const summary=document.createElement("summary");
+  summary.textContent=source.id+" — "+source.title;details.append(summary);
+  for(const paragraph of source.paragraphs){const p=document.createElement("p");p.textContent=paragraph;details.append(p);}
+  sources.append(details);
+ }
+ authoredRoot.append(sources);
+ let lastSkill="";
+ for(const item of a201.items){
+  if(item.skill!==lastSkill){
+   const group=document.createElement("h3");group.textContent=item.skill[0].toUpperCase()+item.skill.slice(1)+" practice";
+   authoredRoot.append(group);lastSkill=item.skill;
+  }
+  const form=document.createElement("form");
+  const fieldset=document.createElement("fieldset");
+  const legend=document.createElement("legend");
+  legend.textContent=item.prompt;fieldset.append(legend);
+  if(item.sourceId){
+   const source=document.createElement("p");source.className="muted minor";
+   source.textContent="Use source "+item.sourceId+" in the reading library above.";
+   fieldset.append(source);
+  }
+  let input;
+  if(item.type==="short_answer"){
+   input=document.createElement("input");input.type="text";input.maxLength=300;input.required=true;
+   input.setAttribute("aria-label",item.prompt);fieldset.append(input);
+  }else{
+   for(const answer of item.options){
+    const label=document.createElement("label");label.className="option";
+    const radio=document.createElement("input");radio.type="radio";radio.name=item.id;
+    radio.value=answer;radio.required=true;
+    label.append(radio,document.createTextNode(" "+answer));fieldset.append(label);
+   }
+  }
+  const button=document.createElement("button");button.type="submit";button.className="btn";
+  button.textContent="Check answer";
+  const feedback=document.createElement("p");feedback.className="feedback";
+  feedback.setAttribute("role","status");
+  form.append(fieldset,button,feedback);
+  form.onsubmit=async e=>{
+   e.preventDefault();
+   const answer=item.type==="short_answer"?input.value:(form.querySelector("input:checked")?.value||"");
+   if(!answer)return;
+   const first=!state.attempts.some(a=>a.id===item.id);
+   const result=gradeItem(item,answer,{firstAttempt:first,hintsUsed:0,solutionShown:false});
+   state.attempts.push({id:item.id,at:new Date().toISOString(),answer:String(answer).slice(0,300),
+      first,correct:result.correct,independent:result.independent,hintsUsed:0});
+   await save();
+   feedback.textContent=(result.correct?"Correct. ":"Not yet. ")+item.feedback+
+      " Practice feedback only; no CEFR mastery is awarded.";
+   feedback.className="feedback "+(result.correct?"good":"bad");
+   renderStats();
+  };
+  authoredRoot.append(form);
+ }
+}
+async function loadAuthoredUnit(){
+ try{
+  const response=await fetch("./data/a2-01.json",{cache:"no-cache"});
+  if(!response.ok)throw Error("Could not load A2.01 data");
+  const unit=await response.json(),issues=validateUnit(unit);
+  if(issues.length)throw Error("A2.01 data validation failed: "+issues.slice(0,3).join("; "));
+  a201=unit;
+  for(const item of a201.items)allowed.add(item.id);
+ }catch(error){
+  a201=null;const note=$("notice");note.textContent="A2.01 draft material could not load: "+error.message;
+ }
+}
+
 const normalize=s=>String(s).trim().toLowerCase().replace(/\s+/g," ").replace(/[.!?]+$/,"");
-let selected=11, db=null, store="memory", state={schema:1,attempts:[]};
+let selected=0, db=null, store="memory", state={schema:1,attempts:[]};
 
 function validHistory(h){
  return h && h.schema===1 && Array.isArray(h.attempts) && h.attempts.length<=50000 &&
@@ -130,10 +217,12 @@ function render(){
  const [title,description]=UNITS[selected];
  $("unit-title").textContent="A2."+String(selected+1).padStart(2,"0")+" — "+title;
  $("unit-description").textContent=description;
- $("unit-status").textContent=selected===11?"Limited demo: four text exercises, no automatic CEFR mastery.":
+ $("unit-status").textContent=selected===0?(a201?"Draft authoring preview: 34 text questions. All competence claims disabled.":"A2.01 draft material is temporarily unavailable."):
+ selected===11?"Limited demo: four text exercises, no automatic CEFR mastery.":
  "This unit has draft authoring material but is not approved or activated in the application.";
  $("lesson").hidden=selected!==11;
- renderUnits();if(selected===11)renderQuestions();renderStats();
+ authoredRoot.hidden=selected!==0 || !a201;
+ renderUnits();if(selected===11)renderQuestions();if(selected===0 && a201)renderAuthored();renderStats();
 }
 $("export").onclick=()=>{
  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
@@ -159,4 +248,5 @@ $("clear").onclick=async()=>{
  state={schema:1,attempts:[]};await save();render();
  $("notice").textContent="Local preview progress cleared.";
 };
-load();
+async function boot(){await loadAuthoredUnit();await load();}
+boot();
