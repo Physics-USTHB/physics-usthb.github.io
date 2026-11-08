@@ -6,9 +6,11 @@
 
 - Standalone English development entry point; physics practicums and LaTeX Studio untouched.
 - Navigation for all 12 A2 units.
-- **A2.01: 34 unreviewed text-only formative exercises** for basic grammar, vocabulary and reading, supported by four original sources.
-- **A2.02: 34 unreviewed text-only formative exercises** for scientific numbers, grammar, SI units and reading, supported by four original sources.
-- Four additional simulation-based sample questions under A2.12, not a complete capstone.
+- **A2.01–A2.12: 483 unreviewed, formative text-practice items** with four original reading sources per unit (48 total).
+- All twelve units contain original explanatory teaching notes, objectives and pronunciation guidance; original audio recordings are pending.
+- The A2.11 and A2.12 virtual-cart graphs include accompanying accessible numeric data tables.
+- Optional private microphone recording supports speaking self-review without automatic proficiency grading.
+- Four previous demonstration questions remain archived in browser-history compatibility only. A2.12 now provides separate authored text practice; its full capstone rubric and media are pending.
 - Shared versioned JSON schema for active draft units, validated in-browser before activation.
 - First-attempt and retry tracking, with draft items explicitly excluded from verified proficiency evidence.
 - Deterministic constrained-response grading, conservative weakness hypotheses, evidence summaries and local practice scheduling.
@@ -18,13 +20,13 @@
 
 ## Audit scope
 
-The **2,555 A2 candidates** in 12 previous authoring packages are **not fully implemented** in this branch. Only 68 unreviewed text practice questions are integrated (plus 4 demonstrations). A2.03–A2.11 remain authoring-only; A2.12 remains a demonstration.
+The authoring packages contain **2,555 draft A2 candidates**. This beta integrates a curated **483-item draft text-only subset** with 48 short source texts, not the full authoring inventory. Listening/pronunciation audio, productive-skill rubrics and comprehensive summative testing are still pending. No CEFR A2 level-completion claim is made.
 
-The adaptive engine does **not** assign CEFR proficiency, speaking or writing grades, or verified mastery using draft content. It does not intentionally transmit exercise responses to an application server.
+The adaptive engine does **not** assign CEFR proficiency, speaking or writing grades, or verified mastery using draft content. It tracks formative first attempts and review intervals. A separate on-device speaking recorder holds audio in memory for local replay/download only. Exercise responses and recordings are not intentionally sent to an application server.
 
 ## Canonical item schema v1
 
-Each unit contains schemaVersion, id, title, sources and items. Each item has a stable ID, tagged skill, item family, draft/reviewed status, modality, prompt, accepted answers, feedback and optional sourceId. Only single_choice and short_answer are currently rendered. The remaining exercise types must receive tested renderers.
+Each unit contains schemaVersion, id, title, sources and items. Each item has a stable ID, tagged skill, item family, draft/reviewed status, modality, prompt, accepted answers, feedback and optional sourceId. Only single_choice and short_answer are currently rendered. The remaining exercise types require tested renderers and appropriate assessment contracts.
 
 Static answer keys are inspectable, so this is **not a secure high-stakes examination system**.
 
