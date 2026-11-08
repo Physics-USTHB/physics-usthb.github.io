@@ -1,5 +1,5 @@
 // Optional local recording for learner self-review. No network upload, transcript or automatic score.
-export function mountSpeaking(container){
+export function mountSpeaking(container,{onStartRecording=()=>{}}={}){
  if(!container)throw Error("Missing speaking container");
  const root=document.createElement("section");root.className="card";root.style.marginTop="20px";
  const heading=document.createElement("h2");heading.textContent="Speaking practice — private self-review";
@@ -39,6 +39,7 @@ export function mountSpeaking(container){
   if(disposed||mediaRecorder?.state==="recording")return;
   try{
    revoke();chunks=[];discardPending=false;
+   onStartRecording();
    stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
    if(disposed){stopTracks();return;}
    mediaRecorder=new MediaRecorder(stream);
