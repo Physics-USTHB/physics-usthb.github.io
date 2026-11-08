@@ -12,9 +12,9 @@ const VDIV_OPTIONS=[.25,.5,.75,1,1.5,2];
 
 let state={
   version:2,mode:'learn',run:null,task:'knownRC',method:'5',
-  wiring:{circuit:'',probe:'',source:'',ground:'',verified:false},
+  wiring:{circuit:'',probe:'',source:'',ground:'',verified:false,energized:false},
   settings:{frequency:500,sourceAmp:8,timeDiv:5e-5,voltsDiv:1,cursor:0},
-  results:{},fits:{},assessment:null,report:{}
+  knownMethods:{},results:{},calculations:{knownRC:null,unknownR:null,unknownC:null,unknownL:null},fits:{},assessment:null,report:{}
 };
 
 function makeRun(){
@@ -50,7 +50,7 @@ function wiringOK(){
 }
 function updateWiring(){
   state.wiring.circuit=$('#e05CircuitType').value;state.wiring.probe=$('#e05ProbeAcross').value;state.wiring.source=$('#e05SourceWave').value;state.wiring.ground=$('#e05Ground').value;
-  state.wiring.verified=false;
+  state.wiring.verified=false;state.wiring.energized=false;
   const info=taskInfo(),r=requiredWiring(),w=state.wiring,el=$('#e05WiringStatus');
   if(!w.circuit||!w.probe||!w.source||!w.ground){el.className='transient-wiring-status';el.textContent='Complete the four circuit choices, then verify the circuit.';return false;}
   if(w.ground==='middle'){el.className='transient-wiring-status bad';el.textContent='Incorrect oscilloscope common: use the circuit return / generator common. Grounding the intermediate node changes the intended circuit.';return false;}
@@ -59,9 +59,22 @@ function updateWiring(){
   if(w.probe!==r.probe){el.className='transient-wiring-status bad';el.textContent=info.kind==='RC'?'For the RC transient, observe V_C(t) across the capacitor.':'For the RL transient, observe V_R(t), which is proportional to the circuit current.';return false;}
   el.className='transient-wiring-status ok';el.textContent=info.kind==='RC'?'Correct RC circuit: square-step source, R and C in series, oscilloscope across C, common at return.':'Correct RL circuit: square-step source, R and coil in series, oscilloscope across R, common at return.';return true;
 }
+function sourceControls(){
+  const on=!!state.wiring.energized,valid=!!state.wiring.verified&&wiringOK();
+  $('#e05ConnectSource').disabled=on||!valid;$('#e05DisconnectSource').disabled=!on;$('#e05VerifyWiring').disabled=on;$('#taskSelect').disabled=on;
+  ['e05CircuitType','e05ProbeAcross','e05SourceWave','e05Ground'].forEach(id=>{$('#'+id).disabled=on;});
+}
 function verifyWiring(){
+  if(state.wiring.energized)return;
   if(!updateWiring())return;
-  state.wiring.verified=true;$('#e05WiringStatus').className='transient-wiring-status ok';$('#e05WiringStatus').textContent='Circuit verified. The generator may now be energised and the transient measured.';syncUI();save();
+  state.wiring.verified=true;state.wiring.energized=false;$('#e05WiringStatus').className='transient-wiring-status ok';$('#e05WiringStatus').textContent='Circuit verified. Connect the source only after this check.';syncUI();save();
+}
+function connectSource(){
+  if(!state.wiring.verified||!wiringOK()){$('#benchMessage').className='notice warn';$('#benchMessage').textContent='Verify the correct circuit before connecting the source.';return;}
+  state.wiring.energized=true;$('#e05WiringStatus').className='transient-wiring-status ok';$('#e05WiringStatus').textContent='Circuit verified · source connected.';syncUI();save();
+}
+function disconnectSource(){
+  if(!state.wiring.energized)return;state.wiring.energized=false;$('#e05WiringStatus').className='transient-wiring-status ok';$('#e05WiringStatus').textContent='Circuit verified · source disconnected.';syncUI();save();
 }
 
 function taskInfo(task=state.task){
@@ -76,12 +89,14 @@ function fmtTime(t){if(t>=1)return`${t.toFixed(2)} s`;if(t>=1e-3)return`${(t*1e3
 function fmtCap(c){return`${(c*1e6).toFixed(3)} µF`}
 function fmtInd(l){return`${(l*1e3).toFixed(1)} mH`}
 
+function taskComplete(task){
+  if(task==='knownRC')return !!state.knownMethods?.['4']&&!!state.knownMethods?.['5']&&!!state.calculations?.knownRC;
+  return !!state.results?.[task]&&!!state.calculations?.[task];
+}
 function progress(){
-  const items=[
-    ['4.1','Known R,C','knownRC'],['4.2','Unknown R','unknownR'],['4.3','Unknown C','unknownC'],['4.4','Unknown L','unknownL']
-  ];
-  const active=items.findIndex(x=>!state.results[x[2]]);
-  $('#progressBoard').innerHTML=items.map((x,i)=>`<div class="transient-step ${state.results[x[2]]?'done':''} ${i===active?'active':''}"><b>${x[0]}</b><strong>${x[1]}</strong><small>${state.results[x[2]]?'Complete':'τ pending'}</small></div>`).join('');
+  const items=[['4.1','Known R,C','knownRC'],['4.2','Unknown R','unknownR'],['4.3','Unknown C','unknownC'],['4.4','Unknown L','unknownL']];
+  const active=items.findIndex(x=>!taskComplete(x[2]));
+  $('#progressBoard').innerHTML=items.map((x,i)=>{const done=taskComplete(x[2]);let status='τ pending';if(x[2]==='knownRC'){const n=(state.knownMethods?.['4']?1:0)+(state.knownMethods?.['5']?1:0);status=n<2?`${n}/2 methods`:'calculation pending';}else if(state.results?.[x[2]])status='calculation pending';return `<div class="transient-step ${done?'done':''} ${i===active?'active':''}"><b>${x[0]}</b><strong>${x[1]}</strong><small>${done?'Complete':status}</small></div>`;}).join('');
 }
 
 function periodicParams(info=taskInfo()){
@@ -120,6 +135,7 @@ function grid(ctx,w,h){
 function draw(){
   const c=$('#transientCanvas');if(!c)return;const{ctx,w,h}=setupCanvas(c),g=grid(ctx,w,h),info=taskInfo(),td=state.settings.timeDiv,vd=state.settings.voltsDiv,screenT=10*td,p=periodicParams(info);
   if(!state.wiring.verified||!wiringOK()){ctx.fillStyle='#ffb4c1';ctx.font='700 16px system-ui';ctx.textAlign='center';ctx.fillText('Verify the correct RC/RL circuit before energising the source',w/2,h/2);$('#timeDivLabel').textContent=`${fmtTime(td)}/div`;$('#voltsDivLabel').textContent=`${vd} V/div`;$('#methodLabel').textContent=state.method==='5'?'5-square method':'4-square method';return;}
+  if(!state.wiring.energized){ctx.fillStyle='#9fc4d9';ctx.font='700 16px system-ui';ctx.textAlign='center';ctx.fillText('Circuit verified · source disconnected',w/2,h/2);$('#timeDivLabel').textContent=`${fmtTime(td)}/div`;$('#voltsDivLabel').textContent=`${vd} V/div`;$('#methodLabel').textContent=state.method==='5'?'5-square method':'4-square method';return;}
   const src=[],sig=[];for(let k=0;k<=1000;k++){const t=screenT*k/1000,phase=((t%p.T)+p.T)%p.T,s=phase<p.h?state.settings.sourceAmp:0,y=responseAt(t,info);src.push({x:g.l+g.gw*k/1000,y:g.cy-s/vd*g.ydiv});sig.push({x:g.l+g.gw*k/1000,y:g.cy-y/vd*g.ydiv})}
   const path=(pts,color,width,alpha)=>{ctx.save();ctx.strokeStyle=color;ctx.lineWidth=width;ctx.globalAlpha=alpha;ctx.beginPath();pts.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));ctx.stroke();ctx.restore()};
   path(src,'#6ca8ff',1.2,.45);path(sig,'#7dffc2',2.4,.95);
@@ -133,7 +149,7 @@ function syncUI(){
   $('#sourceAmpLabel').textContent=`${state.settings.sourceAmp.toFixed(1)} V`;const info=taskInfo(),p=periodicParams(info);
   $('#taskCode').textContent=info.code;$('#taskTitle').textContent=info.title;$('#taskHint').textContent=info.hint;
   $('#compR').textContent=info.unknown==='R'?'Rₓ unknown':`${info.R.toFixed(0)} Ω`;$('#compC').textContent=info.kind==='RL'?'—':info.unknown==='C'?'Cₓ unknown':fmtCap(info.C);$('#compL').textContent=info.kind==='RL'?`Lₓ unknown / Rb=${info.Rb} Ω`:'—';
-  const h=p.h;$('#cursorTime').max=h;$('#cursorTime').step=Math.max(h/2000,1e-7);state.settings.cursor=clamp(state.settings.cursor,0,h);$('#cursorTime').value=state.settings.cursor;updateCursor();updateQuality();draw()
+  const h=p.h;$('#cursorTime').max=h;$('#cursorTime').step=Math.max(h/2000,1e-7);state.settings.cursor=clamp(state.settings.cursor,0,h);$('#cursorTime').value=state.settings.cursor;sourceControls();updateCursor();updateQuality();draw()
 }
 function updateCursor(){
   const info=taskInfo(),p=periodicParams(info),t=state.settings.cursor,y=responseCharge(t,info),target=methodFrac()*p.fin,err=(y-target)/state.settings.voltsDiv;
@@ -144,11 +160,11 @@ function updateQuality(){
   set('#qualityComplete',q.complete,q.complete?'complete':`${q.halfTau.toFixed(1)} τ/half`,q.halfTau>=3);
   set('#qualityHorizontal',q.horizontal,`${q.tauDiv.toFixed(2)} div/τ`,q.tauDiv>=.4&&q.tauDiv<=6);
   set('#qualityVertical',q.vertical,`${q.ampDiv.toFixed(2)} div (target ${q.target})`,Math.abs(q.ampDiv-q.target)<1);
-  const good=state.wiring.verified&&wiringOK()&&q.complete&&q.horizontal&&q.vertical;$('#benchState').textContent=!state.wiring.verified?'Verify circuit':good?'Display ready':'Adjust settings';$('#benchState').classList.toggle('ok',good);
+  const good=state.wiring.verified&&state.wiring.energized&&wiringOK()&&q.complete&&q.horizontal&&q.vertical;$('#benchState').textContent=!state.wiring.verified?'Verify circuit':!state.wiring.energized?'Source off':good?'Display ready':'Adjust settings';$('#benchState').classList.toggle('ok',good);
   if(state.mode==='learn'){
-    const hints=[];if(!state.wiring.verified||!wiringOK())hints.push('build and verify the correct circuit first');if(!q.complete)hints.push('lower the generator frequency so T/2 ≥ 5τ');if(!q.horizontal)hints.push(q.tauDiv<.7?'use a faster TIME/DIV so τ spans more divisions':'use a slower TIME/DIV so τ fits comfortably');if(!q.vertical)hints.push(`adjust source level or VOLTS/DIV so the final response spans ${q.target} divisions`);
-    $('#benchMessage').className=good?'notice ok':'notice '+(hints.length>1?'warn':'');$('#benchMessage').textContent=good?'The display meets the handout criteria. Move the cursor to the target level and record τ.':`Improve the display: ${hints.join('; ')}.`;
-  }else{$('#benchMessage').className=good?'notice ok':'notice';$('#benchMessage').textContent=good?'Display conditions acceptable.':'Display conditions not yet acceptable.'}
+    const hints=[];if(!state.wiring.verified||!wiringOK())hints.push('build and verify the correct circuit first');else if(!state.wiring.energized)hints.push('connect the source after verification');if(!q.complete)hints.push('lower the generator frequency so T/2 ≥ 5τ');if(!q.horizontal)hints.push(q.tauDiv<.7?'use a faster TIME/DIV so τ spans more divisions':'use a slower TIME/DIV so τ fits comfortably');if(!q.vertical)hints.push(`adjust source level or VOLTS/DIV so the final response spans ${q.target} divisions`);
+    $('#benchMessage').className=good?'notice ok':'notice '+(hints.length>1?'warn':'');$('#benchMessage').textContent=good?'The display meets the handout criteria. Move the cursor to the target level and record τ.':`Improve the setup: ${hints.join('; ')}.`;
+  }else{$('#benchMessage').className=good?'notice ok':'notice';$('#benchMessage').textContent=good?'Display conditions acceptable.':!state.wiring.energized&&state.wiring.verified?'Source is disconnected.':'Display conditions not yet acceptable.'}
 }
 function recommended(){
   const info=taskInfo(),tau=trueTau(info),target=targetDivMax();
@@ -159,30 +175,61 @@ function recommended(){
   state.settings.voltsDiv=chosen.vd;state.settings.sourceAmp=Math.round(chosen.E*10)/10;state.settings.cursor=Math.min(periodicParams(info).h*.12,tau*.3);syncUI();save()
 }
 function recordTau(){
-  if(!state.wiring.verified||!wiringOK()){$('#benchMessage').className='notice warn';$('#benchMessage').textContent='Verify the correct USTHB circuit and oscilloscope connection before measuring τ.';return}
+  if(!state.wiring.verified||!wiringOK()||!state.wiring.energized){$('#benchMessage').className='notice warn';$('#benchMessage').textContent='Verify the correct circuit and explicitly connect the source before measuring τ.';return;}
   const q=quality(),info=taskInfo(),p=periodicParams(info),target=methodFrac()*p.fin,y=responseCharge(state.settings.cursor,info),errDiv=Math.abs(y-target)/state.settings.voltsDiv;
-  if(!(q.complete&&q.horizontal&&q.vertical)){$('#benchMessage').className='notice warn';$('#benchMessage').textContent='The handout measurement conditions are not yet satisfied.';return}
-  if(errDiv>.10){$('#benchMessage').className='notice warn';$('#benchMessage').textContent=`Move the time cursor closer to the target level. Current error: ${errDiv.toFixed(2)} division.`;return}
-  const tau=state.settings.cursor,rec={tau,method:state.method,frequency:state.settings.frequency,sourceAmp:state.settings.sourceAmp,timeDiv:state.settings.timeDiv,voltsDiv:state.settings.voltsDiv,trueTau:p.tau};
-  if(state.task==='knownRC'){rec.theory=(info.R+RG)*info.C;rec.derived=null}
-  if(state.task==='unknownR')rec.derived=tau/info.C-RG;
-  if(state.task==='unknownC')rec.derived=tau/(info.R+RG);
-  if(state.task==='unknownL')rec.derived=tau*(info.R+RG+info.Rb);
-  state.results[state.task]=rec;delete state.fits[state.task];$('#benchMessage').className='notice ok';$('#benchMessage').textContent=`τ recorded: ${fmtTime(tau)}. Result stored for ${info.code}.`;renderResults();progress();drawSummary();save()
+  if(!(q.complete&&q.horizontal&&q.vertical)){$('#benchMessage').className='notice warn';$('#benchMessage').textContent='The handout measurement conditions are not yet satisfied.';return;}
+  if(errDiv>.10){$('#benchMessage').className='notice warn';$('#benchMessage').textContent=`Move the time cursor closer to the graphical target level. Current error: ${errDiv.toFixed(2)} division.`;return;}
+  const tau=state.settings.cursor,rec={tau,method:state.method,frequency:state.settings.frequency,sourceAmp:state.settings.sourceAmp,timeDiv:state.settings.timeDiv,voltsDiv:state.settings.voltsDiv};
+  if(state.task==='knownRC'){
+    state.knownMethods=state.knownMethods||{};state.knownMethods[state.method]=rec;state.results.knownRC=state.knownMethods['5']||rec;state.calculations.knownRC=null;
+    $('#benchMessage').className='notice ok';$('#benchMessage').textContent=state.knownMethods['4']&&state.knownMethods['5']?'Both graphical methods are recorded. Calculate the theoretical τ and both percentage differences in Results.':`${state.method==='5'?'5-square':'4-square'} τ recorded. Repeat the same known circuit with the other graphical method.`;
+  }else{
+    state.results[state.task]=rec;state.calculations[state.task]=null;$('#benchMessage').className='notice ok';$('#benchMessage').textContent=`τ recorded: ${fmtTime(tau)}. Calculate the requested unknown in Results.`;
+  }
+  delete state.fits[state.task];renderResults();progress();drawSummary();save();
+}
+function allowedTask(task){
+  if(task==='knownRC')return true;if(task==='unknownR')return taskComplete('knownRC');if(task==='unknownC')return taskComplete('unknownR');return taskComplete('unknownC');
 }
 function taskChanged(){
-  state.task=$('#taskSelect').value;state.settings.cursor=0;state.wiring={circuit:'',probe:'',source:'',ground:'',verified:false};$('#e05CircuitType').value='';$('#e05ProbeAcross').value='';$('#e05SourceWave').value='';$('#e05Ground').value='';updateWiring();recommended()
+  const next=$('#taskSelect').value;
+  if(state.wiring.energized){$('#taskSelect').value=state.task;$('#benchMessage').className='notice warn';$('#benchMessage').textContent='Disconnect the source before changing the circuit.';return;}
+  if(!allowedTask(next)){$('#taskSelect').value=state.task;$('#benchMessage').className='notice warn';$('#benchMessage').textContent='Complete the preceding practical step, including its calculation, before moving on.';return;}
+  state.task=next;state.settings.cursor=0;state.wiring={circuit:'',probe:'',source:'',ground:'',verified:false,energized:false};$('#e05CircuitType').value='';$('#e05ProbeAcross').value='';$('#e05SourceWave').value='';$('#e05Ground').value='';updateWiring();syncUI();save();
 }
 
 function renderResults(){
-  const k=state.results.knownRC,r=state.results.unknownR,c=state.results.unknownC,l=state.results.unknownL;
-  $('#knownTau').textContent=k?fmtTime(k.tau):'—';$('#knownTheory').textContent=fmtTime((50+RG)*.5e-6);$('#knownError').textContent=k?`${(100*(k.tau-k.theory)/k.theory).toFixed(1)}%`:'—';$('#knownMethod').textContent=k?(k.method==='5'?'5-square':'4-square'):'—';
-  $('#rTau').textContent=r?fmtTime(r.tau):'—';$('#rDerived').textContent=r?`${r.derived.toFixed(0)} Ω`:'— Ω';$('#rMethod').textContent=r?(r.method==='5'?'5-square':'4-square'):'—';
-  $('#cTau').textContent=c?fmtTime(c.tau):'—';$('#cDerived').textContent=c?fmtCap(c.derived):'— µF';$('#cMethod').textContent=c?(c.method==='5'?'5-square':'4-square'):'—';
-  $('#lTau').textContent=l?fmtTime(l.tau):'—';$('#lDerived').textContent=l?fmtInd(l.derived):'— mH';$('#lMethod').textContent=l?(l.method==='5'?'5-square':'4-square'):'—';
+  const km=state.knownMethods||{},kc=state.calculations?.knownRC,r=state.results.unknownR,rc=state.calculations?.unknownR,c=state.results.unknownC,cc=state.calculations?.unknownC,l=state.results.unknownL,lc=state.calculations?.unknownL;
+  $('#knownTau4').textContent=km['4']?fmtTime(km['4'].tau):'—';$('#knownTau5').textContent=km['5']?fmtTime(km['5'].tau):'—';$('#knownTheory').textContent=kc?fmtTime(kc.theory):'—';$('#knownMethod').textContent=taskComplete('knownRC')?'validated':'both required';
+  $('#rTau').textContent=r?fmtTime(r.tau):'—';$('#rDerived').textContent=rc?`${rc.value.toFixed(0)} Ω`:'— Ω';$('#rMethod').textContent=r?(r.method==='5'?'5-square':'4-square'):'—';
+  $('#cTau').textContent=c?fmtTime(c.tau):'—';$('#cDerived').textContent=cc?`${cc.value.toFixed(3)} µF`:'— µF';$('#cMethod').textContent=c?(c.method==='5'?'5-square':'4-square'):'—';
+  $('#lTau').textContent=l?fmtTime(l.tau):'—';$('#lDerived').textContent=lc?`${lc.value.toFixed(1)} mH`:'— mH';$('#lMethod').textContent=l?(l.method==='5'?'5-square':'4-square'):'—';
+}
+function checkKnownCalc(){
+  const a=state.knownMethods?.['4'],b=state.knownMethods?.['5'];if(!a||!b){$('#knownCalcMessage').className='notice warn';$('#knownCalcMessage').textContent='Record both 4-square and 5-square measurements first.';return;}
+  const theoryUs=+$('#studentKnownTheory').value,e4=+$('#studentKnownError4').value,e5=+$('#studentKnownError5').value,theory=(50+RG)*.5e-6,expected4=100*(a.tau-theory)/theory,expected5=100*(b.tau-theory)/theory;
+  if(!Number.isFinite(theoryUs)||!Number.isFinite(e4)||!Number.isFinite(e5)||theoryUs<=0){$('#knownCalcMessage').className='notice warn';$('#knownCalcMessage').textContent='Enter the theoretical τ and both signed percentage differences.';return;}
+  if(Math.abs(theoryUs-theory*1e6)>.5){$('#knownCalcMessage').className='notice warn';$('#knownCalcMessage').textContent='Recalculate τ_theory=(R+r_g)C, using R=50 Ω, r_g=50 Ω and C=0.50 µF.';return;}
+  if(Math.abs(e4-expected4)>.7||Math.abs(e5-expected5)>.7){$('#knownCalcMessage').className='notice warn';$('#knownCalcMessage').textContent='Recalculate each signed percentage difference: 100(τ_measured−τ_theory)/τ_theory.';return;}
+  state.calculations.knownRC={theory,error4:e4,error5:e5};$('#knownCalcMessage').className='notice ok';$('#knownCalcMessage').textContent='Known-RC validation accepted. The two measurements also expose the expected graphical-method bias.';renderResults();progress();save();
+}
+function checkRCalc(){
+  const r=state.results.unknownR;if(!r){$('#rCalcMessage').className='notice warn';$('#rCalcMessage').textContent='Measure τ for the unknown-resistance circuit first.';return;}const v=+$('#studentRx').value,expected=r.tau/.5e-6-RG;
+  if(!Number.isFinite(v)||v<=0){$('#rCalcMessage').className='notice warn';$('#rCalcMessage').textContent='Enter your calculated R_x.';return;}if(Math.abs(v-expected)>Math.max(3,.025*Math.abs(expected))){$('#rCalcMessage').className='notice warn';$('#rCalcMessage').textContent='Recalculate R_x=τ/C−r_g using your measured τ.';return;}
+  state.calculations.unknownR={value:v};$('#rCalcMessage').className='notice ok';$('#rCalcMessage').textContent='Unknown resistance calculation accepted.';renderResults();progress();save();
+}
+function checkCCalc(){
+  const r=state.results.unknownC;if(!r){$('#cCalcMessage').className='notice warn';$('#cCalcMessage').textContent='Measure τ for the unknown-capacitance circuit first.';return;}const v=+$('#studentCx').value,expected=r.tau/(150+RG)*1e6;
+  if(!Number.isFinite(v)||v<=0){$('#cCalcMessage').className='notice warn';$('#cCalcMessage').textContent='Enter your calculated C_x in µF.';return;}if(Math.abs(v-expected)>Math.max(.005,.025*Math.abs(expected))){$('#cCalcMessage').className='notice warn';$('#cCalcMessage').textContent='Recalculate C_x=τ/(R+r_g) and convert the result to µF.';return;}
+  state.calculations.unknownC={value:v};$('#cCalcMessage').className='notice ok';$('#cCalcMessage').textContent='Unknown capacitance calculation accepted.';renderResults();progress();save();
+}
+function checkLCalc(){
+  const r=state.results.unknownL;if(!r){$('#lCalcMessage').className='notice warn';$('#lCalcMessage').textContent='Measure τ for the unknown-inductance circuit first.';return;}const v=+$('#studentLx').value,expected=r.tau*(150+RG+RB)*1e3;
+  if(!Number.isFinite(v)||v<=0){$('#lCalcMessage').className='notice warn';$('#lCalcMessage').textContent='Enter your calculated L_x in mH.';return;}if(Math.abs(v-expected)>Math.max(.5,.025*Math.abs(expected))){$('#lCalcMessage').className='notice warn';$('#lCalcMessage').textContent='Recalculate L_x=τ(R+r_g+R_b) and convert the result to mH.';return;}
+  state.calculations.unknownL={value:v};$('#lCalcMessage').className='notice ok';$('#lCalcMessage').textContent='Unknown inductance calculation accepted.';renderResults();progress();save();
 }
 function fitCurrent(){
-  const rec=state.results[state.task];if(!rec){$('#fitMessage').className='notice warn';$('#fitMessage').textContent='Complete the selected task first.';return}
+  const rec=state.results[state.task];if(!rec||!taskComplete(state.task)){$('#fitMessage').className='notice warn';$('#fitMessage').textContent='Complete the selected core measurement and calculation first.';return}
   const info=taskInfo(),p=periodicParams(info),n=45,x=[],z=[];const y0=p.ymin,fin=p.fin;
   for(let i=1;i<=n;i++){const t=Math.min(4*p.tau,p.h*.85)*i/n;let y=fin-(fin-y0)*Math.exp(-t/p.tau);y+=fin*.0018*Math.sin(i*2.17+state.run.scopeBias*100);const ratio=(fin-y)/(fin-y0);if(ratio>.015){x.push(t);z.push(Math.log(ratio));}}
   const mx=x.reduce((a,b)=>a+b,0)/x.length,mz=z.reduce((a,b)=>a+b,0)/z.length;let num=0,den=0;for(let i=0;i<x.length;i++){num+=(x[i]-mx)*(z[i]-mz);den+=(x[i]-mx)**2}const slope=num/den,tau=-1/slope;const pred=x.map(t=>mz+slope*(t-mx)),ssr=z.reduce((a,v,i)=>a+(v-pred[i])**2,0),sst=z.reduce((a,v)=>a+(v-mz)**2,0),r2=1-ssr/sst;
@@ -203,23 +250,24 @@ function restoreAssessment(){if(!state.assessment)return;$('#quizResult').classN
 function escapeHtml(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function prose(s){return escapeHtml(s||'').replace(/\n/g,'<br>')||'<em>Not completed.</em>'}
 function resultText(task){
-  const r=state.results[task];if(!r)return'Not completed.';
-  if(task==='knownRC')return`τ=${fmtTime(r.tau)}; theory=${fmtTime(r.theory)}; difference=${(100*(r.tau-r.theory)/r.theory).toFixed(1)}%; ${r.method==='5'?'5-square':'4-square'} method.`;
-  if(task==='unknownR')return`τ=${fmtTime(r.tau)}; R_x=${r.derived.toFixed(0)} Ω.`;
-  if(task==='unknownC')return`τ=${fmtTime(r.tau)}; C_x=${fmtCap(r.derived)}.`;
-  return`τ=${fmtTime(r.tau)}; L_x=${fmtInd(r.derived)}.`;
+  if(task==='knownRC'){const a=state.knownMethods?.['4'],b=state.knownMethods?.['5'],c=state.calculations?.knownRC;if(!a||!b||!c)return'Not completed.';return`4-square τ=${fmtTime(a.tau)} (${c.error4.toFixed(1)}%); 5-square τ=${fmtTime(b.tau)} (${c.error5.toFixed(1)}%); theoretical τ=${fmtTime(c.theory)}.`;}
+  const r=state.results[task],c=state.calculations?.[task];if(!r||!c)return'Not completed.';
+  if(task==='unknownR')return`τ=${fmtTime(r.tau)}; student R_x=${c.value.toFixed(0)} Ω.`;
+  if(task==='unknownC')return`τ=${fmtTime(r.tau)}; student C_x=${c.value.toFixed(3)} µF.`;
+  return`τ=${fmtTime(r.tau)}; student L_x=${c.value.toFixed(1)} mH.`;
 }
 function buildReport(){
+  const emailEl=$('#studentEmail'),email=(emailEl?.value||'').trim();if(!emailEl||!email||!emailEl.checkValidity()){if(emailEl)emailEl.focus();$('#reportPreview').innerHTML='<div class="notice warn"><strong>Email required.</strong> Enter a valid student email before building the report.</div>';return false;}
   draw();drawSummary();state.report=collectReport();const wave=$('#transientCanvas').toDataURL(),sum=$('#summaryChart').toDataURL();
-  const html=`<h2>Laboratory Report — E05</h2><p><strong>RC & RL Circuits in the Transient Regime</strong></p><p><strong>Student:</strong> ${escapeHtml($('#studentName')?.value||'—')} &nbsp; <strong>Group:</strong> ${escapeHtml($('#studentGroup')?.value||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(state.report.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
+  const html=`<h2>Laboratory Practical 5 Report — E05</h2><p><strong>RC & RL Circuits in the Transient Regime</strong></p><p><strong>Student:</strong> ${escapeHtml($('#studentName')?.value||'—')} &nbsp; <strong>Email:</strong> ${escapeHtml(email)} &nbsp; <strong>Group:</strong> ${escapeHtml($('#studentGroup')?.value||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(state.report.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
   <h3>4.1 — Known R, known C</h3><p>${resultText('knownRC')}</p><h3>4.2 — Unknown resistance</h3><p>${resultText('unknownR')}</p><h3>4.3 — Unknown capacitance</h3><p>${resultText('unknownC')}</p><h3>4.4 — Unknown inductance</h3><p>${resultText('unknownL')}</p>
   <h3>Representative transient</h3><img src="${wave}" style="max-width:100%" alt="Transient oscilloscope trace"><h3>Time-constant comparison</h3><img src="${sum}" style="max-width:100%" alt="Measured time constants">
   <h3>Discussion</h3><p>${prose(state.report.reportDiscussion)}</p><h3>Conclusion</h3><p>${prose(state.report.reportConclusion)}</p><p><strong>Assessment:</strong> ${state.assessment?state.assessment.score+'/'+state.assessment.total:'not submitted'}.</p><hr><p class="mini">The core sequence follows the USTHB RC–RL transient practical. Hidden component values and small display noise are virtual-laboratory parameters.</p>`;
-  $('#reportPreview').innerHTML=html;$('#printOnlyPreview').innerHTML=html;save()
+  $('#reportPreview').innerHTML=html;$('#printOnlyPreview').innerHTML=html;save();return true;
 }
 function newRun(){
   if(Object.keys(state.results).length&&!confirm('Start a new E05 specimen? Existing measurements will be cleared.'))return;
-  const mode=state.mode,report=state.report;state={version:2,mode,run:makeRun(),task:'knownRC',method:'5',wiring:{circuit:'',probe:'',source:'',ground:'',verified:false},settings:{frequency:500,sourceAmp:8,timeDiv:5e-5,voltsDiv:1,cursor:0},results:{},fits:{},assessment:null,report};syncUI();renderResults();renderFit();progress();drawSummary();save()
+  const mode=state.mode,report=state.report;state={version:2,mode,run:makeRun(),task:'knownRC',method:'5',wiring:{circuit:'',probe:'',source:'',ground:'',verified:false,energized:false},settings:{frequency:500,sourceAmp:8,timeDiv:5e-5,voltsDiv:1,cursor:0},knownMethods:{},results:{},calculations:{knownRC:null,unknownR:null,unknownC:null,unknownL:null},fits:{},assessment:null,report};['studentKnownTheory','studentKnownError4','studentKnownError5','studentRx','studentCx','studentLx'].forEach(id=>{const el=$('#'+id);if(el)el.value='';});syncUI();renderResults();renderFit();progress();drawSummary();save()
 }
 function setupTabs(){
   $$('.tabbtn').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.tab;$$('.tabbtn').forEach(x=>x.classList.toggle('active',x===b));$$('.tabpanel').forEach(p=>p.classList.toggle('active',p.id===id));draw();drawSummary()}))
@@ -237,12 +285,13 @@ function bindPersistentFields(){
   ["reportDate","reportDiscussion","reportConclusion"].forEach(id=>bind(id,'report'));
 }
 function init(){
-  load();bindPersistentFields();if(state.report){delete state.report.studentName;delete state.report.studentGroup;persistState()}if(!state.run)state.run=makeRun();restoreReport();setupTabs();setupQuiz();applyMode(state.mode);renderResults();renderFit();progress();drawSummary();restoreAssessment();
-  $('#e05CircuitType').value=state.wiring?.circuit||'';$('#e05ProbeAcross').value=state.wiring?.probe||'';$('#e05SourceWave').value=state.wiring?.source||'';$('#e05Ground').value=state.wiring?.ground||'';updateWiring();if(state.wiring?.verified&&wiringOK()){state.wiring.verified=true;$('#e05WiringStatus').className='transient-wiring-status ok';$('#e05WiringStatus').textContent='Saved circuit verification restored.';}
-  ['e05CircuitType','e05ProbeAcross','e05SourceWave','e05Ground'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateWiring();syncUI();save()}));$('#e05VerifyWiring').addEventListener('click',verifyWiring);
+  load();bindPersistentFields();if(state.report){delete state.report.studentName;delete state.report.studentGroup;delete state.report.studentEmail;persistState()}if(!state.run)state.run=makeRun();state.knownMethods=state.knownMethods||{};state.calculations=state.calculations||{knownRC:null,unknownR:null,unknownC:null,unknownL:null};state.wiring=state.wiring||{circuit:'',probe:'',source:'',ground:'',verified:false,energized:false};state.wiring.energized=false;restoreReport();setupTabs();setupQuiz();applyMode(state.mode);renderResults();renderFit();progress();drawSummary();restoreAssessment();
+  const savedVerified=!!state.wiring.verified;$('#e05CircuitType').value=state.wiring?.circuit||'';$('#e05ProbeAcross').value=state.wiring?.probe||'';$('#e05SourceWave').value=state.wiring?.source||'';$('#e05Ground').value=state.wiring?.ground||'';updateWiring();if(savedVerified&&wiringOK()){state.wiring.verified=true;state.wiring.energized=false;$('#e05WiringStatus').className='transient-wiring-status ok';$('#e05WiringStatus').textContent='Saved circuit verification restored · source disconnected.';}
+  const kc=state.calculations.knownRC;if(kc){$('#studentKnownTheory').value=kc.theory*1e6;$('#studentKnownError4').value=kc.error4;$('#studentKnownError5').value=kc.error5;}if(state.calculations.unknownR)$('#studentRx').value=state.calculations.unknownR.value;if(state.calculations.unknownC)$('#studentCx').value=state.calculations.unknownC.value;if(state.calculations.unknownL)$('#studentLx').value=state.calculations.unknownL.value;
+  ['e05CircuitType','e05ProbeAcross','e05SourceWave','e05Ground'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateWiring();syncUI();save()}));$('#e05VerifyWiring').addEventListener('click',verifyWiring);$('#e05ConnectSource').addEventListener('click',connectSource);$('#e05DisconnectSource').addEventListener('click',disconnectSource);
   $('#taskSelect').addEventListener('change',taskChanged);$('#frequency').addEventListener('change',e=>{state.settings.frequency=+e.target.value;syncUI();save()});$('#sourceAmp').addEventListener('input',e=>{state.settings.sourceAmp=+e.target.value;syncUI();save()});$('#timeDiv').addEventListener('change',e=>{state.settings.timeDiv=+e.target.value;syncUI();save()});$('#voltsDiv').addEventListener('change',e=>{state.settings.voltsDiv=+e.target.value;syncUI();save()});$('#tauMethod').addEventListener('change',e=>{state.method=e.target.value;syncUI();save()});$('#cursorTime').addEventListener('input',e=>{state.settings.cursor=+e.target.value;updateCursor();save()});
-  $('#recordTau').addEventListener('click',recordTau);$('#autoCentre').addEventListener('click',recommended);$('#newRun').addEventListener('click',newRun);$('#runFit').addEventListener('click',fitCurrent);
-  $('#buildReport').addEventListener('click',buildReport);$('#clearLocalProgress')?.addEventListener('click',()=>{if(confirm('Clear all locally saved progress for this practical on this browser?')){try{localStorage.removeItem(STORAGE);}catch(_){}location.reload();}});$('#printReport').addEventListener('click',()=>{buildReport();window.print()});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
+  $('#recordTau').addEventListener('click',recordTau);$('#autoCentre').addEventListener('click',recommended);$('#newRun').addEventListener('click',newRun);$('#runFit').addEventListener('click',fitCurrent);$('#checkKnownCalc').addEventListener('click',checkKnownCalc);$('#checkRCalc').addEventListener('click',checkRCalc);$('#checkCCalc').addEventListener('click',checkCCalc);$('#checkLCalc').addEventListener('click',checkLCalc);
+  $('#buildReport').addEventListener('click',buildReport);$('#clearLocalProgress')?.addEventListener('click',()=>{if(confirm('Clear all locally saved progress for this practical on this browser?')){try{localStorage.removeItem(STORAGE);}catch(_){}location.reload();}});$('#printReport').addEventListener('click',()=>{if(buildReport())window.print()});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
   ['reportDate','reportDiscussion','reportConclusion'].forEach(id=>$('#'+id).addEventListener('input',save));window.addEventListener('resize',()=>{draw();drawSummary()});window.addEventListener('beforeunload',save);syncUI()
 }
 init();
