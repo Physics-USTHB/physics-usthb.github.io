@@ -51,6 +51,52 @@ function renderReadingContent(container,paragraph,title){
  }else{const p=document.createElement("p");p.textContent=paragraph.replace(/\*\*/g,"");p.style.whiteSpace="pre-line";container.append(p);}
 }
 
+function renderVirtualGraph(container,unitId){
+ const samples=unitId==="A2.11"?[[0,0],[1,2],[2,4],[3,6],[4,8]]:unitId==="A2.12"?[[0,0],[1,1.5],[2,3],[3,4.5]]:null;
+ if(!samples)return;
+ const section=document.createElement("section");
+ const h=document.createElement("h3");h.textContent="Visual language practice: virtual position–time graph";
+ const p=document.createElement("p");p.className="muted minor";
+ p.textContent="These are illustrative computer-model values, not physical laboratory measurements. Describe the axes, trend and displayed interval. The table below supplies the same values without relying on the visual.";
+ section.append(h,p);
+ const ns="http://www.w3.org/2000/svg",svg=document.createElementNS(ns,"svg");
+ svg.setAttribute("viewBox","0 0 600 300");svg.setAttribute("role","img");
+ svg.setAttribute("aria-label","Simulated position increases linearly with time. All points are listed in the table below.");
+ svg.style.width="100%";svg.style.maxWidth="600px";svg.style.height="auto";
+ const add=(tag,attrs,text)=>{
+  const e=document.createElementNS(ns,tag);
+  for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));
+  if(text!==undefined)e.textContent=text;
+  svg.append(e);return e;
+ };
+ add("title",{},"Virtual cart: Position (m) versus Time (s)");
+ const x0=75,x1=540,y0=238,y1=30;
+ add("line",{x1:x0,y1:y0,x2:x1,y2:y0,stroke:"#173c57","stroke-width":2});
+ add("line",{x1:x0,y1:y0,x2:x0,y2:y1,stroke:"#173c57","stroke-width":2});
+ const xmax=samples.at(-1)[0],ymax=samples.at(-1)[1];
+ const X=x=>x0+(x/xmax)*(x1-x0),Y=y=>y0-(y/ymax)*(y0-y1);
+ for(const [x,y] of samples){
+  add("line",{x1:X(x),y1:y0,x2:X(x),y2:Y(y),stroke:"#c8dbe5","stroke-dasharray":"4 4"});
+  add("line",{x1:x0,y1:Y(y),x2:X(x),y2:Y(y),stroke:"#e0e9ee","stroke-dasharray":"4 4"});
+  add("text",{x:X(x),y:y0+20,"text-anchor":"middle","font-size":14,fill:"#18334a"},x);
+  add("text",{x:x0-12,y:Y(y)+5,"text-anchor":"end","font-size":13,fill:"#18334a"},y.toFixed(y%1?1:0));
+ }
+ add("polyline",{points:samples.map(([x,y])=>X(x)+","+Y(y)).join(" "),fill:"none",stroke:"#0d7189","stroke-width":3});
+ for(const [x,y] of samples)add("circle",{cx:X(x),cy:Y(y),r:5,fill:"#0d7189"});
+ add("text",{x:(x0+x1)/2,y:288,"text-anchor":"middle","font-size":16,fill:"#18334a"},"Time (s)");
+ add("text",{x:25,y:145,"text-anchor":"middle","font-size":16,fill:"#18334a",transform:"rotate(-90 25 145)"},"Position (m)");
+ section.append(svg);
+ const table=document.createElement("table"),caption=document.createElement("caption");
+ caption.textContent="Accessible table of simulated cart data";table.append(caption);
+ const head=document.createElement("tr");
+ for(const label of ["Time (s)","Position (m)"]){const th=document.createElement("th");th.scope="col";th.textContent=label;head.append(th);}
+ table.append(head);
+ for(const [time,position] of samples){const tr=document.createElement("tr");
+  for(const n of [time,position]){const td=document.createElement("td");td.textContent=String(n);tr.append(td);}
+  table.append(tr);}
+ section.append(table);container.append(section);
+}
+
 function renderAuthored(){
  authoredRoot.replaceChildren();
  const current=authoredUnits.get(selected);if(!current)return;
@@ -72,6 +118,7 @@ function renderAuthored(){
   hint.textContent="Pronunciation focus (text guide; recorded model audio is not yet available): "+notes.pronunciation;
   section.append(hint);authoredRoot.append(section);
  }
+ renderVirtualGraph(authoredRoot,current.id);
  const sources=document.createElement("section"),sourceTitle=document.createElement("h3");
  sourceTitle.textContent="Reading library";sources.append(sourceTitle);
  for(const source of current.sources){
