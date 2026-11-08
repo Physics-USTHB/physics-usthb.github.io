@@ -7,3 +7,15 @@
 .small-note{font-size:11px!important;color:#6f8394!important;line-height:1.55!important}
 @media(max-width:800px){.vom-entry-grid{grid-template-columns:1fr 1fr}.optical-board canvas{height:300px}}
 @media(max-width:520px){.vom-entry-grid{grid-template-columns:1fr}.optical-board canvas{height:260px}}
+
+
+/* VOM reviewed practicals: shared calculation panels */
+.student-optics-entry{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin:12px 0}
+.student-optics-entry.analysis-entry{grid-template-columns:1fr 1fr auto;padding:12px;border:1px solid #d7e3ec;border-radius:12px;background:#f7fafc}
+.student-optics-entry label{font-size:10px;text-transform:uppercase;color:#63788d;font-weight:800}
+.student-optics-entry input{width:100%;margin-top:5px;padding:8px;border:1px solid #d1dde6;border-radius:8px;background:#fff;color:#173e58}
+.student-optics-entry .btn{white-space:nowrap}
+.calibration-box{display:grid;grid-template-columns:auto auto auto minmax(150px,1fr) auto auto;gap:8px;align-items:end;margin:12px 0;padding:12px;border:1px solid #d7e3ec;border-radius:12px;background:#f7fafc;font-size:11px;color:#5f7487}
+.calibration-box strong{align-self:center;color:#193f57}.calibration-box label{font-size:10px;text-transform:uppercase;font-weight:800}.calibration-box input{width:100%;margin-top:5px;padding:8px;border:1px solid #d1dde6;border-radius:8px;background:#fff;color:#173e58}.calibration-box em{align-self:center;font-style:normal;font-weight:800;color:#2e7382}
+@media(max-width:900px){.calibration-box{grid-template-columns:1fr 1fr 1fr}.student-optics-entry.analysis-entry{grid-template-columns:1fr 1fr}.student-optics-entry.analysis-entry .btn{grid-column:1/-1}}
+@media(max-width:560px){.student-optics-entry,.student-optics-entry.analysis-entry,.calibration-box{grid-template-columns:1fr}.student-optics-entry.analysis-entry .btn{grid-column:auto}}
