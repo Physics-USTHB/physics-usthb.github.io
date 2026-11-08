@@ -2,6 +2,7 @@ import {validateUnit, gradeItem, nextReview, summarizeEvidence, weaknessHypothes
 import {mountSpeaking} from "./speaking.mjs";
 import {mountWriting, validateWritingCatalog, validateWritingRecords} from "./writing.mjs";
 import {createReadingAloud} from "./read-aloud.mjs";
+import {validateRemediationCatalog,buildFocusedPractice} from "./remediation.mjs";
 // English for Physicists — local-first development preview.
 // All sample exercises are formative and NOT eligible for CEFR/mastery claims.
 const UNITS=[
@@ -27,10 +28,14 @@ const QUESTIONS=[
 const $=id=>document.getElementById(id), allowed=new Set(QUESTIONS.map(q=>q.id));
 const authoredUnits=new Map();
 let lessonNotes={};
+let remediationNotes=null;
+const focusedRoot=document.createElement("section");
+focusedRoot.id="focused-practice";
+focusedRoot.setAttribute("aria-label","Personalized formative practice suggestions");
 const authoredRoot=document.createElement("section");
 authoredRoot.id="authored-lesson";
 authoredRoot.hidden=true;
-$("lesson").after(authoredRoot);
+$("lesson").after(focusedRoot,authoredRoot);
 const recorderMount=document.createElement("div");
 $("lesson").closest(".card").after(recorderMount);
 const speaking=mountSpeaking(recorderMount);
@@ -130,6 +135,7 @@ function renderAuthored(){
  sourceTitle.textContent="Reading library";sources.append(sourceTitle);
  for(const source of current.sources){
   const details=document.createElement("details");
+  details.id="reading-"+current.id+"-"+source.id;
   details.open=source.id==="R1";
   const summary=document.createElement("summary");
   summary.textContent=source.id+" — "+source.title;details.append(summary);
@@ -240,6 +246,66 @@ function updatePracticeReview(id,correct,first,at){
 const adaptivePanel=document.createElement("section");
 adaptivePanel.setAttribute("aria-label","Formative review and practice evidence");
 $("notice").after(adaptivePanel);
+function renderFocusedPractice(){
+ focusedRoot.replaceChildren();
+ const unit=authoredUnits.get(selected);
+ if(!unit){focusedRoot.hidden=true;return;}
+ focusedRoot.hidden=false;
+ const title=document.createElement("h3");
+ title.textContent="What to practise next";
+ focusedRoot.append(title);
+ const plan=buildFocusedPractice(unit,state.attempts,remediationNotes,{limit:3});
+ const context=document.createElement("p");context.className="muted minor";
+ context.textContent="Based on first attempts in this unit only. Recommendations are formative study prompts, not a weakness diagnosis, CEFR score or evidence of mastery.";
+ focusedRoot.append(context);
+ if(!plan.firstAttempted){
+  const p=document.createElement("p");p.textContent="Answer a few questions in this unit. If an answer is not accepted, you will see the relevant study guidance here.";
+  focusedRoot.append(p);return;
+ }
+ if(!plan.recommendations.length){
+  const p=document.createElement("p");p.textContent="No specific corrections are suggested from your first attempts so far. Continue exploring the unattempted questions; this does not establish proficiency.";
+  focusedRoot.append(p);return;
+ }
+ for(const suggestion of plan.recommendations){
+  const card=document.createElement("div");card.className="focus-entry";
+  const heading=document.createElement("h4");heading.textContent=suggestion.title;
+  const reason=document.createElement("p");reason.className="muted minor";
+  reason.textContent=suggestion.missedFirst+" of "+suggestion.attemptedFirst+
+    " first attempts in "+suggestion.skill.replace(/-/g," ")+" were not accepted.";
+  card.append(heading,reason);
+  const steps=document.createElement("ol");
+  for(const step of suggestion.steps){
+   const li=document.createElement("li");li.textContent=step;steps.append(li);
+  }
+  card.append(steps);
+  if(suggestion.example){
+   const example=document.createElement("p");example.className="muted minor";
+   example.textContent="Language example: "+suggestion.example;card.append(example);
+  }
+  if(suggestion.sourceId){
+   const source=document.getElementById("reading-"+suggestion.unitId+"-"+suggestion.sourceId);
+   if(source){
+    const showSource=document.createElement("button");showSource.type="button";
+    showSource.className="btn light";showSource.textContent="Revisit reading "+suggestion.sourceId;
+    showSource.onclick=()=>{source.open=true;source.scrollIntoView({behavior:"smooth",block:"start"});source.querySelector("summary")?.focus();};
+    card.append(showSource);
+   }
+  }
+  const target=document.getElementById("practice-"+suggestion.itemId);
+  if(target){
+   const button=document.createElement("button");button.type="button";button.className="btn";
+   button.textContent=suggestion.nextMode==="retry"?"Retry a question":"Try a new related question";
+   button.onclick=()=>{
+    const group=target.closest("details");if(group)group.open=true;
+    target.scrollIntoView({behavior:"smooth",block:"center"});
+    target.querySelector("input:not([type=hidden])")?.focus({preventScroll:true});
+   };
+   card.append(button);
+  }
+  focusedRoot.append(card);
+ }
+}
+
 function renderAdaptivePanels(){
  adaptivePanel.replaceChildren();
  const heading=document.createElement("h3");heading.textContent="Practice review";adaptivePanel.append(heading);
@@ -388,6 +454,7 @@ function renderStats(){
  $("total-attempts").textContent=String(state.attempts.length);
  $("first-correct").textContent=String(state.attempts.filter(a=>a.first&&a.correct).length);
  renderAdaptivePanels();
+ renderFocusedPractice();
 }
 function render(){
  const [title,description]=UNITS[selected];
@@ -447,6 +514,18 @@ async function boot(){
    onSave:save
   });
  }catch(err){$("notice").textContent="Writing workshop unavailable: "+err.message;}
- await loadAuthoredUnits();await load();
+ await loadAuthoredUnits();
+ try{
+  const response=await fetch("./data/remediation.json",{cache:"no-cache"});
+  if(!response.ok)throw Error("Study guide unavailable");
+  const data=await response.json();
+  const errors=validateRemediationCatalog(data,[...authoredUnits.values()]);
+  if(errors.length)throw Error(errors.slice(0,3).join("; "));
+  remediationNotes=data;
+ }catch(err){
+  remediationNotes=null;
+  $("notice").textContent=($("notice").textContent+" Optional targeted study guide unavailable: "+err.message).trim();
+ }
+ await load();
 }
 boot();
