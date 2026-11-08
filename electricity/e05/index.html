@@ -4,19 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="USTHB-aligned virtual laboratory for RC and RL transient circuits.">
-  <title>E05 — RC–RL Transients | Physics USTHB</title>
+  <title>Laboratory Practical 5 — RC–RL Transients | Physics USTHB</title>
   <link rel="stylesheet" href="../../assets/styles.css">
   <link rel="stylesheet" href="e05.css">
 </head>
 <body class="lab-page">
-<header class="topbar"><div class="shell nav"><a class="brand" href="../../index.html"><span class="brandmark">Φ</span><span class="brandcopy"><strong>Physics USTHB</strong><small>Electricity laboratory</small></span></a><nav class="navlinks"><a href="../index.html">Electricity Lab</a><a href="../e04/index.html">E04</a><a href="../../index.html">Home</a></nav></div></header>
+<header class="topbar"><div class="shell nav"><a class="brand" href="../../index.html"><span class="brandmark">Φ</span><span class="brandcopy"><strong>Physics USTHB</strong><small>Electricity laboratory</small></span></a><nav class="navlinks"><a href="../index.html">Electricity Lab</a><a href="../e04/index.html">Previous: Practical 4</a><a href="../../index.html">Home</a></nav></div></header>
 
 <section class="labmast">
   <div class="shell labmast-grid">
     <div>
-      <div class="breadcrumbs">Virtual Laboratory / Electricity & Circuits / E05</div>
+      <div class="breadcrumbs">Virtual Laboratory / Electricity & Circuits / Laboratory Practical 5</div>
       <h1>RC & RL Circuits in the Transient Regime</h1>
-      <div class="labmeta"><span class="pill">USTHB TP5 core</span><span class="pill">Step response</span><span class="pill">Time constant τ</span><span class="pill">RC / RL</span></div>
+      <div class="labmeta"><span class="pill">USTHB Practical 5 core</span><span class="pill">Step response</span><span class="pill">Time constant τ</span><span class="pill">RC / RL</span></div>
     </div>
     <div class="mode-card no-print"><div><strong>Guidance mode</strong><div class="mini" id="modeDescription">Protocol guidance and measurement diagnostics are visible.</div></div><div class="segmented"><button class="modebtn active" data-mode="learn" type="button">Learn</button><button class="modebtn" data-mode="lab" type="button">Lab</button></div></div>
   </div>
@@ -83,7 +83,7 @@
           <label>Oscilloscope common<select id="e05Ground"><option value="">Choose…</option><option value="return">Circuit return / generator common</option><option value="middle">R–C / R–L junction</option></select></label>
         </div>
         <div class="transient-wiring-status" id="e05WiringStatus">Circuit not verified.</div>
-        <button class="btn secondary" id="e05VerifyWiring" type="button">Verify circuit</button>
+        <div class="source-actions"><button class="btn secondary" id="e05VerifyWiring" type="button">Verify circuit</button><button class="btn" id="e05ConnectSource" type="button" disabled>Connect source</button><button class="btn secondary" id="e05DisconnectSource" type="button" disabled>Disconnect source</button></div>
       </div>
 
       <div class="transient-controls">
@@ -98,10 +98,10 @@
       <div class="cursor-panel">
         <label><span>Time cursor after rising edge</span><strong id="cursorTimeLabel">0 µs</strong></label>
         <input id="cursorTime" type="range" min="0" max=".001" step=".000001" value="0">
-        <div class="cursor-values"><div><span>Response at cursor</span><strong id="cursorValue">— V</strong></div><div><span>Target level</span><strong id="targetValue">— V</strong></div><div><span>Level error</span><strong id="targetError">— div</strong></div></div>
+        <div class="cursor-values"><div><span>Response at cursor</span><strong id="cursorValue">— V</strong></div><div class="learn-only"><span>Target level</span><strong id="targetValue">— V</strong></div><div class="learn-only"><span>Level error</span><strong id="targetError">— div</strong></div></div>
       </div>
 
-      <div class="transient-actions"><button class="btn" id="recordTau" type="button">Record τ from cursor</button><button class="btn secondary" id="autoCentre" type="button">Set recommended display</button><button class="btn secondary" id="newRun" type="button">New specimen</button></div>
+      <div class="transient-actions"><button class="btn" id="recordTau" type="button">Record τ from cursor</button><button class="btn secondary learn-only" id="autoCentre" type="button">Learning aid: set recommended display</button><button class="btn secondary" id="newRun" type="button">New specimen</button></div>
       <div class="notice" id="benchMessage">Adjust the display so the transient is complete and occupies 6 or 8 vertical divisions.</div>
     </div>
 
@@ -115,10 +115,10 @@
 
 <section class="tabpanel" id="results">
   <div class="grid two">
-    <article class="paper"><h2>4.1 — Known R and C</h2><div class="result-panel"><div><span>Measured τ</span><strong id="knownTau">—</strong></div><div><span>Theory R<sub>T</sub>C</span><strong id="knownTheory">50 µs</strong></div><div><span>Difference</span><strong id="knownError">—</strong></div><div><span>Method</span><strong id="knownMethod">—</strong></div></div></article>
-    <article class="paper"><h2>4.2 — Unknown R<sub>x</sub></h2><div class="result-panel"><div><span>Measured τ</span><strong id="rTau">—</strong></div><div><span>Known C</span><strong>0.50 µF</strong></div><div><span>Derived R<sub>x</sub></span><strong id="rDerived">— Ω</strong></div><div><span>Method</span><strong id="rMethod">—</strong></div></div></article>
-    <article class="paper"><h2>4.3 — Unknown C<sub>x</sub></h2><div class="result-panel"><div><span>Measured τ</span><strong id="cTau">—</strong></div><div><span>Known R</span><strong>150 Ω</strong></div><div><span>Derived C<sub>x</sub></span><strong id="cDerived">— µF</strong></div><div><span>Method</span><strong id="cMethod">—</strong></div></div></article>
-    <article class="paper"><h2>4.4 — Unknown L<sub>x</sub></h2><div class="result-panel"><div><span>Measured τ</span><strong id="lTau">—</strong></div><div><span>Known R / Rb</span><strong>150 Ω / 20 Ω</strong></div><div><span>Derived L<sub>x</sub></span><strong id="lDerived">— mH</strong></div><div><span>Method</span><strong id="lMethod">—</strong></div></div></article>
+    <article class="paper"><h2>4.1 — Known R and C</h2><p>Measure the same known circuit with both graphical constructions before accepting the validation.</p><div class="result-panel"><div><span>4-square τ</span><strong id="knownTau4">—</strong></div><div><span>5-square τ</span><strong id="knownTau5">—</strong></div><div><span>Accepted theory R<sub>T</sub>C</span><strong id="knownTheory">—</strong></div><div><span>Status</span><strong id="knownMethod">both required</strong></div></div><div class="result-calc-grid"><label>Your theoretical τ / µs<input id="studentKnownTheory" type="number" min="0" step="0.1"></label><label>4-square difference / %<input id="studentKnownError4" type="number" step="0.1"></label><label>5-square difference / %<input id="studentKnownError5" type="number" step="0.1"></label><button class="btn" id="checkKnownCalc" type="button">Check validation calculation</button></div><div class="notice" id="knownCalcMessage">Record both graphical methods, then calculate the theoretical τ and both percentage differences.</div></article>
+    <article class="paper"><h2>4.2 — Unknown R<sub>x</sub></h2><div class="result-panel"><div><span>Measured τ</span><strong id="rTau">—</strong></div><div><span>Known C</span><strong>0.50 µF</strong></div><div><span>Accepted R<sub>x</sub></span><strong id="rDerived">— Ω</strong></div><div><span>Method</span><strong id="rMethod">—</strong></div></div><div class="result-calc-grid compact"><label>Your R<sub>x</sub> / Ω<input id="studentRx" type="number" min="0" step="1"></label><button class="btn" id="checkRCalc" type="button">Check R<sub>x</sub></button></div><div class="notice" id="rCalcMessage">Use R<sub>x</sub> = τ/C − r<sub>g</sub>.</div></article>
+    <article class="paper"><h2>4.3 — Unknown C<sub>x</sub></h2><div class="result-panel"><div><span>Measured τ</span><strong id="cTau">—</strong></div><div><span>Known R</span><strong>150 Ω</strong></div><div><span>Accepted C<sub>x</sub></span><strong id="cDerived">— µF</strong></div><div><span>Method</span><strong id="cMethod">—</strong></div></div><div class="result-calc-grid compact"><label>Your C<sub>x</sub> / µF<input id="studentCx" type="number" min="0" step="0.001"></label><button class="btn" id="checkCCalc" type="button">Check C<sub>x</sub></button></div><div class="notice" id="cCalcMessage">Use C<sub>x</sub> = τ/(R + r<sub>g</sub>).</div></article>
+    <article class="paper"><h2>4.4 — Unknown L<sub>x</sub></h2><div class="result-panel"><div><span>Measured τ</span><strong id="lTau">—</strong></div><div><span>Known R / R<sub>b</sub></span><strong>150 Ω / 20 Ω</strong></div><div><span>Accepted L<sub>x</sub></span><strong id="lDerived">— mH</strong></div><div><span>Method</span><strong id="lMethod">—</strong></div></div><div class="result-calc-grid compact"><label>Your L<sub>x</sub> / mH<input id="studentLx" type="number" min="0" step="0.1"></label><button class="btn" id="checkLCalc" type="button">Check L<sub>x</sub></button></div><div class="notice" id="lCalcMessage">Use L<sub>x</sub> = τ(R + r<sub>g</sub> + R<sub>b</sub>).</div></article>
   </div>
 </section>
 
@@ -159,13 +159,13 @@
 
 <section class="tabpanel" id="report">
   <article class="paper no-print"><h2>Laboratory report</h2>
-    <p class="mini"><strong>Privacy:</strong> student name and group stay only in this open page and are not saved. Measurements and report text autosave locally in this browser.</p><div class="report-grid"><label>Student name<input id="studentName" type="text"></label><label>Group / section<input id="studentGroup" type="text"></label><label>Date<input id="reportDate" type="date"></label><label>Mode<input id="reportMode" type="text" readonly></label><label class="wide">Discussion<textarea id="reportDiscussion" placeholder="Discuss display-quality choices, the two graphical τ methods, known-RC validation and the extraction of Rx, Cx and Lx."></textarea></label><label class="wide">Conclusion<textarea id="reportConclusion" placeholder="Summarise the four measured/deduced results and comment on the accuracy of the graphical method."></textarea></label></div><div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button><button class="btn ghost" id="clearLocalProgress" type="button">Clear local data</button></div></article>
-  <div class="report-preview" id="reportPreview"><h2>Laboratory Report — E05</h2><p class="mini">Complete the four transient measurements and build the report.</p></div>
+    <p class="mini"><strong>Privacy:</strong> student name, email and group stay only in this open page and are not saved. Measurements and report text autosave locally in this browser.</p><div class="report-grid"><label>Student name<input id="studentName" type="text"></label><label>Email<input id="studentEmail" type="email" placeholder="name@example.com" required></label><label>Group / section<input id="studentGroup" type="text"></label><label>Date<input id="reportDate" type="date"></label><label>Mode<input id="reportMode" type="text" readonly></label><label class="wide">Discussion<textarea id="reportDiscussion" placeholder="Discuss display-quality choices, the two graphical τ methods, known-RC validation and the extraction of Rx, Cx and Lx."></textarea></label><label class="wide">Conclusion<textarea id="reportConclusion" placeholder="Summarise the four measured/deduced results and comment on the accuracy of the graphical method."></textarea></label></div><div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button><button class="btn ghost" id="clearLocalProgress" type="button">Clear local data</button></div></article>
+  <div class="report-preview" id="reportPreview"><h2>Laboratory Practical 5 Report — E05</h2><p class="mini">Complete the four transient measurements and build the report.</p></div>
 </section>
 <section class="tabpanel" id="printable-report"><div class="report-preview" id="printOnlyPreview"></div></section>
 </main>
 
-<footer class="footer"><div class="shell">E05 • RC–RL Transients • Physics USTHB interactive laboratory · <a href="../../privacy.html">Privacy</a></div></footer>
+<footer class="footer"><div class="shell">Laboratory Practical 5 · RC–RL Transients · Physics USTHB · <a href="../../privacy.html">Privacy</a></div></footer>
 <script src="lab.js"></script>
 </body>
 </html>
