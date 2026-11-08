@@ -1,0 +1,721 @@
+{
+  "schemaVersion": 1,
+  "id": "A2.08",
+  "title": "Processes & Troubleshooting",
+  "status": "draft",
+  "language": "en-US",
+  "license": "original-course-content",
+  "pedagogicalStatus": "Unreviewed draft: formative practice only; CEFR mastery disabled.",
+  "sources": [
+    {
+      "id": "R1",
+      "title": "Pendulum-video playback note (reading; practice)",
+      "paragraphs": [
+        "On Monday, Nora was watching a classroom video of a pendulum. She was counting the swings when the video stopped at 12 seconds. The video player was not moving, but her notebook was open. First, she checked whether the video was paused. Then she pressed Play again. The video continued, and she finished counting. She wrote a note: “The video stopped while I was counting.” This was a video-learning activity, not a physical experiment."
+      ]
+    },
+    {
+      "id": "R2",
+      "title": "Virtual circuit software note (reading; practice)",
+      "paragraphs": [
+        "Yesterday, Amir was using a circuit simulation. He was drawing a graph of current against voltage when the program stopped responding. The virtual source displayed 4.0 V at that moment. Amir did not touch real electrical equipment. He saved his notes, closed the unresponsive simulation, and opened a saved copy. After that, he checked the graph again. He did not claim that the displayed value came from a physical meter."
+      ]
+    },
+    {
+      "id": "R3",
+      "title": "Optics drawing problem (reading; practice)",
+      "paragraphs": [
+        "At 10:15 a.m., Layla was editing a ray diagram on her computer. While she was moving a virtual lens, a label disappeared from the screen. She checked the list of visible layers. The label was hidden, not deleted. She turned the label layer on and continued her drawing. Later, she told her partner what had happened. No laser or real lens was used."
+      ]
+    },
+    {
+      "id": "R4",
+      "title": "Temperature model log (reading; practice)",
+      "paragraphs": [
+        "On Thursday, a group was watching a virtual temperature display. The timer was running, but the number on the screen was not changing. The display still showed 22.0 °C. While one student was reading the help panel, another student noticed that the model was paused. They resumed the simulation and observed the display change to 23.0 °C. They were using a model; no hot material was handled."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "A2.08.PCT.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PCT.progressive_form",
+      "status": "draft",
+      "media": "text",
+      "prompt": "At 10 a.m., Nora ___ the video. (watch)",
+      "accepted": [
+        "was watching"
+      ],
+      "feedback": "Use was/were + verb-ing; match the auxiliary to the subject.",
+      "options": [
+        "was watching",
+        "were watching"
+      ]
+    },
+    {
+      "id": "A2.08.PCT.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PCT.progressive_form",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The two students ___ the results when the screen went dark. (record)",
+      "accepted": [
+        "were recording"
+      ],
+      "feedback": "Use was/were + verb-ing; match the auxiliary to the subject.",
+      "options": [
+        "were recording",
+        "was recording"
+      ]
+    },
+    {
+      "id": "A2.08.PCT.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PCT.progressive_form",
+      "status": "draft",
+      "media": "text",
+      "prompt": "I ___ the data at that moment. (write)",
+      "accepted": [
+        "was writing"
+      ],
+      "feedback": "Use was/were + verb-ing; match the auxiliary to the subject.",
+      "options": [
+        "was writing",
+        "was wrote"
+      ]
+    },
+    {
+      "id": "A2.08.PCT.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PCT.progressive_form",
+      "status": "draft",
+      "media": "text",
+      "prompt": "We ___ a graph while the video was playing. (draw)",
+      "accepted": [
+        "were drawing"
+      ],
+      "feedback": "Use was/were + verb-ing; match the auxiliary to the subject.",
+      "options": [
+        "were drawing",
+        "were drew"
+      ]
+    },
+    {
+      "id": "A2.08.PCT.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PCT.progressive_form",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The virtual cart ___ to the right at noon. (move)",
+      "accepted": [
+        "was moving"
+      ],
+      "feedback": "Use was/were + verb-ing; match the auxiliary to the subject.",
+      "options": [
+        "was moving",
+        "were moving"
+      ]
+    },
+    {
+      "id": "A2.08.PCT.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PCT.progressive_form",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Layla and Amir ___ the labels together. (check)",
+      "accepted": [
+        "were checking"
+      ],
+      "feedback": "Use was/were + verb-ing; match the auxiliary to the subject.",
+      "options": [
+        "were checking",
+        "was checking"
+      ]
+    },
+    {
+      "id": "A2.08.PCT.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PCT.progressive_form",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The program ___ slowly before it stopped. (run)",
+      "accepted": [
+        "was running"
+      ],
+      "feedback": "Use was/were + verb-ing; match the auxiliary to the subject.",
+      "options": [
+        "was running",
+        "was runing"
+      ]
+    },
+    {
+      "id": "A2.08.PCT.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PCT.progressive_form",
+      "status": "draft",
+      "media": "text",
+      "prompt": "She ___ a new file when the warning appeared. (create)",
+      "accepted": [
+        "was creating"
+      ],
+      "feedback": "Use was/were + verb-ing; match the auxiliary to the subject.",
+      "options": [
+        "was creating",
+        "was createing"
+      ]
+    },
+    {
+      "id": "A2.08.WHL.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.WHL.when_interruption",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: I was writing in my notebook ___ the video stopped.",
+      "accepted": [
+        "when"
+      ],
+      "feedback": "Use when to introduce a specific event; while often introduces an ongoing background action. Both can introduce overlapping events, so check the complete sentence, not just the connector.",
+      "options": [
+        "when",
+        "because of"
+      ]
+    },
+    {
+      "id": "A2.08.WHL.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.WHL.while_overlap",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: ___ I was checking the labels, my partner was reading the notes.",
+      "accepted": [
+        "While"
+      ],
+      "feedback": "Use when to introduce a specific event; while often introduces an ongoing background action. Both can introduce overlapping events, so check the complete sentence, not just the connector.",
+      "options": [
+        "While",
+        "After that"
+      ]
+    },
+    {
+      "id": "A2.08.WHL.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.WHL.when_interruption",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Select the natural sentence for an interruption.",
+      "accepted": [
+        "I was checking the graph when it froze."
+      ],
+      "feedback": "Use when to introduce a specific event; while often introduces an ongoing background action. Both can introduce overlapping events, so check the complete sentence, not just the connector.",
+      "options": [
+        "I was checking the graph when it froze.",
+        "I checking the graph when it was froze."
+      ]
+    },
+    {
+      "id": "A2.08.WHL.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.WHL.while_overlap",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: The label vanished ___ she was moving the virtual lens.",
+      "accepted": [
+        "while"
+      ],
+      "feedback": "Use when to introduce a specific event; while often introduces an ongoing background action. Both can introduce overlapping events, so check the complete sentence, not just the connector.",
+      "options": [
+        "while",
+        "until"
+      ]
+    },
+    {
+      "id": "A2.08.WHL.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.WHL.when_interruption",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the sentence with two ongoing actions.",
+      "accepted": [
+        "While I was reading, my partner was typing."
+      ],
+      "feedback": "Use when to introduce a specific event; while often introduces an ongoing background action. Both can introduce overlapping events, so check the complete sentence, not just the connector.",
+      "options": [
+        "While I was reading, my partner was typing.",
+        "When I reading, my partner typing."
+      ]
+    },
+    {
+      "id": "A2.08.WHL.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.WHL.while_overlap",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: The animation paused ___ Amir was recording a number.",
+      "accepted": [
+        "while"
+      ],
+      "feedback": "Use when to introduce a specific event; while often introduces an ongoing background action. Both can introduce overlapping events, so check the complete sentence, not just the connector.",
+      "options": [
+        "while",
+        "before of"
+      ]
+    },
+    {
+      "id": "A2.08.WHL.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.WHL.when_interruption",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The program stopped ___ the group was saving its notes.",
+      "accepted": [
+        "while"
+      ],
+      "feedback": "Use when to introduce a specific event; while often introduces an ongoing background action. Both can introduce overlapping events, so check the complete sentence, not just the connector.",
+      "options": [
+        "while",
+        "despite of"
+      ]
+    },
+    {
+      "id": "A2.08.WHL.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.WHL.while_overlap",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correctly formed question.",
+      "accepted": [
+        "What were you doing when the screen went blank?"
+      ],
+      "feedback": "Use when to introduce a specific event; while often introduces an ongoing background action. Both can introduce overlapping events, so check the complete sentence, not just the connector.",
+      "options": [
+        "What were you doing when the screen went blank?",
+        "What did you doing when the screen went blank?"
+      ]
+    },
+    {
+      "id": "A2.08.PST.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PST.event_background",
+      "status": "draft",
+      "media": "text",
+      "prompt": "While she ___ the virtual lens, the label disappeared.",
+      "accepted": [
+        "was moving"
+      ],
+      "feedback": "The past continuous describes the action in progress; the simple past reports a completed event or action in the sequence.",
+      "options": [
+        "was moving",
+        "moved"
+      ]
+    },
+    {
+      "id": "A2.08.PST.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PST.event_background",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The video ___ while I was counting the swings.",
+      "accepted": [
+        "stopped"
+      ],
+      "feedback": "The past continuous describes the action in progress; the simple past reports a completed event or action in the sequence.",
+      "options": [
+        "stopped",
+        "was stopping"
+      ]
+    },
+    {
+      "id": "A2.08.PST.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PST.event_background",
+      "status": "draft",
+      "media": "text",
+      "prompt": "We ___ the graph when the warning appeared.",
+      "accepted": [
+        "were checking"
+      ],
+      "feedback": "The past continuous describes the action in progress; the simple past reports a completed event or action in the sequence.",
+      "options": [
+        "were checking",
+        "checked"
+      ]
+    },
+    {
+      "id": "A2.08.PST.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PST.event_background",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The alert ___ while Amir was saving the file.",
+      "accepted": [
+        "appeared"
+      ],
+      "feedback": "The past continuous describes the action in progress; the simple past reports a completed event or action in the sequence.",
+      "options": [
+        "appeared",
+        "was appearing"
+      ]
+    },
+    {
+      "id": "A2.08.PST.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PST.event_background",
+      "status": "draft",
+      "media": "text",
+      "prompt": "At 10:15, Layla ___ on the ray diagram.",
+      "accepted": [
+        "was working"
+      ],
+      "feedback": "The past continuous describes the action in progress; the simple past reports a completed event or action in the sequence.",
+      "options": [
+        "was working",
+        "worked"
+      ]
+    },
+    {
+      "id": "A2.08.PST.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PST.event_background",
+      "status": "draft",
+      "media": "text",
+      "prompt": "My partner ___ the paused model and restarted it.",
+      "accepted": [
+        "checked"
+      ],
+      "feedback": "The past continuous describes the action in progress; the simple past reports a completed event or action in the sequence.",
+      "options": [
+        "checked",
+        "was checking"
+      ]
+    },
+    {
+      "id": "A2.08.PST.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PST.event_background",
+      "status": "draft",
+      "media": "text",
+      "prompt": "When the window closed, I ___ the results.",
+      "accepted": [
+        "was comparing"
+      ],
+      "feedback": "The past continuous describes the action in progress; the simple past reports a completed event or action in the sequence.",
+      "options": [
+        "was comparing",
+        "compared"
+      ]
+    },
+    {
+      "id": "A2.08.PST.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.08.PST.event_background",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The display ___ 22.0 °C when the group noticed the pause.",
+      "accepted": [
+        "showed"
+      ],
+      "feedback": "The past continuous describes the action in progress; the simple past reports a completed event or action in the sequence.",
+      "options": [
+        "showed",
+        "was showed"
+      ]
+    },
+    {
+      "id": "A2.08.VOC.001",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.08.VOC.problem_verbs",
+      "status": "draft",
+      "media": "text",
+      "prompt": "If the virtual graph cannot be seen, first ___ whether its panel is visible.",
+      "accepted": [
+        "check"
+      ],
+      "feedback": "Use the word that describes the digital problem or the corrective action. Do not treat simulation troubleshooting as instructions for live equipment.",
+      "options": [
+        "check",
+        "measure"
+      ]
+    },
+    {
+      "id": "A2.08.VOC.002",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.08.VOC.problem_verbs",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The circuit program did not respond. It ___.",
+      "accepted": [
+        "froze"
+      ],
+      "feedback": "Use the word that describes the digital problem or the corrective action. Do not treat simulation troubleshooting as instructions for live equipment.",
+      "options": [
+        "froze",
+        "melted"
+      ]
+    },
+    {
+      "id": "A2.08.VOC.003",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.08.VOC.problem_verbs",
+      "status": "draft",
+      "media": "text",
+      "prompt": "To keep your notes, ___ the file before closing the program.",
+      "accepted": [
+        "save"
+      ],
+      "feedback": "Use the word that describes the digital problem or the corrective action. Do not treat simulation troubleshooting as instructions for live equipment.",
+      "options": [
+        "save",
+        "erase"
+      ]
+    },
+    {
+      "id": "A2.08.VOC.004",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.08.VOC.problem_verbs",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The graph window was hidden. We needed to ___ it.",
+      "accepted": [
+        "restore"
+      ],
+      "feedback": "Use the word that describes the digital problem or the corrective action. Do not treat simulation troubleshooting as instructions for live equipment.",
+      "options": [
+        "restore",
+        "repeat the voltage"
+      ]
+    },
+    {
+      "id": "A2.08.VOC.005",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.08.VOC.problem_verbs",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The animation was paused. The student needed to ___ it.",
+      "accepted": [
+        "resume"
+      ],
+      "feedback": "Use the word that describes the digital problem or the corrective action. Do not treat simulation troubleshooting as instructions for live equipment.",
+      "options": [
+        "resume",
+        "divide"
+      ]
+    },
+    {
+      "id": "A2.08.VOC.006",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.08.VOC.problem_verbs",
+      "status": "draft",
+      "media": "text",
+      "prompt": "When the app showed a message, Lina read the ___.",
+      "accepted": [
+        "warning"
+      ],
+      "feedback": "Use the word that describes the digital problem or the corrective action. Do not treat simulation troubleshooting as instructions for live equipment.",
+      "options": [
+        "warning",
+        "resistance"
+      ]
+    },
+    {
+      "id": "A2.08.VOC.007",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.08.VOC.problem_verbs",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The label did not appear because its layer was ___.",
+      "accepted": [
+        "hidden"
+      ],
+      "feedback": "Use the word that describes the digital problem or the corrective action. Do not treat simulation troubleshooting as instructions for live equipment.",
+      "options": [
+        "hidden",
+        "heated"
+      ]
+    },
+    {
+      "id": "A2.08.VOC.008",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.08.VOC.problem_verbs",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The computer was not responding; it was ___.",
+      "accepted": [
+        "unresponsive"
+      ],
+      "feedback": "Use the word that describes the digital problem or the corrective action. Do not treat simulation troubleshooting as instructions for live equipment.",
+      "options": [
+        "unresponsive",
+        "uncertain in physics"
+      ]
+    },
+    {
+      "id": "A2.08.RDG.001",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.08.RDG.source_comprehension",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What was Nora doing when the video stopped?",
+      "accepted": [
+        "Counting the swings."
+      ],
+      "feedback": "The answer comes from the pendulum-video playback note source; distinguish simulated events from real laboratory work.",
+      "options": [
+        "Counting the swings.",
+        "Changing the pendulum length."
+      ]
+    },
+    {
+      "id": "A2.08.RDG.002",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.08.RDG.source_comprehension",
+      "status": "draft",
+      "media": "text",
+      "prompt": "At what time did the video pause?",
+      "accepted": [
+        "12 seconds."
+      ],
+      "feedback": "The answer comes from the pendulum-video playback note source; distinguish simulated events from real laboratory work.",
+      "options": [
+        "12 seconds.",
+        "20 seconds."
+      ]
+    },
+    {
+      "id": "A2.08.RDG.003",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.08.RDG.source_comprehension",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What did Nora check first?",
+      "accepted": [
+        "Whether the video was paused."
+      ],
+      "feedback": "The answer comes from the pendulum-video playback note source; distinguish simulated events from real laboratory work.",
+      "options": [
+        "Whether the video was paused.",
+        "The mass of a real pendulum."
+      ]
+    },
+    {
+      "id": "A2.08.RDG.005",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.08.RDG.source_comprehension",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What was Amir drawing when the program froze?",
+      "accepted": [
+        "A graph of current against voltage."
+      ],
+      "feedback": "The answer comes from the virtual circuit software note source; distinguish simulated events from real laboratory work.",
+      "options": [
+        "A graph of current against voltage.",
+        "A map of the optics room."
+      ]
+    },
+    {
+      "id": "A2.08.RDG.006",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.08.RDG.source_comprehension",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What voltage did the simulation show?",
+      "accepted": [
+        "4.0 V."
+      ],
+      "feedback": "The answer comes from the virtual circuit software note source; distinguish simulated events from real laboratory work.",
+      "options": [
+        "4.0 V.",
+        "0.4 V."
+      ]
+    },
+    {
+      "id": "A2.08.RDG.008",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.08.RDG.source_comprehension",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After closing the unresponsive program, what did he open?",
+      "accepted": [
+        "A saved copy."
+      ],
+      "feedback": "The answer comes from the virtual circuit software note source; distinguish simulated events from real laboratory work.",
+      "options": [
+        "A saved copy.",
+        "A new physical circuit."
+      ]
+    },
+    {
+      "id": "A2.08.RDG.009",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.08.RDG.source_comprehension",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What disappeared from Layla’s screen?",
+      "accepted": [
+        "A label."
+      ],
+      "feedback": "The answer comes from the optics drawing problem source; distinguish simulated events from real laboratory work.",
+      "options": [
+        "A label.",
+        "A real lens."
+      ]
+    },
+    {
+      "id": "A2.08.RDG.010",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.08.RDG.source_comprehension",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What was she moving at the time?",
+      "accepted": [
+        "A virtual lens."
+      ],
+      "feedback": "The answer comes from the optics drawing problem source; distinguish simulated events from real laboratory work.",
+      "options": [
+        "A virtual lens.",
+        "A hot object."
+      ]
+    }
+  ]
+}
