@@ -110,7 +110,7 @@ function updatePotWiring(){
   const genPair=new Set([w.gplus,w.gminus]);
   if(genPair.has('A')&&genPair.has('B')){el.className='wiring-status bad';el.textContent='DANGEROUS: generator across A–B can drive excessive current through the low-resistance box. Disconnect it.';return false;}
   if(w.gplus===w.gminus||w.vplus===w.vcom){el.className='wiring-status bad';el.textContent='A source or voltmeter cannot have both leads on the same terminal.';return false;}
-  const ok=w.gplus==='A'&&w.gminus==='C'&&w.vplus==='A'&&w.vcom==='B';el.className=ok?'wiring-status ok':'wiring-status bad';el.textContent=ok?'Correct potentiometric wiring: generator A–C, voltmeter A–B.':'The TP requires generator +→A, generator −→C, V/+→A and COM→B.';return ok;
+  const ok=w.gplus==='A'&&w.gminus==='C'&&w.vplus==='A'&&w.vcom==='B';el.className=ok?'wiring-status ok':'wiring-status bad';el.textContent=ok?'Correct potentiometric wiring: generator A–C, voltmeter A–B.':'The handout requires generator +→A, generator −→C, V/+→A and COM→B.';return ok;
 }
 function updateRxWiring(){
   state.rx.wiring={ammeter:$('#rxAmmeterPlacement').value,voltmeter:$('#rxVoltmeterSpan').value};state.rx.verified=false;const w=state.rx.wiring,short=state.rx.method==='short',ok=short?(w.ammeter==='total'&&w.voltmeter==='rx'):(w.ammeter==='rx'&&w.voltmeter==='a_rx'),el=$('#rxWiringStatus');
@@ -148,8 +148,8 @@ function emfTrue(){
   return state.run.E*rv/(state.run.rg+rv);
 }
 
-function renderAnalogScale(range){
-  const svg=$('#emfScaleSvg');if(!svg)return;const cx=200,cy=188,r1=145,r2=range.N===30?132:135,labels=range.N===30?5:20;let out='';
+function renderAnalogScale(svg,range){
+  if(!svg)return;const cx=200,cy=188,r1=145,r2=range.N===30?132:135,labels=range.N===30?5:20;let out='';
   for(let n=0;n<=range.N;n++){
     const a=(-150+120*n/range.N)*Math.PI/180,major=n%labels===0,mid=!major&&(n%(range.N===30?1:5)===0),ro=r1,ri=major?119:mid?127:r2;
     const x1=cx+ro*Math.cos(a),y1=cy+ro*Math.sin(a),x2=cx+ri*Math.cos(a),y2=cy+ri*Math.sin(a);
@@ -158,12 +158,28 @@ function renderAnalogScale(range){
   }
   out+=`<text class="unit" x="200" y="84">divisions</text>`;svg.innerHTML=out;
 }
+function setAnalogNeedle(el,m){
+  if(!el)return;
+  if(!m||m.overloaded){el.style.transform='rotate(-25deg)';return;}
+  el.style.transform=`rotate(${-150+120*(m.n/m.N)}deg)`;
+}
+function clearValues(ids){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});}
+function validateAnalogEntry({nEl,valueEl,uncEl,m,range,valueScale=1,label='measurement'}){
+  const sn=+$(nEl).value,sv=+$(valueEl).value,su=+$(uncEl).value;
+  if(!Number.isFinite(sn)||!Number.isFinite(sv)||!Number.isFinite(su))return{ok:false,message:`Read the ${label} pointer and enter n, the calculated value, and its uncertainty.`};
+  if(Math.abs(sn-m.n)>.6)return{ok:false,message:state.mode==='learn'?`Your ${label} division reading is not consistent with the pointer. Re-read the analog scale; ±0.5 division is the intended reading estimate.`:`${label} scale reading rejected: re-read the pointer.`};
+  const fromN=sn/range.N*range.cal*valueScale;
+  if(Math.abs(sv-fromN)>Math.max(valueScale===1?.015:.015,range.cal/range.N*valueScale*.15))return{ok:false,message:`Recalculate the ${label} value using X=(n/N)·CAL with the selected scale and range.`};
+  const targetUnc=m.delta*valueScale;
+  if(Math.abs(su-targetUnc)>Math.max(valueScale===1?.015:.015,.08*targetUnc))return{ok:false,message:`Recalculate the ${label} uncertainty from the meter class and reading uncertainty.`};
+  return{ok:true,n:sn,value:sv,unc:su};
+}
 
 function updateEmf(){
   state.emf.range=+$('#emfRange').value;const r=rangeByCal(V_RANGES,state.emf.range);
   if(r.cal===V_RANGES.at(-1).cal)state.emf.maxSeen=true;
   const trueV=emfTrue(),m=analogRead(trueV,r,'v');
-  $('#emfScaleText').textContent=`0–${r.N} scale · ${r.label} range`;renderAnalogScale(r);
+  $('#emfScaleText').textContent=`0–${r.N} scale · ${r.label} range`;renderAnalogScale($('#emfScaleSvg'),r);
   if(m.overloaded){$('#emfReading').textContent='OVER RANGE';$('#emfDivisionReading').textContent='Increase the selected range.';$('#emfNeedle').style.transform='rotate(-25deg)';}
   else{
     $('#emfReading').textContent='READ SCALE';$('#emfDivisionReading').textContent=`Use the 0–${r.N} scale and calculate X=(n/N)·CAL.`;
@@ -192,10 +208,10 @@ function recordEmf(){
   if(Math.abs(r.cal-best.cal)<1e-12){
     state.emf.best=rec;$('#emfMessage').className='notice ok';$('#emfMessage').textContent=`Appropriate-range measurement stored. Now repeat using the immediately higher range (${higher.label}).`;
   }else if(Math.abs(r.cal-higher.cal)<1e-12){
-    if(!state.emf.best){$('#emfMessage').className='notice warn';$('#emfMessage').textContent=`First store the appropriate-range result (${best.label}); the TP then asks for the immediately higher range.`;return;}
+    if(!state.emf.best){$('#emfMessage').className='notice warn';$('#emfMessage').textContent=`First store the appropriate-range result (${best.label}); the handout then asks for the immediately higher range.`;return;}
     state.emf.high=rec;$('#emfMessage').className='notice ok';$('#emfMessage').textContent='Higher-range measurement stored. Compare the two uncertainty intervals.';
   }else{
-    $('#emfMessage').className='notice warn';$('#emfMessage').textContent=`This is a valid reading, but the TP requires ${best.label} and then ${higher.label}. It was not stored as one of the two required results.`;return;
+    $('#emfMessage').className='notice warn';$('#emfMessage').textContent=`This is a valid reading, but the handout requires ${best.label} and then ${higher.label}. It was not stored as one of the two required results.`;return;
   }
   $('#emfStudentN').value='';$('#emfStudentValue').value='';$('#emfStudentUnc').value='';renderEmfResults();progress();summary();save();
 }
@@ -231,13 +247,16 @@ function renderPotSelectors(){
 function updatePot(){
   state.pot.range=+$('#potRange').value;state.pot.selector=+$('#potSelectorSelect').value;renderPotSelectors();
   const r=rangeByCal(V_RANGES,state.pot.range),tv=potTrue(state.pot.selector,r),m=analogRead(tv,r,'v');
-  $('#potRab').textContent=`${state.pot.selector} Ω`;$('#potRangeLabel').textContent=r.label;$('#potVm').textContent=m.overloaded?'OVERLOAD':`${m.value.toFixed(2)} V`;
+  $('#potRab').textContent=`${state.pot.selector} Ω`;$('#potRangeLabel').textContent=r.label;$('#potScaleText').textContent=`0–${r.N} scale · ${r.label} range`;renderAnalogScale($('#potScaleSvg'),r);
   $('#potState').textContent=state.pot.verified?'Wiring verified':'Wiring not verified';$('#potState').classList.toggle('ok',state.pot.verified);
+  if(!state.pot.verified){$('#potVm').textContent='READ SCALE';$('#potReading').textContent='SOURCE ISOLATED';$('#potDivisionReading').textContent='Verify the circuit before reading the pointer.';setAnalogNeedle($('#potNeedle'),null);}
+  else if(m.overloaded){$('#potVm').textContent='OVERLOAD';$('#potReading').textContent='OVER RANGE';$('#potDivisionReading').textContent='Increase the selected range.';setAnalogNeedle($('#potNeedle'),m);}
+  else{$('#potVm').textContent='READ SCALE';$('#potReading').textContent='READ POINTER';$('#potDivisionReading').textContent=`Use the 0–${r.N} scale and calculate VAB=(n/N)·CAL.`;setAnalogNeedle($('#potNeedle'),m);}
   $('#recordPot').disabled=!state.pot.verified||!potWiringOK()||m.overloaded||!(state.emf.best&&state.emf.high);
   if(!(state.emf.best&&state.emf.high)){$('#potMessage').className='notice warn';$('#potMessage').textContent='Complete the generator-emf measurements before building the potentiometric circuit.';}
   else if(!state.pot.verified){$('#potMessage').className='notice';$('#potMessage').textContent='Verify the generator across A–C and the voltmeter across A–B before recording.';}
   else if(m.overloaded){$('#potMessage').className='notice bad';$('#potMessage').textContent='Voltmeter overload. Increase the range.';}
-  else{$('#potMessage').className=appropriateRange(V_RANGES,tv).cal===r.cal?'notice ok':'notice warn';$('#potMessage').textContent=appropriateRange(V_RANGES,tv).cal===r.cal?'Ready: this is the appropriate range for the present voltage.':'Valid but non-optimal range: the reading can be recorded, although its uncertainty will be larger.';}
+  else{$('#potMessage').className=appropriateRange(V_RANGES,tv).cal===r.cal?'notice ok':'notice warn';$('#potMessage').textContent=appropriateRange(V_RANGES,tv).cal===r.cal?'Appropriate range selected. Read the analog pointer and calculate VAB and ΔV.':'Reduce to the smallest non-overloading range before recording, as required by the handout.';}
 }
 function verifyPot(){
   if(!(state.emf.best&&state.emf.high)){updatePot();return;}
@@ -248,7 +267,12 @@ function verifyPot(){
 function recordPot(){
   if(!state.pot.verified)return;
   const n=state.pot.selector,r=rangeByCal(V_RANGES,+$('#potRange').value),tv=potTrue(n,r),m=analogRead(tv,r,'v');if(m.overloaded)return;
-  state.pot.records[n]={n,range:r.cal,label:r.label,N:r.N,div:m.n,v:m.value,deltaV:m.delta,rv:voltmeterR(r)};
+  const best=appropriateRange(V_RANGES,tv);
+  if(best.cal!==r.cal){$('#potMessage').className='notice warn';$('#potMessage').textContent=`Use the appropriate ${best.label} range before recording this selector position.`;return;}
+  const a=validateAnalogEntry({nEl:'#potStudentN',valueEl:'#potStudentValue',uncEl:'#potStudentUnc',m,range:r,label:'voltmeter'});
+  if(!a.ok){$('#potMessage').className='notice warn';$('#potMessage').textContent=a.message;return;}
+  state.pot.records[n]={n,range:r.cal,label:r.label,N:r.N,div:a.n,v:a.value,deltaV:a.unc,rv:voltmeterR(r)};
+  clearValues(['potStudentN','potStudentValue','potStudentUnc']);
   renderPotTable();drawPot();progress();summary();
   const missing=Array.from({length:12},(_,i)=>i).find(i=>!state.pot.records[i]);if(missing!==undefined){state.pot.selector=missing;$('#potSelectorSelect').value=missing;}updatePot();save();
 }
@@ -290,20 +314,23 @@ function rxRead(){
 }
 function updateRx(){
   state.rx.vRange=+$('#rxVRange').value;state.rx.iRange=+$('#rxIRange').value;const x=rxRead();
-  $('#rxVm').textContent=x.vm.overloaded?'OVERLOAD':`${x.vm.value.toFixed(2)} V`;$('#rxIm').textContent=x.im.overloaded?'OVERLOAD':`${(x.im.value*1000).toFixed(2)} mA`;
+  $('#rxVScaleText').textContent=`0–${x.vr.N} scale · ${x.vr.label} range`;$('#rxIScaleText').textContent=`0–${x.ir.N} scale · ${x.ir.label} range`;
+  renderAnalogScale($('#rxVScaleSvg'),x.vr);renderAnalogScale($('#rxIScaleSvg'),x.ir);
+  if(!state.rx.verified){$('#rxVm').textContent='READ SCALE';$('#rxIm').textContent='READ SCALE';setAnalogNeedle($('#rxVNeedle'),null);setAnalogNeedle($('#rxINeedle'),null);}
+  else{$('#rxVm').textContent=x.vm.overloaded?'OVERLOAD':'READ SCALE';$('#rxIm').textContent=x.im.overloaded?'OVERLOAD':'READ SCALE';setAnalogNeedle($('#rxVNeedle'),x.vm);setAnalogNeedle($('#rxINeedle'),x.im);}
   $('#recordRx').disabled=!state.rx.verified||!rxWiringOK()||x.vm.overloaded||x.im.overloaded||Object.keys(state.pot.records||{}).length<12;
   if(Object.keys(state.pot.records||{}).length<12){$('#rxMessage').className='notice warn';$('#rxMessage').textContent='Complete all twelve potentiometric-divider readings first.';}
   else if(!state.rx.verified){$('#rxMessage').className='notice';$('#rxMessage').textContent='Verify the selected topology before connecting the potentiometric source.';}
   else if(x.vm.overloaded||x.im.overloaded){$('#rxMessage').className='notice bad';$('#rxMessage').textContent='Instrument overload. Increase the affected range.';}
   else{
     const vBest=appropriateRange(V_RANGES,x.t.vm),iBest=appropriateRange(I_RANGES,x.t.im),optimal=vBest.cal===x.vr.cal&&iBest.cal===x.ir.cal;
-    $('#rxMessage').className=optimal?'notice ok':'notice warn';$('#rxMessage').textContent=optimal?'Both instruments are on appropriate ranges. Ready to record.':`Valid measurement, but more appropriate ranges are approximately ${vBest.label} and ${iBest.label}.`;
+    $('#rxMessage').className=optimal?'notice ok':'notice warn';$('#rxMessage').textContent=optimal?'Both instruments are on appropriate ranges. Read both analog pointers and calculate Vm, Im and their uncertainties.':`Reduce the ranges to ${vBest.label} and ${iBest.label} before recording.`;
   }
 }
 function setMethod(method){
   state.rx.method=method;state.rx.verified=false;state.rx.wiring={ammeter:'',voltmeter:''};$('#rxAmmeterPlacement').value='';$('#rxVoltmeterSpan').value='';updateRxWiring();$('.method-btn').forEach(b=>b.classList.toggle('active',b.dataset.method===method));
   const short=method==='short';$('#voltBranch').setAttribute('d',short?'M500 82V150H605V82':'M344 82V150H605V82');$('#voltCircle').setAttribute('cx',short?'552':'474');$('#voltText').setAttribute('x',short?'552':'474');
-  $('#rxVRange').value=300;$('#rxIRange').value=.3;state.rx.vRange=300;state.rx.iRange=.3;updateRx();save();
+  $('#rxVRange').value=300;$('#rxIRange').value=.3;state.rx.vRange=300;state.rx.iRange=.3;clearValues(['rxVStudentN','rxVStudentValue','rxVStudentUnc','rxIStudentN','rxIStudentValue','rxIStudentUnc']);updateRx();save();
 }
 function verifyRx(){
   if(Object.keys(state.pot.records||{}).length<12){updateRx();return;}
@@ -313,9 +340,16 @@ function verifyRx(){
 }
 function recordRx(){
   if(!state.rx.verified)return;const x=rxRead();if(x.vm.overloaded||x.im.overloaded)return;
-  const V=x.vm.value,I=x.im.value;if(!(V>0&&I>0))return;const rca=V/I,dV=x.vm.delta,dI=x.im.delta,dR=rca*(dV/V+dI/I);
+  const vBest=appropriateRange(V_RANGES,x.t.vm),iBest=appropriateRange(I_RANGES,x.t.im);
+  if(vBest.cal!==x.vr.cal||iBest.cal!==x.ir.cal){$('#rxMessage').className='notice warn';$('#rxMessage').textContent=`Use the appropriate ranges (${vBest.label}, ${iBest.label}) before recording.`;return;}
+  const v=validateAnalogEntry({nEl:'#rxVStudentN',valueEl:'#rxVStudentValue',uncEl:'#rxVStudentUnc',m:x.vm,range:x.vr,label:'voltmeter'});
+  if(!v.ok){$('#rxMessage').className='notice warn';$('#rxMessage').textContent=v.message;return;}
+  const i=validateAnalogEntry({nEl:'#rxIStudentN',valueEl:'#rxIStudentValue',uncEl:'#rxIStudentUnc',m:x.im,range:x.ir,valueScale:1000,label:'ammeter'});
+  if(!i.ok){$('#rxMessage').className='notice warn';$('#rxMessage').textContent=i.message;return;}
+  const V=v.value,I=i.value/1000,dV=v.unc,dI=i.unc/1000;if(!(V>0&&I>0))return;const rca=V/I,dR=rca*(dV/V+dI/I);
   const correction=state.rx.method==='short'?rca*rca/x.t.rv:-x.t.ra,corrected=rca+correction;
-  state.rx.records[state.rx.method]={method:state.rx.method,V,I,dV,dI,rca,dR,correction,corrected,rv:x.t.rv,ra:x.t.ra,vRange:x.vr.label,iRange:x.ir.label};
+  state.rx.records[state.rx.method]={method:state.rx.method,V,I,dV,dI,vDiv:v.n,iDiv:i.n,rca,dR,correction,corrected,rv:x.t.rv,ra:x.t.ra,vRange:x.vr.label,iRange:x.ir.label};
+  clearValues(['rxVStudentN','rxVStudentValue','rxVStudentUnc','rxIStudentN','rxIStudentValue','rxIStudentUnc']);
   state.exactShown=false;renderRx();progress();summary();save();
 }
 function renderRx(){
@@ -340,7 +374,7 @@ function revealExact(){
   const s=state.rx.records.short,l=state.rx.records.long;if(!s||!l){$('#exactNotice').className='notice warn';$('#exactNotice').textContent='Complete both resistance-measurement topologies first.';return;}
   state.exactShown=true;const pr=preferredRx(),err=100*(pr.corrected-state.run.rx)/state.run.rx;
   $('#exactNotice').className='notice ok';$('#exactNotice').textContent='Exact simulator specimen revealed for post-analysis comparison.';
-  $('#exactText').innerHTML=`<p>The hidden specimen is R<sub>X,true</sub>=${state.run.rx.toFixed(1)} Ω. The preferred corrected result is ${pr.corrected.toFixed(1)} ± ${pr.dR.toFixed(1)} Ω, a signed deviation of ${err.toFixed(2)}%.</p><p>The short-derivation correction R<sub>Ca</sub>²/R<sub>V</sub> is an approximation valid when R<sub>Ca</sub>≪R<sub>V</sub>; the long-derivation correction −R<sub>A</sub> is exact for the idealised topology. This comparison is an extension beyond the core TP calculation.</p>`;save();
+  $('#exactText').innerHTML=`<p>The hidden specimen is R<sub>X,true</sub>=${state.run.rx.toFixed(1)} Ω. The preferred corrected result is ${pr.corrected.toFixed(1)} ± ${pr.dR.toFixed(1)} Ω, a signed deviation of ${err.toFixed(2)}%.</p><p>The short-derivation correction R<sub>Ca</sub>²/R<sub>V</sub> is an approximation valid when R<sub>Ca</sub>≪R<sub>V</sub>; the long-derivation correction −R<sub>A</sub> is exact for the idealised topology. This comparison is an extension beyond the core practical calculation.</p>`;save();
 }
 
 function setupQuiz(){
@@ -357,16 +391,18 @@ function rxTableHtml(){
   return `<table class="e01-table"><thead><tr><th>Method</th><th>RCa</th><th>Correction</th><th>ΔRCa</th><th>Corrected RX</th></tr></thead><tbody>${['short','long'].map(m=>{const d=state.rx.records[m];return d?`<tr><td>${m}</td><td>${d.rca.toFixed(1)} Ω</td><td>${d.correction.toFixed(1)} Ω</td><td>${d.dR.toFixed(1)} Ω</td><td>${d.corrected.toFixed(1)} Ω</td></tr>`:`<tr><td>${m}</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>`;}).join('')}</tbody></table>`;
 }
 function buildReport(){
+  const emailEl=$('#studentEmail'),email=(emailEl?.value||'').trim();
+  if(!emailEl||!email||!emailEl.checkValidity()){if(emailEl){emailEl.focus();}$('#reportPreview').innerHTML='<div class="notice warn"><strong>Email required.</strong> Enter a valid student email before building the report.</div>';return false;}
   drawPot();state.report=collectReport();state.text=collectText();const e=state.emf.best,h=state.emf.high,p=potFit(),pr=preferredRx(),img=$('#potChart').toDataURL('image/png');
   const d10=state.pot.records[10],di=p&&d10?p.m*(d10.deltaV/Math.max(d10.v,1e-12)+BOX_REL):NaN;
-  const html=`<h2>Laboratory Report — E01</h2><p><strong>Electrical Measurements & Resistance</strong></p>
-  <p><strong>Student:</strong> ${escapeHtml($('#studentName')?.value||'—')} &nbsp; <strong>Group:</strong> ${escapeHtml($('#studentGroup')?.value||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(state.report.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
+  const html=`<h2>Laboratory Practical 1 Report — E01</h2><p><strong>Electrical Measurements & Resistance</strong></p>
+  <p><strong>Student:</strong> ${escapeHtml($('#studentName')?.value||'—')} &nbsp; <strong>Email:</strong> ${escapeHtml(email)} &nbsp; <strong>Group:</strong> ${escapeHtml($('#studentGroup')?.value||'—')} &nbsp; <strong>Date:</strong> ${escapeHtml(state.report.reportDate||'—')} &nbsp; <strong>Run:</strong> ${escapeHtml(state.run.id)}</p>
   <h3>7.1 — Generator emf</h3><p>Appropriate range: ${e?e.label+', E = '+e.value.toFixed(2)+' ± '+e.delta.toFixed(2)+' V':'not completed'}. Immediately higher range: ${h?h.label+', E′ = '+h.value.toFixed(2)+' ± '+h.delta.toFixed(2)+' V':'not completed'}.</p><p>${prose(state.text.emfConclusion)}</p>
   <h3>7.2 — Potentiometric source</h3>${potTableHtml()}<p>Slope-derived current: <strong>${p?p.m.toFixed(4)+' A':'not determined'}</strong>${Number.isFinite(di)?', ΔI ≈ '+di.toFixed(4)+' A':''}; R² = ${p?p.r2.toFixed(5):'—'}.</p><img src="${img}" style="max-width:100%" alt="VAB versus RAB graph">
   <h3>7.3 — Unknown resistance</h3>${rxTableHtml()}<p>Preferred method: <strong>${pr?pr.method+' derivation':'not determined'}</strong>. Preferred result: ${pr?pr.corrected.toFixed(1)+' ± '+pr.dR.toFixed(1)+' Ω':'—'}.</p><p>${prose(state.text.methodJustification)}</p>
   <h3>Discussion</h3><p>${prose(state.report.reportDiscussion)}</p><h3>Conclusion</h3><p>${prose(state.report.reportConclusion)}</p><p><strong>Assessment:</strong> ${state.assessment?state.assessment.score+'/'+state.assessment.total:'not submitted'}.</p>
   <hr><p class="mini">Core calculations follow the USTHB resistance-measurement practical. Numerical meter specifications and hidden component values are virtual simulation parameters.</p>`;
-  $('#reportPreview').innerHTML=html;$('#printOnlyPreview').innerHTML=html;save();
+  $('#reportPreview').innerHTML=html;$('#printOnlyPreview').innerHTML=html;save();return true;
 }
 
 function setupTabs(){
@@ -374,7 +410,10 @@ function setupTabs(){
 }
 function newSpecimen(){
   if((state.emf.best||Object.keys(state.pot.records).length||Object.keys(state.rx.records).length)&&!confirm('Start a new E01 specimen? Existing measurements and analysis will be cleared.'))return;
-  state.run=makeRun();state.emf={connected:false,maxSeen:false,range:300,best:null,high:null};state.pot={verified:false,selector:0,range:300,records:{}};state.rx={method:'short',verified:false,vRange:300,iRange:.3,records:{}};state.exactShown=false;state.assessment=null;fillRanges();renderAll();save();
+  state.run=makeRun();state.emf={connected:false,maxSeen:false,range:300,best:null,high:null,wiring:{vplus:'',com:''}};state.pot={verified:false,selector:0,range:300,records:{},wiring:{gplus:'',gminus:'',vplus:'',vcom:''}};state.rx={method:'short',verified:false,vRange:300,iRange:.3,records:{},wiring:{ammeter:'',voltmeter:''}};state.exactShown=false;state.assessment=null;
+  ['emfVPlus','emfCOM','potGenPlus','potGenMinus','potVPlus','potVCom','rxAmmeterPlacement','rxVoltmeterSpan'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  clearValues(['emfStudentN','emfStudentValue','emfStudentUnc','potStudentN','potStudentValue','potStudentUnc','rxVStudentN','rxVStudentValue','rxVStudentUnc','rxIStudentN','rxIStudentValue','rxIStudentUnc']);
+  fillRanges();renderAll();save();
 }
 function renderAll(){
   renderEmfResults();updateEmf();renderPotTable();drawPot();updatePot();renderRx();updateRx();restoreAssessment();progress();summary();
@@ -393,11 +432,11 @@ function bindPersistentFields(){
   ["reportDate","reportDiscussion","reportConclusion"].forEach(id=>bind(id,'report'));
 }
 function init(){
-  load();bindPersistentFields();if(state.report){delete state.report.studentName;delete state.report.studentGroup;persistState()}if(!state.run)state.run=makeRun();fillRanges();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
+  load();bindPersistentFields();if(state.report){delete state.report.studentName;delete state.report.studentGroup;delete state.report.studentEmail;persistState()}if(!state.run)state.run=makeRun();fillRanges();restoreFields();setupTabs();setupQuiz();applyMode(state.mode);
   ['emfVPlus','emfCOM'].forEach(id=>$('#'+id).addEventListener('change',()=>{state.emf.connected=false;updateEmfWiring();updateEmf();save();}));$('#emfRange').addEventListener('change',()=>{$('#emfStudentN').value='';$('#emfStudentValue').value='';$('#emfStudentUnc').value='';updateEmf();});$('#connectEmf').addEventListener('click',connectEmf);$('#recordEmf').addEventListener('click',recordEmf);$('#newSpecimen').addEventListener('click',newSpecimen);
-  ['potGenPlus','potGenMinus','potVPlus','potVCom'].forEach(id=>$('#'+id).addEventListener('change',()=>{updatePotWiring();updatePot();save();}));$('#potRange').addEventListener('change',updatePot);$('#potSelectorSelect').addEventListener('change',e=>{state.pot.selector=+e.target.value;updatePot();save();});$('#verifyPot').addEventListener('click',verifyPot);$('#recordPot').addEventListener('click',recordPot);
-  $('.method-btn').forEach(b=>b.addEventListener('click',()=>setMethod(b.dataset.method)));['rxAmmeterPlacement','rxVoltmeterSpan'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateRxWiring();updateRx();save();}));$('#rxVRange').addEventListener('change',updateRx);$('#rxIRange').addEventListener('change',updateRx);$('#verifyRx').addEventListener('click',verifyRx);$('#recordRx').addEventListener('click',recordRx);
-  $('#revealExact').addEventListener('click',revealExact);$('#buildReport').addEventListener('click',buildReport);$('#clearLocalProgress')?.addEventListener('click',()=>{if(confirm('Clear all locally saved progress for this practical on this browser?')){try{localStorage.removeItem(STORAGE);}catch(_){}location.reload();}});$('#printReport').addEventListener('click',()=>{buildReport();window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
+  ['potGenPlus','potGenMinus','potVPlus','potVCom'].forEach(id=>$('#'+id).addEventListener('change',()=>{updatePotWiring();updatePot();save();}));$('#potRange').addEventListener('change',()=>{clearValues(['potStudentN','potStudentValue','potStudentUnc']);updatePot();});$('#potSelectorSelect').addEventListener('change',e=>{state.pot.selector=+e.target.value;clearValues(['potStudentN','potStudentValue','potStudentUnc']);updatePot();save();});$('#verifyPot').addEventListener('click',verifyPot);$('#recordPot').addEventListener('click',recordPot);
+  $('.method-btn').forEach(b=>b.addEventListener('click',()=>setMethod(b.dataset.method)));['rxAmmeterPlacement','rxVoltmeterSpan'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateRxWiring();updateRx();save();}));$('#rxVRange').addEventListener('change',()=>{clearValues(['rxVStudentN','rxVStudentValue','rxVStudentUnc']);updateRx();});$('#rxIRange').addEventListener('change',()=>{clearValues(['rxIStudentN','rxIStudentValue','rxIStudentUnc']);updateRx();});$('#verifyRx').addEventListener('click',verifyRx);$('#recordRx').addEventListener('click',recordRx);
+  $('#revealExact').addEventListener('click',revealExact);$('#buildReport').addEventListener('click',buildReport);$('#clearLocalProgress')?.addEventListener('click',()=>{if(confirm('Clear all locally saved progress for this practical on this browser?')){try{localStorage.removeItem(STORAGE);}catch(_){}location.reload();}});$('#printReport').addEventListener('click',()=>{if(buildReport())window.print();});$$('.modebtn').forEach(b=>b.addEventListener('click',()=>applyMode(b.dataset.mode)));
   window.addEventListener('resize',drawPot);window.addEventListener('beforeunload',save);renderAll();
 }
 init();
