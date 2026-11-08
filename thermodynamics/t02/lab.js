@@ -1,6 +1,24 @@
 (()=>{
 'use strict';
-const U=ThermoUI,E=id=>document.getElementById(id),K='THERMO_T02_v3',V0=325000,D=1.5,AREA=Math.PI*D*D/4,AG=3.3e-6;
+const U=ThermoUI,E=id=>document.getElementById(id),K='THERMO_T02_v4',V0=325000,D=1.5,AREA=Math.PI*D*D/4,AG=3.3e-6;
+const ROD_ACTIONS={
+  mountRod:'Place the measured rod on the thermal-expansion support.',
+  checkTubes:'Verify that the circulation tubes are correctly connected.',
+  checkWater:'Verify that the thermostat reservoir contains water.',
+  circulateTen:'Run the pump for 10 seconds to circulate water through the rod, then switch it off.',
+  zeroGauge:'Bring the dilatometer into contact, set zero, and secure it without moving the reference.',
+  restartPump:'Restart the pump for the heating measurements.'
+};
+const ROD_FLOW=['mountRod','checkTubes','checkWater','circulateTen','zeroGauge','restartPump'];
+const WATER_ACTIONS={
+  assemble:'Assemble the water-anomaly measuring apparatus.',
+  prepareBath:'Prepare the crushed-ice and table-salt cooling mixture in the plastic bath.',
+  placeBath:'Place the plastic bath on the magnetic stirrer.',
+  insertApparatus:'Place the measuring apparatus into the cooling bath.',
+  startStirrer:'Start the magnetic stirrer at medium speed after the initial h–temperature reading.',
+  removeApparatus:'Remove the apparatus from the bath at 0.5°C to prevent the water from freezing.'
+};
+const WATER_PRE=['assemble','prepareBath','placeBath','insertApparatus'];
 const TEMPS=Array.from({length:30},(_,i)=>(i+1)*.5);
 function q1(x){return Math.round(x*10)/10}
 function makeRun(){
@@ -13,8 +31,8 @@ function makeRun(){
   };
 }
 let s=U.load(K,null);
-if(!s||s.version!==3)s={version:3,run:makeRun(),prep:{Cu:null,Al:null},rodData:{Cu:[],Al:[]},rodAnalysis:{Cu:null,Al:null},water:{},h0:null,densityDraft:{},densityChecked:false,tmax:null,interpretation:''};
-s.prep=s.prep||{Cu:null,Al:null};s.rodData=s.rodData||{Cu:[],Al:[]};s.rodAnalysis=s.rodAnalysis||{Cu:null,Al:null};s.water=s.water||{};s.densityDraft=s.densityDraft||{};s.interpretation=s.interpretation||'';
+if(!s||s.version!==4)s={version:4,run:makeRun(),prep:{Cu:null,Al:null},rodProcedure:{Cu:{stage:0},Al:{stage:0}},rodData:{Cu:[],Al:[]},rodAnalysis:{Cu:null,Al:null},water:{},waterProcedure:{setupStage:0,initialRecorded:false,stirStarted:false,removed:false},h0:null,densityDraft:{},densityChecked:false,tmax:null,interpretation:''};
+s.prep=s.prep||{Cu:null,Al:null};s.rodProcedure=s.rodProcedure||{Cu:{stage:0},Al:{stage:0}};for(const r of ['Cu','Al'])s.rodProcedure[r]=s.rodProcedure[r]||{stage:0};s.rodData=s.rodData||{Cu:[],Al:[]};s.rodAnalysis=s.rodAnalysis||{Cu:null,Al:null};s.water=s.water||{};s.waterProcedure=s.waterProcedure||{setupStage:0,initialRecorded:false,stirStarted:false,removed:false};s.densityDraft=s.densityDraft||{};s.interpretation=s.interpretation||'';
 function save(){U.save(K,s)}
 function rhoWater(T){return 1000*(1-((T+288.9414)/(508929.2*(T+68.12963)))*Math.pow(T-3.9863,2))}
 function rod(){return E('rod').value}
@@ -43,13 +61,44 @@ function drawWater(){
   x.fillStyle='#d8e7ec';x.font='700 13px system-ui';x.fillText('capillary scale / mm',capX+70,top+15);x.fillText('ice + salt bath',w*.17,h*.59);x.fillStyle='#90acb8';x.font='600 12px system-ui';x.fillText('Read the meniscus against the scale; no numerical h readout is supplied.',18,27);
   E('waterTempRead').textContent=T.toFixed(1)+'°C';
 }
+function rodProc(r=rod()){return s.rodProcedure[r]}
+function rodExpectedAction(r=rod()){const p=rodProc(r);return p.stage<ROD_FLOW.length?ROD_FLOW[p.stage]:null}
+function renderRodProcedure(){
+  const r=rod(),key=rodExpectedAction(r),box=E('rodProcedureAction');
+  E('pump').disabled=true;E('gaugeZero').disabled=true;
+  if(!key||s.prep[r]){box.style.display='none';return}
+  box.style.display='grid';
+  E('rodActionChoice').innerHTML='<option value="">Select the operation you would perform…</option>'+ROD_FLOW.map(k=>'<option value="'+k+'">'+ROD_ACTIONS[k]+'</option>').join('');
+  E('rodActionChoice').value='';
+}
+function performRodAction(){
+  const r=rod(),p=rodProc(r),key=rodExpectedAction(r),choice=E('rodActionChoice').value,rr=s.run.rods[r];
+  if(!key||s.prep[r])return;
+  if(choice!==key){E('rodMsg').className='notice warn';E('rodMsg').textContent='That operation is out of sequence. Follow the published dilatometer procedure.';return}
+  if(key==='mountRod'){
+    const L=+E('studentL0').value;if(!Number.isFinite(L)||Math.abs(L-rr.L0)>.15){E('rodMsg').className='notice warn';E('rodMsg').textContent='Measure L₀ from the ruler before mounting the rod.';return}
+  }
+  if(key==='circulateTen'){E('pump').value='off';}
+  if(key==='zeroGauge'){if(E('pump').value!=='off'){E('rodMsg').className='notice warn';E('rodMsg').textContent='The 10-second initial circulation must be stopped before zeroing the dilatometer.';return}E('gaugeZero').value='yes';}
+  if(key==='restartPump'){
+    const T=+E('studentT0').value;if(!Number.isFinite(T)||Math.abs(T-actualRodT(r))>.15){E('rodMsg').className='notice warn';E('rodMsg').textContent='Read and enter the initial water temperature T₀ after the gauge has been zeroed and before restarting the pump.';return}
+    E('pump').value='on';
+  }
+  p.stage++;
+  E('rodMsg').className='notice ok';
+  E('rodMsg').textContent=p.stage>=ROD_FLOW.length?'Apparatus sequence complete. Validate L₀ and T₀, then begin heating measurements.':'Operation completed. Continue with the next apparatus step.';
+  renderRodProcedure();drawRod();save();
+}
 function syncRod(){
   const r=rod(),p=s.prep[r];E('studentL0').value=p?p.L0:'';E('studentT0').value=p?p.T0:'';E('studentT').value='';E('studentDL').value='';
-  E('rodMsg').className='notice';E('rodMsg').textContent=p?'Setup validated for '+r+'. Run the pump, raise the thermostat and record broad ΔT points.':'Measure L₀ and T₀, run the pump, zero the dilatometer, then validate the setup before heating.';drawRod();renderRodTable();
+  if(!p&&rodProc(r).stage===0){E('pump').value='off';E('gaugeZero').value='no';}
+  E('rodMsg').className='notice';E('rodMsg').textContent=p?'Setup validated for '+r+'. Keep the pump running, raise the thermostat and record broad ΔT points.':'Measure L₀, then carry out the apparatus operations in the published order.';
+  renderRodProcedure();drawRod();renderRodTable();
 }
 function prepareRod(){
   const r=rod(),rr=s.run.rods[r],L=+E('studentL0').value,T=+E('studentT0').value;
-  if(E('pump').value!=='on'||E('gaugeZero').value!=='yes'){E('rodMsg').className='notice warn';E('rodMsg').textContent='Switch on the circulation pump and zero the dilatometer before validating the initial setup.';return}
+  if(rodProc(r).stage<ROD_FLOW.length){E('rodMsg').className='notice warn';E('rodMsg').textContent='Complete the full apparatus sequence before validating the initial setup.';return}
+  if(E('pump').value!=='on'||E('gaugeZero').value!=='yes'){E('rodMsg').className='notice warn';E('rodMsg').textContent='The pump must have been restarted after T₀ was read, with the dilatometer zero reference secured.';return}
   if(+E('rodTemp').value>25){E('rodMsg').className='notice warn';E('rodMsg').textContent='Return the thermostat near the initial room-temperature condition before recording L₀ and T₀.';return}
   if(!Number.isFinite(L)||Math.abs(L-rr.L0)>.15){E('rodMsg').className='notice warn';E('rodMsg').textContent='Re-read L₀ from the ruler to 0.1 mm.';return}
   if(!Number.isFinite(T)||Math.abs(T-actualRodT(r))>.15){E('rodMsg').className='notice warn';E('rodMsg').textContent='Re-read the initial rod temperature to 0.1°C.';return}
@@ -78,14 +127,61 @@ function checkRodFit(){
   if(Math.abs(u-f.uAlpha)>Math.max(.02,.20*Math.max(f.uAlpha,.01))){E('fitMsg').className='notice warn';E('fitMsg').textContent='Recalculate the standard error of the fitted slope and propagate it through α=slope/L₀.';return}
   s.rodAnalysis[r]={slope:m,alpha:a,uAlpha:u};E('fitMsg').className='notice ok';E('fitMsg').textContent=r+' linear-expansion fit accepted.';renderAll();save();
 }
+function waterExpectedAction(){
+  const p=s.waterProcedure;
+  if(p.setupStage<WATER_PRE.length)return WATER_PRE[p.setupStage];
+  if(!p.initialRecorded)return null;
+  if(!p.stirStarted)return'startStirrer';
+  if(waterComplete()&&!p.removed)return'removeApparatus';
+  return null;
+}
+function renderWaterProcedure(){
+  const key=waterExpectedAction(),box=E('waterProcedureAction');
+  E('stirrer').disabled=true;
+  if(!key){box.style.display='none';return}
+  box.style.display='grid';
+  const keys=[...WATER_PRE,'startStirrer','removeApparatus'];
+  E('waterActionChoice').innerHTML='<option value="">Select the operation you would perform…</option>'+keys.map(k=>'<option value="'+k+'">'+WATER_ACTIONS[k]+'</option>').join('');
+  E('waterActionChoice').value='';
+}
+function performWaterAction(){
+  const key=waterExpectedAction(),choice=E('waterActionChoice').value,p=s.waterProcedure;if(!key)return;
+  if(choice!==key){E('waterMsg').className='notice warn';E('waterMsg').textContent='That operation is out of sequence. Follow the published water-anomaly procedure.';return}
+  if(WATER_PRE.includes(key))p.setupStage++;
+  else if(key==='startStirrer'){p.stirStarted=true;E('stirrer').value='on';}
+  else if(key==='removeApparatus'){p.removed=true;E('stirrer').value='off';}
+  E('waterMsg').className='notice ok';
+  if(p.setupStage===WATER_PRE.length&&!p.initialRecorded)E('waterMsg').textContent='Apparatus prepared. With the stirrer still off, record the initial water level and temperature near 15°C.';
+  else if(key==='startStirrer')E('waterMsg').textContent='Stirrer set to medium speed. Cool and record h every 0.5°C.';
+  else if(key==='removeApparatus')E('waterMsg').textContent='Apparatus removed at the low-temperature limit. The height dataset is ready for analysis.';
+  else E('waterMsg').textContent='Operation completed. Continue with the next setup step.';
+  renderWaterProcedure();drawWater();save();
+}
+function expectedWaterTemp(){
+  const n=Object.keys(s.water).length;return Math.max(.5,15-.5*n);
+}
 function recordWater(){
-  if(E('stirrer').value!=='on'){E('waterMsg').className='notice warn';E('waterMsg').textContent='Set the magnetic stirrer to medium speed so the water temperature is uniform.';return}
+  const p=s.waterProcedure;if(p.setupStage<WATER_PRE.length){E('waterMsg').className='notice warn';E('waterMsg').textContent='Complete the apparatus assembly and ice–salt bath setup before taking readings.';return}
+  if(p.removed){E('waterMsg').className='notice warn';E('waterMsg').textContent='The apparatus has been removed from the bath; the low-temperature run is complete.';return}
   const T=+E('waterTemp').value,h=waterH(T),v=+E('studentH').value;if(!Number.isFinite(v)){E('waterMsg').className='notice warn';E('waterMsg').textContent='Read h from the capillary scale and enter it in millimetres.';return}
+  if(!p.initialRecorded){
+    if(Math.abs(T-15)>.01){E('waterMsg').className='notice warn';E('waterMsg').textContent='Take the initial h–temperature reading near 15.0°C before starting the magnetic stirrer.';return}
+    if(E('stirrer').value!=='off'){E('waterMsg').className='notice warn';E('waterMsg').textContent='The initial reading is taken before the magnetic stirrer is started.';return}
+  }else{
+    if(!p.stirStarted||E('stirrer').value!=='on'){E('waterMsg').className='notice warn';E('waterMsg').textContent='Start the magnetic stirrer at medium speed before continuing the cooling series.';return}
+    const expectedT=expectedWaterTemp();if(Math.abs(T-expectedT)>.01){E('waterMsg').className='notice warn';E('waterMsg').textContent='Continue cooling sequentially in 0.5°C steps. The next reading should be at '+expectedT.toFixed(1)+'°C.';return}
+  }
   if(Math.abs(v-h)>.75){E('waterMsg').className='notice warn';E('waterMsg').textContent='Re-read the meniscus against the 10 mm scale subdivisions.';return}
-  s.water[T.toFixed(1)]=v;s.h0=null;s.densityDraft={};s.densityChecked=false;s.tmax=null;E('studentH').value='';E('studentH0').value='';E('studentTmax').value='';E('waterMsg').className='notice ok';E('waterMsg').textContent='h('+T.toFixed(1)+'°C) accepted. Continue in 0.5°C steps while cooling.';renderAll();save();
+  s.water[T.toFixed(1)]=v;if(!p.initialRecorded)p.initialRecorded=true;s.h0=null;s.densityDraft={};s.densityChecked=false;s.tmax=null;E('studentH').value='';E('studentH0').value='';E('studentTmax').value='';
+  E('waterMsg').className='notice ok';
+  if(!p.stirStarted)E('waterMsg').textContent='Initial reading accepted. Now start the magnetic stirrer at medium speed.';
+  else if(waterComplete())E('waterMsg').textContent='0.5°C reading accepted. Remove the apparatus from the cooling bath to prevent freezing.';
+  else E('waterMsg').textContent='h('+T.toFixed(1)+'°C) accepted. Continue cooling by 0.5°C.';
+  renderAll();save();
 }
 function waterComplete(){return TEMPS.every(T=>s.water[T.toFixed(1)]!=null)}
 function checkH0(){
+  if(!s.waterProcedure.removed){E('waterMsg').className='notice warn';E('waterMsg').textContent='Complete the 0.5°C reading and remove the apparatus from the bath before extrapolating h(0°C).';return}
   if(!waterComplete()){E('waterMsg').className='notice warn';E('waterMsg').textContent='Complete all 30 height readings from 15.0°C down to 0.5°C before extrapolating h(0°C).';return}
   const v=+E('studentH0').value;if(!Number.isFinite(v)||v<=0){E('waterMsg').className='notice warn';E('waterMsg').textContent='Enter your extrapolated capillary height at 0°C.';return}
   if(Math.abs(v-s.run.h0)>1.1){E('waterMsg').className='notice warn';E('waterMsg').textContent='Extrapolate the low-temperature h(θ) trend to θ=0°C and re-read the intercept.';return}
@@ -129,14 +225,14 @@ function renderAnalysis(){
   const words=s.interpretation.trim().length>=70;E('progress').innerHTML='<div class="item '+(s.rodAnalysis.Cu?'done':'')+'">'+(s.rodAnalysis.Cu?'✓':'○')+' copper fit</div><div class="item '+(s.rodAnalysis.Al?'done':'')+'">'+(s.rodAnalysis.Al?'✓':'○')+' aluminium fit</div><div class="item '+(s.tmax!=null?'done':'')+'">'+(s.tmax!=null?'✓':'○')+' water-density maximum</div><div class="item '+(words?'done':'')+'">'+(words?'✓':'○')+' physical interpretation</div>';
 }
 function loadFitFields(){const a=s.rodAnalysis[E('analysisRod').value];E('studentSlope').value=a?a.slope:'';E('studentAlpha').value=a?a.alpha:'';E('studentUAlpha').value=a?a.uAlpha:''}
-function renderAll(){drawRod();drawWater();renderRodTable();renderWaterTable();drawCharts();renderAnalysis()}
+function renderAll(){drawRod();drawWater();renderRodProcedure();renderWaterProcedure();renderRodTable();renderWaterTable();drawCharts();renderAnalysis()}
 function buildReport(){
   const c=s.rodAnalysis.Cu,a=s.rodAnalysis.Al,summary='<p><b>Copper:</b> '+(c?'α='+c.alpha.toFixed(2)+' ± '+c.uAlpha.toFixed(2)+' ×10⁻⁶ K⁻¹':'fit incomplete')+'. <b>Aluminium:</b> '+(a?'α='+a.alpha.toFixed(2)+' ± '+a.uAlpha.toFixed(2)+' ×10⁻⁶ K⁻¹':'fit incomplete')+'.</p><p><b>Water anomaly:</b> '+(s.tmax!=null?'density maximum at '+Number(s.tmax).toFixed(1)+'°C; 30 height/density points validated.':'analysis incomplete')+'</p><p><b>Interpretation:</b> '+U.esc(s.interpretation||'Not completed.')+'</p>';
   return U.report('Laboratory Practical 2 — Thermal Expansion & the Water-Density Anomaly',summary);
 }
 U.tabs();E('interpretation').value=s.interpretation;
-E('rod').addEventListener('change',syncRod);['rodTemp'].forEach(id=>E(id).addEventListener('input',drawRod));['pump','gaugeZero'].forEach(id=>E(id).addEventListener('change',drawRod));E('prepareRod').onclick=prepareRod;E('recordRod').onclick=recordRod;
-E('waterTemp').addEventListener('input',drawWater);E('stirrer').addEventListener('change',drawWater);E('recordWater').onclick=recordWater;E('checkH0').onclick=checkH0;E('checkDensityTable').onclick=checkDensityTable;E('checkTmax').onclick=checkTmax;
+E('rod').addEventListener('change',syncRod);['rodTemp'].forEach(id=>E(id).addEventListener('input',drawRod));E('performRodAction').onclick=performRodAction;E('prepareRod').onclick=prepareRod;E('recordRod').onclick=recordRod;
+E('waterTemp').addEventListener('input',drawWater);E('performWaterAction').onclick=performWaterAction;E('recordWater').onclick=recordWater;E('checkH0').onclick=checkH0;E('checkDensityTable').onclick=checkDensityTable;E('checkTmax').onclick=checkTmax;
 E('analysisRod').addEventListener('change',()=>{loadFitFields();renderAnalysis()});E('checkRodFit').onclick=checkRodFit;
 E('interpretation').addEventListener('input',e=>{s.interpretation=e.target.value;renderAnalysis();save()});
 E('buildReport').onclick=buildReport;E('printReport').onclick=()=>{if(buildReport())window.print()};
