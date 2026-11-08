@@ -85,7 +85,7 @@ test("static course entry point references available scripts and has no missing 
  for(const id of new Set(ids)) assert.ok(html.includes('id="'+id+'"'),"missing DOM id: "+id);
  assert.match(app,/loadAuthoredUnits\(\)/);
  assert.match(app,/state\.reviews/);
- assert.match(html,/Draft only/);
+ assert.match(html,/A2 beta — formative learning only/);
 });
 
 
