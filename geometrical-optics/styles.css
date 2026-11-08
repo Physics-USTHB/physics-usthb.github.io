@@ -9,3 +9,12 @@
 .small-note{font-size:11px!important;color:#6d8193!important;line-height:1.55!important}
 @media(max-width:720px){.snell-entry{grid-template-columns:1fr 1fr}.snell-entry .btn{grid-column:1/-1}}
 @media(max-width:520px){.snell-entry{grid-template-columns:1fr}.snell-entry .btn{grid-column:auto}.calc-table .table-calc{width:70px}}
+
+
+/* Optics Practical 2 review: goniometer calculations */
+.student-optics-entry{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin:12px 0}.student-optics-entry label{font-size:10px;text-transform:uppercase;color:#687e91;font-weight:820}.student-optics-entry input{width:100%;margin-top:5px;border:1px solid #d2dee7;border-radius:8px;padding:8px;background:#fff;color:#143b55}.student-optics-entry .btn{white-space:nowrap}
+.student-optics-entry.dark label{color:#8fa8ba}.student-optics-entry.dark input{background:#08151e;color:#ecf8ff;border-color:#39566b}
+.student-optics-entry.analysis-entry{grid-template-columns:1fr 1fr auto;padding:12px;border:1px solid #dce5ee;border-radius:11px;background:#f7fafc}
+.unknown-work{display:grid;gap:8px;margin:10px 0}.unknown-row{display:grid;grid-template-columns:1fr auto minmax(150px,.8fr);gap:10px;align-items:center;padding:10px;border:1px solid #dce5ed;border-radius:9px;background:#f7fafc;font-size:12px;color:#617789}.unknown-row strong{font:800 11px ui-monospace,monospace;color:#194966}.unknown-row label{font-size:9px;text-transform:uppercase;font-weight:820}.unknown-row input{width:100%;margin-top:4px;border:1px solid #d2dee7;border-radius:7px;padding:7px;background:#fff;color:#143b55}
+@media(max-width:760px){.student-optics-entry.analysis-entry{grid-template-columns:1fr 1fr}.student-optics-entry.analysis-entry .btn{grid-column:1/-1}.unknown-row{grid-template-columns:1fr 1fr}.unknown-row label{grid-column:1/-1}}
+@media(max-width:520px){.student-optics-entry,.student-optics-entry.analysis-entry,.unknown-row{grid-template-columns:1fr}.student-optics-entry.analysis-entry .btn,.unknown-row label{grid-column:auto}}
