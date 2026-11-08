@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="USTHB-aligned undergraduate virtual laboratory on the current–voltage characteristics of passive electrical dipoles.">
-  <title>E03 — I–V Characteristics | Physics USTHB</title>
+  <title>Laboratory Practical 3 — I–V Characteristics | Physics USTHB</title>
   <link rel="stylesheet" href="../../assets/styles.css">
   <link rel="stylesheet" href="official.css">
 </head>
@@ -12,17 +12,17 @@
 <header class="topbar">
   <div class="shell nav">
     <a class="brand" href="../../index.html"><span class="brandmark">Φ</span><span class="brandcopy"><strong>Physics USTHB</strong><small>Electricity laboratory</small></span></a>
-    <nav class="navlinks"><a href="../index.html">Electricity Lab</a><a href="../../index.html">Home</a></nav>
+    <nav class="navlinks"><a href="../index.html">Electricity Lab</a><a href="../e02/index.html">Previous: Practical 2</a><a href="../e04/index.html">Next: Practical 4</a><a href="../../index.html">Home</a></nav>
   </div>
 </header>
 
 <section class="labmast">
   <div class="shell labmast-grid">
     <div>
-      <div class="breadcrumbs">Virtual Laboratory / Electricity & Circuits / E03</div>
+      <div class="breadcrumbs">Virtual Laboratory / Electricity & Circuits / Laboratory Practical 3</div>
       <h1>Current–Voltage Characteristics of Electrical Dipoles</h1>
       <div class="labmeta">
-        <span class="pill official-mark">USTHB TP3 core protocol</span>
+        <span class="pill official-mark">USTHB Practical 3 core protocol</span>
         <span class="pill">L1 SM / ST</span>
         <span class="pill">English edition</span>
         <span class="pill extension-mark">Advanced analysis extension</span>
@@ -50,7 +50,7 @@
 <main class="shell">
 <section class="tabpanel active" id="briefing">
   <div class="protocol-banner">
-    <div><strong>Faithful core protocol</strong><p>Part A follows the official USTHB TP3 sequence and prescribed selector positions. The uncertainty-aware analysis in Part B is an added extension and is labelled separately.</p></div>
+    <div><strong>Faithful core protocol</strong><p>Part A follows the official USTHB Practical 3 sequence and prescribed selector positions. The uncertainty-aware analysis in Part B is an added extension and is labelled separately.</p></div>
     <a href="https://fphy.usthb.dz/wp-content/uploads/2023/02/tp3_caracteristiques.pdf" target="_blank" rel="noopener">Official USTHB handout ↗</a>
   </div>
 
@@ -59,7 +59,7 @@
   <div class="protocol-grid">
     <article class="protocol-card">
       <h3>Official objectives</h3>
-      <p>This virtual laboratory preserves the three central objectives of TP3:</p>
+      <p>This virtual laboratory preserves the three central objectives of Practical 3:</p>
       <ol>
         <li>build and use an adjustable voltage source based on a potentiometric resistance box;</li>
         <li>plot the characteristics of passive dipoles and combinations of dipoles;</li>
@@ -86,7 +86,7 @@
       <h3>Short-derivation connection</h3>
       <p>The voltmeter is connected directly across the dipole. The ammeter therefore measures</p>
       <div class="formula">I<sub>m</sub> = I<sub>D</sub> + I<sub>V</sub>.</div>
-      <p>In the official TP, the graph is plotted using the measured current <strong>I<sub>m</sub></strong>. The approximation I<sub>m</sub> ≈ I<sub>D</sub> is acceptable because the voltmeter input resistance is very large compared with the tested dipoles.</p>
+      <p>In the official practical, the graph is plotted using the measured current <strong>I<sub>m</sub></strong>. The approximation I<sub>m</sub> ≈ I<sub>D</sub> is acceptable because the voltmeter input resistance is very large compared with the tested dipoles.</p>
       <div class="question-block">
         <label for="shortJustification">Your justification for choosing the short-derivation connection</label>
         <textarea id="shortJustification" placeholder="Explain which instrument-loading error is minimised and why this topology is suitable for these dipoles."></textarea>
@@ -108,7 +108,7 @@
   <div class="official-bench">
     <div class="pot-board">
       <div class="bench-top">
-        <div><div class="bench-kicker">USTHB TP3 apparatus model</div><h3 class="bench-title">Potentiometric resistance box</h3></div>
+        <div><div class="bench-kicker">USTHB Practical 3 apparatus model</div><h3 class="bench-title">Potentiometric resistance box</h3></div>
         <span class="wiring-state" id="wiringState">Wiring not verified</span>
       </div>
 
@@ -130,7 +130,7 @@
       </div>
 
       <div class="e03-wiring-box">
-        <div class="e03-wiring-head"><strong>Build the TP3 measurement circuit</strong><span>The source and utilisation circuit must use the correct terminals of the 11 Ω box.</span></div>
+        <div class="e03-wiring-head"><strong>Build the Practical 3 measurement circuit</strong><span>The source and utilisation circuit must use the correct terminals of the 11 Ω box.</span></div>
         <div class="e03-wiring-grid">
           <label>Generator terminals<select id="e03SourcePair"><option value="">Choose…</option><option value="AC">A–C</option><option value="AB">A–B</option><option value="BC">B–C</option></select></label>
           <label>Utilisation circuit<select id="e03UsePair"><option value="">Choose…</option><option value="AB">A–B</option><option value="AC">A–C</option><option value="BC">B–C</option></select></label>
@@ -138,6 +138,14 @@
           <label>Voltmeter connection<select id="e03VoltmeterTopo"><option value="">Choose…</option><option value="load">Across tested dipole/network</option><option value="source">Across source A–C</option></select></label>
         </div>
         <div class="e03-wiring-status" id="e03WiringStatus">Circuit not wired.</div>
+      </div>
+      <div class="range-panel">
+        <div class="range-panel-head"><strong>Meter ranges</strong><span>The handout requires maximum range before the source is connected or a circuit is changed.</span></div>
+        <div class="range-panel-grid">
+          <label>Voltmeter range<select id="e03VRange"><option value="20">20 V · maximum</option><option value="10">10 V</option><option value="5">5 V</option><option value="2">2 V</option><option value="1">1 V</option></select></label>
+          <label>Ammeter range<select id="e03IRange"><option value="0.3">300 mA · maximum</option><option value="0.1">100 mA</option><option value="0.03">30 mA</option><option value="0.01">10 mA</option></select></label>
+          <div class="range-rule" id="rangeStatus">Start with 20 V and 300 mA before verification.</div>
+        </div>
       </div>
 
       <div class="selector-board">
@@ -173,12 +181,14 @@
       </div>
 
       <div class="core-meters">
-        <div class="core-meter"><span>Voltmeter Vm</span><strong id="vmeter">0.00 V</strong></div>
-        <div class="core-meter"><span>Ammeter Im</span><strong id="imeter">0.0 mA</strong></div>
+        <div class="core-meter"><span>Voltmeter Vm · <b id="vRangeLabel">20 V range</b></span><strong id="vmeter">SOURCE OFF</strong></div>
+        <div class="core-meter"><span>Ammeter Im · <b id="iRangeLabel">300 mA range</b></span><strong id="imeter">SOURCE OFF</strong></div>
       </div>
 
       <div class="core-actions">
-        <button class="btn secondary" id="verifyWiring" type="button">Verify wiring</button>
+        <button class="btn secondary" id="verifyWiring" type="button">Verify circuit</button>
+        <button class="btn" id="connectSource" type="button" disabled>Connect source</button>
+        <button class="btn secondary" id="disconnectSource" type="button" disabled>Disconnect source</button>
         <button class="btn" id="recordReading" type="button" disabled>Record prescribed reading</button>
         <button class="btn secondary" id="newRun" type="button">New specimen</button>
       </div>
@@ -193,7 +203,7 @@
       </article>
       <article class="task-card">
         <h4>Virtual instrument model</h4>
-        <p>Voltmeter: 20 V DC range, 10 MΩ input resistance. Ammeter: 300 mA DC range, finite internal resistance. Small calibration offsets and reading noise vary with each virtual specimen.</p>
+        <p>Virtual voltmeter ranges: 1, 2, 5, 10 and 20 V; input resistance 10 MΩ. Virtual ammeter ranges: 10, 30, 100 and 300 mA with finite internal resistance. The numerical specifications are simulation parameters, while the maximum-range-before-connection sequence comes directly from the handout.</p>
       </article>
       <article class="task-card">
         <h4>Lamp label</h4>
@@ -224,19 +234,21 @@
     <article class="paper">
       <h2>Official characteristic graph</h2>
       <div class="core-chart"><canvas id="coreChart" width="900" height="520"></canvas></div>
-      <div class="graph-note">Horizontal axis: measured ammeter current I<sub>m</sub>. Vertical axis: measured voltage. Resistor and lamp are plotted on the same graph, as required by the TP.</div>
+      <div class="graph-note">Horizontal axis: measured ammeter current I<sub>m</sub>. Vertical axis: measured voltage. Resistor and lamp are plotted on the same graph, as required by the practical.</div>
     </article>
     <article class="paper">
       <h2>Interpretation</h2>
       <div class="result-box">
-        <h4>Resistor from the official graph</h4>
-        <div class="result-grid"><div><span>Graphical slope</span><strong id="officialR">— Ω</strong></div><div><span>Linearity R²</span><strong id="officialR2">—</strong></div></div>
+        <h4>Read the resistor resistance from your graph</h4>
+        <div class="student-result-entry"><label>Your slope R<sub>x</sub> / Ω<input id="studentOfficialR" type="number" min="0" step="0.1"></label><button class="btn" id="checkOfficialR" type="button">Check graph reading</button></div>
+        <div class="result-grid"><div><span>Accepted graph result</span><strong id="officialR">— Ω</strong></div><div><span>Digital linearity check</span><strong id="officialR2">—</strong></div></div>
       </div>
       <div class="result-box" style="margin-top:12px">
         <h4>Lamp at nominal operation</h4>
-        <div class="result-grid"><div><span>Estimated V/I near 6 V</span><strong id="lampR">— Ω</strong></div><div><span>Label expectation</span><strong>60 Ω</strong></div></div>
+        <div class="student-result-entry"><label>Your V/I near 6 V / Ω<input id="studentLampR" type="number" min="0" step="0.1"></label><button class="btn" id="checkLampR" type="button">Check graph reading</button></div>
+        <div class="result-grid"><div><span>Accepted operating resistance</span><strong id="lampR">— Ω</strong></div><div><span>Label expectation</span><strong>60 Ω</strong></div></div>
       </div>
-      <div class="compare-panel" id="lampCompare" style="margin-top:12px">Complete the lamp readings to compare the graph with the 6 V / 0.10 A virtual manufacturer label.</div>
+      <div class="compare-panel" id="lampCompare" style="margin-top:12px">Complete both characteristics, then read R<sub>x</sub> from the resistor slope and the lamp operating resistance near 6 V.</div>
       <div class="question-block"><label for="resistorInterpretation">What does the resistor graph suggest?</label><textarea id="resistorInterpretation" placeholder="Discuss linearity, passage near the origin, and the resistance obtained from the slope."></textarea></div>
       <div class="question-block"><label for="lampInterpretation">What does the lamp graph suggest?</label><textarea id="lampInterpretation" placeholder="Discuss the curvature and the change of filament resistance with operating condition."></textarea></div>
     </article>
@@ -259,6 +271,7 @@
       <h3 style="margin-top:18px">Experimental verification at selector 5 and 9</h3>
       <div class="core-table-wrap"><table class="core-table"><thead><tr><th>Selector</th><th>Measured V<sub>m</sub> / V</th><th>Measured I<sub>m</sub> / mA</th><th>Graphical V<sub>S</sub> / V</th><th>Difference / V</th></tr></thead><tbody id="seriesBody"></tbody></table></div>
       <div class="question-block"><label for="seriesJustification">Justify the series addition principle</label><textarea id="seriesJustification" placeholder="Explain why the current is common and the voltages add."></textarea></div>
+      <div class="question-block"><label for="seriesConfirmation">Do the experimental points at selector 5 and 9 confirm the graphical series characteristic?</label><textarea id="seriesConfirmation" placeholder="Compare the measured points with your graphical construction and state whether they confirm it within experimental reading accuracy."></textarea></div>
     </article>
     <article class="paper">
       <div class="section-toolbar"><div><h2>Parallel verification</h2><div class="mini">Official experimental checks: selector positions 5 and 9.</div></div><span class="completion-badge" id="parallelBadge">0 / 2</span></div>
@@ -274,6 +287,7 @@
       <h3 style="margin-top:18px">Experimental verification at selector 5 and 9</h3>
       <div class="core-table-wrap"><table class="core-table"><thead><tr><th>Selector</th><th>Measured V<sub>m</sub> / V</th><th>Measured I<sub>m</sub> / mA</th><th>Graphical I<sub>P</sub> / mA</th><th>Difference / mA</th></tr></thead><tbody id="parallelBody"></tbody></table></div>
       <div class="question-block"><label for="parallelJustification">Justify the parallel addition principle</label><textarea id="parallelJustification" placeholder="Explain why the voltage is common and the branch currents add."></textarea></div>
+      <div class="question-block"><label for="parallelConfirmation">Do the experimental points at selector 5 and 9 confirm the graphical parallel characteristic?</label><textarea id="parallelConfirmation" placeholder="Compare the measured points with your graphical construction and state whether they confirm it within experimental reading accuracy."></textarea></div>
     </article>
   </div>
 
@@ -286,7 +300,7 @@
 
 <section class="tabpanel" id="advanced">
   <div class="protocol-banner">
-    <div><strong>Part B — Advanced experimental analysis</strong><p>This section is an extension beyond the official TP3 handout. It does not replace the official V=f(I<sub>m</sub>) treatment above.</p></div>
+    <div><strong>Part B — Advanced experimental analysis</strong><p>This section is an extension beyond the official Practical 3 handout. It does not replace the official V=f(I<sub>m</sub>) treatment above.</p></div>
     <span class="pill extension-mark">Extension</span>
   </div>
   <div class="grid two">
@@ -327,10 +341,11 @@
 <section class="tabpanel" id="report">
   <article class="paper no-print">
     <h2>Laboratory report</h2>
-    <p class="mini"><strong>Privacy:</strong> student name and group stay only in this open page and are not saved. Measurements and report text autosave locally in this browser.</p>
-    <p>The report keeps the official TP3 results separate from the optional advanced-analysis extension.</p>
+    <p class="mini"><strong>Privacy:</strong> student name, email and group stay only in this open page and are not saved. Measurements and report text autosave locally in this browser.</p>
+    <p>The report keeps the official Practical 3 results separate from the optional advanced-analysis extension.</p>
     <div class="report-grid">
       <label>Student name<input id="studentName" type="text"></label>
+      <label>Email<input id="studentEmail" type="email" placeholder="name@example.com" required></label>
       <label>Group / section<input id="studentGroup" type="text"></label>
       <label>Date<input id="reportDate" type="date"></label>
       <label>Mode<input id="reportMode" type="text" readonly></label>
@@ -339,12 +354,12 @@
     </div>
     <div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button><button class="btn ghost" id="clearLocalProgress" type="button">Clear local data</button></div>
   </article>
-  <div class="report-preview" id="reportPreview"><h2>Laboratory Report — E03</h2><p class="mini">Complete the prescribed measurements and build the report.</p></div>
+  <div class="report-preview" id="reportPreview"><h2>Laboratory Practical 3 Report — E03</h2><p class="mini">Complete the prescribed measurements and build the report.</p></div>
 </section>
 <section class="tabpanel" id="printable-report"><div class="report-preview" id="printOnlyPreview"></div></section>
 </main>
 
-<footer class="footer"><div class="shell">E03 • USTHB-aligned TP3 core protocol • Physics USTHB interactive laboratory · <a href="../../privacy.html">Privacy</a></div></footer>
+<footer class="footer"><div class="shell">Laboratory Practical 3 · Current–Voltage Characteristics · Physics USTHB · <a href="../../privacy.html">Privacy</a></div></footer>
 <script src="official.js"></script>
 </body>
 </html>
