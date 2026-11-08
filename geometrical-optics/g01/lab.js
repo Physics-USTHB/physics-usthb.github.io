@@ -8,6 +8,7 @@ const defaults={
   mirror:{law:false,reverse:false,image:false,field:false,reversed:false},
   ref:{mirror:{},plexi:{}},
   calc:{},
+  calcDraft:{},
   analysis:{n:null,critical:null},
   n:1.493+Math.random()*.012,
   angleSeed:Math.random()*1000
@@ -22,6 +23,7 @@ let s={
   mirror:{...defaults.mirror,...(loaded.mirror||{})},
   ref:{mirror:{...(loaded.ref?.mirror||{})},plexi:{...(loaded.ref?.plexi||{})}},
   calc:{...(loaded.calc||{})},
+  calcDraft:{...(loaded.calcDraft||loaded.calc||{})},
   analysis:{...defaults.analysis,...(loaded.analysis||{})}
 };
 if(!Number.isFinite(s.angleSeed))s.angleSeed=Math.random()*1000;
@@ -217,7 +219,7 @@ function measureDiskReading(){
     return;
   }
   s.ref[mode][i]=read;
-  if(mode==='plexi'){delete s.calc[i];s.analysis={n:null,critical:null};}
+  if(mode==='plexi'){delete s.calc[i];delete s.calcDraft[i];s.analysis={n:null,critical:null};}
   E('outAngle').value='';
   E('diskMessage').className='notice ok';
   E('diskMessage').textContent=mode==='mirror'?'Mirror reading stored. Compare it with the imposed incidence angle to verify r=i.':'Plexiglas reading stored. Continue through all prescribed incidence angles.';
@@ -232,7 +234,7 @@ function renderTable(){
   E('refractionBody').innerHTML=incs.map(i=>{
     const r=s.ref.plexi[i];
     if(r==null)return '<tr><td>'+i+'</td><td colspan="5">—</td></tr>';
-    const c=s.calc[i]||{};
+    const c=s.calcDraft[i]||s.calc[i]||{};
     return '<tr><td>'+i+'</td><td>'+Number(r).toFixed(1)+'</td><td>'+inputCell(i,'D',c.D,'0.1')+'</td><td>'+inputCell(i,'si',c.si,'0.001')+'</td><td>'+inputCell(i,'sr',c.sr,'0.001')+'</td><td>'+(i===0?'—':inputCell(i,'n',c.n,'0.001'))+'</td></tr>';
   }).join('');
 }
@@ -250,8 +252,8 @@ function checkCalculations(){
     const r=+s.ref.plexi[i],expected={D:i-r,si:Math.sin(i*DEG),sr:Math.sin(r*DEG)},row={};
     for(const key of ['D','si','sr']){
       const el=document.querySelector('[data-i="'+i+'"][data-key="'+key+'"]');
-      const v=+(el?.value);
-      if(!Number.isFinite(v)){
+      const raw=el?.value?.trim()||'',v=+raw;
+      if(raw===''||!Number.isFinite(v)){
         E('calcMessage').className='notice warn';
         E('calcMessage').textContent='Complete every calculation cell before checking.';
         return;
@@ -265,8 +267,8 @@ function checkCalculations(){
     }
     if(i>0){
       const el=document.querySelector('[data-i="'+i+'"][data-key="n"]');
-      const v=+(el?.value),en=expected.si/expected.sr;
-      if(!Number.isFinite(v)){
+      const raw=el?.value?.trim()||'',v=+raw,en=expected.si/expected.sr;
+      if(raw===''||!Number.isFinite(v)){
         E('calcMessage').className='notice warn';
         E('calcMessage').textContent='Complete the refractive-index ratio for every non-zero incidence angle.';
         return;
@@ -280,7 +282,7 @@ function checkCalculations(){
     }
     next[i]=row;
   }
-  s.calc=next;s.analysis={n:null,critical:null};
+  s.calc=next;s.calcDraft=JSON.parse(JSON.stringify(next));s.analysis={n:null,critical:null};
   E('studentN').value='';E('studentCritical').value='';
   E('calcMessage').className='notice ok';
   E('calcMessage').textContent='Calculation table accepted. The graphs are now built from your validated values.';
@@ -362,6 +364,13 @@ U.tabs();
 E('incidence').innerHTML=incs.map(i=>'<option>'+i+'</option>').join('');
 ['eyeCase','pinB','pinC','pinD','mirrorEye','mirrorHit','imageX','imageY','fieldEye'].forEach(id=>E(id).addEventListener('input',render));
 ['diskMode','incidence'].forEach(id=>E(id).addEventListener('change',()=>{E('outAngle').value='';render()}));
+E('refractionBody').addEventListener('input',e=>{
+  const el=e.target;if(!el.matches('.table-calc'))return;
+  const i=el.dataset.i,key=el.dataset.key;
+  s.calcDraft[i]=s.calcDraft[i]||{};
+  s.calcDraft[i][key]=el.value.trim()===''?null:+el.value;
+  save();
+});
 E('checkPins').onclick=checkPins;
 E('verifyReflection').onclick=verifyLaw;
 E('reversePath').onclick=reverse;
