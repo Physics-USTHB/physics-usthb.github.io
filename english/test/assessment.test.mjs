@@ -87,3 +87,16 @@ test("static course entry point references available scripts and has no missing 
  assert.match(app,/state\.reviews/);
  assert.match(html,/Draft only/);
 });
+
+
+test("SI symbols retain case-sensitive meanings while ordinary English is case-insensitive",()=>{
+ const kelvin=unit2.items.find(i=>i.id==="A2.02.UNITS.004");
+ assert.equal(kelvin.caseSensitive,true);
+ assert.equal(gradeItem(kelvin,"K",{firstAttempt:true,hintsUsed:0}).correct,true);
+ assert.equal(gradeItem(kelvin,"k",{firstAttempt:true,hintsUsed:0}).correct,false);
+ const length=unit2.items.find(i=>i.id==="A2.02.READ.001");
+ assert.equal(gradeItem(length,"0.35 m",{firstAttempt:true,hintsUsed:0}).correct,true);
+ assert.equal(gradeItem(length,"0.35 M",{firstAttempt:true,hintsUsed:0}).correct,false);
+ const plain=unit.items.find(i=>i.id==="A2.01.BE.001");
+ assert.equal(gradeItem(plain,"AM",{firstAttempt:true,hintsUsed:0}).correct,true);
+});
