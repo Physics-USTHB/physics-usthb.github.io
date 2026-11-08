@@ -10,6 +10,7 @@ const defaults={
   calc:{},
   calcDraft:{},
   analysis:{n:null,critical:null},
+  tir:{critical:null},
   n:1.493+Math.random()*.012,
   angleSeed:Math.random()*1000
 };
@@ -24,7 +25,8 @@ let s={
   ref:{mirror:{...(loaded.ref?.mirror||{})},plexi:{...(loaded.ref?.plexi||{})}},
   calc:{...(loaded.calc||{})},
   calcDraft:{...(loaded.calcDraft||loaded.calc||{})},
-  analysis:{...defaults.analysis,...(loaded.analysis||{})}
+  analysis:{...defaults.analysis,...(loaded.analysis||{})},
+  tir:{...defaults.tir,...(loaded.tir||{})}
 };
 if(!Number.isFinite(s.angleSeed))s.angleSeed=Math.random()*1000;
 if(!Number.isFinite(s.n))s.n=1.498;
@@ -201,6 +203,45 @@ function drawDisk(){
 function mirrorDiskVerified(){
   return Object.entries(s.ref.mirror||{}).some(([i,r])=>+i>0&&Math.abs(+r-(+i))<.8);
 }
+
+function trueCritical(){return Math.asin(1/s.n)/DEG}
+function drawTIR(){
+  const c=E('tirCanvas');if(!c)return;
+  const {x,w,h}=U.canvas(c),cx=w/2,cy=h*.58,R=Math.min(w,h)*.33,i=+E('tirIncidence').value,ic=trueCritical();
+  E('tirReadout').value=i.toFixed(1)+'°';
+  x.fillStyle='#fbfcfd';x.fillRect(0,0,w,h);
+  x.fillStyle='rgba(65,177,201,.18)';x.beginPath();x.arc(cx,cy,R,Math.PI,0);x.lineTo(cx+R,cy);x.lineTo(cx-R,cy);x.closePath();x.fill();
+  x.strokeStyle='#4195a9';x.lineWidth=2;x.beginPath();x.moveTo(cx-R,cy);x.lineTo(cx+R,cy);x.stroke();x.beginPath();x.arc(cx,cy,R,Math.PI,0);x.stroke();
+  x.setLineDash([4,4]);x.strokeStyle='#90a5b4';x.beginPath();x.moveTo(cx,cy-R-34);x.lineTo(cx,cy+36);x.stroke();x.setLineDash([]);
+  const len=R*.9,a=i*DEG,p0={x:cx-len*Math.sin(a),y:cy+len*Math.cos(a)};
+  U.line(x,p0,{x:cx,y:cy},'#c14e3d',2);
+  const refl={x:cx+len*Math.sin(a),y:cy+len*Math.cos(a)};U.line(x,{x:cx,y:cy},refl,'#bd7d2a',1.6);
+  if(i<ic){
+    const r=Math.asin(s.n*Math.sin(a))/DEG,rr=r*DEG,p2={x:cx+len*Math.sin(rr),y:cy-len*Math.cos(rr)};
+    U.line(x,{x:cx,y:cy},p2,'#2d8968',2.2);
+    x.fillStyle='#2d8968';x.font='700 12px system-ui';x.textAlign='left';x.fillText('refracted ray in air',Math.min(w-145,p2.x+8),Math.max(20,p2.y));
+  }else{
+    x.fillStyle='#a65f2f';x.font='700 12px system-ui';x.textAlign='center';x.fillText('total internal reflection',cx,28);
+  }
+  x.fillStyle='#173e58';x.font='12px system-ui';x.textAlign='left';x.fillText('internal i = '+i.toFixed(1)+'°',18,22);
+}
+function renderTIR(){
+  if(!E('tirCanvas'))return;
+  drawTIR();
+  const exp=s.tir?.critical,calc=s.analysis?.critical;
+  E('tirCriticalOut').textContent=exp!=null?Number(exp).toFixed(1)+'°':'—';
+  E('tirSnellOut').textContent=calc!=null?Number(calc).toFixed(1)+'°':'—';
+  E('tirDifferenceOut').textContent=exp!=null&&calc!=null?Math.abs(exp-calc).toFixed(1)+'°':'—';
+}
+function recordTIR(){
+  if(!mirrorDiskVerified()){
+    E('tirMessage').className='notice warn';E('tirMessage').textContent='Verify reflection on the graduated disk first, then reverse the plexiglas half-cylinder.';return;
+  }
+  const i=+E('tirIncidence').value,ic=trueCritical(),d=i-ic;
+  if(d<-.35){E('tirMessage').className='notice warn';E('tirMessage').textContent='A refracted ray is still visible in air. Increase the internal incidence angle toward the transition.';return;}
+  if(d>.35){E('tirMessage').className='notice warn';E('tirMessage').textContent='You are already beyond the transition. Reduce the incidence angle until you locate the first disappearance of the refracted ray.';return;}
+  s.tir={critical:i};E('tirMessage').className='notice ok';E('tirMessage').textContent='Critical-angle transition recorded. Later compare it with the value calculated from the Snell graph.';renderTIR();save();
+}
 function measureDiskReading(){
   const mode=E('diskMode').value,i=+E('incidence').value,read=+E('outAngle').value,expected=diskAngle(mode,i);
   if(mode==='plexi'&&!mirrorDiskVerified()){
@@ -353,10 +394,10 @@ function checkSnell(){
   renderAnalysis();save();
 }
 function render(){
-  drawPins();renderProp();drawMirror();updateMirrorProgress();drawDisk();renderTable();renderAnalysis();
+  drawPins();renderProp();drawMirror();updateMirrorProgress();drawDisk();renderTable();renderAnalysis();renderTIR();
 }
 function buildReport(){
-  const summary='<p><b>Propagation:</b> '+Object.keys(s.prop).length+'/3 eye positions. <b>Mirror tasks:</b> '+['law','reverse','image','field'].filter(k=>s.mirror[k]).length+'/4.</p><p><b>Plexiglas readings:</b> '+Object.keys(s.ref.plexi).length+'/10. <b>Calculation table:</b> '+(calculationsComplete()?'validated':'incomplete')+'. <b>Measured n:</b> '+E('nOut').textContent+'. <b>Critical angle:</b> '+E('criticalOut').textContent+'.</p>';
+  const summary='<p><b>Propagation:</b> '+Object.keys(s.prop).length+'/3 eye positions. <b>Mirror tasks:</b> '+['law','reverse','image','field'].filter(k=>s.mirror[k]).length+'/4.</p><p><b>Plexiglas readings:</b> '+Object.keys(s.ref.plexi).length+'/10. <b>Calculation table:</b> '+(calculationsComplete()?'validated':'incomplete')+'. <b>Measured n:</b> '+E('nOut').textContent+'. <b>Snell critical angle:</b> '+E('criticalOut').textContent+'. <b>Experimental critical angle:</b> '+E('tirCriticalOut').textContent+'.</p>';
   return U.report('Laboratory Practical 1 — Propagation, Reflection & Refraction',summary);
 }
 
@@ -364,6 +405,7 @@ U.tabs();
 E('incidence').innerHTML=incs.map(i=>'<option>'+i+'</option>').join('');
 ['eyeCase','pinB','pinC','pinD','mirrorEye','mirrorHit','imageX','imageY','fieldEye'].forEach(id=>E(id).addEventListener('input',render));
 ['diskMode','incidence'].forEach(id=>E(id).addEventListener('change',()=>{E('outAngle').value='';render()}));
+E('tirIncidence').addEventListener('input',renderTIR);
 E('refractionBody').addEventListener('input',e=>{
   const el=e.target;if(!el.matches('.table-calc'))return;
   const i=el.dataset.i,key=el.dataset.key;
@@ -377,6 +419,7 @@ E('reversePath').onclick=reverse;
 E('verifyImage').onclick=imageCheck;
 E('constructField').onclick=constructField;
 E('measureDisk').onclick=measureDiskReading;
+E('recordCritical').onclick=recordTIR;
 E('checkRefractionCalculations').onclick=checkCalculations;
 E('checkSnellAnalysis').onclick=checkSnell;
 E('buildReport').onclick=buildReport;
