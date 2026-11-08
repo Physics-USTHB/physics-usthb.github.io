@@ -230,7 +230,7 @@ function drawDual(canvasId,kind){
   return{...x,...ch};
 }
 function updateResistor(){
-  const x=drawDual('#resistorCanvas','r'),ratio=x.safe&&x.a1>0?x.a2/x.a1:NaN,a=state.resistor.analysis;$('#rDecadeLabel').textContent=`${x.rd.toFixed(0)} Ω`;$('#rAmp1').textContent=`${x.a1.toFixed(2)} V`;$('#rAmp2').textContent=`${x.a2.toFixed(2)} V`;$('#rRatio').textContent=Number.isFinite(ratio)?ratio.toFixed(3):'—';
+  const x=drawDual('#resistorCanvas','r'),ratio=x.safe&&x.a1>0?x.a2/x.a1:NaN,a=state.resistor.analysis;$('#rDecadeLabel').textContent=`${x.rd.toFixed(0)} Ω`;$('#rAmp1').textContent=state.resistor.balance?'balanced':'read graticule';$('#rAmp2').textContent=state.resistor.balance?'balanced':'read graticule';$('#rRatio').textContent=state.resistor.balance?'≈ 1':'not displayed';
   if(a){$('#rxResult').textContent=`${a.rx.toFixed(0)} Ω`;$('#rDt').textContent=`${a.dtDiv.toFixed(2)} div`;$('#rT').textContent=formatTime(a.T);$('#rPhiSweep').textContent=`${a.phi.toFixed(1)}°`;$('#rPhiXY').textContent=state.resistor.xyVerified?`${a.phi.toFixed(1)}°`:'—°';}
   else{$('#rxResult').textContent='— Ω';$('#rDt').textContent='—';$('#rT').textContent='—';$('#rPhiSweep').textContent='—°';$('#rPhiXY').textContent='—°';}
   if(!phaseSetup('r')){$('#resistorMessage').className='notice warn';$('#resistorMessage').textContent='Reproduce Figure 5 first: CH1→A, CH2→C, common ground→B, AC on both channels, CH2 inverted.';}
