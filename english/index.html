@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="English for Physicists A2 development preview. Not a CEFR assessment.">
+<title>English for Physicists — A2 Development Preview</title>
+<style>
+:root{color-scheme:light;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f6f9fc;color:#18334a;line-height:1.55}
+*{box-sizing:border-box}body{margin:0}.wrap{width:min(1080px,calc(100% - 32px));margin:auto}
+header{background:#102940;color:white;padding:24px 0}header a{color:#d9f5ff}
+.top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+h1{font-size:clamp(2rem,5vw,3rem);line-height:1.1;margin:24px 0 5px}h2{font-size:1.4rem}
+.intro{max-width:72ch;color:#e0edf5}.alert{margin:24px 0;background:#fff2d3;border:1px solid #e5c787;border-radius:10px;padding:14px 16px}
+.cols{display:grid;grid-template-columns:300px 1fr;gap:22px;padding-bottom:45px}
+.card{background:#fff;border:1px solid #d8e4ed;border-radius:14px;padding:23px;box-shadow:0 5px 20px #17394a0b}
+.side button{display:block;width:100%;text-align:left;border:1px solid #d5e1eb;background:white;color:#1c3b52;border-radius:8px;padding:10px;margin:7px 0;cursor:pointer}
+.side button[aria-current=true]{border:2px solid #0e6b83;background:#eaf7fc}
+.side small{display:block;color:#576d7e}.muted{color:#52697a}.minor{font-size:.88rem}
+button{font:inherit;cursor:pointer}.btn{background:#0c6b87;color:white;border:1px solid #0c6b87;padding:9px 14px;border-radius:7px;margin:6px 5px 6px 0}
+.btn.light{background:#fff;color:#13536c;border-color:#8bafbf}.btn.warn{color:#9a2b2b;border-color:#bd8181}
+.btn:focus-visible,.side button:focus-visible,input:focus-visible{outline:3px solid #ffbf3b;outline-offset:2px}
+form{border:1px solid #d5e4ec;border-radius:11px;padding:16px;margin:13px 0}
+fieldset{border:0;padding:0;margin:0}legend{font-weight:700;padding-bottom:9px}
+label.option{display:block;padding:7px 0}input[type=text]{width:min(100%,410px);padding:9px;border-radius:7px;border:1px solid #a2b3bd}
+table{border-collapse:collapse;width:100%}th,td{border:1px solid #cfdde6;padding:7px 12px;text-align:left}th{background:#eaf3f8}
+.feedback{font-weight:650}.good{color:#136e43}.bad{color:#8c4710}
+.stat{display:inline-block;border:1px solid #d8e5eb;padding:9px 14px;border-radius:10px;margin:5px 10px 5px 0}
+footer{border-top:1px solid #cbdbe5;padding:24px 0;color:#52687b}
+a{color:#086986}.skip{position:absolute;left:12px;top:-100px;background:white;padding:10px}.skip:focus{top:8px}
+@media(max-width:730px){.cols{grid-template-columns:1fr}.card{padding:15px}}
+</style>
+</head>
+<body>
+<a href="#main" class="skip">Skip to the course preview</a>
+<header><div class="wrap">
+<div class="top"><strong>Φ Physics USTHB · English for Physicists</strong><a href="../">Back to home</a></div>
+<h1>English for Physicists</h1>
+<p class="intro">American English · A2 foundations · Privacy-first development preview</p>
+</div></header>
+<div class="wrap"><p class="alert" role="status"><strong>Draft only.</strong> The 12 A2 units contain 2,555 unreviewed exercise candidates. This page demonstrates the interface with four illustrative questions only. It neither certifies CEFR proficiency nor assesses speaking or listening.</p></div>
+<main class="wrap cols" id="main">
+<aside class="card side"><h2>A2 learning path</h2><p class="muted minor">All lesson drafts require editorial and media review before activation.</p><div id="units"></div></aside>
+<div>
+<section class="card"><h2 id="unit-title">A2.12 — Integrated Physics Project</h2><p id="unit-description"></p><p id="unit-status" class="muted" role="status"></p>
+<div id="lesson" hidden>
+<h3>Practice source: a virtual cart</h3>
+<p>A digital model shows these positions. They are <strong>simulated values</strong>, not physical laboratory measurements. The horizontal axis is Time (s), and the vertical axis is Position (m).</p>
+<table><caption>Simulated position data</caption><thead><tr><th scope="col">Time (s)</th><th scope="col">Position (m)</th></tr></thead><tbody><tr><td>0</td><td>0.0</td></tr><tr><td>1</td><td>1.5</td></tr><tr><td>2</td><td>3.0</td></tr><tr><td>3</td><td>4.5</td></tr></tbody></table>
+<h3>Formative practice — not mastery evidence</h3><p class="muted minor">Feedback is immediate; first attempts and retries are stored separately. These examples have not been approved as high-stakes assessments.</p>
+<div id="questions"></div><h3>Speaking, listening and writing</h3><p>Original General American recordings and reviewed rubrics are not yet integrated. No listening or free-speaking proficiency is inferred from this preview.</p>
+</div>
+</section>
+<section class="card" style="margin-top:20px"><h2>Local progress and privacy</h2>
+<div><span class="stat"><strong id="total-attempts">0</strong> practice attempts</span><span class="stat"><strong id="first-correct">0</strong> correct first attempts</span></div>
+<p id="storage-status" class="muted minor" role="status">Checking local storage…</p>
+<p class="muted minor">Progress belongs to this browser profile, not to a named identity. Other users of the same profile may access it. Export before clearing browser data.</p>
+<button id="export" class="btn light">Export progress</button><button id="import-button" class="btn light">Import progress</button><input type="file" accept="application/json,.json" id="import-file" hidden aria-label="Choose progress JSON"><button id="clear" class="btn light warn">Clear local progress</button>
+<p id="notice" role="status"></p>
+</section>
+</div></main>
+<footer><div class="wrap">Independent education project · <a href="../privacy.html">Privacy details</a> · Not an official CEFR qualification.</div></footer>
+<script type="module" src="./app.js"></script>
+</body></html>
