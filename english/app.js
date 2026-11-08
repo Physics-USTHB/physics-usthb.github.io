@@ -130,11 +130,15 @@ function renderAuthored(){
   sources.append(details);
  }
  authoredRoot.append(sources);
- let lastSkill="";
+ let lastSkill="",practiceGroup=null;
  for(const item of current.items){
   if(item.skill!==lastSkill){
-   const group=document.createElement("h3");group.textContent=item.skill[0].toUpperCase()+item.skill.slice(1)+" practice";
-   authoredRoot.append(group);lastSkill=item.skill;
+   practiceGroup=document.createElement("details");practiceGroup.open=lastSkill==="";
+   const summary=document.createElement("summary");
+   const count=current.items.filter(x=>x.skill===item.skill).length;
+   summary.textContent=item.skill[0].toUpperCase()+item.skill.slice(1)+" practice — "+count+" questions";
+   practiceGroup.append(summary);authoredRoot.append(practiceGroup);
+   lastSkill=item.skill;
   }
   const form=document.createElement("form");
   form.id="practice-"+item.id;
@@ -179,7 +183,7 @@ function renderAuthored(){
    feedback.className="feedback "+(result.correct?"good":"bad");
    renderStats();
   };
-  authoredRoot.append(form);
+  practiceGroup.append(form);
  }
 }
 async function loadAuthoredUnits(){
@@ -245,9 +249,11 @@ function renderAdaptivePanels(){
    const isAuthored=matched && authoredUnits.has(targetIndex);
    link.href=isAuthored?"#practice-"+id:"#lesson";
    link.textContent="Review "+id;
-   if(selected!==targetIndex){
-    link.addEventListener("click",()=>{selected=targetIndex;render();});
-   }
+   link.addEventListener("click",()=>{
+    if(selected!==targetIndex){selected=targetIndex;render();}
+    const target=document.getElementById("practice-"+id);
+    if(target){const details=target.closest("details");if(details)details.open=true;}
+   });
    li.append(link);list.append(li);
   }
   adaptivePanel.append(list);
