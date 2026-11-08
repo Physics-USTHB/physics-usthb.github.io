@@ -96,12 +96,13 @@
       </div>
 
       <div class="cursor-panel">
-        <label><span>Time cursor after rising edge</span><strong id="cursorTimeLabel">0 µs</strong></label>
+        <label><span>Horizontal cursor after rising edge</span><strong id="cursorTimeLabel">0.00 div</strong></label>
         <input id="cursorTime" type="range" min="0" max=".001" step=".000001" value="0">
         <div class="cursor-values"><div><span>Response at cursor</span><strong id="cursorValue">— V</strong></div><div class="learn-only"><span>Target level</span><strong id="targetValue">— V</strong></div><div class="learn-only"><span>Level error</span><strong id="targetError">— div</strong></div></div>
+        <div class="tau-entry"><label>Cursor displacement / divisions<input id="studentTauDivs" type="number" min="0" step="0.01" placeholder="read horizontal graticule"></label><label>Calculated τ / µs<input id="studentTauUs" type="number" min="0" step="0.1" placeholder="divisions × TIME/DIV"></label></div>
       </div>
 
-      <div class="transient-actions"><button class="btn" id="recordTau" type="button">Record τ from cursor</button><button class="btn secondary learn-only" id="autoCentre" type="button">Learning aid: set recommended display</button><button class="btn secondary" id="newRun" type="button">New specimen</button></div>
+      <div class="transient-actions"><button class="btn" id="recordTau" type="button">Submit τ measurement</button><button class="btn secondary learn-only" id="autoCentre" type="button">Learning aid: set recommended display</button><button class="btn secondary" id="newRun" type="button">New specimen</button></div>
       <div class="notice" id="benchMessage">Adjust the display so the transient is complete and occupies 6 or 8 vertical divisions.</div>
     </div>
 
