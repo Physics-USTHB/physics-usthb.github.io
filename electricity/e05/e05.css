@@ -36,3 +36,8 @@
 .result-calc-grid .btn{padding:9px 11px;font-size:.7rem;white-space:nowrap}
 @media(max-width:820px){.result-calc-grid{grid-template-columns:1fr 1fr}.result-calc-grid .btn{grid-column:1/-1}.result-calc-grid.compact{grid-template-columns:1fr auto}.result-calc-grid.compact .btn{grid-column:auto}}
 @media(max-width:520px){.result-calc-grid,.result-calc-grid.compact{grid-template-columns:1fr}.result-calc-grid .btn,.result-calc-grid.compact .btn{grid-column:auto}}
+
+
+/* Practical 5 review: graticule-owned tau measurement */
+.tau-entry{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.tau-entry label{display:block;font-size:.59rem;color:#8ca6ba;text-transform:uppercase;letter-spacing:.05em;font-weight:800}.tau-entry input{width:100%;margin-top:5px;padding:8px;border:1px solid #36556b;border-radius:8px;background:#07131c;color:#eaf9ff}.tau-entry input::placeholder{color:#577084}
+@media(max-width:520px){.tau-entry{grid-template-columns:1fr}}
