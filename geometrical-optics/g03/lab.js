@@ -21,7 +21,8 @@ let s={
   auto:loaded.auto??null,
   pairs:current?{...(loaded.pairs||{})}:migratedPairs,
   pairCalcs:{...(loaded.pairCalcs||{})},
-  pairDraft:{...(loaded.pairDraft||{})}
+  pairDraft:{...(loaded.pairDraft||{})},
+  comparison:loaded.comparison||null
 };
 if(migrating){
   s.conjCalc={};s.conjDraft={};s.graphF=null;s.besselCalc=null;s.silberCalc=null;s.pairCalcs={};s.pairDraft={};
@@ -211,22 +212,39 @@ function checkPairCalc(){
   s.pairCalcs[key]={type:q.b<0?'inferred':'theory',value:v};s.pairDraft[key]=v;E('pairCalcMessage').className='notice ok';E('pairCalcMessage').textContent=q.b<0?'Divergent-lens focal length accepted.':'Attached-lens theoretical value accepted.';render();save();
 }
 
+function methodStats(){
+  const vals=[s.graphF,s.besselCalc?.f,s.silberCalc?.f,s.auto].filter(v=>Number.isFinite(+v)).map(Number);
+  if(vals.length<3)return null;
+  return{vals,mean:vals.reduce((a,b)=>a+b,0)/vals.length,spread:Math.max(...vals)-Math.min(...vals)};
+}
 function analysis(){
   renderConjAnalysis();
-  const vals=[s.graphF,s.besselCalc?.f,s.silberCalc?.f,s.auto].filter(v=>Number.isFinite(+v));
-  if(vals.length>=3){
-    const mean=vals.reduce((a,b)=>a+(+b),0)/vals.length,spread=Math.max(...vals)-Math.min(...vals);
-    E('comparisonMessage').className='notice ok';E('comparisonMessage').textContent='At least three independent methods are complete. Mean focal length = '+mean.toFixed(2)+' cm; method spread = '+spread.toFixed(2)+' cm. Discuss which positioning condition was easiest to identify precisely.';
-  }else{
+  const st=methodStats();
+  if(s.comparison&&st&&(Math.abs(+s.comparison.mean-st.mean)>.08||Math.abs(+s.comparison.spread-st.spread)>.08))s.comparison=null;
+  E('meanFOut').textContent=s.comparison?Number(s.comparison.mean).toFixed(2)+' cm':'—';
+  E('spreadFOut').textContent=s.comparison?Number(s.comparison.spread).toFixed(2)+' cm':'—';
+  if(!st){
     E('comparisonMessage').className='notice';E('comparisonMessage').textContent='Complete and validate at least three methods.';
+  }else if(!s.comparison){
+    E('comparisonMessage').className='notice';E('comparisonMessage').textContent='At least three methods are complete. Calculate their mean focal length and the max–min method spread.';
+  }else{
+    E('comparisonMessage').className='notice ok';E('comparisonMessage').textContent='Method comparison accepted. Discuss which positioning condition was easiest to identify precisely and which method appears most sensitive to reading uncertainty.';
   }
+}
+function checkMethodComparison(){
+  const st=methodStats();if(!st){E('comparisonMessage').className='notice warn';E('comparisonMessage').textContent='Complete and validate at least three independent focal-length methods first.';return}
+  const mean=+E('studentMeanF').value,spread=+E('studentSpreadF').value;
+  if(!Number.isFinite(mean)||!Number.isFinite(spread)||mean<=0||spread<0){E('comparisonMessage').className='notice warn';E('comparisonMessage').textContent='Enter your calculated mean focal length and max–min spread.';return}
+  if(Math.abs(mean-st.mean)>.08){E('comparisonMessage').className='notice warn';E('comparisonMessage').textContent='Recalculate the mean using only the completed validated focal-length methods shown on this page.';return}
+  if(Math.abs(spread-st.spread)>.08){E('comparisonMessage').className='notice warn';E('comparisonMessage').textContent='Recalculate the method spread as maximum f minus minimum f.';return}
+  s.comparison={mean,spread};analysis();save();
 }
 function render(){
   renderConj();renderBessel();renderSilber();renderAuto();renderPair();analysis();
 }
 function buildReport(){
   const pairDone=Object.keys(s.pairCalcs).length;
-  const summary='<p><b>Conjugate pairs:</b> '+Object.keys(s.conj).length+'/5; reciprocal table '+(allConjCalculated()?'validated':'incomplete')+'; <b>f graph:</b> '+E('fGraph').textContent+'.</p><p><b>Bessel:</b> '+E('fBessel2').textContent+' · <b>Silbermann:</b> '+E('fSilber').textContent+' · <b>Autocollimation:</b> '+E('fAuto').textContent+'.</p><p><b>Lens associations:</b> '+pairDone+'/3 calculations validated.</p>';
+  const summary='<p><b>Conjugate pairs:</b> '+Object.keys(s.conj).length+'/5; reciprocal table '+(allConjCalculated()?'validated':'incomplete')+'; <b>f graph:</b> '+E('fGraph').textContent+'.</p><p><b>Bessel:</b> '+E('fBessel2').textContent+' · <b>Silbermann:</b> '+E('fSilber').textContent+' · <b>Autocollimation:</b> '+E('fAuto').textContent+'.</p><p><b>Method comparison:</b> '+(s.comparison?'mean f='+Number(s.comparison.mean).toFixed(2)+' cm, spread='+Number(s.comparison.spread).toFixed(2)+' cm':'not validated')+'. <b>Lens associations:</b> '+pairDone+'/3 calculations validated.</p>';
   return U.report('Laboratory Practical 3 — Focometry',summary);
 }
 
@@ -234,6 +252,7 @@ U.tabs();
 if(s.graphF!=null)E('studentGraphF').value=s.graphF;
 if(s.besselCalc){E('studentBesselD').value=s.besselCalc.d;E('studentBesselF').value=s.besselCalc.f;E('studentGamma1').value=s.besselCalc.g1;E('studentGamma2').value=s.besselCalc.g2}
 if(s.silberCalc)E('studentSilberF').value=s.silberCalc.f;
+if(s.comparison){E('studentMeanF').value=s.comparison.mean;E('studentSpreadF').value=s.comparison.spread;}
 ['lensPos','screenPos','besselLens','silberD','silberLens','autoLens','pairLens'].forEach(id=>E(id).addEventListener('input',render));
 E('pairSelect').addEventListener('change',render);
 E('conjBody').addEventListener('input',e=>{
@@ -245,7 +264,7 @@ E('pairCalcValue').addEventListener('input',e=>{s.pairDraft[E('pairSelect').valu
 E('recordConj').onclick=recordConj;E('checkConjCalculations').onclick=checkConjCalculations;E('checkGraphF').onclick=checkGraphF;
 E('recordBessel').onclick=recordBessel;E('checkBesselCalc').onclick=checkBesselCalc;
 E('recordSilber').onclick=recordSilber;E('checkSilberCalc').onclick=checkSilberCalc;
-E('recordAuto').onclick=recordAuto;E('recordPair').onclick=recordPair;E('checkPairCalc').onclick=checkPairCalc;
+E('recordAuto').onclick=recordAuto;E('recordPair').onclick=recordPair;E('checkPairCalc').onclick=checkPairCalc;E('checkMethodComparison').onclick=checkMethodComparison;
 E('buildReport').onclick=buildReport;E('printReport').onclick=()=>{if(buildReport())window.print()};
 if(!E('reportDate').value)E('reportDate').value=new Date().toISOString().slice(0,10);
 window.addEventListener('resize',render);
