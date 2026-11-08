@@ -116,7 +116,7 @@ export function mountWriting(container,{catalog,getRecord,onChange,onSave}){
    row.append(box,document.createTextNode(" "+catalog.rubric[key]));checklist.append(row);
   }
   root.append(checklist);
-  formStatus=document.createElement("p");formStatus.className="muted minor";formStatus.setAttribute("role","status");
+  formStatus=document.createElement("p");formStatus.id="writing-status";formStatus.className="muted minor";formStatus.setAttribute("role","status");
   formStatus.textContent=saved.updatedAt?"Previously saved locally: "+new Date(saved.updatedAt).toLocaleString():"No saved draft yet.";
   const save=document.createElement("button");save.className="btn";save.type="button";save.textContent="Save draft now";
   save.onclick=async()=>{
