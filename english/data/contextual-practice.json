@@ -1,0 +1,1616 @@
+{
+  "schemaVersion": 1,
+  "contentStatus": "draft",
+  "educationalUse": "formative_practice_only",
+  "media": "text",
+  "units": {
+    "A2.10": {
+      "sources": [
+        {
+          "id": "R5",
+          "title": "A constant-speed prediction in a computer model",
+          "paragraphs": [
+            "A virtual cart starts at position 0 m and moves at a constant modeled speed of 2 m/s. Its displayed position at 3 s is 6 m. If the same model assumptions continue, its position at 4 s would be 8 m.",
+            "The screen does not show a position measurement at 4 s; 8 m is a prediction calculated from the model. The students explain that the prediction depends on constant speed. No real cart is used."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "A2.10.CTX.001",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.10.CTX.assumption",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What speed does the fictional model assume?",
+          "accepted": [
+            "2 m/s"
+          ],
+          "options": [
+            "2 m/s",
+            "3 m/s",
+            "6 m/s"
+          ],
+          "feedback": "The computer model explicitly assumes a speed of 2 m/s.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.10.CTX.002",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.10.CTX.read-values",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What position is displayed at 3 s?",
+          "accepted": [
+            "6 m"
+          ],
+          "options": [
+            "6 m",
+            "8 m",
+            "3 m"
+          ],
+          "feedback": "The source says that 6 m is displayed at 3 s.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.10.CTX.003",
+          "skill": "grammar",
+          "type": "single_choice",
+          "family": "A2.10.CTX.grammar",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Choose the correct first conditional: If the model speed stays constant, the position ___ increase.",
+          "accepted": [
+            "will"
+          ],
+          "options": [
+            "will",
+            "would have",
+            "was"
+          ],
+          "feedback": "Use if + present simple and will + base verb for the future conditional result.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.10.CTX.004",
+          "skill": "vocabulary",
+          "type": "single_choice",
+          "family": "A2.10.CTX.vocab",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What does predict mean in the model description?",
+          "accepted": [
+            "State a possible future value under assumptions"
+          ],
+          "options": [
+            "State a possible future value under assumptions",
+            "Record a value already measured",
+            "Change the original data"
+          ],
+          "feedback": "A prediction extends the model under stated conditions, rather than recording an observed value.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.10.CTX.005",
+          "skill": "mathematical-english",
+          "type": "single_choice",
+          "family": "A2.10.CTX.numbers",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What position does the model predict at 4 s?",
+          "accepted": [
+            "8 m"
+          ],
+          "options": [
+            "8 m",
+            "4 m",
+            "6 m"
+          ],
+          "feedback": "At 2 m/s for 4 s from 0 m, the predicted position is 8 m.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.10.CTX.006",
+          "skill": "scientific-discourse",
+          "type": "single_choice",
+          "family": "A2.10.CTX.evidence",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which statement correctly distinguishes prediction from observation?",
+          "accepted": [
+            "The value 8 m at 4 s is predicted, not displayed as a measurement."
+          ],
+          "options": [
+            "The value 8 m at 4 s is predicted, not displayed as a measurement.",
+            "The value 8 m at 4 s was measured from a real cart.",
+            "The value 6 m at 3 s is an uncertain future prediction."
+          ],
+          "feedback": "Only 6 m at 3 s is shown; 8 m at 4 s is conditional extrapolation.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        }
+      ]
+    },
+    "A2.11": {
+      "sources": [
+        {
+          "id": "R5",
+          "title": "A nonuniform virtual temperature trend",
+          "paragraphs": [
+            "A virtual temperature chart has Time (min) on its horizontal axis and Temperature (°C) on its vertical axis. It shows 20 °C at 0 min, 21 °C at 1 min, 23 °C at 2 min, and 24 °C at 3 min.",
+            "The displayed temperature rises by 4 °C across the three-minute interval, but it does not rise by the same amount each minute. The model does not display any value at 4 min. A value at 4 min would therefore be a prediction."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "A2.11.CTX.001",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.11.CTX.axes",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What does the horizontal axis show?",
+          "accepted": [
+            "Time (min)"
+          ],
+          "options": [
+            "Time (min)",
+            "Temperature (°C)",
+            "Position (m)"
+          ],
+          "feedback": "The horizontal axis is explicitly labelled Time (min).",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.11.CTX.002",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.11.CTX.read-values",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What temperature is shown at 2 min?",
+          "accepted": [
+            "23 °C"
+          ],
+          "options": [
+            "23 °C",
+            "21 °C",
+            "24 °C"
+          ],
+          "feedback": "The virtual chart displays 23 °C at minute two.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.11.CTX.003",
+          "skill": "grammar",
+          "type": "single_choice",
+          "family": "A2.11.CTX.grammar",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Choose the cautious prediction: The temperature ___ rise again after 3 min.",
+          "accepted": [
+            "may"
+          ],
+          "options": [
+            "may",
+            "has certainly",
+            "was measured to"
+          ],
+          "feedback": "May indicates uncertainty about a value beyond the displayed interval.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.11.CTX.004",
+          "skill": "vocabulary",
+          "type": "single_choice",
+          "family": "A2.11.CTX.vocab",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What does a trend describe in this source?",
+          "accepted": [
+            "The overall direction of displayed values"
+          ],
+          "options": [
+            "The overall direction of displayed values",
+            "A laboratory calibration certificate",
+            "A missing numerical unit"
+          ],
+          "feedback": "Trend describes the pattern of values over a stated interval.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.11.CTX.005",
+          "skill": "mathematical-english",
+          "type": "single_choice",
+          "family": "A2.11.CTX.numbers",
+          "status": "draft",
+          "media": "text",
+          "prompt": "How much does the displayed temperature change from 0 to 3 min?",
+          "accepted": [
+            "4 °C"
+          ],
+          "options": [
+            "4 °C",
+            "24 °C",
+            "3 °C"
+          ],
+          "feedback": "The difference is 24 minus 20, or 4 degrees Celsius.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.11.CTX.006",
+          "skill": "scientific-discourse",
+          "type": "single_choice",
+          "family": "A2.11.CTX.evidence",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which statement is supported by the source?",
+          "accepted": [
+            "The temperature rises over the displayed interval, but not uniformly each minute."
+          ],
+          "options": [
+            "The temperature rises over the displayed interval, but not uniformly each minute.",
+            "The data prove a uniform increase of 1 °C each minute.",
+            "The chart measures a real temperature at 4 min."
+          ],
+          "feedback": "The increments are 1, 2, and 1 degrees Celsius; no 4-minute value is shown.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        }
+      ]
+    },
+    "A2.12": {
+      "sources": [
+        {
+          "id": "R5",
+          "title": "A concise report about the virtual cart",
+          "paragraphs": [
+            "A fictional group prepares an English report about a virtual cart. Their computer model displays Position (m) against Time (s): 0 m at 0 s, 1.5 m at 1 s, 3.0 m at 2 s, and 4.5 m at 3 s.",
+            "The students describe three one-second intervals. They report that position increases by 3.0 m from 1 s to 3 s. They label all quantities with units and explain that their source is a simulation, not a physical experiment."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "A2.12.CTX.001",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.12.CTX.read-values",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What position does the model display at 2 s?",
+          "accepted": [
+            "3.0 m"
+          ],
+          "options": [
+            "3.0 m",
+            "2.0 m",
+            "4.5 m"
+          ],
+          "feedback": "The model explicitly displays 3.0 m at 2 seconds.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.12.CTX.002",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.12.CTX.count",
+          "status": "draft",
+          "media": "text",
+          "prompt": "How many one-second intervals are shown from 0 s through 3 s?",
+          "accepted": [
+            "Three"
+          ],
+          "options": [
+            "Three",
+            "Two",
+            "Four"
+          ],
+          "feedback": "The intervals are 0–1 s, 1–2 s and 2–3 s.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.12.CTX.003",
+          "skill": "grammar",
+          "type": "single_choice",
+          "family": "A2.12.CTX.grammar",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Choose the correct present-tense description of the displayed model: Position ___ from left to right on the graph.",
+          "accepted": [
+            "increases"
+          ],
+          "options": [
+            "increases",
+            "increased yesterday",
+            "is increase"
+          ],
+          "feedback": "Increases is a correct present-simple description of the graph trend.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.12.CTX.004",
+          "skill": "vocabulary",
+          "type": "single_choice",
+          "family": "A2.12.CTX.vocab",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What is a simulation in the context of this report?",
+          "accepted": [
+            "A computer-based representation of a process"
+          ],
+          "options": [
+            "A computer-based representation of a process",
+            "A physical measurement automatically performed in the laboratory",
+            "A certificate of experimental accuracy"
+          ],
+          "feedback": "This report uses a computer model, not a physical experiment.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.12.CTX.005",
+          "skill": "mathematical-english",
+          "type": "single_choice",
+          "family": "A2.12.CTX.numbers",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What is the displayed position change between 1 s and 3 s?",
+          "accepted": [
+            "3.0 m"
+          ],
+          "options": [
+            "3.0 m",
+            "4.5 m",
+            "2.0 s"
+          ],
+          "feedback": "The model changes from 1.5 m at 1 s to 4.5 m at 3 s, a difference of 3.0 m.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.12.CTX.006",
+          "skill": "scientific-discourse",
+          "type": "single_choice",
+          "family": "A2.12.CTX.evidence",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which sentence is justified as a conclusion?",
+          "accepted": [
+            "The simulated positions increase over the displayed time interval."
+          ],
+          "options": [
+            "The simulated positions increase over the displayed time interval.",
+            "A physical cart's movement was verified by these values.",
+            "The model proves that all real carts move at the same rate."
+          ],
+          "feedback": "The data show an increasing model position only within its displayed interval.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        }
+      ]
+    },
+    "A2.01": {
+      "sources": [
+        {
+          "id": "R5",
+          "title": "A fictional physics orientation timetable",
+          "paragraphs": [
+            "This timetable is a teaching example, not a real university announcement. On Tuesday, the new physics group meets in Room 12 at 10:00 a.m. The students attend a short introduction and write questions in their notebooks.",
+            "On Thursday, an online demonstration of a moving cart begins at 2:00 p.m. (14:00). It is a virtual model, so the students will not handle any laboratory apparatus. The instructor asks them to describe what they see, not to report physical measurements."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "A2.01.CTX.001",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.01.CTX.location",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Where does the group meet on Tuesday?",
+          "accepted": [
+            "Room 12"
+          ],
+          "options": [
+            "Room 12",
+            "Lab 3",
+            "Hall B"
+          ],
+          "feedback": "The timetable explicitly places Tuesday's introduction in Room 12.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.01.CTX.002",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.01.CTX.schedule",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which activity is scheduled for Thursday?",
+          "accepted": [
+            "An online cart demonstration"
+          ],
+          "options": [
+            "An online cart demonstration",
+            "A real laser measurement",
+            "A written chemistry examination"
+          ],
+          "feedback": "Thursday's scheduled activity is an online cart model demonstration.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.01.CTX.003",
+          "skill": "grammar",
+          "type": "single_choice",
+          "family": "A2.01.CTX.grammar",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Choose the correct routine: The group ___ on Tuesday.",
+          "accepted": [
+            "meets"
+          ],
+          "options": [
+            "meets",
+            "meet",
+            "meeting"
+          ],
+          "feedback": "The singular subject group takes meets in the present simple.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.01.CTX.004",
+          "skill": "vocabulary",
+          "type": "single_choice",
+          "family": "A2.01.CTX.vocab",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which word means go to a scheduled class?",
+          "accepted": [
+            "Attend"
+          ],
+          "options": [
+            "Attend",
+            "Measure",
+            "Rotate"
+          ],
+          "feedback": "Attend describes going to a scheduled class, lecture or meeting.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.01.CTX.005",
+          "skill": "mathematical-english",
+          "type": "single_choice",
+          "family": "A2.01.CTX.numbers",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which 24-hour clock time equals 2:00 p.m.?",
+          "accepted": [
+            "14:00"
+          ],
+          "options": [
+            "14:00",
+            "02:00",
+            "12:00"
+          ],
+          "feedback": "Two in the afternoon is 14:00 on a 24-hour clock.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.01.CTX.006",
+          "skill": "scientific-discourse",
+          "type": "single_choice",
+          "family": "A2.01.CTX.evidence",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which statement is supported by the timetable?",
+          "accepted": [
+            "Students observe a virtual cart model."
+          ],
+          "options": [
+            "Students observe a virtual cart model.",
+            "Students directly measure a physical cart.",
+            "The timetable proves the speed of a real cart."
+          ],
+          "feedback": "Only a virtual demonstration is described; no physical cart is measured.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        }
+      ]
+    },
+    "A2.02": {
+      "sources": [
+        {
+          "id": "R5",
+          "title": "Two fictional measurement readouts",
+          "paragraphs": [
+            "A digital physics model displays the following fictional readouts. Sample A has a mass of 0.25 kg and Sample B has a mass of 0.50 kg. The model also shows a length of 0.40 m and a time interval of 1.5 s.",
+            "The values are displayed in the correct SI unit symbols with a space between each number and symbol. They are illustrations for an English lesson, not measurements from physical instruments. The difference between the two mass readouts is 0.25 kg."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "A2.02.CTX.001",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.02.CTX.read-values",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What mass is displayed for Sample B?",
+          "accepted": [
+            "0.50 kg"
+          ],
+          "options": [
+            "0.50 kg",
+            "0.25 kg",
+            "0.40 m"
+          ],
+          "feedback": "The digital model shows 0.50 kg for Sample B.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.02.CTX.002",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.02.CTX.read-values",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What length is displayed by the model?",
+          "accepted": [
+            "0.40 m"
+          ],
+          "options": [
+            "0.40 m",
+            "1.5 s",
+            "0.50 kg"
+          ],
+          "feedback": "The stated length is 0.40 m; the other numbers describe different quantities.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.02.CTX.003",
+          "skill": "grammar",
+          "type": "single_choice",
+          "family": "A2.02.CTX.grammar",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Choose the correct question for two displayed samples: How ___ samples are shown?",
+          "accepted": [
+            "many"
+          ],
+          "options": [
+            "many",
+            "much",
+            "long"
+          ],
+          "feedback": "Samples is a countable plural noun, so the question uses how many.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.02.CTX.004",
+          "skill": "vocabulary",
+          "type": "single_choice",
+          "family": "A2.02.CTX.vocab",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What physical quantity does the kilogram express?",
+          "accepted": [
+            "Mass"
+          ],
+          "options": [
+            "Mass",
+            "Voltage",
+            "Time"
+          ],
+          "feedback": "Kilogram is the SI base unit for mass.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.02.CTX.005",
+          "skill": "mathematical-english",
+          "type": "single_choice",
+          "family": "A2.02.CTX.numbers",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What is the difference between 0.50 kg and 0.25 kg?",
+          "accepted": [
+            "0.25 kg"
+          ],
+          "options": [
+            "0.25 kg",
+            "0.75 kg",
+            "0.25 m"
+          ],
+          "feedback": "Subtract the two mass values, keeping the same unit: 0.50 minus 0.25 equals 0.25 kg.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.02.CTX.006",
+          "skill": "scientific-discourse",
+          "type": "single_choice",
+          "family": "A2.02.CTX.evidence",
+          "status": "draft",
+          "media": "text",
+          "prompt": "How should the two mass values be described?",
+          "accepted": [
+            "As model readouts, not real measurements"
+          ],
+          "options": [
+            "As model readouts, not real measurements",
+            "As certified physical measurements",
+            "As proof that one instrument is accurate"
+          ],
+          "feedback": "They are fictional digital readouts, not data from physical equipment.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        }
+      ]
+    },
+    "A2.03": {
+      "sources": [
+        {
+          "id": "R5",
+          "title": "Positions in a virtual storage diagram",
+          "paragraphs": [
+            "In a fictional teaching-room diagram, a notebook is in the middle of a shelf. A timer is to the left of the notebook, and a ruler is to the right of it. A label is above the timer.",
+            "Two boxes are below the shelf. These positions are given in a diagram seen from the front. A student describes this picture in English without touching any real apparatus. There are two boxes and one timer in the scene."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "A2.03.CTX.001",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.03.CTX.location",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Where is the timer relative to the notebook?",
+          "accepted": [
+            "To its left"
+          ],
+          "options": [
+            "To its left",
+            "To its right",
+            "Above it"
+          ],
+          "feedback": "The timer is explicitly to the left of the notebook in the front-view diagram.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.03.CTX.002",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.03.CTX.count",
+          "status": "draft",
+          "media": "text",
+          "prompt": "How many boxes are below the shelf?",
+          "accepted": [
+            "Two"
+          ],
+          "options": [
+            "Two",
+            "One",
+            "Three"
+          ],
+          "feedback": "The diagram description states that two boxes are below the shelf.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.03.CTX.003",
+          "skill": "grammar",
+          "type": "single_choice",
+          "family": "A2.03.CTX.grammar",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Choose the correct form: There ___ two boxes below the shelf.",
+          "accepted": [
+            "are"
+          ],
+          "options": [
+            "are",
+            "is",
+            "am"
+          ],
+          "feedback": "There are is the plural form for two boxes.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.03.CTX.004",
+          "skill": "vocabulary",
+          "type": "single_choice",
+          "family": "A2.03.CTX.vocab",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which term best describes the notebook's position relative to the timer and ruler?",
+          "accepted": [
+            "Between"
+          ],
+          "options": [
+            "Between",
+            "Behind",
+            "Above"
+          ],
+          "feedback": "The notebook is between the timer and the ruler in the described layout.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.03.CTX.005",
+          "skill": "mathematical-english",
+          "type": "single_choice",
+          "family": "A2.03.CTX.numbers",
+          "status": "draft",
+          "media": "text",
+          "prompt": "How many objects are there if we count only the boxes and the timer?",
+          "accepted": [
+            "3"
+          ],
+          "options": [
+            "3",
+            "2",
+            "4"
+          ],
+          "feedback": "Two boxes plus one timer makes three objects.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.03.CTX.006",
+          "skill": "scientific-discourse",
+          "type": "single_choice",
+          "family": "A2.03.CTX.evidence",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which is a valid conclusion about this activity?",
+          "accepted": [
+            "It describes a front-view diagram."
+          ],
+          "options": [
+            "It describes a front-view diagram.",
+            "It records the real positions of equipment at USTHB.",
+            "It establishes that the timer is powered on."
+          ],
+          "feedback": "The source describes a fictional diagram, not real apparatus or operation.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        }
+      ]
+    },
+    "A2.04": {
+      "sources": [
+        {
+          "id": "R5",
+          "title": "A cart in a computer motion model",
+          "paragraphs": [
+            "A model cart moves to the right along a straight line. Its virtual position is 0 m at 0 s, 1 m at 1 s, and 2 m at 2 s. During this simulated sequence, the cart is moving to the right.",
+            "The teacher says, 'We usually describe a motion using position and time, but right now the class is looking at this model.' The table displays model values, not measured positions from a physical cart."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "A2.04.CTX.001",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.04.CTX.read-values",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What position does the model display at 2 s?",
+          "accepted": [
+            "2 m"
+          ],
+          "options": [
+            "2 m",
+            "1 m",
+            "0 m"
+          ],
+          "feedback": "The model explicitly displays a position of 2 m at 2 s.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.04.CTX.002",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.04.CTX.direction",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which direction is the virtual cart moving?",
+          "accepted": [
+            "To the right"
+          ],
+          "options": [
+            "To the right",
+            "To the left",
+            "Straight upward"
+          ],
+          "feedback": "The source identifies rightward motion along a straight line.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.04.CTX.003",
+          "skill": "grammar",
+          "type": "single_choice",
+          "family": "A2.04.CTX.grammar",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Choose the present continuous form: The cart ___ to the right now.",
+          "accepted": [
+            "is moving"
+          ],
+          "options": [
+            "is moving",
+            "usually moves",
+            "was moving"
+          ],
+          "feedback": "The word now calls for the present continuous form is moving.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.04.CTX.004",
+          "skill": "vocabulary",
+          "type": "single_choice",
+          "family": "A2.04.CTX.vocab",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which word names the place of the cart along the line?",
+          "accepted": [
+            "Position"
+          ],
+          "options": [
+            "Position",
+            "Voltage",
+            "Frequency"
+          ],
+          "feedback": "Position gives the cart's location along the modeled path.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.04.CTX.005",
+          "skill": "mathematical-english",
+          "type": "single_choice",
+          "family": "A2.04.CTX.numbers",
+          "status": "draft",
+          "media": "text",
+          "prompt": "How much does the displayed position change from 0 s to 2 s?",
+          "accepted": [
+            "2 m"
+          ],
+          "options": [
+            "2 m",
+            "2 s",
+            "1 m"
+          ],
+          "feedback": "The cart moves from 0 m to 2 m in the model, so the position change is 2 m.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.04.CTX.006",
+          "skill": "scientific-discourse",
+          "type": "single_choice",
+          "family": "A2.04.CTX.evidence",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What evidence supports the motion description?",
+          "accepted": [
+            "The model's displayed position values"
+          ],
+          "options": [
+            "The model's displayed position values",
+            "Measurements from a physical cart",
+            "An independently verified speed sensor"
+          ],
+          "feedback": "The source gives simulated positions only, not data from actual instruments.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        }
+      ]
+    },
+    "A2.05": {
+      "sources": [
+        {
+          "id": "R5",
+          "title": "Comparing two virtual spring extensions",
+          "paragraphs": [
+            "A virtual teaching model shows two spring extensions under its chosen conditions. Spring A extends by 3 cm, and Spring B extends by 5 cm. These are invented teaching values, not real laboratory measurements.",
+            "The extension shown for B is 2 cm more than the extension shown for A. The model does not include a calibration reference, so students cannot conclude that one spring or its display is more accurate than the other."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "A2.05.CTX.001",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.05.CTX.read-values",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What extension does the model show for Spring A?",
+          "accepted": [
+            "3 cm"
+          ],
+          "options": [
+            "3 cm",
+            "5 cm",
+            "2 cm"
+          ],
+          "feedback": "Spring A has a displayed extension of 3 cm.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.05.CTX.002",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.05.CTX.comparison",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which spring extends more in the model?",
+          "accepted": [
+            "Spring B"
+          ],
+          "options": [
+            "Spring B",
+            "Spring A",
+            "Both have the same extension"
+          ],
+          "feedback": "The source shows 5 cm for B versus 3 cm for A.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.05.CTX.003",
+          "skill": "grammar",
+          "type": "single_choice",
+          "family": "A2.05.CTX.grammar",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Complete the comparison: Spring B has a ___ extension than Spring A.",
+          "accepted": [
+            "greater"
+          ],
+          "options": [
+            "greater",
+            "greatest",
+            "great"
+          ],
+          "feedback": "Greater is the comparative form used to compare these two extensions.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.05.CTX.004",
+          "skill": "vocabulary",
+          "type": "single_choice",
+          "family": "A2.05.CTX.vocab",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What does extension mean in this source?",
+          "accepted": [
+            "The amount a spring stretches"
+          ],
+          "options": [
+            "The amount a spring stretches",
+            "The spring's electrical resistance",
+            "The spring's temperature"
+          ],
+          "feedback": "Extension here is the change in length displayed for the spring.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.05.CTX.005",
+          "skill": "mathematical-english",
+          "type": "single_choice",
+          "family": "A2.05.CTX.numbers",
+          "status": "draft",
+          "media": "text",
+          "prompt": "How much greater is Spring B's extension?",
+          "accepted": [
+            "2 cm"
+          ],
+          "options": [
+            "2 cm",
+            "8 cm",
+            "2 m"
+          ],
+          "feedback": "The difference between 5 cm and 3 cm is 2 cm.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.05.CTX.006",
+          "skill": "scientific-discourse",
+          "type": "single_choice",
+          "family": "A2.05.CTX.evidence",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which statement avoids an unsupported accuracy claim?",
+          "accepted": [
+            "B has a larger displayed extension; accuracy is unknown."
+          ],
+          "options": [
+            "B has a larger displayed extension; accuracy is unknown.",
+            "Spring B must be more accurate.",
+            "Both spring extensions have been physically verified."
+          ],
+          "feedback": "The model provides values but no reference for physical accuracy.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        }
+      ]
+    },
+    "A2.06": {
+      "sources": [
+        {
+          "id": "R5",
+          "title": "A fictional teaching-room notice",
+          "paragraphs": [
+            "This is a language-practice notice, not an actual laboratory safety protocol. It gives three steps for a fictional virtual-lab session: first, read the instructor's written directions; next, report any unclear diagram labels; finally, record what the computer model displays.",
+            "The notice also says: 'Do not adjust real power supplies without the instructor's authorization.' When students do not understand the instructions, they must ask the instructor before acting. Real laboratories may have additional rules."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "A2.06.CTX.001",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.06.CTX.procedure",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What is the first listed step?",
+          "accepted": [
+            "Read the instructor's written directions"
+          ],
+          "options": [
+            "Read the instructor's written directions",
+            "Change a real power-supply setting",
+            "Record an unobserved value"
+          ],
+          "feedback": "Reading the instructor's directions is the first of the three steps.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.06.CTX.002",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.06.CTX.procedure",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What should students report during the second step?",
+          "accepted": [
+            "Unclear diagram labels"
+          ],
+          "options": [
+            "Unclear diagram labels",
+            "Their favorite equations",
+            "Imaginary laboratory measurements"
+          ],
+          "feedback": "The second step asks students to report unclear diagram labels.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.06.CTX.003",
+          "skill": "grammar",
+          "type": "single_choice",
+          "family": "A2.06.CTX.grammar",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Complete the prohibition: You ___ adjust real power supplies without authorization.",
+          "accepted": [
+            "must not"
+          ],
+          "options": [
+            "must not",
+            "must",
+            "should"
+          ],
+          "feedback": "Must not expresses the stated prohibition; real equipment requires instructor authorization.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.06.CTX.004",
+          "skill": "vocabulary",
+          "type": "single_choice",
+          "family": "A2.06.CTX.vocab",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What does report mean in this notice?",
+          "accepted": [
+            "Tell the instructor about an issue"
+          ],
+          "options": [
+            "Tell the instructor about an issue",
+            "Replace a sensor without permission",
+            "Change a measured value"
+          ],
+          "feedback": "Reporting a problem means communicating it to the instructor.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.06.CTX.005",
+          "skill": "mathematical-english",
+          "type": "single_choice",
+          "family": "A2.06.CTX.numbers",
+          "status": "draft",
+          "media": "text",
+          "prompt": "How many numbered steps are stated for the virtual session?",
+          "accepted": [
+            "3"
+          ],
+          "options": [
+            "3",
+            "2",
+            "4"
+          ],
+          "feedback": "The notice lists first, next, and finally: three steps.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.06.CTX.006",
+          "skill": "scientific-discourse",
+          "type": "single_choice",
+          "family": "A2.06.CTX.evidence",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What does this fictional notice establish?",
+          "accepted": [
+            "Only language-practice instructions for this scenario"
+          ],
+          "options": [
+            "Only language-practice instructions for this scenario",
+            "Every real laboratory safety requirement",
+            "Permission to operate actual power supplies independently"
+          ],
+          "feedback": "It is an English example; actual safety rules and instructor supervision still apply.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        }
+      ]
+    },
+    "A2.07": {
+      "sources": [
+        {
+          "id": "R5",
+          "title": "A completed virtual pendulum activity",
+          "paragraphs": [
+            "Yesterday, a student opened a virtual pendulum animation. The student watched ten complete oscillations on the screen and recorded a displayed total time of 15.0 s for those ten oscillations. The model listed a pendulum length of 0.40 m.",
+            "After watching the animation, the student checked the unit symbols and wrote a short report. No physical pendulum was measured. The average displayed time per oscillation in this example is 1.5 s."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "A2.07.CTX.001",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.07.CTX.read-values",
+          "status": "draft",
+          "media": "text",
+          "prompt": "How many complete oscillations did the student watch?",
+          "accepted": [
+            "Ten"
+          ],
+          "options": [
+            "Ten",
+            "Five",
+            "Fifteen"
+          ],
+          "feedback": "The fictional activity includes ten complete oscillations.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.07.CTX.002",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.07.CTX.read-values",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What pendulum length does the animation list?",
+          "accepted": [
+            "0.40 m"
+          ],
+          "options": [
+            "0.40 m",
+            "0.40 s",
+            "15.0 m"
+          ],
+          "feedback": "The model shows a length of 0.40 m.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.07.CTX.003",
+          "skill": "grammar",
+          "type": "single_choice",
+          "family": "A2.07.CTX.grammar",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Choose the simple past: Yesterday the student ___ the symbols.",
+          "accepted": [
+            "checked"
+          ],
+          "options": [
+            "checked",
+            "checks",
+            "is checking"
+          ],
+          "feedback": "Yesterday and the completed action call for checked.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.07.CTX.004",
+          "skill": "vocabulary",
+          "type": "single_choice",
+          "family": "A2.07.CTX.vocab",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which verb means one full repeated motion of the pendulum?",
+          "accepted": [
+            "Oscillate"
+          ],
+          "options": [
+            "Oscillate",
+            "Calibrate",
+            "Condense"
+          ],
+          "feedback": "Oscillate describes repeated movement about an equilibrium position.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.07.CTX.005",
+          "skill": "mathematical-english",
+          "type": "single_choice",
+          "family": "A2.07.CTX.numbers",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What is the displayed mean time per oscillation (15.0 s for ten)?",
+          "accepted": [
+            "1.5 s"
+          ],
+          "options": [
+            "1.5 s",
+            "15.0 s",
+            "150 s"
+          ],
+          "feedback": "Divide 15.0 s by ten oscillations to obtain 1.5 s per oscillation.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.07.CTX.006",
+          "skill": "scientific-discourse",
+          "type": "single_choice",
+          "family": "A2.07.CTX.evidence",
+          "status": "draft",
+          "media": "text",
+          "prompt": "How should the time interval be described?",
+          "accepted": [
+            "A displayed virtual result"
+          ],
+          "options": [
+            "A displayed virtual result",
+            "A real pendulum measurement",
+            "A certified laboratory observation"
+          ],
+          "feedback": "The student watched a computer animation, not a real measured pendulum.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        }
+      ]
+    },
+    "A2.08": {
+      "sources": [
+        {
+          "id": "R5",
+          "title": "When a virtual temperature chart stopped refreshing",
+          "paragraphs": [
+            "At 14:10, a fictional student named Noor was entering notes about a virtual temperature display. The displayed temperature had increased from 21.0 °C to 21.5 °C. While Noor was entering the notes, the chart stopped refreshing.",
+            "Noor saved the last visible numbers and asked for help. The cause of the stopped refresh was not known. The model did not show any later temperature values, so the student did not invent them."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "A2.08.CTX.001",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.08.CTX.time",
+          "status": "draft",
+          "media": "text",
+          "prompt": "At what time did the virtual chart stop refreshing?",
+          "accepted": [
+            "14:10"
+          ],
+          "options": [
+            "14:10",
+            "14:01",
+            "14:50"
+          ],
+          "feedback": "The interruption is explicitly timed at 14:10.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.08.CTX.002",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.08.CTX.action",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What was Noor doing during the interruption?",
+          "accepted": [
+            "Entering notes"
+          ],
+          "options": [
+            "Entering notes",
+            "Operating a real heater",
+            "Preparing a physical sensor"
+          ],
+          "feedback": "Noor was entering notes when the virtual chart stopped refreshing.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.08.CTX.003",
+          "skill": "grammar",
+          "type": "single_choice",
+          "family": "A2.08.CTX.grammar",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Choose the past continuous: Noor ___ notes when the chart stopped.",
+          "accepted": [
+            "was entering"
+          ],
+          "options": [
+            "was entering",
+            "entered",
+            "is enter"
+          ],
+          "feedback": "Was entering describes the action already in progress when another event occurred.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.08.CTX.004",
+          "skill": "vocabulary",
+          "type": "single_choice",
+          "family": "A2.08.CTX.vocab",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What does stopped refreshing mean for the digital chart?",
+          "accepted": [
+            "The on-screen data stopped updating"
+          ],
+          "options": [
+            "The on-screen data stopped updating",
+            "The temperature was proved constant",
+            "A real sensor definitely broke"
+          ],
+          "feedback": "The display stopped updating; the underlying cause remains unknown.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.08.CTX.005",
+          "skill": "mathematical-english",
+          "type": "single_choice",
+          "family": "A2.08.CTX.numbers",
+          "status": "draft",
+          "media": "text",
+          "prompt": "How much had the displayed temperature increased (21.0 °C to 21.5 °C)?",
+          "accepted": [
+            "0.5 °C"
+          ],
+          "options": [
+            "0.5 °C",
+            "0.5 V",
+            "1.5 °C"
+          ],
+          "feedback": "The increase is 21.5 minus 21.0, or 0.5 degrees Celsius.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.08.CTX.006",
+          "skill": "scientific-discourse",
+          "type": "single_choice",
+          "family": "A2.08.CTX.evidence",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What can Noor reliably report about the failure?",
+          "accepted": [
+            "The chart stopped updating; the cause was unknown."
+          ],
+          "options": [
+            "The chart stopped updating; the cause was unknown.",
+            "A real temperature sensor failed.",
+            "The temperature reached 22.0 °C later."
+          ],
+          "feedback": "Only the visible interruption and its previously displayed values are supported.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        }
+      ]
+    },
+    "A2.09": {
+      "sources": [
+        {
+          "id": "R5",
+          "title": "A fictional project progress update",
+          "paragraphs": [
+            "Two students are preparing a report about a virtual cart model. They have already finished Table A, which shows a displayed position of 1.0 m at 1 s and 2.0 m at 2 s. They finished the first graph on Monday.",
+            "They have not completed Table B yet. They still need to write the conclusion. They describe Table A as complete and Table B as pending. All numbers belong to a teaching model, not real measurements."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "A2.09.CTX.001",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.09.CTX.completion",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which table has already been completed?",
+          "accepted": [
+            "Table A"
+          ],
+          "options": [
+            "Table A",
+            "Table B",
+            "Neither table"
+          ],
+          "feedback": "The students have already finished Table A.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.09.CTX.002",
+          "skill": "reading",
+          "type": "single_choice",
+          "family": "A2.09.CTX.time",
+          "status": "draft",
+          "media": "text",
+          "prompt": "On which day did the students finish the first graph?",
+          "accepted": [
+            "Monday"
+          ],
+          "options": [
+            "Monday",
+            "Thursday",
+            "Friday"
+          ],
+          "feedback": "The source states the first graph was finished on Monday.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.09.CTX.003",
+          "skill": "grammar",
+          "type": "single_choice",
+          "family": "A2.09.CTX.grammar",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Complete the present perfect: They have not ___ Table B yet.",
+          "accepted": [
+            "completed"
+          ],
+          "options": [
+            "completed",
+            "complete",
+            "completing"
+          ],
+          "feedback": "Use have not + past participle completed to describe the pending task.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.09.CTX.004",
+          "skill": "vocabulary",
+          "type": "single_choice",
+          "family": "A2.09.CTX.vocab",
+          "status": "draft",
+          "media": "text",
+          "prompt": "What does pending mean in this context?",
+          "accepted": [
+            "Not finished yet"
+          ],
+          "options": [
+            "Not finished yet",
+            "Already published",
+            "Physically measured"
+          ],
+          "feedback": "Table B remains pending because it has not been completed.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.09.CTX.005",
+          "skill": "mathematical-english",
+          "type": "single_choice",
+          "family": "A2.09.CTX.numbers",
+          "status": "draft",
+          "media": "text",
+          "prompt": "How much does the model position change from 1 s to 2 s?",
+          "accepted": [
+            "1.0 m"
+          ],
+          "options": [
+            "1.0 m",
+            "3.0 m",
+            "1.0 s"
+          ],
+          "feedback": "The displayed position changes from 1.0 m to 2.0 m, a difference of 1.0 m.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        },
+        {
+          "id": "A2.09.CTX.006",
+          "skill": "scientific-discourse",
+          "type": "single_choice",
+          "family": "A2.09.CTX.evidence",
+          "status": "draft",
+          "media": "text",
+          "prompt": "Which statement accurately reports progress?",
+          "accepted": [
+            "Table A is complete, but Table B and the conclusion remain unfinished."
+          ],
+          "options": [
+            "Table A is complete, but Table B and the conclusion remain unfinished.",
+            "All project work is complete.",
+            "The report has been validated using physical cart measurements."
+          ],
+          "feedback": "The source separates completed Table A from the pending Table B and conclusion.",
+          "sourceId": "R5",
+          "importStatus": "new_original_contextual_practice"
+        }
+      ]
+    }
+  }
+}
