@@ -13,7 +13,7 @@ try{
  await page.waitForFunction(()=>document.querySelector("#unit-status")?.textContent.includes("34 text questions"),null,{timeout:25_000});
  assert.equal(await page.locator("#units button").count(),12,"All twelve units must be navigable");
  assert.equal(await page.locator("#authored-lesson form").count(),34,"First unit practice missing");
- assert.equal(await page.getByRole("button",{name:"Hear reading"}).count(),4,"Four optional synthetic reading aids should be available");
+ assert.equal(await page.locator("#authored-lesson button").filter({hasText:"Hear reading"}).count(),4,"Four optional synthetic reading aids should be available");
  assert.equal(await page.locator("#writing-task option").count(),2,"Each unit should offer two writing assignments");
  assert.match(await page.locator("body").innerText(),/A2 beta — formative learning only/);
  const first=page.locator("#practice-A2\\.01\\.BE\\.001");
