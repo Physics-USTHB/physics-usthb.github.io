@@ -12,7 +12,8 @@ let s={
   objective:loaded.objective?{u:+loaded.objective.u}:null,
   objectiveCalc:loaded.objectiveCalc||null,
   micro:loaded.micro&&loaded.micro.u!=null?{u:+loaded.micro.u,ocular:+loaded.micro.ocular}:null,
-  microCalc:loaded.microCalc||null
+  microCalc:loaded.microCalc||null,
+  routeDiff:loaded.routeDiff??null
 };
 if(migrating){s.eyeCalc=null;s.loupeCalc=null;s.objectiveCalc=null;s.micro=null;s.microCalc=null}
 function save(){U.save(K,s)}
@@ -42,7 +43,7 @@ function renderEye(){
 function recordEye(){
   const d=+E('eyeDistance').value,pp=1/(1/fEyeMax-1/d);
   if(Math.abs(pp-retina)>.15){E('eyeMessage').className='notice warn';E('eyeMessage').textContent='The image is not on the retina. Move the model eye until maximum accommodation gives a sharp image.';return}
-  s.eye={delta:d};s.eyeCalc=null;s.loupeCalc=null;s.micro=null;s.microCalc=null;
+  s.eye={delta:d};s.eyeCalc=null;s.loupeCalc=null;s.micro=null;s.microCalc=null;s.routeDiff=null;s.routeDiff=null;
   E('studentAlpha').value='';['studentAlphaPrime','studentLoupeG','studentPower','studentEpsilon','studentMicroG','studentProduct'].forEach(id=>E(id).value='');
   E('eyeMessage').className='notice ok';E('eyeMessage').textContent='Nearest sharp naked-eye position recorded. Calculate the reference angular size α.';
   render();save();
@@ -52,7 +53,7 @@ function checkEyeCalc(){
   const v=+E('studentAlpha').value,rad=Math.atan(AB/s.eye.delta),expected=angleDeg(rad);
   if(!Number.isFinite(v)||v<=0){E('eyeCalcMessage').className='notice warn';E('eyeCalcMessage').textContent='Enter α in degrees.';return}
   if(Math.abs(v-expected)>.08){E('eyeCalcMessage').className='notice warn';E('eyeCalcMessage').textContent='Recalculate α = arctan(AB/δ′), using consistent length units.';return}
-  s.eyeCalc={alphaRad:rad,alphaDeg:v};s.loupeCalc=null;s.micro=null;s.microCalc=null;
+  s.eyeCalc={alphaRad:rad,alphaDeg:v};s.loupeCalc=null;s.micro=null;s.microCalc=null;s.routeDiff=null;s.routeDiff=null;
   E('eyeCalcMessage').className='notice ok';E('eyeCalcMessage').textContent='Naked-eye angular size accepted.';render();save();
 }
 
@@ -70,7 +71,7 @@ function recordLoupe(){
   if(!s.eyeCalc){E('loupeMessage').className='notice warn';E('loupeMessage').textContent='Measure and calculate the naked-eye reference angle α first.';return}
   const d=+E('loupeDistance').value;
   if(Math.abs(d-fLoupe)>.15){E('loupeMessage').className='notice warn';E('loupeMessage').textContent='The relaxed eye is not focused. Place the object in the magnifier focal plane.';return}
-  s.loupe={d};s.loupeCalc=null;s.micro=null;s.microCalc=null;
+  s.loupe={d};s.loupeCalc=null;s.micro=null;s.microCalc=null;s.routeDiff=null;s.routeDiff=null;
   ['studentAlphaPrime','studentLoupeG','studentPower','studentEpsilon','studentMicroG','studentProduct'].forEach(id=>E(id).value='');
   E('loupeMessage').className='notice ok';E('loupeMessage').textContent='Focused magnifier position recorded. Calculate α′, Gocu and power.';
   render();save();
@@ -81,7 +82,7 @@ function checkLoupeCalc(){
   const a=+E('studentAlphaPrime').value,g=+E('studentLoupeG').value,p=+E('studentPower').value;
   if([a,g,p].some(v=>!Number.isFinite(v)||v<=0)){E('loupeCalcMessage').className='notice warn';E('loupeCalcMessage').textContent='Enter α′, Gocu and P.';return}
   if(Math.abs(a-alphaPDeg)>.08||Math.abs(g-G)>.04||Math.abs(p-P)>.08){E('loupeCalcMessage').className='notice warn';E('loupeCalcMessage').textContent='Recheck α′ = arctan(AB/f₂), Gocu=α′/α and P=α′/AB with α′ in radians and AB in metres for diopters.';return}
-  s.loupeCalc={alphaPRad,alphaPDeg:a,G:g,P:p};s.micro=null;s.microCalc=null;
+  s.loupeCalc={alphaPRad,alphaPDeg:a,G:g,P:p};s.micro=null;s.microCalc=null;s.routeDiff=null;s.routeDiff=null;
   E('loupeCalcMessage').className='notice ok';E('loupeCalcMessage').textContent='Magnifier calculations accepted.';render();save();
 }
 
@@ -110,7 +111,7 @@ function renderMicro(){
 function measureObjective(){
   const u=+E('objDistance').value,pp=objectiveImage(u);
   if(Math.abs(pp-targetP1)>.5){E('microMessage').className='notice warn';E('microMessage').textContent='The intermediate image is not sharp on the fixed screen. Refocus the objective first.';return}
-  s.objective={u};s.objectiveCalc=null;s.micro=null;s.microCalc=null;
+  s.objective={u};s.objectiveCalc=null;s.micro=null;s.microCalc=null;s.routeDiff=null;s.routeDiff=null;
   ['studentP1','studentGammaObj','studentEpsilon','studentMicroG','studentProduct'].forEach(id=>E(id).value='');
   E('microMessage').className='notice ok';E('microMessage').textContent='Sharp intermediate image recorded with the screen inserted. Calculate p′₁ and |γobj| before removing the screen.';
   render();save();
@@ -120,7 +121,7 @@ function checkObjectiveCalc(){
   const pp=+E('studentP1').value,g=+E('studentGammaObj').value,expectedPP=targetP1,expectedG=expectedPP/s.objective.u;
   if(!Number.isFinite(pp)||!Number.isFinite(g)||pp<=0||g<=0){E('objectiveCalcMessage').className='notice warn';E('objectiveCalcMessage').textContent='Enter p′₁ and |γobj|.';return}
   if(Math.abs(pp-expectedPP)>.3||Math.abs(g-expectedG)>.06){E('objectiveCalcMessage').className='notice warn';E('objectiveCalcMessage').textContent='Recheck p′₁=f₁+Δ and |γobj|=p′₁/|p₁| using your measured object–objective distance.';return}
-  s.objectiveCalc={pp,gamma:g};s.micro=null;s.microCalc=null;
+  s.objectiveCalc={pp,gamma:g};s.micro=null;s.microCalc=null;s.routeDiff=null;s.routeDiff=null;
   E('objectiveCalcMessage').className='notice ok';E('objectiveCalcMessage').textContent='Objective calculation accepted. Remove the intermediate screen and finish the microscope alignment.';
   render();save();
 }
@@ -128,7 +129,7 @@ function assembleMicroscope(){
   if(!s.eyeCalc||!s.loupeCalc||!s.objectiveCalc){E('microMessage').className='notice warn';E('microMessage').textContent='Complete the eye, magnifier and objective calculations first.';return}
   const u=+E('objDistance').value,pp=objectiveImage(u),ocular=+E('ocularPosition').value,target=targetP1+fLoupe;
   if(Math.abs(pp-targetP1)>.5||Math.abs(ocular-target)>.5){E('microMessage').className='notice warn';E('microMessage').textContent='The optical train is not aligned: refocus the intermediate image and place it in the ocular front focal plane.';return}
-  s.micro={u,ocular};s.microCalc=null;['studentEpsilon','studentMicroG','studentProduct'].forEach(id=>E(id).value='');
+  s.micro={u,ocular};s.microCalc=null;s.routeDiff=null;['studentEpsilon','studentMicroG','studentProduct'].forEach(id=>E(id).value='');
   E('microMessage').className='notice ok';E('microMessage').textContent='Microscope focused for relaxed-eye observation. Calculate ε, Gc and |γobj|×Gocu.';
   render();save();
 }
@@ -138,21 +139,35 @@ function checkMicroCalc(){
   const e=+E('studentEpsilon').value,g=+E('studentMicroG').value,p=+E('studentProduct').value;
   if([e,g,p].some(v=>!Number.isFinite(v)||v<=0)){E('microCalcMessage').className='notice warn';E('microCalcMessage').textContent='Enter ε, Gc and |γobj|×Gocu.';return}
   if(Math.abs(e-epsilonDeg)>.15||Math.abs(g-G)>.12||Math.abs(p-product)>.12){E('microCalcMessage').className='notice warn';E('microCalcMessage').textContent='Recheck ε≈A₁B₁/f₂, Gc=ε/α and the product |γobj|×Gocu.';return}
-  s.microCalc={epsilonRad,epsilonDeg:e,G:g,product:p};E('microCalcMessage').className='notice ok';E('microCalcMessage').textContent='Microscope calculations accepted. Compare the two total-magnification routes in your discussion.';
+  s.microCalc={epsilonRad,epsilonDeg:e,G:g,product:p};s.routeDiff=null;E('microCalcMessage').className='notice ok';E('microCalcMessage').textContent='Microscope calculations accepted. Compare the two total-magnification routes in your discussion.';
   render();save();
 }
 
+function routeDifference(){
+  if(!s.microCalc)return null;
+  return 100*Math.abs(s.microCalc.G-s.microCalc.product)/((s.microCalc.G+s.microCalc.product)/2);
+}
 function analysis(){
-  if(s.eyeCalc&&s.loupeCalc&&s.microCalc){
-    const diff=100*Math.abs(s.microCalc.G-s.microCalc.product)/((s.microCalc.G+s.microCalc.product)/2);
-    E('analysisMessage').className='notice ok';E('analysisMessage').textContent='Sequence complete. The two microscope grossissement routes differ by '+diff.toFixed(1)+'% in this paraxial model; discuss the approximations used.';
-  }else{
+  const diff=routeDifference();
+  E('routeDiffOut').textContent=s.routeDiff!=null?Number(s.routeDiff).toFixed(1)+'%':'—';
+  if(diff==null){
     E('analysisMessage').className='notice';E('analysisMessage').textContent='Complete and validate the eye, magnifier and microscope sequence.';
+  }else if(s.routeDiff==null){
+    E('analysisMessage').className='notice';E('analysisMessage').textContent='Sequence complete. Calculate the percentage difference between Gc and |γobj|×Gocu using their mean as the denominator.';
+  }else{
+    E('analysisMessage').className='notice ok';E('analysisMessage').textContent='Magnification-route comparison accepted. Discuss why the two routes are close but need not be exactly identical in the paraxial model.';
   }
+}
+function checkRouteDiff(){
+  const expected=routeDifference(),v=+E('studentRouteDiff').value;
+  if(expected==null){E('analysisMessage').className='notice warn';E('analysisMessage').textContent='Complete the microscope calculation first.';return}
+  if(!Number.isFinite(v)||v<0){E('analysisMessage').className='notice warn';E('analysisMessage').textContent='Enter the percentage difference between the two microscope magnifications.';return}
+  if(Math.abs(v-expected)>.4){E('analysisMessage').className='notice warn';E('analysisMessage').textContent='Recalculate 100|G1−G2|/[(G1+G2)/2] using your two accepted microscope magnifications.';return}
+  s.routeDiff=v;analysis();save();
 }
 function render(){renderEye();renderLoupe();renderMicro();analysis()}
 function buildReport(){
-  const summary='<p><b>Near point δ′:</b> '+E('deltaOut').textContent+' · <b>accepted α:</b> '+E('alphaOut').textContent+'.</p><p><b>Magnifier:</b> α′='+E('alphaPrimeOut').textContent+', Gocu='+E('loupeGOut').textContent+', P='+E('powerOut').textContent+'.</p><p><b>Objective:</b> p′₁='+E('p1Out').textContent+', |γobj|='+E('gammaObjOut').textContent+'. <b>Microscope:</b> Gc='+E('microGOut').textContent+', |γobj|×Gocu='+E('productOut').textContent+'.</p>';
+  const summary='<p><b>Near point δ′:</b> '+E('deltaOut').textContent+' · <b>accepted α:</b> '+E('alphaOut').textContent+'.</p><p><b>Magnifier:</b> α′='+E('alphaPrimeOut').textContent+', Gocu='+E('loupeGOut').textContent+', P='+E('powerOut').textContent+'.</p><p><b>Objective:</b> p′₁='+E('p1Out').textContent+', |γobj|='+E('gammaObjOut').textContent+'. <b>Microscope:</b> Gc='+E('microGOut').textContent+', |γobj|×Gocu='+E('productOut').textContent+'. <b>Route difference:</b> '+(s.routeDiff!=null?Number(s.routeDiff).toFixed(1)+'%':'not validated')+'.</p>';
   return U.report('Laboratory Practical 4 — Eye, Magnifier & Microscope',summary);
 }
 
@@ -165,11 +180,12 @@ if(s.eyeCalc)E('studentAlpha').value=s.eyeCalc.alphaDeg;
 if(s.loupeCalc){E('studentAlphaPrime').value=s.loupeCalc.alphaPDeg;E('studentLoupeG').value=s.loupeCalc.G;E('studentPower').value=s.loupeCalc.P}
 if(s.objectiveCalc){E('studentP1').value=s.objectiveCalc.pp;E('studentGammaObj').value=s.objectiveCalc.gamma}
 if(s.microCalc){E('studentEpsilon').value=s.microCalc.epsilonDeg;E('studentMicroG').value=s.microCalc.G;E('studentProduct').value=s.microCalc.product}
+if(s.routeDiff!=null)E('studentRouteDiff').value=s.routeDiff;
 ['eyeDistance','loupeDistance','objDistance','ocularPosition'].forEach(id=>E(id).addEventListener('input',render));
 E('recordNear').onclick=recordEye;E('checkEyeCalc').onclick=checkEyeCalc;
 E('recordLoupe').onclick=recordLoupe;E('checkLoupeCalc').onclick=checkLoupeCalc;
 E('measureObjective').onclick=measureObjective;E('checkObjectiveCalc').onclick=checkObjectiveCalc;
-E('assembleMicroscope').onclick=assembleMicroscope;E('checkMicroCalc').onclick=checkMicroCalc;
+E('assembleMicroscope').onclick=assembleMicroscope;E('checkMicroCalc').onclick=checkMicroCalc;E('checkRouteDiff').onclick=checkRouteDiff;
 E('buildReport').onclick=buildReport;E('printReport').onclick=()=>{if(buildReport())window.print()};
 if(!E('reportDate').value)E('reportDate').value=new Date().toISOString().slice(0,10);
 window.addEventListener('resize',render);
