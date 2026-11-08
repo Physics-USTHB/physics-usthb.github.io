@@ -1,1 +1,74 @@
-(()=>{'use strict';const U=VOMUI,$=U.$,K='VOM_O01_v1',C=.068e-6,Ltrue=.0084,Rr=42,e0=.4;let s=U.load(K,{critical:null,damped:null,unknown:null,rx:210+Math.random()*130,cx:(45+Math.random()*35)*1e-9});function pars(unknown=false){const r=unknown?s.rx+Rr:+R.value+Rr,c=unknown?s.cx:C,d=r/(2*Ltrue),w0=Math.sqrt(1/(Ltrue*c)),wa=Math.sqrt(Math.max(0,w0*w0-d*d));return{r,c,d,w0,wa}}function draw(){const{x,w,h}=U.canvas(scope);U.grid(x,w,h);const p=pars(spec.value==='unknown'),td=+tdiv.value*1e-6,T=10*td,und=p.d<p.w0,crit=Math.abs(p.d-p.w0)/p.w0<.04;const pts=[];for(let i=0;i<=900;i++){const t=T*i/900;let y;if(und)y=e0*Math.exp(-p.d*t)*Math.cos(p.wa*t);else if(crit)y=e0*(1+p.w0*t)*Math.exp(-p.w0*t);else{const a=Math.sqrt(p.d*p.d-p.w0*p.w0);y=e0*Math.exp(-p.d*t)*(Math.cosh(a*t)+p.d/a*Math.sinh(a*t))}pts.push({x:w*i/900,y:h/2-y/e0*h*.32})}x.strokeStyle='#72ffc0';x.lineWidth=2;x.beginPath();pts.forEach((q,i)=>i?x.lineTo(q.x,q.y):x.moveTo(q.x,q.y));x.stroke()}function critical(){if(spec.value!=='known'){msg.className='notice warn';msg.textContent='Use the known circuit for the critical-resistance measurement.';return}const target=2*Math.sqrt(Ltrue/C)-Rr;if(Math.abs(+R.value-target)>18){msg.className='notice warn';msg.textContent=+R.value<target?'Still pseudoperiodic: increase R slowly.':'Aperiodic: reduce R and approach the critical boundary more carefully.';return}s.critical=+R.value;rcOut.textContent=s.critical.toFixed(0)+' Ω';const Lc=((s.critical+Rr)**2*C)/4;lOut.textContent=(Lc*1e3).toFixed(2)+' mH';msg.className='notice ok';msg.textContent='Critical regime recorded.';analyse();U.save(K,s)}function damped(){spec.value='known';R.value=0;const p=pars(false),Ta=2*Math.PI/p.wa,D=p.d*Ta,w02=(4*Math.PI*Math.PI+D*D)/(Ta*Ta),L=1/(C*w02),rr=2*L*(D/Ta);s.damped={Ta,D,L,rr};taOut.textContent=(Ta*1e6).toFixed(1)+' µs';dOut.textContent=D.toFixed(3);qOut.textContent=(Math.PI/D).toFixed(1);lOut.textContent=(L*1e3).toFixed(2)+' mH';rrOut.textContent=rr.toFixed(1)+' Ω';msg.className='notice ok';msg.textContent='R=0 pseudoperiodic response measured using peaks separated by 3Tₐ.';draw();analyse();U.save(K,s)}function unknown(){if(!s.damped){msg.className='notice warn';msg.textContent='Determine L and Rᵣ from the known circuit first.';return}spec.value='unknown';const p=pars(true),Ta=2*Math.PI/p.wa,D=p.d*Ta,delta=D/Ta,w0=Math.sqrt((4*Math.PI*Math.PI+D*D)/(Ta*Ta)),rx=2*s.damped.L*delta-s.damped.rr,cx=1/(s.damped.L*w0*w0);s.unknown={Ta,D,rx,cx};rxOut.textContent=rx.toFixed(0)+' Ω';cxOut.textContent=(cx*1e9).toFixed(1)+' nF';msg.className='notice ok';msg.textContent='Unknown specimen measured from D′ and T′ₐ.';draw();U.save(K,s)}function analyse(){if(s.critical&&s.damped){const Lc=((s.critical+Rr)**2*C)/4,err=100*(s.damped.L-Lc)/Lc;compare.className='notice ok';compare.textContent='L from critical regime = '+(Lc*1e3).toFixed(2)+' mH; L from damped regime = '+(s.damped.L*1e3).toFixed(2)+' mH; difference '+err.toFixed(1)+'%.'}}function restore(){if(s.critical)rcOut.textContent=s.critical.toFixed(0)+' Ω';if(s.damped){taOut.textContent=(s.damped.Ta*1e6).toFixed(1)+' µs';dOut.textContent=s.damped.D.toFixed(3);qOut.textContent=(Math.PI/s.damped.D).toFixed(1);lOut.textContent=(s.damped.L*1e3).toFixed(2)+' mH';rrOut.textContent=s.damped.rr.toFixed(1)+' Ω'}if(s.unknown){rxOut.textContent=s.unknown.rx.toFixed(0)+' Ω';cxOut.textContent=(s.unknown.cx*1e9).toFixed(1)+' nF'}analyse()}U.tabs();[R,freq,tdiv,spec].forEach(e=>e.oninput=draw);recordCritical.onclick=critical;measureDamped.onclick=damped;measureUnknown.onclick=unknown;buildReport.onclick=()=>U.report('TP01 — Free Oscillations 1DOF','<p><b>Critical R:</b> '+rcOut.textContent+' · <b>Tₐ:</b> '+taOut.textContent+' · <b>D:</b> '+dOut.textContent+'.</p><p><b>L:</b> '+lOut.textContent+' · <b>Rᵣ:</b> '+rrOut.textContent+' · <b>Rₓ/Cₓ:</b> '+rxOut.textContent+' / '+cxOut.textContent+'.</p>');printReport.onclick=()=>{buildReport.click();print()};reportDate.value=new Date().toISOString().slice(0,10);window.onresize=draw;restore();draw()})();
+(()=>{
+'use strict';
+const U=VOMUI,E=id=>document.getElementById(id),K='VOM_O01_v2',f0=2.2,betas={1:.12,2:.28,3:.52},DIV_SCALE=1.7;
+let s=U.load(K,{version:2,records:{}});
+if(s.version!==2)s={version:2,records:{}};
+function save(){U.save(K,s)}
+function pars(){
+  const b=betas[+E('damping').value],w0=2*Math.PI*f0,wd=Math.sqrt(w0*w0-b*b),fd=wd/(2*Math.PI),T=1/fd,A=+E('amp').value;
+  return{b,w0,wd,fd,T,A};
+}
+function xAt(t,p=pars()){return p.A*Math.exp(-p.b*t)*Math.cos(p.wd*t)}
+function ampDiv(t,p=pars()){return Math.abs(xAt(t,p))*DIV_SCALE}
+function nearestExtremumError(t,T){
+  const half=T/2,k=Math.round(t/half),target=k*half;
+  return{err:Math.abs(t-target),k,target};
+}
+function draw(){
+  const {x,w,h}=U.canvas(E('scope'));U.grid(x,w,h);const p=pars(),pts=[];
+  for(let i=0;i<=1000;i++){const t=5*i/1000,y=xAt(t,p);pts.push({x:w*i/1000,y:h/2-y/1.5*h*.32})}
+  x.strokeStyle='#68e4fb';x.lineWidth=2;x.beginPath();pts.forEach((q,i)=>i?x.lineTo(q.x,q.y):x.moveTo(q.x,q.y));x.stroke();
+  x.setLineDash([5,4]);
+  [['cursor1','#ffd166'],['cursor2','#ff8a7a']].forEach(([id,col])=>{const t=+E(id).value,xx=w*t/5;x.strokeStyle=col;x.beginPath();x.moveTo(xx,0);x.lineTo(xx,h);x.stroke()});
+  x.setLineDash([]);updateCursorReadouts();
+}
+function updateCursorReadouts(){
+  const p=pars(),t1=+E('cursor1').value,t2=+E('cursor2').value;
+  E('t1Read').textContent=t1.toFixed(3)+' s';E('t2Read').textContent=t2.toFixed(3)+' s';
+  E('a1Read').textContent=ampDiv(t1,p).toFixed(3);E('a2Read').textContent=ampDiv(t2,p).toFixed(3);
+}
+function clearEntry(){['studentCycles','studentT','studentDelta','studentQ'].forEach(id=>E(id).value='')}
+function validate(){
+  const p=pars(),t1=+E('cursor1').value,t2=+E('cursor2').value;
+  if(t2<=t1){E('msg').className='notice warn';E('msg').textContent='Cursor t₂ must be later than t₁.';return}
+  const e1=nearestExtremumError(t1,p.T),e2=nearestExtremumError(t2,p.T),sameSign=(e1.k-e2.k)%2===0;
+  if(e1.err>.045*p.T||e2.err>.045*p.T||!sameSign){E('msg').className='notice warn';E('msg').textContent='Place both cursors on same-sign amplitude extrema before calculating the decrement.';return}
+  const N=Math.round((t2-t1)/p.T);
+  if(N<3){E('msg').className='notice warn';E('msg').textContent='Use at least three full periods between the cursors to reduce reading error.';return}
+  const a1=ampDiv(t1,p),a2=ampDiv(t2,p);
+  if(!(a1>a2&&a2>0)){E('msg').className='notice warn';E('msg').textContent='Choose an earlier larger peak for A₁ and a later smaller peak for A₂.';return}
+  const raw=['studentCycles','studentT','studentDelta','studentQ'].map(id=>E(id).value.trim());
+  if(raw.some(v=>v==='')){E('msg').className='notice warn';E('msg').textContent='Enter N, T, δ and Q before validation.';return}
+  const n=+raw[0],T=+raw[1],delta=+raw[2],Q=+raw[3],Tcalc=(t2-t1)/N,dcalc=Math.log(a1/a2)/N,qcalc=Math.PI/dcalc;
+  if(!Number.isInteger(n)||n!==N){E('msg').className='notice warn';E('msg').textContent='Recount the number of full periods between the two same-phase extrema.';return}
+  if(Math.abs(T-Tcalc)>.006){E('msg').className='notice warn';E('msg').textContent='Recalculate T=(t₂−t₁)/N.';return}
+  if(Math.abs(delta-dcalc)>.006){E('msg').className='notice warn';E('msg').textContent='Recalculate δ=(1/N) ln(A₁/A₂) from the cursor amplitudes.';return}
+  if(Math.abs(Q-qcalc)>Math.max(.15,.025*qcalc)){E('msg').className='notice warn';E('msg').textContent='Recalculate Q≈π/δ.';return}
+  const level=String(E('damping').value);s.records[level]={level:+level,N:n,T,delta,Q,t1,t2,a1,a2};
+  E('msg').className='notice ok';E('msg').textContent='Damping-level measurement accepted. Repeat for the other damping settings using several periods.';
+  clearEntry();renderResults();save();
+}
+function renderResults(){
+  const level=String(E('damping').value),r=s.records[level]||Object.values(s.records).at(-1);
+  E('Tout').textContent=r?r.T.toFixed(4)+' s':'—';E('deltaOut').textContent=r?r.delta.toFixed(4):'—';E('qOut').textContent=r?r.Q.toFixed(2):'—';
+  E('setsOut').textContent=Object.keys(s.records).length+' / 3';
+  E('dampingBody').innerHTML=[1,2,3].map(k=>{const q=s.records[String(k)];return '<tr><td>'+({1:'weak',2:'medium',3:'strong'}[k])+'</td><td>'+(q?q.N:'—')+'</td><td>'+(q?q.T.toFixed(4):'—')+'</td><td>'+(q?q.delta.toFixed(4):'—')+'</td><td>'+(q?q.Q.toFixed(2):'—')+'</td></tr>'}).join('');
+  const pts=[1,2,3].map(k=>s.records[String(k)]?{x:k,y:s.records[String(k)].Q}:null).filter(Boolean);
+  if(pts.length)U.plot(E('dampingChart'),[{pts}],{xlabel:'damping setting 1→3',ylabel:'Q',xmin:1,xmax:3,ymin:0});
+  else{
+    const q=U.canvas(E('dampingChart'));q.x.fillStyle='#fff';q.x.fillRect(0,0,q.w,q.h);q.x.fillStyle='#6c8090';q.x.font='600 13px system-ui';q.x.textAlign='center';q.x.fillText('Validate damping measurements to build the comparison.',q.w/2,q.h/2);
+  }
+  const complete=Object.keys(s.records).length===3;E('analysisMessage').className=complete?'notice ok':'notice';
+  E('analysisMessage').textContent=complete?'All three damping levels are complete. Verify that increasing damping raises δ and lowers Q, then relate amplitude decay to energy decay.':'Complete all three damping levels and compare δ and Q.';
+}
+function buildReport(){
+  const rows=[1,2,3].map(k=>{const q=s.records[String(k)];return q?({1:'weak',2:'medium',3:'strong'}[k])+': T='+q.T.toFixed(4)+' s, δ='+q.delta.toFixed(4)+', Q='+q.Q.toFixed(2):({1:'weak',2:'medium',3:'strong'}[k])+': incomplete'}).join(' · ');
+  return U.report('Laboratory Practical 1 — Free Damped Oscillations','<p><b>Damping measurements:</b> '+rows+'.</p>');
+}
+U.tabs();
+['damping','amp','cursor1','cursor2'].forEach(id=>E(id).addEventListener('input',()=>{draw();renderResults()}));
+E('measure').onclick=validate;E('buildReport').onclick=buildReport;E('printReport').onclick=()=>{if(buildReport())window.print()};
+if(!E('reportDate').value)E('reportDate').value=new Date().toISOString().slice(0,10);
+window.addEventListener('resize',()=>{draw();renderResults()});
+draw();renderResults();save();
+})();
