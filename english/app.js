@@ -1,4 +1,4 @@
-import {validateUnit, gradeItem, nextReview, summarizeEvidence, weaknessHypothesis} from "./assessment.mjs";
+import {validateUnit, gradeItem, nextReview, summarizeEvidence, weaknessHypothesis, shuffledOptions} from "./assessment.mjs";
 // English for Physicists — local-first development preview.
 // All sample exercises are formative and NOT eligible for CEFR/mastery claims.
 const UNITS=[
@@ -100,7 +100,7 @@ function renderAuthored(){
    input=document.createElement("input");input.type="text";input.maxLength=300;input.required=true;
    input.setAttribute("aria-label",item.prompt);fieldset.append(input);
   }else{
-   for(const answer of item.options){
+   for(const answer of shuffledOptions(item.options)){
     const label=document.createElement("label");label.className="option";
     const radio=document.createElement("input");radio.type="radio";radio.name=item.id;
     radio.value=answer;radio.required=true;
@@ -291,7 +291,7 @@ function renderQuestions(){
    input=document.createElement("input");input.type="text";input.maxLength=300;input.required=true;
    input.setAttribute("aria-label",q.prompt);set.append(input);
   }else{
-   for(const option of q.options){
+   for(const option of shuffledOptions(q.options)){
     const label=document.createElement("label");label.className="option";
     const radio=document.createElement("input");radio.type="radio";radio.name=q.id;radio.value=option;radio.required=true;
     label.append(radio,document.createTextNode(" "+option));set.append(label);
