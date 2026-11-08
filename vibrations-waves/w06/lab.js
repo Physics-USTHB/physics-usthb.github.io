@@ -24,7 +24,7 @@ function pulseTrace(x,w,h,tdUs,vdiv){
   const screenT=10*tdUs*1e-6,t0=.55e-6,tr=t0+2*X/s.run.v,g=gamma(),Ar=s.run.A0*Math.exp(-2*s.run.alpha*X)*g,base=h*.46,ydiv=h/8,pts=[];
   for(let i=0;i<=1400;i++){const t=screenT*i/1400,V=s.run.A0*gaussian(t,t0,.055e-6)+Ar*gaussian(t,tr,.065e-6);pts.push({x:w*i/1400,y:base-V/vdiv*ydiv});}
   x.strokeStyle='#69e7ff';x.lineWidth=2.2;x.beginPath();pts.forEach((q,i)=>i?x.lineTo(q.x,q.y):x.moveTo(q.x,q.y));x.stroke();
-  const pd=+E('pathDistance').value,Apath=s.run.A0*Math.exp(-s.run.alpha*pd),bx=w*.70,by=h*.78,hh=Apath/vdiv*ydiv*.8;
+  const pd=+E('pathDistance').value,Apath=s.run.A0*Math.exp(-s.run.alpha*pd),bx=w*.70,by=h*.78,hh=Apath/vdiv*ydiv;
   x.strokeStyle='#ffd166';x.lineWidth=2;x.beginPath();x.moveTo(bx-35,by);x.lineTo(bx-10,by);x.quadraticCurveTo(bx,by-hh,bx+10,by);x.lineTo(bx+35,by);x.stroke();
   x.fillStyle='#ffd166';x.font='600 11px system-ui';x.fillText('selected path '+pd+' m',bx-50,h*.90);
   const Xpx=t=>t/screenT*w;x.setLineDash([5,4]);[['pulseC1','#fff09a'],['pulseC2','#ff9f8a']].forEach(([id,col])=>{const xx=+E(id).value/10*w;x.strokeStyle=col;x.beginPath();x.moveTo(xx,0);x.lineTo(xx,h*.62);x.stroke()});x.setLineDash([]);
@@ -129,9 +129,9 @@ function checkSinAnalysis(){
 }
 function zinTrue(term){const k=.22;return term==='short'?s.run.Zc*k:s.run.Zc/k}
 function drawZ(){
-  const q=setupCanvas('zCanvas');scopeGrid(q.x,q.w,q.h);const Ze=zinTrue(E('zTerm').value),Vg=VS,Ve=Vg*Ze/(RA+Ze),Vr=Vg-Ve,vd=.5,amps=[{a:Vg,p:0,col:'#ffd166',label:'Vg'},{a:Ve,p:0,col:'#69e7ff',label:'Ve'},{a:Vr,p:0,col:'#ff8a7a',label:'VR'}];
-  amps.forEach((z,k)=>{const pts=[];for(let i=0;i<=1000;i++){const t=i/1000*5e-6;pts.push({x:q.w*i/1000,y:q.h/2+(k-1)*q.h*.22-z.a/vd*Math.sin(TAU*1e6*t)*q.h/24});}q.x.strokeStyle=z.col;q.x.lineWidth=1.8;q.x.beginPath();pts.forEach((p,i)=>i?q.x.lineTo(p.x,p.y):q.x.moveTo(p.x,p.y));q.x.stroke();q.x.fillStyle=z.col;q.x.font='600 11px system-ui';q.x.fillText(z.label,10,18+14*k);});
-  q.x.fillStyle='#9bc3d3';q.x.fillText('fixed scale: 0.50 V/div',q.w-145,18);
+  const q=setupCanvas('zCanvas');scopeGrid(q.x,q.w,q.h);const Ze=zinTrue(E('zTerm').value),Vg=VS,Ve=Vg*Ze/(RA+Ze),Vr=Vg-Ve,vd=.5,amps=[{a:Vg,col:'#ffd166',label:'Vg'},{a:Ve,col:'#69e7ff',label:'Ve'},{a:Vr,col:'#ff8a7a',label:'VR'}];
+  amps.forEach((z,k)=>{const pts=[];for(let i=0;i<=1000;i++){const t=i/1000*5e-6;pts.push({x:q.w*i/1000,y:q.h/2-z.a/vd*Math.sin(TAU*1e6*t)*q.h/8});}q.x.strokeStyle=z.col;q.x.lineWidth=1.8;q.x.beginPath();pts.forEach((p,i)=>i?q.x.lineTo(p.x,p.y):q.x.moveTo(p.x,p.y));q.x.stroke();q.x.fillStyle=z.col;q.x.font='600 11px system-ui';q.x.fillText(z.label,10,18+14*k);});
+  q.x.fillStyle='#9bc3d3';q.x.fillText('all traces: 0.50 V/div',q.w-140,18);
 }
 function clearZ(){['studentVgDiv','studentVeDiv','studentVRDiv','studentVg','studentVe','studentVR','studentZe'].forEach(id=>E(id).value='')}
 function recordZin(){
