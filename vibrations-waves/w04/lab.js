@@ -1,89 +1,96 @@
 (()=>{
 'use strict';
-const U=VOMUI,E=id=>document.getElementById(id),K='VOM_W04_v2',OLD='VOM_W04_v1',END_CORR=.006;
-const current=U.load(K,null),old=U.load(OLD,null);
-let s=current||{version:2,records:[],analysis:null,conclusion:''};
-if(!current&&old)s={version:2,records:[],analysis:null,conclusion:''};
-s.records=Array.isArray(s.records)?s.records:[];s.conclusion=s.conclusion||'';
+const U=VOMUI,E=id=>document.getElementById(id),K='VOM_W04_v3',REF_MU=1.10,TAU=Math.PI*2;
+function makeRun(){return{id:'W04-'+Math.random().toString(36).slice(2,7).toUpperCase(),scale:1+(Math.random()-.5)*.006}}
+let s=U.load(K,null);
+if(!s||s.version!==3)s={version:3,run:makeRun(),records:[],analysis:null};
+s.records=Array.isArray(s.records)?s.records:[];
 function save(){U.save(K,s)}
-function speed(temp){return 331+.6*temp}
-function model(){
-  const f=+E('freq').value,temp=+E('temp').value,n=+E('order').value,L=+E('tubeLength').value/100,c=speed(temp),lambda=c/f,target=n*lambda/4-END_CORR,err=Math.abs(L-target);
-  return{f,temp,n,L,c,lambda,target,err,resonant:err<.006};
+function stringFrequency(){
+  const L=+E('length').value/100,F=+E('tension').value,mu=+E('mu').value/1000;
+  return s.run.scale*(1/(2*L))*Math.sqrt(F/mu);
 }
+function pulseFrequency(){return 2*stringFrequency()}
+function pulsePeriod(){return 1/pulseFrequency()}
+function setupCanvas(){const c=E('scope'),d=window.devicePixelRatio||1,w=c.clientWidth||900,h=c.clientHeight||390;c.width=w*d;c.height=h*d;const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return{x,w,h}}
 function draw(){
-  const {x,w,h}=U.canvas(E('tubeCanvas')),m=model(),pad=35,y=h*.52,Lpx=Math.max(20,Math.min(w-2*pad,(m.L/1.5)*(w-2*pad)));
-  x.fillStyle='#eef5f6';x.fillRect(0,0,w,h);
-  x.strokeStyle='#476371';x.lineWidth=5;x.beginPath();x.moveTo(pad,y-45);x.lineTo(pad+Lpx,y-45);x.lineTo(pad+Lpx,y+45);x.lineTo(pad,y+45);x.stroke();
-  x.fillStyle='#c76a47';x.fillRect(pad+Lpx-7,y-45,12,90);x.fillStyle='#173e58';x.font='700 11px system-ui';x.fillText('speaker / open end',pad-8,y+72);x.fillText('piston',pad+Lpx-19,y+72);
-  const gain=Math.exp(-Math.pow(m.err/.022,2)),loops=Math.max(1,m.n),amp=gain*34;
-  x.strokeStyle=m.resonant?'#27a7bd':'#7c929d';x.lineWidth=2;x.beginPath();
-  for(let i=0;i<=700;i++){const u=i/700,xx=pad+u*Lpx,yy=y-amp*Math.sin(loops*Math.PI*u);i?x.lineTo(xx,yy):x.moveTo(xx,yy)}x.stroke();
-  E('soundAmp').textContent=(gain*100).toFixed(0)+'%';E('resState').textContent=m.resonant?'acoustic maximum':'search';E('lengthOut').textContent=(m.L*100).toFixed(1)+' cm';E('orderOut').textContent='n = '+m.n;
+  const{x,w,h}=setupCanvas(),align=+E('align').value,L=+E('length').value/100,F=+E('tension').value,mu=+E('mu').value/1000,td=+E('tdiv').value/1000,screenT=10*td,Tp=pulsePeriod();
+  x.fillStyle='#08161d';x.fillRect(0,0,w,h);
+  x.strokeStyle='rgba(99,232,191,.15)';for(let i=0;i<=10;i++){const xx=w*i/10;x.beginPath();x.moveTo(xx,0);x.lineTo(xx,h);x.stroke()}for(let j=0;j<=8;j++){const yy=h*j/8;x.beginPath();x.moveTo(0,yy);x.lineTo(w,yy);x.stroke()}
+  const top=h*.22,left=w*.12,right=w*.88;
+  x.strokeStyle='#718894';x.lineWidth=2;x.beginPath();x.moveTo(left,top);x.lineTo(right,top);x.stroke();
+  const amp=Math.max(6,20-Math.abs(align)*2.2),phase=.7,pts=[];for(let i=0;i<=700;i++){const u=i/700;pts.push({x:left+u*(right-left),y:top+amp*Math.sin(Math.PI*u)*Math.sin(phase)});}
+  x.strokeStyle='#d69b25';x.lineWidth=2;x.beginPath();pts.forEach((q,i)=>i?x.lineTo(q.x,q.y):x.moveTo(q.x,q.y));x.stroke();
+  const detX=w*.74;x.fillStyle='#6bbad0';x.fillRect(detX-6,top-30+align*3,12,60);x.fillStyle='#c5edf6';x.fillRect(detX-3,top-4+align*3,6,8);
+  x.fillStyle='#9bc3d3';x.font='600 11px system-ui';x.fillText('lamp / detector',detX-42,top-38);x.fillText('string',left,top-12);
+  const pulseY=h*.70,base=h*.86,gain=Math.max(.12,1-Math.abs(align)/2.2),sigma=Math.max(1.8,w*.004);
+  x.strokeStyle='#69e7ff';x.lineWidth=2;x.beginPath();
+  for(let i=0;i<=1200;i++){const t=screenT*i/1200;let y=0;const k=Math.round(t/Tp);const dt=t-k*Tp;y=gain*Math.exp(-Math.pow(dt/(Tp*.08),2));const yy=base-y*(base-pulseY);i?x.lineTo(w*i/1200,yy):x.moveTo(0,yy);}x.stroke();
+  x.fillStyle='#9bc3d3';x.fillText('detector pulses (2 per string cycle)',12,h*.58);
+  x.setLineDash([5,4]);[['cursor1','#fff09a'],['cursor2','#ff9f8a']].forEach(([id,col])=>{const xx=(+E(id).value/10)*w;x.strokeStyle=col;x.beginPath();x.moveTo(xx,h*.54);x.lineTo(xx,h);x.stroke();});x.setLineDash([]);
+  E('alignRead').textContent=align.toFixed(1)+' mm';E('lengthRead').textContent=(L*100).toFixed(0)+' cm';E('tensionRead').textContent=F.toFixed(0)+' N';E('cursor1Read').textContent=(+E('cursor1').value).toFixed(2)+' div';E('cursor2Read').textContent=(+E('cursor2').value).toFixed(2)+' div';
+  if(Math.abs(align)>.35){E('msg').className='notice warn';E('msg').textContent='Detector alignment is off-centre. Adjust it close to 0 mm so the pulse train is strong and symmetric.';}
 }
-function sameSet(a,b){return a.f===b.f&&a.temp===b.temp}
-function previousResonance(m){
-  const q=s.records.filter(r=>r.f===m.f&&r.temp===m.temp&&r.n<m.n).sort((a,b)=>b.n-a.n);
-  return q[0]||null;
+function clearEntry(){['studentPulses','studentDt','studentPulseF','studentStringF'].forEach(id=>E(id).value='')}
+function seriesLabels(L,F,mu){
+  const a=[];if(Math.abs(F-25)<1e-9&&Math.abs(mu-REF_MU)<1e-9)a.push('L');if(Math.abs(L-50)<1e-9&&Math.abs(mu-REF_MU)<1e-9)a.push('F');if(Math.abs(L-50)<1e-9&&Math.abs(F-15)<1e-9)a.push('μ');return a;
 }
 function record(){
-  const m=model();if(!m.resonant){E('msg').className='notice warn';E('msg').textContent='Tune the piston until the selected odd mode reaches a clear acoustic maximum.';return;}
-  const prev=previousResonance(m),rawDL=E('studentDL').value.trim(),rawC=E('studentC').value.trim();
-  let pair=null;
-  if(prev){
-    if(rawDL===''||rawC===''){E('msg').className='notice warn';E('msg').textContent='Use the previous resonance at the same f and temperature to calculate ΔL and c.';return;}
-    const dL=Math.abs(m.L-prev.L),dn=Math.abs(m.n-prev.n),lambda=4*dL/dn,c=m.f*lambda,studentDL=+rawDL,studentC=+rawC;
-    if(Math.abs(studentDL-dL)>.004){E('msg').className='notice warn';E('msg').textContent='Recalculate ΔL from the two piston positions.';return;}
-    if(Math.abs(studentC-c)>2.5){E('msg').className='notice warn';E('msg').textContent='Recalculate λ=4ΔL/Δn and c=fλ.';return;}
-    pair={prevN:prev.n,dL,lambda,c};
-  }else if(rawDL!==''||rawC!==''){
-    E('msg').className='notice warn';E('msg').textContent='This is the first resonance of this frequency/temperature set; record it as the reference before calculating a spacing.';return;
-  }
-  const rec={f:m.f,temp:m.temp,n:m.n,L:m.L,pair},key=[m.f,m.temp,m.n].join('|'),i=s.records.findIndex(r=>[r.f,r.temp,r.n].join('|')===key);
-  if(i>=0)s.records[i]=rec;else s.records.push(rec);s.analysis=null;E('studentDL').value='';E('studentC').value='';
-  E('msg').className='notice ok';E('msg').textContent=prev?'Resonance and spacing calculation accepted. Continue with another odd mode or a new frequency/temperature.':'Reference resonance stored. Select the next odd mode at the same frequency/temperature and tune again.';
-  renderAll();save();
+  const align=+E('align').value;if(Math.abs(align)>.35){E('msg').className='notice warn';E('msg').textContent='Centre the detector first; the resting string must mask the junction.';return}
+  const td=+E('tdiv').value/1000,t1=+E('cursor1').value*td,t2=+E('cursor2').value*td,dt=t2-t1,Tp=pulsePeriod();
+  if(dt<=0){E('msg').className='notice warn';E('msg').textContent='Cursor 2 must lie to the right of cursor 1.';return}
+  const k1=Math.round(t1/Tp),k2=Math.round(t2/Tp),e1=Math.abs(t1-k1*Tp),e2=Math.abs(t2-k2*Tp),N=k2-k1;
+  if(N<3||e1>.055*Tp||e2>.055*Tp){E('msg').className='notice warn';E('msg').textContent='Place both cursors on detector-pulse peaks at least three pulse intervals apart.';return}
+  const raw=['studentPulses','studentDt','studentPulseF','studentStringF'].map(id=>E(id).value.trim());if(raw.some(v=>v==='')){E('msg').className='notice warn';E('msg').textContent='Enter N, Δt, pulse frequency and string frequency before validation.';return}
+  const [n,dtMs,fp,fs]=raw.map(Number);if(!Number.isInteger(n)||n!==N){E('msg').className='notice warn';E('msg').textContent='Recount the detector-pulse intervals between the two cursors.';return}
+  const calcDt=dt*1000;if(Math.abs(dtMs-calcDt)>Math.max(.015,.012*calcDt)){E('msg').className='notice warn';E('msg').textContent='Recalculate Δt from the cursor separation and TIME/DIV.';return}
+  const calcFp=n/(dtMs/1000),calcFs=calcFp/2;if(Math.abs(fp-calcFp)>Math.max(.5,.012*calcFp)){E('msg').className='notice warn';E('msg').textContent='Recalculate pulse frequency N/Δt.';return}
+  if(Math.abs(fs-calcFs)>Math.max(.3,.012*calcFs)){E('msg').className='notice warn';E('msg').textContent='The detector produces two pulses per mechanical cycle; use fstring=fpulse/2.';return}
+  const L=+E('length').value,F=+E('tension').value,mu=+E('mu').value,sets=seriesLabels(L,F,mu);
+  if(!sets.length){E('msg').className='notice warn';E('msg').textContent='This setting is useful for exploration but is not one of the prescribed log–log series. Use F=25 N, μ=1.10 for the L series; L=50 cm, μ=1.10 for F; or L=50 cm, F=15 N for μ.';return}
+  const rec={L,F,mu,f:fs,sets},key=L+'|'+F+'|'+mu,i=s.records.findIndex(q=>q.L+'|'+q.F+'|'+q.mu===key);if(i>=0)s.records[i]=rec;else s.records.push(rec);s.analysis=null;
+  E('msg').className='notice ok';E('msg').textContent='String-frequency measurement accepted for '+sets.join(' & ')+' series.';
+  clearEntry();renderAll();save();
 }
-function groups(){
-  const map={};for(const r of s.records){const k=r.f+'|'+r.temp;(map[k]||(map[k]=[])).push(r)}
-  return Object.entries(map).map(([k,rows])=>({k,rows:rows.sort((a,b)=>a.n-b.n),f:rows[0].f,temp:rows[0].temp})).sort((a,b)=>b.rows.length-a.rows.length);
+function points(kind){
+  if(kind==='L')return s.records.filter(q=>q.sets.includes('L')).sort((a,b)=>a.L-b.L);
+  if(kind==='F')return s.records.filter(q=>q.sets.includes('F')).sort((a,b)=>a.F-b.F);
+  return s.records.filter(q=>q.sets.includes('μ')).sort((a,b)=>a.mu-b.mu);
 }
-function fitGroup(){
-  const g=groups().find(q=>q.rows.length>=3);if(!g)return null;
-  const ps=g.rows.map(r=>({x:r.n,y:r.L})),n=ps.length,mx=ps.reduce((a,p)=>a+p.x,0)/n,my=ps.reduce((a,p)=>a+p.y,0)/n;let nu=0,de=0;ps.forEach(p=>{nu+=(p.x-mx)*(p.y-my);de+=(p.x-mx)**2});const slope=nu/de,intercept=my-slope*mx;
-  return{...g,ps,slope,intercept,c:4*g.f*slope,end:-intercept,theory:speed(g.temp)};
+function coverage(){
+  const l=points('L'),f=points('F'),m=points('μ');
+  return{l,f,m,lOK:l.length>=9&&l[0]?.L<=42&&l.at(-1)?.L>=78,fOK:f.length>=9&&f[0]?.F<=11&&f.at(-1)?.F>=29,mOK:new Set(m.map(q=>q.mu)).size===5};
 }
-function checkAnalysis(){
-  const q=fitGroup();if(!q){E('analysisMessage').className='notice warn';E('analysisMessage').textContent='Record at least three odd resonances at one common frequency and temperature.';return;}
-  const slope=+E('studentSlope').value,c=+E('studentFitC').value,end=+E('studentEnd').value;
-  if(!Number.isFinite(slope)||!Number.isFinite(c)||!Number.isFinite(end)){E('analysisMessage').className='notice warn';E('analysisMessage').textContent='Enter slope, fitted sound speed and end correction.';return;}
-  if(Math.abs(slope-q.slope)>.004){E('analysisMessage').className='notice warn';E('analysisMessage').textContent='Re-read the slope dL/dn of the Lₙ versus odd-order graph.';return;}
-  if(Math.abs(c-4*q.f*slope)>2.5){E('analysisMessage').className='notice warn';E('analysisMessage').textContent='Recalculate c=4f(dL/dn).';return;}
-  if(Math.abs(end+q.intercept)>.004){E('analysisMessage').className='notice warn';E('analysisMessage').textContent='The line is Lₙ=(λ/4)n−e; therefore e is minus the intercept.';return;}
-  s.analysis={f:q.f,temp:q.temp,slope,c,end};E('analysisMessage').className='notice ok';E('analysisMessage').textContent='Regression analysis accepted for '+q.f+' Hz at '+q.temp+' °C. Compare c with the temperature model and repeat other conditions if desired.';
-  renderAll();save();
+function linfit(ps){const n=ps.length,mx=ps.reduce((a,p)=>a+p.x,0)/n,my=ps.reduce((a,p)=>a+p.y,0)/n;let nu=0,de=0;ps.forEach(p=>{nu+=(p.x-mx)*(p.y-my);de+=(p.x-mx)**2});return{a:my-(nu/de)*mx,b:nu/de}}
+function fit(kind){
+  const a=points(kind);if(a.length<3)return null;const ps=a.map(q=>({x:Math.log(kind==='L'?q.L/100:kind==='F'?q.F:q.mu/1000),y:Math.log(q.f)}));return{ps,...linfit(ps)};
 }
 function blank(c,msg){const q=U.canvas(c);q.x.fillStyle='#fff';q.x.fillRect(0,0,q.w,q.h);q.x.fillStyle='#687d90';q.x.font='600 13px system-ui';q.x.textAlign='center';q.x.fillText(msg,q.w/2,q.h/2)}
-function chart(){
-  const q=fitGroup();if(q)U.plot(E('lengthChart'),[{pts:q.ps}],{xlabel:'odd mode order n',ylabel:'resonant length L / m',xmin:0,ymin:0});else blank(E('lengthChart'),'Record ≥3 resonances at one f and temperature.');
+function charts(){
+  for(const [kind,id,label] of [['L','lChart','log L (m)'],['F','fChart','log F (N)'],['μ','mChart','log μ (kg/m)']]){const q=fit(kind);if(q)U.plot(E(id),[{pts:q.ps}],{xlabel:label,ylabel:'log f'});else blank(E(id),'Record the prescribed '+kind+' series.');}
 }
-function renderTable(){
-  E('body').innerHTML=s.records.length?s.records.map(r=>'<tr><td>'+r.f.toFixed(0)+'</td><td>'+r.temp.toFixed(0)+'</td><td>'+r.n+'</td><td>'+(r.L*100).toFixed(1)+'</td><td>'+(r.pair?r.pair.lambda.toFixed(3):'—')+'</td><td>'+(r.pair?r.pair.c.toFixed(1):'—')+'</td></tr>').join(''):'<tr><td colspan="6">No validated resonances yet.</td></tr>';
-  const q=fitGroup();E('fitC').textContent=s.analysis?s.analysis.c.toFixed(1)+' m/s':'—';E('endOut').textContent=s.analysis?s.analysis.end.toFixed(4)+' m':'—';E('theoryC').textContent=q?q.theory.toFixed(1)+' m/s':'—';
+function checkExponents(){
+  const c=coverage(),fa=fit('L'),fb=fit('F'),fg=fit('μ');if(!(c.lOK&&c.fOK&&c.mOK)){E('analysisMsg').className='notice warn';E('analysisMsg').textContent='Complete all three programmes: ≥9 broad L points, ≥9 broad F points, and all five μ strings.';return}
+  const a=+E('studentAlpha').value,b=+E('studentBeta').value,g=+E('studentGamma').value;if([a,b,g].some(v=>!Number.isFinite(v))){E('analysisMsg').className='notice warn';E('analysisMsg').textContent='Enter all three log–log slopes.';return}
+  if(Math.abs(a-fa.b)>.035){E('analysisMsg').className='notice warn';E('analysisMsg').textContent='Re-read the slope of log f versus log L.';return}
+  if(Math.abs(b-fb.b)>.035){E('analysisMsg').className='notice warn';E('analysisMsg').textContent='Re-read the slope of log f versus log F.';return}
+  if(Math.abs(g-fg.b)>.035){E('analysisMsg').className='notice warn';E('analysisMsg').textContent='Re-read the slope of log f versus log μ.';return}
+  s.analysis={alpha:a,beta:b,gamma:g};E('analysisMsg').className='notice ok';E('analysisMsg').textContent='Exponent analysis accepted. Compare α≈−1, β≈+1/2 and γ≈−1/2 with the fundamental string law.';renderAll();save();
 }
-function status(){
-  const done=!!s.analysis&&s.conclusion.trim().length>=30;if(done){E('analysisMessage').className='notice ok';E('analysisMessage').textContent='Air-resonator analysis complete. Discuss odd-harmonic spacing, end correction and temperature dependence.';}
+function table(){
+  E('body').innerHTML=s.records.length?s.records.slice().sort((a,b)=>a.L-b.L||a.F-b.F||a.mu-b.mu).map(q=>'<tr><td>'+q.L.toFixed(0)+'</td><td>'+q.F.toFixed(0)+'</td><td>'+q.mu.toFixed(2)+'</td><td>'+q.f.toFixed(1)+'</td><td>'+q.sets.join(', ')+'</td></tr>').join(''):'<tr><td colspan="5">No validated string-frequency measurements yet.</td></tr>';
+  const c=coverage();E('lCount').textContent=c.l.length+' / 9';E('fCount').textContent=c.f.length+' / 9';E('mCount').textContent=new Set(c.m.map(q=>q.mu)).size+' / 5';
+  E('alphaOut').textContent=s.analysis?s.analysis.alpha.toFixed(3):'—';E('betaOut').textContent=s.analysis?s.analysis.beta.toFixed(3):'—';E('gammaOut').textContent=s.analysis?s.analysis.gamma.toFixed(3):'—';E('lawOut').textContent=s.analysis?'f ∝ L'+(s.analysis.alpha>=0?'+':'')+s.analysis.alpha.toFixed(2)+' F'+(s.analysis.beta>=0?'+':'')+s.analysis.beta.toFixed(2)+' μ'+(s.analysis.gamma>=0?'+':'')+s.analysis.gamma.toFixed(2):'—';
 }
-function renderAll(){draw();renderTable();chart();status();}
+function renderAll(){draw();table();charts()}
 function buildReport(){
-  const summary='<p><b>Validated resonances:</b> '+s.records.length+'. '+(s.analysis?'<b>Fit:</b> f='+s.analysis.f+' Hz, T='+s.analysis.temp+' °C, c='+s.analysis.c.toFixed(1)+' m/s, e='+s.analysis.end.toFixed(4)+' m.':'Regression not validated.')+'</p><p><b>Interpretation:</b> '+U.esc(s.conclusion||'Not completed.')+'</p>';
-  return U.report('Waves Laboratory Practical 4 — Air Resonator',summary);
+  const c=coverage(),summary='<p><b>Validated series:</b> L '+c.l.length+', F '+c.f.length+', μ strings '+new Set(c.m.map(q=>q.mu)).size+'.</p><p><b>Log–log exponents:</b> '+(s.analysis?'α='+s.analysis.alpha.toFixed(3)+', β='+s.analysis.beta.toFixed(3)+', γ='+s.analysis.gamma.toFixed(3)+'.':'not validated.')+'</p>';
+  return U.report('Wave Laboratory Practical IV — Vibrating String',summary);
 }
-U.tabs();E('airConclusion').value=s.conclusion;
-['freq','temp','order','tubeLength'].forEach(id=>E(id).addEventListener('input',draw));E('record').onclick=record;E('checkAnalysis').onclick=checkAnalysis;
-E('airConclusion').addEventListener('input',e=>{s.conclusion=e.target.value;status();save();});
-E('buildReport').onclick=buildReport;E('printReport').onclick=()=>{if(buildReport())window.print()};
+U.tabs();
+['align','length','tension','cursor1','cursor2'].forEach(id=>E(id).addEventListener('input',()=>{clearEntry();draw()}));['mu','tdiv'].forEach(id=>E(id).addEventListener('change',()=>{clearEntry();draw()}));
+E('record').onclick=record;E('checkExponents').onclick=checkExponents;E('buildReport').onclick=buildReport;E('printReport').onclick=()=>{if(buildReport())window.print()};
+if(s.analysis){E('studentAlpha').value=s.analysis.alpha;E('studentBeta').value=s.analysis.beta;E('studentGamma').value=s.analysis.gamma}
 if(!E('reportDate').value)E('reportDate').value=new Date().toISOString().slice(0,10);
-if(s.analysis){E('studentSlope').value=s.analysis.slope;E('studentFitC').value=s.analysis.c;E('studentEnd').value=s.analysis.end;}
 window.addEventListener('resize',renderAll);renderAll();save();
 })();
