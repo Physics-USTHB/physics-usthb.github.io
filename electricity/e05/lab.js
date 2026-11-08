@@ -152,8 +152,10 @@ function syncUI(){
   const h=p.h;$('#cursorTime').max=h;$('#cursorTime').step=Math.max(h/2000,1e-7);state.settings.cursor=clamp(state.settings.cursor,0,h);$('#cursorTime').value=state.settings.cursor;sourceControls();updateCursor();updateQuality();draw()
 }
 function updateCursor(){
-  const info=taskInfo(),p=periodicParams(info),t=state.settings.cursor,y=responseCharge(t,info),target=methodFrac()*p.fin,err=(y-target)/state.settings.voltsDiv;
-  $('#cursorTimeLabel').textContent=fmtTime(t);$('#cursorValue').textContent=`${y.toFixed(3)} V`;$('#targetValue').textContent=`${target.toFixed(3)} V`;$('#targetError').textContent=`${err>=0?'+':''}${err.toFixed(2)} div`;draw()
+  const info=taskInfo(),p=periodicParams(info),t=state.settings.cursor;$('#cursorTimeLabel').textContent=fmtTime(t);
+  if(!state.wiring.energized){$('#cursorValue').textContent='— V';$('#targetValue').textContent='— V';$('#targetError').textContent='— div';draw();return;}
+  const y=responseCharge(t,info),target=methodFrac()*p.fin,err=(y-target)/state.settings.voltsDiv;
+  $('#cursorValue').textContent=`${y.toFixed(3)} V`;$('#targetValue').textContent=`${target.toFixed(3)} V`;$('#targetError').textContent=`${err>=0?'+':''}${err.toFixed(2)} div`;draw()
 }
 function updateQuality(){
   const q=quality(),set=(id,ok,text,warn=false)=>{const el=$(id);el.textContent=text;el.className=ok?'good':warn?'warn-text':'bad-text'};
