@@ -141,6 +141,7 @@ export function mountWriting(container,{catalog,getRecord,onChange,onSave}){
  }
  return {
   setUnit(unitId){if(unitId!==currentUnit){if(pending!==null){clearTimer();void onSave();}renderTask(unitId);}else if(!root.children.length)renderTask(unitId);},
-  getTaskIds(){return new Set(Object.values(tasksByUnit).flat().map(t=>t.id));}
+  getTaskIds(){return new Set(Object.values(tasksByUnit).flat().map(t=>t.id));},
+  refresh(){if(currentUnit)renderTask(currentUnit);}
  };
 }
