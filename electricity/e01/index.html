@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="USTHB-aligned undergraduate virtual laboratory on electrical measurements and resistance.">
-  <title>E01 — Electrical Measurements & Resistance | Physics USTHB</title>
+  <title>Laboratory Practical 1 — Electrical Measurements & Resistance | Physics USTHB</title>
   <link rel="stylesheet" href="../../assets/styles.css">
   <link rel="stylesheet" href="e01.css">
 </head>
@@ -12,17 +12,17 @@
 <header class="topbar">
   <div class="shell nav">
     <a class="brand" href="../../index.html"><span class="brandmark">Φ</span><span class="brandcopy"><strong>Physics USTHB</strong><small>Electricity laboratory</small></span></a>
-    <nav class="navlinks"><a href="../index.html">Electricity Lab</a><a href="../e03/index.html">E03</a><a href="../../index.html">Home</a></nav>
+    <nav class="navlinks"><a href="../index.html">Electricity Lab</a><a href="../e02/index.html">Next: Practical 2</a><a href="../../index.html">Home</a></nav>
   </div>
 </header>
 
 <section class="labmast">
   <div class="shell labmast-grid">
     <div>
-      <div class="breadcrumbs">Virtual Laboratory / Electricity & Circuits / E01</div>
+      <div class="breadcrumbs">Virtual Laboratory / Electricity & Circuits / Laboratory Practical 1</div>
       <h1>Electrical Measurements & Resistance</h1>
       <div class="labmeta">
-        <span class="pill">USTHB TP1 core</span>
+        <span class="pill">USTHB Practical 1 core</span>
         <span class="pill">L1 SM / ST</span>
         <span class="pill">Analog meters</span>
         <span class="pill">Measurement uncertainty</span>
@@ -63,6 +63,20 @@
     <article class="instrument-card"><span class="code">04</span><h3>11 Ω resistance box</h3><p>Eleven 1 Ω sections in series between A and C; the selector connected to B provides R<sub>AB</sub>=0…11 Ω.</p></article>
   </div>
 
+  <article class="paper bench-reference" style="margin-top:18px">
+    <div>
+      <h2>Bench orientation</h2>
+      <p>The real practical begins by identifying the source, analog meters, terminals, leads and resistance box before wiring. This visual bench keeps those roles explicit before measurements begin.</p>
+      <div class="terminal-key"><span><i class="terminal red"></i> positive / red lead</span><span><i class="terminal black"></i> COM / negative lead</span><span><i class="terminal amber"></i> selectable resistance-box terminal</span></div>
+    </div>
+    <svg class="bench-reference-svg" viewBox="0 0 850 280" role="img" aria-label="Stylised laboratory bench with DC source, analog voltmeter, analog ammeter and resistance box">
+      <g class="bench-device"><rect x="25" y="45" width="180" height="170" rx="16"/><text x="115" y="78">DC SOURCE</text><rect x="58" y="98" width="114" height="48" rx="8" class="screen"/><text x="115" y="129" class="screen-text">≈ 12 V</text><circle cx="78" cy="180" r="10" class="terminal-red"/><circle cx="152" cy="180" r="10" class="terminal-black"/><text x="78" y="205">+</text><text x="152" y="205">−</text></g>
+      <g class="bench-device"><rect x="235" y="45" width="175" height="170" rx="16"/><text x="322" y="78">VOLTMETER</text><path d="M270 155 A55 55 0 0 1 375 155" class="dial"/><path d="M322 154 L292 111" class="pointer"/><circle cx="280" cy="180" r="10" class="terminal-red"/><circle cx="365" cy="180" r="10" class="terminal-black"/><text x="280" y="205">V / +</text><text x="365" y="205">COM</text></g>
+      <g class="bench-device"><rect x="440" y="45" width="175" height="170" rx="16"/><text x="527" y="78">AMMETER</text><path d="M475 155 A55 55 0 0 1 580 155" class="dial"/><path d="M527 154 L548 104" class="pointer"/><circle cx="485" cy="180" r="10" class="terminal-red"/><circle cx="570" cy="180" r="10" class="terminal-black"/><text x="485" y="205">A / +</text><text x="570" y="205">COM</text></g>
+      <g class="bench-device"><rect x="645" y="45" width="180" height="170" rx="16"/><text x="735" y="78">11 Ω BOX</text><circle cx="680" cy="105" r="9" class="terminal-amber"/><circle cx="735" cy="105" r="9" class="terminal-amber"/><circle cx="790" cy="105" r="9" class="terminal-amber"/><text x="680" y="130">A</text><text x="735" y="130">B</text><text x="790" y="130">C</text><path d="M680 158H790" class="box-line"/><circle cx="735" cy="158" r="14" class="selector-knob"/><text x="735" y="198">selector 0–11</text></g>
+    </svg>
+  </article>
+
   <div class="grid two" style="margin-top:18px">
     <article class="paper">
       <h2>Analog scale reading</h2>
@@ -72,7 +86,7 @@
       <div class="notice learn-only"><strong>Rule:</strong> start on the maximum range, then step down until the needle deflection is as large as possible without exceeding full scale.</div>
     </article>
     <article class="paper">
-      <h2>Uncertainty used in the TP</h2>
+      <h2>Uncertainty used in the practical</h2>
       <div class="formula-blue">ΔX<sub>class</sub> = CAL · class/100</div>
       <div class="formula-blue">ΔX<sub>read</sub> = CAL · Δn/N</div>
       <div class="formula-blue">ΔX = ΔX<sub>class</sub> + ΔX<sub>read</sub></div>
@@ -123,9 +137,9 @@
       <div class="notice" id="emfMessage">Begin on the maximum voltmeter range, then identify the appropriate range.</div>
     </div>
     <aside class="side-stack">
-      <article class="info-card"><h4>Task required by the TP</h4><p>Measure the generator emf on the appropriate range, calculate ΔE, then repeat using the immediately higher range and calculate ΔE′.</p></article>
+      <article class="info-card"><h4>Task required by the practical</h4><p>Measure the generator emf on the appropriate range, calculate ΔE, then repeat using the immediately higher range and calculate ΔE′.</p></article>
       <article class="info-card"><h4>Virtual meter specification</h4><dl class="spec-list"><dt>Class</dt><dd>1.5</dd><dt>Reading estimate Δn</dt><dd>0.5 div</dd><dt>Sensitivity</dt><dd>20 kΩ/V</dd><dt>Available V ranges</dt><dd>0.3–300 V</dd></dl></article>
-      <article class="info-card learn-only"><h4>Range strategy</h4><p>A range below the actual emf overloads. A much larger range gives a valid reading but a larger class uncertainty. The TP asks you to compare the appropriate range with the next larger one.</p></article>
+      <article class="info-card learn-only"><h4>Range strategy</h4><p>A range below the actual emf overloads. A much larger range gives a valid reading but a larger class uncertainty. The handout asks you to compare the appropriate range with the next larger one.</p></article>
     </aside>
   </div>
 
@@ -153,8 +167,14 @@
       <div class="selector-row-e01" id="potSelectorRow"></div>
       <div class="pot-readouts">
         <div class="pot-readout"><span>RAB</span><strong id="potRab">0 Ω</strong></div>
-        <div class="pot-readout"><span>Vm</span><strong id="potVm">0.00 V</strong></div>
+        <div class="pot-readout"><span>Meter task</span><strong id="potVm">READ SCALE</strong></div>
         <div class="pot-readout"><span>Selected V range</span><strong id="potRangeLabel">300 V</strong></div>
+      </div>
+      <div class="meter-face pot-meter-face">
+        <div class="scale-text" id="potScaleText">0–30 scale · 300 V range</div>
+        <svg class="meter-scale-svg" id="potScaleSvg" viewBox="0 0 400 215" aria-label="Potentiometric-source analog voltmeter scale"></svg>
+        <div class="needle" id="potNeedle"></div><div class="pivot"></div>
+        <div class="reading"><strong id="potReading">SOURCE ISOLATED</strong><span id="potDivisionReading">Verify the circuit before reading the pointer.</span></div>
       </div>
       <div class="wiring-box">
         <div class="wiring-title"><strong>Build the potentiometric source</strong><span>Generator across A–C; utilisation voltage measured A–B.</span></div>
@@ -170,12 +190,17 @@
         <label>Voltmeter range<select id="potRange"></select></label>
         <label>Selector position<select id="potSelectorSelect"></select></label>
       </div>
-      <div class="bench-actions"><button class="btn secondary" id="verifyPot" type="button">Verify wiring</button><button class="btn" id="recordPot" type="button" disabled>Record VAB</button></div>
+      <div class="analog-entry">
+        <label>Pointer reading n / divisions<input id="potStudentN" type="number" min="0" step="0.1" placeholder="read the pointer"></label>
+        <label>Calculated VAB / V<input id="potStudentValue" type="number" min="0" step="0.001" placeholder="n/N × CAL"></label>
+        <label>Calculated ΔV / V<input id="potStudentUnc" type="number" min="0" step="0.001" placeholder="class + reading"></label>
+      </div>
+      <div class="bench-actions"><button class="btn secondary" id="verifyPot" type="button">Verify wiring</button><button class="btn" id="recordPot" type="button" disabled>Submit scale reading</button></div>
       <div class="notice" id="potMessage">Verify the A–C generator connection and the A–B voltmeter connection before recording.</div>
     </div>
     <aside class="side-stack">
       <article class="info-card"><h4>Official task</h4><p>Record V<sub>AB</sub> for every selector position, plot V<sub>AB</sub> as a function of R<sub>AB</sub>, and infer the divider current I<sub>a</sub> from the slope.</p></article>
-      <article class="info-card"><h4>Uncertainty at position 10</h4><p>Use the TP relation</p><div class="formula-blue">ΔI<sub>a</sub>/I<sub>a</sub> = ΔV<sub>AB</sub>/V<sub>AB</sub> + ΔR<sub>AB</sub>/R<sub>AB</sub>.</div><p>The virtual resistance box is labelled ±1.0%.</p></article>
+      <article class="info-card"><h4>Uncertainty at position 10</h4><p>Use the practical relation</p><div class="formula-blue">ΔI<sub>a</sub>/I<sub>a</sub> = ΔV<sub>AB</sub>/V<sub>AB</sub> + ΔR<sub>AB</sub>/R<sub>AB</sub>.</div><p>The virtual resistance box is labelled ±1.0%.</p></article>
       <article class="info-card learn-only"><h4>Range choice</h4><p>You may change the voltmeter range as the selector moves. Smaller valid ranges reduce class uncertainty.</p></article>
     </aside>
   </div>
@@ -188,7 +213,7 @@
 <section class="tabpanel" id="resistance">
   <div class="resistance-layout">
     <div class="topology-card">
-      <div class="section-toolbar"><div><h2>7.3 — Unknown resistance R<sub>X</sub></h2><div class="mini">The resistance box is fixed at selector position 5, as required by the TP.</div></div><span class="completion-badge" id="rxBadge">0 / 2</span></div>
+      <div class="section-toolbar"><div><h2>7.3 — Unknown resistance R<sub>X</sub></h2><div class="mini">The resistance box is fixed at selector position 5, as required by the practical.</div></div><span class="completion-badge" id="rxBadge">0 / 2</span></div>
       <div class="method-switch"><button class="method-btn active" data-method="short" type="button">Short derivation</button><button class="method-btn" data-method="long" type="button">Long derivation</button></div>
 
       <svg class="topology-svg" viewBox="0 0 760 270" id="topologySvg" aria-label="Resistance measurement circuit">
@@ -212,9 +237,23 @@
         <label>Voltmeter range<select id="rxVRange"></select></label>
         <label>Ammeter range<select id="rxIRange"></select></label>
       </div>
-      <div class="core-meters" style="margin-top:14px">
-        <div class="core-meter"><span>Vm</span><strong id="rxVm">0.00 V</strong></div>
-        <div class="core-meter"><span>Im</span><strong id="rxIm">0.0 mA</strong></div>
+      <div class="dual-meter-grid" style="margin-top:14px">
+        <div class="compact-meter">
+          <div class="meter-caption"><span>Voltmeter</span><strong id="rxVm">READ SCALE</strong></div>
+          <div class="meter-face compact-meter-face"><div class="scale-text" id="rxVScaleText">0–30 scale · 300 V range</div><svg class="meter-scale-svg" id="rxVScaleSvg" viewBox="0 0 400 215" aria-label="Unknown-resistance voltmeter scale"></svg><div class="needle" id="rxVNeedle"></div><div class="pivot"></div></div>
+        </div>
+        <div class="compact-meter">
+          <div class="meter-caption"><span>Ammeter</span><strong id="rxIm">READ SCALE</strong></div>
+          <div class="meter-face compact-meter-face"><div class="scale-text" id="rxIScaleText">0–30 scale · 300 mA range</div><svg class="meter-scale-svg" id="rxIScaleSvg" viewBox="0 0 400 215" aria-label="Unknown-resistance ammeter scale"></svg><div class="needle" id="rxINeedle"></div><div class="pivot"></div></div>
+        </div>
+      </div>
+      <div class="analog-entry rx-entry">
+        <label>V pointer nV / divisions<input id="rxVStudentN" type="number" min="0" step="0.1"></label>
+        <label>Calculated Vm / V<input id="rxVStudentValue" type="number" min="0" step="0.001"></label>
+        <label>Calculated ΔV / V<input id="rxVStudentUnc" type="number" min="0" step="0.001"></label>
+        <label>I pointer nI / divisions<input id="rxIStudentN" type="number" min="0" step="0.1"></label>
+        <label>Calculated Im / mA<input id="rxIStudentValue" type="number" min="0" step="0.01"></label>
+        <label>Calculated ΔI / mA<input id="rxIStudentUnc" type="number" min="0" step="0.01"></label>
       </div>
       <div class="bench-actions"><button class="btn secondary" id="verifyRx" type="button">Verify wiring</button><button class="btn" id="recordRx" type="button" disabled>Record measurement</button></div>
       <div class="notice" id="rxMessage">Begin with maximum meter ranges, then reduce to appropriate ranges after verifying the circuit.</div>
@@ -264,7 +303,7 @@
     </article>
     <article class="paper">
       <h2>Advanced extension</h2>
-      <p>The official TP uses worst-case additive uncertainties and approximate systematic corrections. This extension compares those results with the exact finite-meter-resistance model used by the simulator.</p>
+      <p>The official practical uses worst-case additive uncertainties and approximate systematic corrections. This extension compares those results with the exact finite-meter-resistance model used by the simulator.</p>
       <button class="btn" id="revealExact" type="button">Compare with exact instrument model</button>
       <div class="notice" id="exactNotice" style="margin-top:12px">Complete the short- and long-derivation measurements first.</div>
       <div class="analysis-copy" id="exactText"></div>
@@ -291,9 +330,10 @@
 <section class="tabpanel" id="report">
   <article class="paper no-print">
     <h2>Laboratory report</h2>
-    <p class="mini"><strong>Privacy:</strong> student name and group stay only in this open page and are not saved. Measurements and report text autosave locally in this browser.</p>
+    <p class="mini"><strong>Privacy:</strong> student name, email and group stay only in this open page and are not saved. Measurements and report text autosave locally in this browser.</p>
     <div class="report-grid">
       <label>Student name<input id="studentName" type="text"></label>
+      <label>Email<input id="studentEmail" type="email" placeholder="name@example.com" required></label>
       <label>Group / section<input id="studentGroup" type="text"></label>
       <label>Date<input id="reportDate" type="date"></label>
       <label>Mode<input id="reportMode" type="text" readonly></label>
@@ -302,12 +342,12 @@
     </div>
     <div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button><button class="btn ghost" id="clearLocalProgress" type="button">Clear local data</button></div>
   </article>
-  <div class="report-preview" id="reportPreview"><h2>Laboratory Report — E01</h2><p class="mini">Complete the experimental sequence and build the report.</p></div>
+  <div class="report-preview" id="reportPreview"><h2>Laboratory Practical 1 Report — E01</h2><p class="mini">Complete the experimental sequence and build the report.</p></div>
 </section>
 <section class="tabpanel" id="printable-report"><div class="report-preview" id="printOnlyPreview"></div></section>
 </main>
 
-<footer class="footer"><div class="shell">E01 • Electrical Measurements & Resistance • Physics USTHB interactive laboratory · <a href="../../privacy.html">Privacy</a></div></footer>
+<footer class="footer"><div class="shell">Laboratory Practical 1 · Electrical Measurements & Resistance · Physics USTHB · <a href="../../privacy.html">Privacy</a></div></footer>
 <script src="lab.js"></script>
 </body>
 </html>
