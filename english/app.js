@@ -1,4 +1,4 @@
-import {validateUnit, gradeItem} from "./assessment.mjs";
+import {validateUnit, gradeItem, nextReview, summarizeEvidence, weaknessHypothesis} from "./assessment.mjs";
 // English for Physicists — local-first development preview.
 // All sample exercises are formative and NOT eligible for CEFR/mastery claims.
 const UNITS=[
@@ -53,6 +53,7 @@ function renderAuthored(){
    authoredRoot.append(group);lastSkill=item.skill;
   }
   const form=document.createElement("form");
+  form.id="practice-"+item.id;
   const fieldset=document.createElement("fieldset");
   const legend=document.createElement("legend");
   legend.textContent=item.prompt;fieldset.append(legend);
@@ -84,8 +85,10 @@ function renderAuthored(){
    if(!answer)return;
    const first=!state.attempts.some(a=>a.id===item.id);
    const result=gradeItem(item,answer,{firstAttempt:first,hintsUsed:0,solutionShown:false});
-   state.attempts.push({id:item.id,at:new Date().toISOString(),answer:String(answer).slice(0,300),
+   const at=new Date().toISOString();
+   state.attempts.push({id:item.id,at,answer:String(answer).slice(0,300),
       first,correct:result.correct,independent:result.independent,hintsUsed:0});
+   updatePracticeReview(item.id,result.correct,first,at);
    await save();
    feedback.textContent=(result.correct?"Correct. ":"Not yet. ")+item.feedback+
       " Practice feedback only; no CEFR mastery is awarded.";
@@ -109,12 +112,75 @@ async function loadAuthoredUnit(){
 }
 
 const normalize=s=>String(s).trim().toLowerCase().replace(/\s+/g," ").replace(/[.!?]+$/,"");
-let selected=0, db=null, store="memory", state={schema:1,attempts:[]};
+let selected=0, db=null, store="memory", state={schema:1,attempts:[],reviews:{}};
 
 function validHistory(h){
- return h && h.schema===1 && Array.isArray(h.attempts) && h.attempts.length<=50000 &&
- h.attempts.every(a=>a && allowed.has(a.id) && typeof a.at==="string" && a.at.length<=40 &&
- typeof a.answer==="string" && a.answer.length<=300 && typeof a.first==="boolean" && typeof a.correct==="boolean");
+ if(!h || h.schema!==1 || !Array.isArray(h.attempts) || h.attempts.length>50000)return false;
+ if(!h.attempts.every(a=>a && allowed.has(a.id) && typeof a.at==="string" && a.at.length<=40 &&
+  typeof a.answer==="string" && a.answer.length<=300 && typeof a.first==="boolean" && typeof a.correct==="boolean"))return false;
+ if(h.reviews===undefined)return true; // historical exports before review scheduling
+ return h.reviews && typeof h.reviews==="object" && !Array.isArray(h.reviews) &&
+  Object.keys(h.reviews).length<=500 &&
+  Object.entries(h.reviews).every(([id,r])=>allowed.has(id) && r && Number.isInteger(r.step) &&
+   r.step>=0 && r.step<6 && Number.isInteger(r.lapses) && r.lapses>=0 &&
+   typeof r.dueAt==="string" && !Number.isNaN(Date.parse(r.dueAt)) &&
+   typeof r.reviewedAt==="string" && !Number.isNaN(Date.parse(r.reviewedAt)));
+}
+function withReviews(h){return {schema:1,attempts:h.attempts,reviews:h.reviews||{}};}
+function updatePracticeReview(id,correct,first,at){
+ const prior=state.reviews?.[id];
+ // Reattempting the same item on the same day never advances spacing.
+ if(!first && prior && prior.reviewedAt.slice(0,10)===at.slice(0,10))return;
+ // Early extra practice does not postpone a review that has not yet become due.
+ if(!first && prior && new Date(prior.dueAt).getTime()>new Date(at).getTime())return;
+ state.reviews??={};
+ state.reviews[id]=nextReview(prior,correct,at);
+}
+const adaptivePanel=document.createElement("section");
+adaptivePanel.setAttribute("aria-label","Formative review and practice evidence");
+$("notice").after(adaptivePanel);
+function renderAdaptivePanels(){
+ adaptivePanel.replaceChildren();
+ const heading=document.createElement("h3");heading.textContent="Practice review";adaptivePanel.append(heading);
+ const reviews=state.reviews||{},now=Date.now();
+ const due=Object.entries(reviews).filter(([id,r])=>allowed.has(id)&&Date.parse(r.dueAt)<=now);
+ const p=document.createElement("p");
+ p.textContent=due.length?"Practice due on "+due.length+" previously attempted question(s).":
+ "No scheduled practice is due today. Reviews become due after your first attempt.";
+ adaptivePanel.append(p);
+ if(due.length){
+  const list=document.createElement("ul");
+  for(const [id] of due.slice(0,8)){
+   const li=document.createElement("li"),link=document.createElement("a");
+   const isAuthored=id.startsWith("A2.01.");
+   link.href=isAuthored?"#practice-"+id:"#lesson";
+   link.textContent="Review "+id;
+   if((isAuthored&&selected!==0)||(!isAuthored&&selected!==11)){
+    link.addEventListener("click",()=>{selected=isAuthored?0:11;render();});
+   }
+   li.append(link);list.append(li);
+  }
+  adaptivePanel.append(list);
+ }
+ const note=document.createElement("p");note.className="muted minor";
+ note.textContent="These are formative practice reminders, not CEFR mastery or certified weakness diagnoses.";
+ adaptivePanel.append(note);
+ if(a201){
+  const summary=summarizeEvidence(state.attempts,a201.items);
+  const evidenceTitle=document.createElement("h3");evidenceTitle.textContent="A2.01 first-attempt practice evidence";
+  adaptivePanel.append(evidenceTitle);
+  const list=document.createElement("ul");
+  for(const [skill,e] of Object.entries(summary)){
+   const li=document.createElement("li");
+   li.textContent=skill+": "+(e.unassessed?"not yet practised":e.correctFirst+" correct first attempts out of "+e.practised);
+   list.append(li);
+  }
+  adaptivePanel.append(list);
+  const signal=weaknessHypothesis(state.attempts,a201.items,"grammar");
+  const guard=document.createElement("p");guard.className="muted minor";
+  guard.textContent="Verified weakness detection is inactive while all source questions are drafts (diagnostic status: "+signal.status+").";
+  adaptivePanel.append(guard);
+ }
 }
 function openDB(){
  return new Promise((resolve,reject)=>{
@@ -143,11 +209,11 @@ function saveDB(value){
 async function load(){
  try{
   db=await openDB();store="indexeddb";
-  const obj=await readDB();if(validHistory(obj))state=obj;
+  const obj=await readDB();if(validHistory(obj))state=withReviews(obj);
  }catch(_){
   try{
    const raw=localStorage.getItem("physics-usthb-english-preview-v1");
-   if(raw){const h=JSON.parse(raw);if(validHistory(h))state=h;}
+   if(raw){const h=JSON.parse(raw);if(validHistory(h))state=withReviews(h);}
    localStorage.setItem("physics-usthb-english-health","ok");
    localStorage.removeItem("physics-usthb-english-health");
    store="localStorage";
@@ -200,7 +266,9 @@ function renderQuestions(){
    if(!answer)return;
    const correct=q.accepted.some(v=>normalize(v)===normalize(answer));
    const first=!state.attempts.some(a=>a.id===q.id);
-   state.attempts.push({id:q.id,at:new Date().toISOString(),answer:answer.slice(0,300),first,correct});
+   const at=new Date().toISOString();
+   state.attempts.push({id:q.id,at,answer:answer.slice(0,300),first,correct});
+   updatePracticeReview(q.id,correct,first,at);
    await save();
    feedback.textContent=(correct?"Correct. ":"Try again. ")+q.feedback+" This is practice, not verified mastery.";
    feedback.className="feedback "+(correct?"good":"bad");
@@ -212,6 +280,7 @@ function renderQuestions(){
 function renderStats(){
  $("total-attempts").textContent=String(state.attempts.length);
  $("first-correct").textContent=String(state.attempts.filter(a=>a.first&&a.correct).length);
+ renderAdaptivePanels();
 }
 function render(){
  const [title,description]=UNITS[selected];
@@ -238,14 +307,14 @@ $("import-file").onchange=async e=>{
   if(file.size>5_000_000)throw Error("File too large");
   const h=JSON.parse(await file.text());
   if(!validHistory(h))throw Error("Incompatible or invalid file");
-  state={schema:1,attempts:h.attempts};await save();render();
+  state=withReviews(h);await save();render();
   $("notice").textContent="Progress imported; previous preview history replaced.";
  }catch(err){$("notice").textContent="Import failed: "+err.message;}
  e.target.value="";
 };
 $("clear").onclick=async()=>{
  if(!confirm("Clear all English preview progress stored in this browser profile?"))return;
- state={schema:1,attempts:[]};await save();render();
+ state={schema:1,attempts:[],reviews:{}};await save();render();
  $("notice").textContent="Local preview progress cleared.";
 };
 async function boot(){await loadAuthoredUnit();await load();}
