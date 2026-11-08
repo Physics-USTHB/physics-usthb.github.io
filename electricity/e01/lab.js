@@ -241,7 +241,7 @@ function renderPotSelectors(){
   const row=$('#potSelectorRow');row.innerHTML='';
   for(let n=0;n<=11;n++){
     const b=document.createElement('button');b.type='button';b.className='selector-e01';b.textContent=n;if(state.pot.records[n])b.classList.add('done');if(n===state.pot.selector)b.classList.add('selected');
-    b.addEventListener('click',()=>{state.pot.selector=n;$('#potSelectorSelect').value=n;updatePot();save();});row.appendChild(b);
+    b.addEventListener('click',()=>{state.pot.selector=n;$('#potSelectorSelect').value=n;clearValues(['potStudentN','potStudentValue','potStudentUnc']);updatePot();save();});row.appendChild(b);
   }
 }
 function updatePot(){
