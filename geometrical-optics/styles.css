@@ -18,3 +18,13 @@
 .unknown-work{display:grid;gap:8px;margin:10px 0}.unknown-row{display:grid;grid-template-columns:1fr auto minmax(150px,.8fr);gap:10px;align-items:center;padding:10px;border:1px solid #dce5ed;border-radius:9px;background:#f7fafc;font-size:12px;color:#617789}.unknown-row strong{font:800 11px ui-monospace,monospace;color:#194966}.unknown-row label{font-size:9px;text-transform:uppercase;font-weight:820}.unknown-row input{width:100%;margin-top:4px;border:1px solid #d2dee7;border-radius:7px;padding:7px;background:#fff;color:#143b55}
 @media(max-width:760px){.student-optics-entry.analysis-entry{grid-template-columns:1fr 1fr}.student-optics-entry.analysis-entry .btn{grid-column:1/-1}.unknown-row{grid-template-columns:1fr 1fr}.unknown-row label{grid-column:1/-1}}
 @media(max-width:520px){.student-optics-entry,.student-optics-entry.analysis-entry,.unknown-row{grid-template-columns:1fr}.student-optics-entry.analysis-entry .btn,.unknown-row label{grid-column:auto}}
+
+
+/* Optics Practical 3 review: focometry calculations */
+.foco-calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-items:end;margin-top:12px;padding:12px;border:1px solid #dce5ee;border-radius:11px;background:#f7fafc}
+.foco-calc-grid.compact{grid-template-columns:1fr auto;background:rgba(255,255,255,.04);border-color:#315068}
+.foco-calc-grid label{font-size:10px;text-transform:uppercase;color:#687e91;font-weight:820}.bench .foco-calc-grid label{color:#8fa8ba}
+.foco-calc-grid input{width:100%;margin-top:5px;border:1px solid #d2dee7;border-radius:8px;padding:8px;background:#fff;color:#143b55}.bench .foco-calc-grid input{background:#08151e;color:#ecf8ff;border-color:#39566b}
+.foco-calc-grid .btn{grid-column:1/-1;justify-self:start}
+@media(max-width:760px){.foco-calc-grid{grid-template-columns:1fr 1fr}.foco-calc-grid.compact{grid-template-columns:1fr auto}}
+@media(max-width:520px){.foco-calc-grid,.foco-calc-grid.compact{grid-template-columns:1fr}.foco-calc-grid .btn{grid-column:auto}}
