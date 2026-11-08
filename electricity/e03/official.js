@@ -134,6 +134,21 @@ function solveCircuit(n,task){
 }
 function rangeByCal(ranges,cal){return ranges.find(r=>Math.abs(r.cal-cal)<1e-12)||ranges.at(-1);}
 function appropriateRange(ranges,value){return ranges.find(r=>value<=r.cal+1e-12)||ranges.at(-1);}
+
+function renderE03Scale(svg){
+  if(!svg)return;const N=100,cx=200,cy=188,r1=145;let out='';
+  for(let n=0;n<=N;n+=2){
+    const a=(-150+120*n/N)*Math.PI/180,major=n%20===0,mid=!major&&n%10===0,ri=major?119:mid?126:133;
+    const x1=cx+r1*Math.cos(a),y1=cy+r1*Math.sin(a),x2=cx+ri*Math.cos(a),y2=cy+ri*Math.sin(a);
+    out+=`<line class="${major?'major':''}" x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"></line>`;
+    if(major){const rt=104,xt=cx+rt*Math.cos(a),yt=cy+rt*Math.sin(a)+4;out+=`<text x="${xt.toFixed(1)}" y="${yt.toFixed(1)}">${n}</text>`;}
+  }
+  svg.innerHTML=out;
+}
+function setE03Needle(el,frac,over=false){
+  if(!el)return;el.style.transform=`rotate(${over?-25:(-150+120*clamp(frac,0,1))}deg)`;
+}
+function clearMeterEntry(){['studentVDiv','studentVm','studentIDiv','studentIm'].forEach(id=>{const el=$('#'+id);if(el)el.value='';});}
 function maxRangesSelected(){return Math.abs(state.meter.vRange-20)<1e-12&&Math.abs(state.meter.iRange-.3)<1e-12;}
 function meterUnc(vm,im){
   const vr=rangeByCal(V_RANGES,state.meter.vRange),ir=rangeByCal(I_RANGES,state.meter.iRange);
@@ -194,7 +209,7 @@ function renderSelector(){
     if(req.includes(n))b.classList.add('required'); else b.classList.add('invalid');
     if(state.data[state.task]?.[n])b.classList.add('done');
     if(n===state.selector)b.classList.add('selected');
-    b.addEventListener('click',()=>{state.selector=n;renderAllBench();save();});
+    b.addEventListener('click',()=>{state.selector=n;clearMeterEntry();renderAllBench();save();});
     row.appendChild(b);
   }
 }
@@ -226,8 +241,13 @@ function updateLiveMeters(){
   const x=solveCircuit(state.selector,state.task),m=measure(state.selector,state.task),vr=rangeByCal(V_RANGES,state.meter.vRange),ir=rangeByCal(I_RANGES,state.meter.iRange);
   $('#selectorStatus').textContent=`B → ${state.selector}`;$('#rabReadout').textContent=`${state.selector} Ω`;$('#vabReadout').textContent=`${x.vth.toFixed(2)} V`;
   $('#vRangeLabel').textContent=`${vr.label} range`;$('#iRangeLabel').textContent=`${ir.label} range`;
-  if(!state.connected){$('#vmeter').textContent='SOURCE OFF';$('#imeter').textContent='SOURCE OFF';}
-  else{$('#vmeter').textContent=m.vOver?'OVERLOAD':`${m.vm.toFixed(vr.step<.01?3:2)} V`;$('#imeter').textContent=m.iOver?'OVERLOAD':`${(m.im*1000).toFixed(ir.step<.0001?2:1)} mA`;}
+  $('#e03VScaleText').textContent=`0–100 divisions · ${vr.label} range`;$('#e03IScaleText').textContent=`0–100 divisions · ${ir.label} range`;renderE03Scale($('#e03VScale'));renderE03Scale($('#e03IScale'));
+  if(!state.connected){
+    $('#vmeter').textContent='SOURCE OFF';$('#imeter').textContent='SOURCE OFF';setE03Needle($('#e03VNeedle'),0);setE03Needle($('#e03INeedle'),0);
+  }else{
+    $('#vmeter').textContent=m.vOver?'OVERLOAD':'READ SCALE';$('#imeter').textContent=m.iOver?'OVERLOAD':'READ SCALE';
+    setE03Needle($('#e03VNeedle'),m.vm/vr.cal,m.vOver);setE03Needle($('#e03INeedle'),m.im/ir.cal,m.iOver);
+  }
   const range=$('#rangeStatus');
   if(!state.connected){
     range.className='range-rule '+(maxRangesSelected()?'ok':'warn');range.textContent=maxRangesSelected()?'Maximum ranges selected — safe for circuit verification and connection.':'Before verification or changing circuit, return both instruments to 20 V and 300 mA.';
@@ -272,7 +292,7 @@ function updateBenchMessage(){
   if(!state.connected){msg.className='notice protocol-message';msg.textContent='Circuit verified. Keep both instruments on maximum range and connect the source.';return;}
   if(!REQUIRED[state.task].includes(state.selector)){msg.className='notice warn protocol-message';msg.textContent=`Selector position ${state.selector} is not prescribed for this part of Practical 3.`;return;}
   if(m.vOver||m.iOver){msg.className='notice bad protocol-message';msg.textContent='A meter is overloaded. Increase its range before recording.';return;}
-  const exists=state.data[state.task]?.[state.selector];msg.className='notice '+(exists?'ok':'');msg.textContent=exists?`A reading is already stored at position ${state.selector}. Recording again will replace it.`:`Read both meters and record the prescribed measurement at selector position ${state.selector}.`;
+  const exists=state.data[state.task]?.[state.selector];msg.className='notice '+(exists?'ok':'');msg.textContent=exists?`A reading is already stored at position ${state.selector}. Recording again will replace it.`:`Read both analog meter scales, calculate Vm and Im, then submit the prescribed measurement at selector position ${state.selector}.`;
 }
 function updateHint(){
   if(state.mode!=='learn')return;
@@ -310,18 +330,28 @@ function resetWiringUI(){
 function changeTask(task){
   if(state.connected){$('#taskSelect').value=state.task;$('#benchMessage').className='notice warn protocol-message';$('#benchMessage').textContent='Disconnect the source before changing the circuit configuration.';return;}
   if(!maxRangesSelected()){$('#taskSelect').value=state.task;$('#benchMessage').className='notice warn protocol-message';$('#benchMessage').textContent='Return both instruments to maximum range before changing the circuit.';return;}
-  state.task=task;state.verified=false;resetWiringUI();const miss=nextMissing(task);state.selector=miss===undefined?REQUIRED[task][0]:miss;renderAllBench();save();
+  state.task=task;state.verified=false;resetWiringUI();const miss=nextMissing(task);state.selector=miss===undefined?REQUIRED[task][0]:miss;clearMeterEntry();renderAllBench();save();
 }
 function recordReading(){
   if(!state.connected||!state.verified||!prereq(state.task)||!REQUIRED[state.task].includes(state.selector))return;
-  const m=measure(state.selector,state.task);if(m.vOver||m.iOver){updateBenchMessage();return;}
-  state.data[state.task][state.selector]=m;state.advanced=null;state.assessment=null;
+  const m=measure(state.selector,state.task),vr=rangeByCal(V_RANGES,state.meter.vRange),ir=rangeByCal(I_RANGES,state.meter.iRange);if(m.vOver||m.iOver){updateBenchMessage();return;}
+  const x=solveCircuit(state.selector,state.task),vBest=appropriateRange(V_RANGES,Math.max(0,x.v)),iBest=appropriateRange(I_RANGES,Math.max(0,x.im));
+  if(vBest.cal!==vr.cal||iBest.cal!==ir.cal){$('#benchMessage').className='notice warn protocol-message';$('#benchMessage').textContent=`Before recording, use the smallest non-overloading ranges: about ${vBest.label} and ${iBest.label}.`;return;}
+  const nv=+$('#studentVDiv').value,v=+$('#studentVm').value,ni=+$('#studentIDiv').value,iMa=+$('#studentIm').value;
+  if(![nv,v,ni,iMa].every(Number.isFinite)){$('#benchMessage').className='notice warn protocol-message';$('#benchMessage').textContent='Read both analog scales and enter nV, Vm, nI and Im before submitting.';return;}
+  const expNv=m.vm/vr.cal*100,expNi=m.im/ir.cal*100,fromV=nv/100*vr.cal,fromI=ni/100*ir.cal*1000;
+  if(Math.abs(nv-expNv)>1.2){$('#benchMessage').className='notice warn protocol-message';$('#benchMessage').textContent=state.mode==='learn'?'Re-read the voltmeter pointer on the 0–100 scale.':'Voltmeter scale reading rejected.';return;}
+  if(Math.abs(v-fromV)>Math.max(.02,vr.cal*.002)){$('#benchMessage').className='notice warn protocol-message';$('#benchMessage').textContent='Recalculate Vm = nV/100 × selected voltmeter range.';return;}
+  if(Math.abs(ni-expNi)>1.2){$('#benchMessage').className='notice warn protocol-message';$('#benchMessage').textContent=state.mode==='learn'?'Re-read the ammeter pointer on the 0–100 scale.':'Ammeter scale reading rejected.';return;}
+  if(Math.abs(iMa-fromI)>Math.max(.05,ir.cal*1000*.002)){$('#benchMessage').className='notice warn protocol-message';$('#benchMessage').textContent='Recalculate Im = nI/100 × selected ammeter range.';return;}
+  const rec={...m,vm:v,im:iMa/1000,iv:v/RV,id:Math.max(0,iMa/1000-v/RV),studentVDiv:nv,studentIDiv:ni};
+  state.data[state.task][state.selector]=rec;state.advanced=null;state.assessment=null;clearMeterEntry();
   renderEverything();const next=nextMissing(state.task);if(next!==undefined)state.selector=next;renderAllBench();save();
 }
 function newSpecimen(){
   if(totalReadings()&& !confirm('Start a new specimen? All measurements and analysis for this run will be cleared.'))return;
   state.run=newRunObject();state.selector=1;state.task='resistor';state.verified=false;state.connected=false;state.wiring={source:'',use:'',ammeter:'',voltmeter:''};state.meter={vRange:20,iRange:.3};state.coreAnalysis={resistorR:null,lampR:null};state.construction={series:[],parallel:[]};
-  state.data={resistor:{},lamp:{},series:{},parallel:{}};state.advanced=null;state.assessment=null;['e03SourcePair','e03UsePair','e03AmmeterTopo','e03VoltmeterTopo'].forEach(id=>{const el=$('#'+id);if(el)el.value='';});$('#e03VRange').value=20;$('#e03IRange').value=.3;$('#studentOfficialR').value='';$('#studentLampR').value='';
+  state.data={resistor:{},lamp:{},series:{},parallel:{}};state.advanced=null;state.assessment=null;['e03SourcePair','e03UsePair','e03AmmeterTopo','e03VoltmeterTopo'].forEach(id=>{const el=$('#'+id);if(el)el.value='';});$('#e03VRange').value=20;$('#e03IRange').value=.3;$('#studentOfficialR').value='';$('#studentLampR').value='';clearMeterEntry();
   renderEverything();renderAllBench();save();
 }
 function totalReadings(){return Object.values(state.data).reduce((n,o)=>n+Object.keys(o||{}).length,0);}
