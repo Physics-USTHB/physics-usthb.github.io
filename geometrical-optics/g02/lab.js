@@ -37,8 +37,7 @@ let s={
 };
 for(const q of Object.values(s.hg)){if(q&&q.n!=null&&!Number.isFinite(+q.n))q.n=null}
 if(migrating){
-  for(const q of Object.values(s.hg)){if(q)q.n=null}
-  s.hgDraft={};s.unknown={};s.unknownDraft={};s.analysis={green:null,cauchy:null,unknown:null};
+  s.di=[];s.hg={};s.hgDraft={};s.unknown={};s.unknownDraft={};s.analysis={green:null,cauchy:null,unknown:null};
 }
 function save(){U.save(K,s)}
 function fmt(a){a=wrap(a);let d=Math.floor(a),m=Math.round((a-d)*60);if(m===60){d=(d+1)%360;m=0}return d+'°'+String(m).padStart(2,'0')+'′'}
@@ -122,8 +121,12 @@ function trueMinimum(lambda){
   return{A,D,n,im};
 }
 function drawSpectrum(){
-  const a=+E('devScope').value,t=currentExpected(),col=currentLine()?.[2]||'#fff';
+  const a=+E('devScope').value,mode=E('devMode').value;
   E('devThetaRead').textContent=fmt(a);E('incRead').textContent=(+E('prismInc').value).toFixed(1)+'°';E('currentD').textContent='student';
+  if(mode==='unknown'&&!s.analysis.cauchy){
+    E('signalRead').textContent='calibration required';const q=U.canvas(E('spectrumCanvas'));q.x.fillStyle='#09151e';q.x.fillRect(0,0,q.w,q.h);return;
+  }
+  const t=currentExpected(),col=currentLine()?.[2]||'#fff';
   if(t==null){
     E('signalRead').textContent='no emergence';const q=U.canvas(E('spectrumCanvas'));q.x.fillStyle='#09151e';q.x.fillRect(0,0,q.w,q.h);return;
   }
@@ -175,7 +178,7 @@ function renderTables(){
   }).join('');
 }
 function allHgRecorded(){return lines.every(l=>!!s.hg[String(l[1])])}
-function allHgValidated(){return lines.every(l=>Number.isFinite(+s.hg[String(l[1])]?.n))}
+function allHgValidated(){return lines.every(l=>{const q=s.hg[String(l[1])];return q?.n!=null&&Number.isFinite(+q.n)})}
 function checkHgCalculations(){
   if(s.prismCalc.A==null){E('hgCalcMessage').className='notice warn';E('hgCalcMessage').textContent='Validate the prism angle first.';return}
   if(!allHgRecorded()){E('hgCalcMessage').className='notice warn';E('hgCalcMessage').textContent='Record the minimum deviation of all eight Hg lines first.';return}
@@ -248,7 +251,7 @@ function checkCauchy(){
   render();save();
 }
 function lambdaFromCalibration(D){
-  const pts=Object.values(s.hg).filter(q=>Number.isFinite(+q.n)).map(q=>({D:+q.D,lambda:+q.lambda})).sort((a,b)=>a.D-b.D);
+  const pts=Object.values(s.hg).filter(q=>q?.n!=null&&Number.isFinite(+q.n)).map(q=>({D:+q.D,lambda:+q.lambda})).sort((a,b)=>a.D-b.D);
   if(pts.length<2)return null;
   for(let i=1;i<pts.length;i++){
     const a=pts[i-1],b=pts[i];
