@@ -1,6 +1,6 @@
 # English for Physicists — A2 development branch
 
-**Version:** implementation slice 0.2 (draft, unmerged PR #3). **Do not merge to production yet.**
+**Version:** A2 beta 0.3 — guided writing and optional synthetic listening. Existing A2 beta merged in PR #3; this is a separate enhancement branch.
 
 ## Working in the feature branch
 
@@ -9,7 +9,9 @@
 - **A2.01–A2.12: 483 unreviewed, formative text-practice items** with four original reading sources per unit (48 total).
 - All twelve units contain original explanatory teaching notes, objectives and pronunciation guidance; original audio recordings are pending.
 - The A2.11 and A2.12 virtual-cart graphs include accompanying accessible numeric data tables.
-- Optional private microphone recording supports speaking self-review without automatic proficiency grading.
+- Optional private microphone recording supports speaking self-review without automatic proficiency grading; discarding an active recording also clears its buffers.
+- **24 original guided writing prompts** (two per A2 unit) with local draft autosave, a manual save control, word-count guidance and four self-review checks. Drafts are included in the existing JSON backup and clear-data controls.
+- **Optional synthetic read-aloud** for public reading sources using the learner's browser speech service; audio availability and accent vary. No listening grade is inferred.
 - Four previous demonstration questions remain archived in browser-history compatibility only. A2.12 now provides separate authored text practice; its full capstone rubric and media are pending.
 - Shared versioned JSON schema for active draft units, validated in-browser before activation.
 - First-attempt and retry tracking, with draft items explicitly excluded from verified proficiency evidence.
@@ -20,7 +22,7 @@
 
 ## Audit scope
 
-The authoring packages contain **2,555 draft A2 candidates**. This beta integrates a curated **483-item draft text-only subset** with 48 short source texts, not the full authoring inventory. Listening/pronunciation audio, productive-skill rubrics and comprehensive summative testing are still pending. No CEFR A2 level-completion claim is made.
+The authoring packages contain **2,555 draft A2 candidates**. This beta integrates a curated **483-item draft text-only subset** with 48 short source texts, not the full authoring inventory. Original narrated listening/pronunciation audio, expert-reviewed productive-skill scoring rubrics and comprehensive summative testing are still pending. No CEFR A2 level-completion claim is made.
 
 The adaptive engine does **not** assign CEFR proficiency, speaking or writing grades, or verified mastery using draft content. It tracks formative first attempts and review intervals. A separate on-device speaking recorder holds audio in memory for local replay/download only. Exercise responses and recordings are not intentionally sent to an application server.
 
@@ -48,3 +50,6 @@ From repository root: node --test english/test/*.test.mjs
 GitHub Actions runs the same command for changes in the English directory.
 
 **Privacy:** local progress belongs to a browser profile, not a verified individual. Two people sharing a profile can access each other's progress. The live site and production homepage are unchanged by this draft PR.
+## Current enhancement release
+
+This update adds guided writing, synthetic read-aloud, microphone-discard privacy handling, and automated schema/browser tests for writing persistence and privacy. No official CEFR outcomes are inferred from writing self-checks or synthetic speech. This enhancement is reviewed in its own pull request before merging.
