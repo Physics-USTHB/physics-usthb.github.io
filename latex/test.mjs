@@ -53,15 +53,12 @@ for (const [pattern, label] of checks) assert.match(js, pattern, label);
 assert.ok(css.includes('@media(max-width:650px)'), 'Workspace must have mobile layout');
 assert.ok(rootCss.includes('.path-grid'), 'Homepage needs learning pathways styling');
 assert.ok(rootCss.includes('@media(max-width:560px)'), 'Homepage needs mobile layout');
-assert.ok(home.includes('href="electricity/"'), 'Homepage must link physics labs');
-assert.ok(home.includes('href="#english"'), 'Homepage must link Scientific English');
-assert.ok(home.includes('In development'), 'English availability must be clear');
+assert.ok(home.includes('href="practicums/"'), 'Homepage must link the physics practicums index');
+assert.ok(existsSync(new URL('../practicums/index.html', import.meta.url)), 'Physics practicums index must exist');
+assert.ok(home.includes('href="english/"'), 'Homepage must link English for Physicists');
+assert.ok(home.includes('A2 beta preview'), 'English beta status must be transparent');
 assert.ok(home.includes('Not an official USTHB website'), 'Homepage must identify independent status');
-assert.equal((home.match(/class="path-card"/g) || []).length, 3, 'Homepage must have three pathways');
-assert.equal((home.match(/class="tp-card"/g) || []).length, 5, 'Homepage must link exactly five practicums');
-for (const n of ['e01','e02','e03','e04','e05']) {
- assert.ok(home.includes('href="electricity/' + n + '/"'), 'Missing direct TP link ' + n);
-}
+assert.equal((home.match(/class="path-card"/g) || []).length, 3, 'Homepage must retain three pathways');
 assert.ok(home.includes('href="assets/home.css"'), 'Homepage must use isolated stylesheet');
 assert.ok(home.includes('href="privacy.html"'), 'Homepage must link privacy page');
 assert.ok(privacy.includes('Many students can therefore use'), 'Privacy page must explain simultaneous independent use');
