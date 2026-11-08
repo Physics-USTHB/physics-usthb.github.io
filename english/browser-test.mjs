@@ -25,7 +25,7 @@ try{
  const draft="My name is Nora. I study physics and I work with my classmates. I usually read notes at home. Is our class on Tuesday?";
  await page.locator("#writing-text").fill(draft);
  await page.locator("#guided-writing button").filter({hasText:"Save draft now"}).click();
- await page.waitForFunction(()=>document.querySelector("#guided-writing [role=status]")?.textContent.includes("Draft saved"));
+ await page.waitForFunction(()=>document.querySelector("#writing-status")?.textContent.includes("Draft saved"));
  await page.reload({waitUntil:"domcontentloaded"});
  await page.waitForFunction(()=>document.querySelector("#writing-text")?.value?.includes("I study physics"),null,{timeout:20_000});
  assert.equal(await page.locator("#writing-text").inputValue(),draft,"Guided writing draft did not persist");
