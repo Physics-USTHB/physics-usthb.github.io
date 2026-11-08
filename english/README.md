@@ -1,6 +1,6 @@
 # English for Physicists — A2 learning beta
 
-**Version:** A2 beta 0.4 — targeted formative study guidance. A2 beta 0.2 and 0.3 were merged through PRs #3 and #4.
+**Version:** A2 beta 0.5 — original synthetic-dialogue practice and pronunciation self-review. Earlier releases 0.2–0.4 were merged via PRs #3–#5.
 
 ## Working in the beta
 
@@ -23,7 +23,7 @@
 
 ## Audit scope
 
-The authoring packages contain **2,555 draft A2 candidates**. This beta integrates a curated **483-item draft text-only subset** with 48 short source texts, not the full authoring inventory. Original narrated listening/pronunciation audio, expert-reviewed productive-skill scoring rubrics and comprehensive summative testing are still pending. No CEFR A2 level-completion claim is made.
+The authoring packages contain **2,555 draft A2 candidates**. This beta integrates **483 draft text items** from those packages and **48 additional original synthetic-dialogue comprehension checks** (531 formative objective checks total), plus 48 short reading sources. These new dialogues are newly authored and are not counted as imported authoring-bank candidates. Original narrated listening/pronunciation audio, expert-reviewed productive-skill scoring rubrics and comprehensive summative testing are still pending. No CEFR A2 level-completion claim is made.
 
 The adaptive engine does **not** assign CEFR proficiency, speaking or writing grades, or verified mastery using draft content. It tracks formative first attempts and review intervals. A separate on-device speaking recorder holds audio in memory for local replay/download only. Exercise responses and recordings are not intentionally sent to an application server.
 
@@ -58,3 +58,9 @@ A2 beta 0.4 adds local, skill-scoped **formative study recommendations** using t
 The recommender explicitly **does not diagnose student weaknesses, assign CEFR mastery, alter scoring, or transmit records to a server**. Source questions and the study guides are drafts pending expert review. Node and browser tests verify first-attempt isolation and recommendation navigation.
 
 The beta is linked from the main site. Existing practicums and LaTeX Studio are unchanged by this release.
+
+## A2 beta 0.5 — dialogue listening practice
+
+The new dialogues are original fictional examples, not official USTHB laboratory transcripts. The learner can play them with the browser's speech synthesis, adjust pace, read the transcript (including when the voice service is unavailable), and self-check two concrete questions per dialogue. Each unit includes two phrases with pronunciation guidance and an optional local speaking recorder. The interface never grades an accent or declares CEFR listening ability. The browser may use a remotely hosted voice depending on device/provider; only public fictional dialogue text is passed to that speech facility.
+
+The 48 comprehension answers are stored as ordinary local formative attempts. They are deliberately marked `independent:false`, excluded from weakness detection, and must not be used for listening or CEFR mastery claims. Opening the transcript records a hint flag. Audio is not stored or generated as reviewed recordings, and original narrated course audio remains a release blocker.
