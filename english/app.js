@@ -23,10 +23,30 @@ const QUESTIONS=[
 ];
 const $=id=>document.getElementById(id), allowed=new Set(QUESTIONS.map(q=>q.id));
 const authoredUnits=new Map();
+let lessonNotes={};
 const authoredRoot=document.createElement("section");
 authoredRoot.id="authored-lesson";
 authoredRoot.hidden=true;
 $("lesson").after(authoredRoot);
+function renderReadingContent(container,paragraph,title){
+ const lines=paragraph.split("\n").map(x=>x.trim()).filter(Boolean);
+ const tableStart=lines.findIndex(x=>/^\|.*\|$/.test(x));
+ if(tableStart>=0){
+  if(tableStart>0){const p=document.createElement("p");p.textContent=lines.slice(0,tableStart).join(" ").replace(/\*\*/g,"");container.append(p);}
+  const table=document.createElement("table");const caption=document.createElement("caption");caption.textContent="Data table — "+title;table.append(caption);
+  const rows=lines.slice(tableStart).filter(x=>/^\|.*\|$/.test(x)&&!/^[\|\s:\-]+$/.test(x));
+  rows.forEach((line,i)=>{
+   const cells=line.split("|").slice(1,-1).map(x=>x.trim()),tr=document.createElement("tr");
+   for(const cell of cells){const c=document.createElement(i===0?"th":"td");
+    if(i===0)c.scope="col";c.textContent=cell.replace(/\*\*/g,"");tr.append(c);}
+   table.append(tr);
+  });
+  container.append(table);
+  const rest=lines.slice(tableStart).filter(x=>!/^\|.*\|$/.test(x));
+  if(rest.length){const p=document.createElement("p");p.textContent=rest.join(" ").replace(/\*\*/g,"");container.append(p);}
+ }else{const p=document.createElement("p");p.textContent=paragraph.replace(/\*\*/g,"");p.style.whiteSpace="pre-line";container.append(p);}
+}
+
 function renderAuthored(){
  authoredRoot.replaceChildren();
  const current=authoredUnits.get(selected);if(!current)return;
@@ -35,6 +55,19 @@ function renderAuthored(){
  const warning=document.createElement("p");warning.className="muted minor";
  warning.textContent=current.items.length+" text practice questions. Answers are formative, not externally validated CEFR proficiency evidence. Original listening media is still in production.";
  authoredRoot.append(warning);
+ const notes=lessonNotes[current.id];
+ if(notes){
+  const section=document.createElement("section"),h=document.createElement("h3");
+  h.textContent="Learn the language";section.append(h);
+  const goal=document.createElement("p");goal.textContent=notes.goal;section.append(goal);
+  for(const [label,explanation] of notes.notes){
+   const sub=document.createElement("h4");sub.textContent=label;
+   const p=document.createElement("p");p.textContent=explanation;section.append(sub,p);
+  }
+  const hint=document.createElement("p");hint.className="muted minor";
+  hint.textContent="Pronunciation focus (text guide; recorded model audio is not yet available): "+notes.pronunciation;
+  section.append(hint);authoredRoot.append(section);
+ }
  const sources=document.createElement("section"),sourceTitle=document.createElement("h3");
  sourceTitle.textContent="Reading library";sources.append(sourceTitle);
  for(const source of current.sources){
@@ -42,7 +75,7 @@ function renderAuthored(){
   details.open=source.id==="R1";
   const summary=document.createElement("summary");
   summary.textContent=source.id+" — "+source.title;details.append(summary);
-  for(const paragraph of source.paragraphs){const p=document.createElement("p");p.textContent=paragraph;details.append(p);}
+  for(const paragraph of source.paragraphs){renderReadingContent(details,paragraph,source.title);}
   sources.append(details);
  }
  authoredRoot.append(sources);
@@ -325,5 +358,11 @@ $("clear").onclick=async()=>{
  state={schema:1,attempts:[],reviews:{}};await save();render();
  $("notice").textContent="Local preview progress cleared.";
 };
-async function boot(){await loadAuthoredUnits();await load();}
+async function boot(){
+ try{
+  const response=await fetch("./data/concepts.json",{cache:"no-cache"});
+  if(response.ok){const data=await response.json();if(data.schemaVersion===1&&data.units&&typeof data.units==="object")lessonNotes=data.units;}
+ }catch(_){/* Always allow self-contained practice without the optional notes. */}
+ await loadAuthoredUnits();await load();
+}
 boot();
