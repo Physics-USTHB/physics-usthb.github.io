@@ -4,19 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="USTHB-aligned virtual rheographic-tank laboratory for mapping electric potential and field.">
-  <title>E02 — Rheographic Tank | Physics USTHB</title>
+  <title>Laboratory Practical 2 — Rheographic Tank | Physics USTHB</title>
   <link rel="stylesheet" href="../../assets/styles.css">
   <link rel="stylesheet" href="e02.css">
 </head>
 <body class="lab-page">
-<header class="topbar"><div class="shell nav"><a class="brand" href="../../index.html"><span class="brandmark">Φ</span><span class="brandcopy"><strong>Physics USTHB</strong><small>Electricity laboratory</small></span></a><nav class="navlinks"><a href="../index.html">Electricity Lab</a><a href="../e01/index.html">E01</a><a href="../e03/index.html">E03</a><a href="../../index.html">Home</a></nav></div></header>
+<header class="topbar"><div class="shell nav"><a class="brand" href="../../index.html"><span class="brandmark">Φ</span><span class="brandcopy"><strong>Physics USTHB</strong><small>Electricity laboratory</small></span></a><nav class="navlinks"><a href="../index.html">Electricity Lab</a><a href="../e01/index.html">Previous: Practical 1</a><a href="../e03/index.html">Next: Practical 3</a><a href="../../index.html">Home</a></nav></div></header>
 
 <section class="labmast">
   <div class="shell labmast-grid">
     <div>
-      <div class="breadcrumbs">Virtual Laboratory / Electricity & Circuits / E02</div>
+      <div class="breadcrumbs">Virtual Laboratory / Electricity & Circuits / Laboratory Practical 2</div>
       <h1>Rheographic Tank — Electric Potential & Field Mapping</h1>
-      <div class="labmeta"><span class="pill">USTHB TP2 core</span><span class="pill">Equipotentials</span><span class="pill">Electric field</span><span class="pill">2-D Laplace model</span></div>
+      <div class="labmeta"><span class="pill">USTHB Practical 2 core</span><span class="pill">Equipotentials</span><span class="pill">Electric field</span><span class="pill">2-D Laplace model</span></div>
     </div>
     <div class="mode-card no-print"><div><strong>Guidance mode</strong><div class="mini" id="modeDescription">Protocol guidance and interpretation prompts are visible.</div></div><div class="segmented"><button class="modebtn active" data-mode="learn" type="button">Learn</button><button class="modebtn" data-mode="lab" type="button">Lab</button></div></div>
   </div>
@@ -35,7 +35,7 @@
 <main class="shell">
 <section class="tabpanel active" id="briefing">
   <div class="e02-banner">
-    <div><strong>USTHB rheographic-tank protocol</strong><p>The current USTHB course listing identifies this experiment as TP2. The virtual version preserves the published sequence: plane electrodes first, then the same geometry with a 6 cm conducting cylinder placed at the centre.</p></div>
+    <div><strong>USTHB rheographic-tank protocol</strong><p>The current USTHB course listing identifies this experiment as Practical 2. The virtual version preserves the published sequence: plane electrodes first, then the same geometry with a 6 cm conducting cylinder placed at the centre.</p></div>
     <a href="https://www.fphy.usthb.dz/cours%20en%20ligne/Cours-en-ligne" target="_blank" rel="noopener">USTHB course listing ↗</a>
   </div>
   <div class="e02-progress" id="progressBoard"></div>
@@ -75,6 +75,16 @@
         <canvas class="tank-canvas" id="planeCanvas" width="900" height="620"></canvas>
         <div class="tank-overlay"><span>A = 0 V</span><span>B ≈ 11 V AC</span><span>Probe relative to A</span></div>
       </div>
+      <div class="e02-wiring">
+        <div class="e02-wiring-title"><strong>A.1 — Build the measurement circuit</strong><span>Transformer secondary across A–B; voltmeter COM to A and V/+ to the movable probe.</span></div>
+        <div class="e02-wiring-grid">
+          <label>Transformer low lead<select id="planeSourceLow"><option value="">Choose…</option><option value="A">Electrode A</option><option value="B">Electrode B</option><option value="probe">Probe</option></select></label>
+          <label>Transformer high lead<select id="planeSourceHigh"><option value="">Choose…</option><option value="A">Electrode A</option><option value="B">Electrode B</option><option value="probe">Probe</option></select></label>
+          <label>Voltmeter COM<select id="planeVCom"><option value="">Choose…</option><option value="A">Electrode A</option><option value="B">Electrode B</option><option value="probe">Probe</option></select></label>
+          <label>Voltmeter V/+<select id="planeVPlus"><option value="">Choose…</option><option value="A">Electrode A</option><option value="B">Electrode B</option><option value="probe">Probe</option></select></label>
+        </div>
+        <div class="e02-wiring-status" id="planeWiringStatus">Circuit not wired.</div>
+      </div>
       <div class="probe-readout"><div><span>x</span><strong id="planeX">0.0 cm</strong></div><div><span>y</span><strong id="planeY">0.0 cm</strong></div><div><span>Potential</span><strong id="planeV">— V</strong></div><div><span>|E|</span><strong id="planeE">hidden</strong></div></div>
       <div class="probe-controls"><label>x position<input id="planeXSlider" type="range" min="-10" max="10" step="0.1" value="0"></label><label>y position<input id="planeYSlider" type="range" min="-11" max="11" step="0.1" value="0"></label></div>
       <div class="tank-actions"><button class="btn secondary" id="connectPlane" type="button">Verify wiring & connect source</button><button class="btn" id="measurePlaneProbe" type="button" disabled>Measure probe</button><button class="btn secondary" id="newTank" type="button">New virtual tank</button></div>
@@ -83,7 +93,7 @@
 
     <aside class="side-stack-e02">
       <article class="e02-card"><h4>A.2 — Electrode potentials</h4><p>Move the probe onto each electrode surface and record V<sub>A</sub> and V<sub>B</sub>.</p><div class="electrode-results"><div><span>VA</span><strong id="vaResult">—</strong></div><div><span>VB</span><strong id="vbResult">—</strong></div><div><span>Symmetry error</span><strong id="symResult">—</strong></div></div></article>
-      <article class="e02-card"><h4>Symmetry check</h4><p>Set any interior x, choose y=+5 cm, record the potential, then repeat at y=−5 cm with the same x.</p><button class="btn ghost" id="recordSymmetry" type="button">Record current symmetry point</button><div class="mini" id="symmetryStatus" style="margin-top:8px">No pair recorded.</div></article>
+      <article class="e02-card"><h4>Symmetry check</h4><p>Choose any interior point M(x,y) with y ≠ 0, record it, then move to the mirror point M′(x,−y) and compare the two potentials.</p><button class="btn ghost" id="recordSymmetry" type="button">Record current symmetry point</button><div class="mini" id="symmetryStatus" style="margin-top:8px">No pair recorded.</div></article>
       <article class="e02-card learn-only"><h4>Probe method</h4><p>You can drag the probe on the tank or use the sliders. The reading includes a small repeatable calibration offset and noise, as a real voltmeter/probe would.</p></article>
     </aside>
   </div>
@@ -113,11 +123,24 @@
       <h2>A.4 — Mean electric fields on x′Ox</h2>
       <p>Using the x-axis crossings of A, Eq1, Eq2, Eq3 and Eq4, estimate the mean field magnitude between successive equipotentials.</p>
       <div class="field-metrics"><div class="field-metric"><span>A → 2 V</span><strong id="eA1">— V/m</strong></div><div class="field-metric"><span>2 → 4 V</span><strong id="eA2">— V/m</strong></div><div class="field-metric"><span>4 → 6 V</span><strong id="eA3">— V/m</strong></div><div class="field-metric"><span>6 → 8 V</span><strong id="eA4">— V/m</strong></div></div>
+      <div class="field-calc-grid">
+        <label>Ēm1 / V·m⁻¹<input id="studentEA1" type="number" min="0" step="0.1"></label>
+        <label>Ēm2 / V·m⁻¹<input id="studentEA2" type="number" min="0" step="0.1"></label>
+        <label>Ēm3 / V·m⁻¹<input id="studentEA3" type="number" min="0" step="0.1"></label>
+        <label>Ēm4 / V·m⁻¹<input id="studentEA4" type="number" min="0" step="0.1"></label>
+      </div>
+      <button class="btn" id="checkFieldsA" type="button">Check my mean-field calculations</button><div class="notice" id="fieldCalcMessage" style="margin-top:10px">Use Ē = |ΔV|/Δx with your x-axis equipotential crossings.</div>
       <div class="question-block"><label for="fieldConclusionA">Conclusion from the four mean fields</label><textarea id="fieldConclusionA" placeholder="Are the magnitudes similar? What does that imply about the central field?"></textarea></div>
     </article>
-    <article class="paper"><h2>A.5–A.6 — Axial scan V₁(x)</h2><p>Move the probe every 2 cm from A to B along y=0 and record the potential.</p><div class="axis-scan" id="axisProgressA"></div><button class="btn" id="recordAxisA" type="button" style="margin-top:12px">Record next axial point</button><div class="notice" id="axisMessageA" style="margin-top:12px">The next required x position will be selected automatically.</div></article>
+    <article class="paper"><h2>A.5–A.6 — Axial scan V₁(x)</h2><p>Move the probe yourself every 2 cm from A to B along y=0. The next required position is highlighted; a reading is accepted only when the probe is there.</p><div class="axis-scan" id="axisProgressA"></div><button class="btn" id="recordAxisA" type="button" style="margin-top:12px">Record probe reading</button><div class="notice" id="axisMessageA" style="margin-top:12px">Move the probe to the highlighted x position on y=0 before recording.</div></article>
   </div>
-  <article class="paper" style="margin-top:18px"><h2>V₁(x)</h2><div class="e02-chart"><canvas id="axisChart" width="900" height="470"></canvas></div><h3 style="margin-top:22px">A.7 — Field-line construction</h3><div class="tank-canvas-wrap"><canvas class="tank-canvas" id="fieldCanvasA" width="900" height="620"></canvas></div><div class="fieldline-list"><span class="fieldline-key"><i></i>central field line</span><span class="fieldline-key edge"><i></i>edge field line</span></div><div class="tank-actions"><button class="btn ghost" id="traceCentralA" type="button">Trace central field line</button><button class="btn ghost" id="traceEdgeA" type="button">Trace edge field line</button></div><div class="question-block"><label for="uniformConclusion">Is the field uniform everywhere in the tank?</label><textarea id="uniformConclusion" placeholder="Use the V₁(x) graph and the field lines to distinguish the central region from edge effects."></textarea></div></article>
+  <article class="paper" style="margin-top:18px"><h2>V₁(x)</h2><div class="e02-chart"><canvas id="axisChart" width="900" height="470"></canvas></div>
+    <div class="axis-analysis">
+      <label>Shape of V₁(x)<select id="v1Shape"><option value="">Choose…</option><option value="linear">Approximately linear</option><option value="curved">Strongly curved everywhere</option><option value="constant">Constant</option></select></label>
+      <label>|E| deduced from the slope / V·m⁻¹<input id="studentCentralE" type="number" min="0" step="0.1"></label>
+      <button class="btn" id="checkAxisAnalysis" type="button">Check V₁(x) analysis</button>
+    </div><div class="notice" id="axisAnalysisMessage" style="margin-top:10px">Use Eₓ = −dV₁/dx and compare the result with your four mean fields.</div>
+    <h3 style="margin-top:22px">A.7 — Field-line construction</h3><div class="tank-canvas-wrap"><canvas class="tank-canvas" id="fieldCanvasA" width="900" height="620"></canvas></div><div class="fieldline-list"><span class="fieldline-key"><i></i>central field line</span><span class="fieldline-key edge"><i></i>edge field line</span></div><div class="tank-actions"><button class="btn ghost" id="traceCentralA" type="button">Trace central field line</button><button class="btn ghost" id="traceEdgeA" type="button">Trace edge field line</button></div><div class="question-block"><label for="uniformConclusion">Is the field uniform everywhere in the tank?</label><textarea id="uniformConclusion" placeholder="Use the V₁(x) graph and the field lines to distinguish the central region from edge effects."></textarea></div></article>
 </section>
 
 <section class="tabpanel" id="cylinder">
@@ -125,13 +148,13 @@
     <div class="tank-bench">
       <div class="tank-head"><div><div class="kicker">Configuration B</div><h3>Plane electrodes with a 6 cm conducting cylinder</h3></div><span class="tank-state" id="cylState">Cylinder inserted</span></div>
       <div class="tank-canvas-wrap"><canvas class="tank-canvas" id="cylCanvas" width="900" height="620"></canvas><div class="tank-overlay"><span>Conductor C · diameter 6 cm</span><span id="cylPotentialOverlay">VC = —</span></div></div>
-      <div class="probe-readout"><div><span>x</span><strong id="cylX">0.0 cm</strong></div><div><span>y</span><strong id="cylY">0.0 cm</strong></div><div><span>Potential</span><strong id="cylV">— V</strong></div><div><span>|E|</span><strong id="cylE">— V/m</strong></div></div>
+      <div class="probe-readout"><div><span>x</span><strong id="cylX">0.0 cm</strong></div><div><span>y</span><strong id="cylY">0.0 cm</strong></div><div><span>Potential</span><strong id="cylV">— V</strong></div><div><span>Field</span><strong id="cylE">derive from ΔV</strong></div></div>
       <div class="probe-controls"><label>x position<input id="cylXSlider" type="range" min="-10" max="10" step="0.1" value="0"></label><label>y position<input id="cylYSlider" type="range" min="-11" max="11" step="0.1" value="0"></label></div>
       <div class="tank-actions"><button class="btn" id="measureCylinder" type="button">Measure current point</button><button class="btn ghost" id="recordCylinderPotential" type="button">Record conductor potential</button></div>
       <div class="notice" id="cylMessage">Probe inside and on the cylinder surface. A conductor in electrostatic equilibrium is equipotential.</div>
     </div>
     <aside class="side-stack-e02">
-      <article class="e02-card"><h4>B.1 — Conductor C</h4><div class="electrode-results"><div><span>VC</span><strong id="vcResult">—</strong></div><div><span>Inside |E|</span><strong id="ecResult">—</strong></div><div><span>Diameter</span><strong>6.0 cm</strong></div></div><div class="question-block"><label for="chargeDistribution">How are charges distributed on the conductor surface?</label><textarea id="chargeDistribution" placeholder="Relate surface-charge density to the local field and curvature/distortion."></textarea></div></article>
+      <article class="e02-card"><h4>B.1 — Conductor C</h4><p>Record two separated points inside C and one point on its surface. The internal field estimate is derived from your measured ΔV/Δl; it is not read directly from the numerical model.</p><div class="electrode-results"><div><span>VC</span><strong id="vcResult">—</strong></div><div><span>Inside |E| from ΔV</span><strong id="ecResult">—</strong></div><div><span>Diameter</span><strong>6.0 cm</strong></div></div><div class="question-block"><label for="conductorFieldConclusion">What can you conclude about E inside C?</label><textarea id="conductorFieldConclusion" placeholder="Use the near-equality of the two interior potentials and your ΔV/Δl estimate."></textarea></div><div class="question-block"><label for="chargeDistribution">How are charges distributed on the conductor surface?</label><textarea id="chargeDistribution" placeholder="Relate surface-charge density to the local field and distortion of the equipotentials."></textarea></div></article>
       <article class="e02-card"><h4>B.2 — Equipotential targets</h4><div class="target-grid" id="targetsB"></div><div class="yline-grid" id="yProgressB"></div></article>
       <article class="e02-card wide-side"><h4>Mapping controls</h4><p>Select a target and required y line, then move the probe until the reading is within ±0.10 V.</p><label class="field-label">Target<select id="targetBSelect"><option value="2">2 V</option><option value="4">4 V</option><option value="6">6 V</option><option value="8">8 V</option></select></label><label class="field-label">Choose constant-y line <strong id="mapBYLineLabel">0.0 cm</strong><input id="mapBYSelect" type="range" min="0" max="10" step="0.5" value="0"></label><button class="btn" id="markEquipB" type="button">Mark current point</button></article>
     </aside>
@@ -141,7 +164,7 @@
 <section class="tabpanel" id="compare">
   <div class="grid two">
     <article class="paper"><h2>B.3–B.4 — Field distortion</h2><p>The cylinder modifies both the equipotential geometry and the field lines while remaining internally equipotential.</p><div class="field-metrics"><div class="field-metric"><span>VC</span><strong id="compareVC">— V</strong></div><div class="field-metric"><span>Field at M, y=+5 cm</span><strong id="fieldM">— V/m</strong></div><div class="field-metric"><span>M direction</span><strong>toward lower V</strong></div><div class="field-metric"><span>Inside C</span><strong>≈ 0 V/m</strong></div></div><div class="tank-actions"><button class="btn ghost" id="traceM" type="button">Trace field line through M</button><button class="btn ghost" id="traceN" type="button">Trace field line through N</button></div><div class="question-block"><label for="distortionConclusion">How does conductor C change the equipotentials and field lines?</label><textarea id="distortionConclusion"></textarea></div></article>
-    <article class="paper"><h2>B.5 — Axial scan V₂(x)</h2><p>Repeat the 2 cm axial scan with the cylinder present.</p><div class="axis-scan" id="axisProgressB"></div><button class="btn" id="recordAxisB" type="button" style="margin-top:12px">Record next V₂ point</button><div class="notice" id="axisMessageB" style="margin-top:12px">Complete V₁(x) first, then repeat the same positions with the cylinder.</div></article>
+    <article class="paper"><h2>B.5 — Axial scan V₂(x)</h2><p>Repeat the same 2 cm positions with the cylinder present. Move the probe yourself to each highlighted point on y=0.</p><div class="axis-scan" id="axisProgressB"></div><button class="btn" id="recordAxisB" type="button" style="margin-top:12px">Record probe reading</button><div class="notice" id="axisMessageB" style="margin-top:12px">Complete V₁(x), then move to each highlighted V₂ position before recording.</div></article>
   </div>
   <article class="paper" style="margin-top:18px"><h2>Field lines with the conducting cylinder</h2><div class="tank-canvas-wrap"><canvas class="tank-canvas" id="fieldCanvasB" width="900" height="620"></canvas></div></article>
   <article class="paper" style="margin-top:18px"><h2>V₁(x) versus V₂(x)</h2><div class="e02-chart"><canvas id="compareChart" width="900" height="470"></canvas></div><div class="question-block"><label for="compareConclusion">Compare and comment</label><textarea id="compareConclusion" placeholder="Explain the plateau through the conductor and the redistribution of potential gradient around it."></textarea></div></article>
@@ -162,13 +185,13 @@
 
 <section class="tabpanel" id="report">
   <article class="paper no-print"><h2>Laboratory report</h2>
-    <p class="mini"><strong>Privacy:</strong> student name and group stay only in this open page and are not saved. Measurements and report text autosave locally in this browser.</p><div class="report-grid"><label>Student name<input id="studentName" type="text"></label><label>Group / section<input id="studentGroup" type="text"></label><label>Date<input id="reportDate" type="date"></label><label>Mode<input id="reportMode" type="text" readonly></label><label class="wide">Discussion<textarea id="reportDiscussion" placeholder="Discuss symmetry, equipotential geometry, field uniformity, edge effects, the conducting cylinder and the V₁/V₂ comparison."></textarea></label><label class="wide">Conclusion<textarea id="reportConclusion" placeholder="Summarise the main experimental conclusions about E = −∇V and conductor behaviour."></textarea></label></div><div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button><button class="btn ghost" id="clearLocalProgress" type="button">Clear local data</button></div></article>
-  <div class="report-preview" id="reportPreview"><h2>Laboratory Report — E02</h2><p class="mini">Complete the mapping and analysis before building the report.</p></div>
+    <p class="mini"><strong>Privacy:</strong> student name, email and group stay only in this open page and are not saved. Measurements and report text autosave locally in this browser.</p><div class="report-grid"><label>Student name<input id="studentName" type="text"></label><label>Email<input id="studentEmail" type="email" placeholder="name@example.com" required></label><label>Group / section<input id="studentGroup" type="text"></label><label>Date<input id="reportDate" type="date"></label><label>Mode<input id="reportMode" type="text" readonly></label><label class="wide">Discussion<textarea id="reportDiscussion" placeholder="Discuss symmetry, equipotential geometry, field uniformity, edge effects, the conducting cylinder and the V₁/V₂ comparison."></textarea></label><label class="wide">Conclusion<textarea id="reportConclusion" placeholder="Summarise the main experimental conclusions about E = −∇V and conductor behaviour."></textarea></label></div><div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button><button class="btn ghost" id="clearLocalProgress" type="button">Clear local data</button></div></article>
+  <div class="report-preview" id="reportPreview"><h2>Laboratory Practical 2 Report — E02</h2><p class="mini">Complete the mapping and analysis before building the report.</p></div>
 </section>
 <section class="tabpanel" id="printable-report"><div class="report-preview" id="printOnlyPreview"></div></section>
 </main>
 
-<footer class="footer"><div class="shell">E02 • Rheographic Tank • Physics USTHB interactive laboratory · <a href="../../privacy.html">Privacy</a></div></footer>
+<footer class="footer"><div class="shell">Laboratory Practical 2 · Rheographic Tank · Physics USTHB · <a href="../../privacy.html">Privacy</a></div></footer>
 <script src="lab.js"></script>
 </body>
 </html>
