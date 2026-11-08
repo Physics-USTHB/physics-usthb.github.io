@@ -1,150 +1,118 @@
 (()=>{
 'use strict';
-const U=VOMUI,E=id=>document.getElementById(id),K='VOM_W01_v2',OLD='VOM_W01_v1',g=9.81;
-const current=U.load(K,null),old=U.load(OLD,null);
-let s=current||{version:2,inertia:null,coupled:{kap:null,fast:null,beat:null,m1:null,m2:null,analysis:null},conclusion:''};
-if(!current&&old)s={version:2,inertia:null,coupled:{kap:null,fast:null,beat:null,m1:null,m2:null,analysis:null},conclusion:''};
-s.coupled=s.coupled||{kap:null,fast:null,beat:null,m1:null,m2:null,analysis:null};s.conclusion=s.conclusion||'';
+const U=VOMUI,E=id=>document.getElementById(id),K='VOM_W01_v3',G=9.81,LP=1.00,TAU=Math.PI*2,APOS=[10,15,20,25,30,35,40,45,50,55,60,65,70,75,80];
+let s=U.load(K,null);
+if(!s||s.version!==3)s={version:3,simple:null,simpleTheory:null,records:{},conclusion:''};
+s.records=s.records||{};s.conclusion=s.conclusion||'';
 function save(){U.save(K,s)}
-
-function inertiaModel(){
-  const extra=+E('extraMass').value/1000,m=.12+extra,r1=+E('m1pos').value/100,r2=+E('m2pos').value/100;
-  const J=.045+m*r1*r1+m*r2*r2,torque=m*g*(r1+r2),w=Math.sqrt(torque/J),T=2*Math.PI/w;
-  return{extra,m,r1,r2,J,torque,w,T};
+function T0(){return TAU*Math.sqrt(LP/G)}
+function model(a){
+  const Kc=.28*(a/80)**2,w0=TAU/T0(),w1=w0*Math.sqrt(1-Kc),w2=w0*Math.sqrt(1+Kc),f1=w1/TAU,f2=w2/TAU;
+  return{K:Kc,w1,w2,f1,f2,T1:1/f1,T2:1/f2,Tosc:2/(f1+f2),Tbeat:2/Math.abs(f2-f1)};
 }
-function couplingModel(){
-  const i=inertiaModel(),kap=+E('coupling').value,w1=i.w,w2=Math.sqrt(w1*w1+2*kap/i.J),f1=w1/(2*Math.PI),f2=w2/(2*Math.PI);
-  return{...i,kap,w1,w2,f1,f2,T1:1/f1,T2:1/f2,Tosc:2/(f1+f2),Tbeat:2/Math.abs(f2-f1)};
+function rec(a){return s.records[String(a)]||(s.records[String(a)]={a,m1:null,m2:null,fast:null,beat:null,K:null,beatCheck:null})}
+function signal(t,mode,a){
+  const m=model(a);
+  if(mode==='simple'){const q=Math.cos(TAU*t/T0());return{q1:q,q2:0};}
+  if(mode==='m1'){const q=Math.cos(m.w1*t);return{q1:q,q2:q};}
+  if(mode==='m2'){const q=Math.cos(m.w2*t);return{q1:q,q2:-q};}
+  return{q1:.5*(Math.cos(m.w1*t)-Math.cos(m.w2*t)),q2:.5*(Math.cos(m.w1*t)+Math.cos(m.w2*t))};
 }
-function resetInertia(){
-  s.inertia=null;s.coupled={kap:null,fast:null,beat:null,m1:null,m2:null,analysis:null};
-  ['studentT0','studentJ','studentBeatPeriod','studentModeT','studentModeF','studentKappa','studentBeatPred'].forEach(id=>E(id).value='');
+function spanFor(){
+  const mode=E('mode').value,a=+E('aPos').value,target=E('timingTarget').value;
+  if(mode==='simple')return 110;
+  if(mode==='beats'&&target==='beat')return Math.min(300,Math.max(35,model(a).Tbeat*1.35));
+  return 30;
 }
-function resetCoupled(){
-  s.coupled={kap:+E('coupling').value,fast:null,beat:null,m1:null,m2:null,analysis:null};
-  ['studentBeatPeriod','studentModeT','studentModeF','studentKappa','studentBeatPred'].forEach(id=>E(id).value='');
+function setupCanvas(){const c=E('pendCanvas'),d=window.devicePixelRatio||1,w=c.clientWidth||900,h=c.clientHeight||390;c.width=w*d;c.height=h*d;const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return{x,w,h}}
+function draw(){
+  const{x,w,h}=setupCanvas(),mode=E('mode').value,a=+E('aPos').value,span=spanFor(),m=model(a),top=24,cx1=w*.35,cx2=w*.65,len=Math.min(120,h*.28);
+  x.fillStyle='#eef5f6';x.fillRect(0,0,w,h);
+  const sample=signal(span*.11,mode,a),ang1=.34*sample.q1,ang2=.34*sample.q2;
+  const pend=(cx,ang,label)=>{const bx=cx+len*Math.sin(ang),by=top+len*Math.cos(ang);x.strokeStyle='#486270';x.lineWidth=4;x.beginPath();x.moveTo(cx,top);x.lineTo(bx,by);x.stroke();x.fillStyle='#c36543';x.beginPath();x.arc(bx,by,13,0,TAU);x.fill();x.fillStyle='#173e58';x.font='700 11px system-ui';x.fillText(label,cx-5,top-7)};
+  pend(cx1,ang1,'1');if(mode!=='simple')pend(cx2,ang2,'2');
+  if(mode!=='simple'){const y=top+Math.max(15,a/80*len);x.strokeStyle='#7da44c';x.lineWidth=3;x.beginPath();x.moveTo(cx1,y);x.lineTo(cx2,y);x.stroke();}
+  const y0=h*.73,gh=h*.22,left=25,right=w-20,X=t=>left+t/span*(right-left),p1=[],p2=[];
+  for(let i=0;i<=1200;i++){const t=span*i/1200,q=signal(t,mode,a);p1.push({x:X(t),y:y0-q.q1*gh*.42});p2.push({x:X(t),y:y0-q.q2*gh*.42});}
+  x.strokeStyle='#d69b25';x.lineWidth=1.6;x.beginPath();p1.forEach((q,i)=>i?x.lineTo(q.x,q.y):x.moveTo(q.x,q.y));x.stroke();
+  if(mode!=='simple'){x.strokeStyle='#2697b0';x.beginPath();p2.forEach((q,i)=>i?x.lineTo(q.x,q.y):x.moveTo(q.x,q.y));x.stroke();}
+  E('cursor1').max=span;E('cursor2').max=span;for(const id of ['cursor1','cursor2'])if(+E(id).value>span)E(id).value=span;
+  x.setLineDash([5,4]);[['cursor1','#7658a8'],['cursor2','#d8584b']].forEach(([id,col])=>{x.strokeStyle=col;const xx=X(+E(id).value);x.beginPath();x.moveTo(xx,y0-gh/2);x.lineTo(xx,y0+gh/2);x.stroke();});x.setLineDash([]);
+  E('aRead').textContent=a+' cm';E('t1Out').textContent=(+E('cursor1').value).toFixed(2)+' s';E('t2Out').textContent=(+E('cursor2').value).toFixed(2)+' s';
+  E('timingTarget').disabled=mode!=='beats';
+  if(mode==='simple')E('msg').textContent='Spring removed: time about 50 complete periods using equivalent phases.';
 }
-function sameCoupling(){return s.coupled.kap!=null&&Math.abs(s.coupled.kap-(+E('coupling').value))<1e-12}
-
-function drawPend(canvas,kind){
-  const {x,w,h}=U.canvas(canvas);x.fillStyle='#eef5f6';x.fillRect(0,0,w,h);
-  const topH=h*.54,baseY=25,Lpx=Math.min(120,topH*.7),cx1=w*.34,cx2=w*.66;
-  let span=16,signal=t=>({q1:Math.cos(inertiaModel().w*t),q2:0});
-  if(kind==='beats'){
-    const p=couplingModel();span=Math.min(200,Math.max(35,p.Tbeat*1.18));signal=t=>({q1:.5*(Math.cos(p.w1*t)-Math.cos(p.w2*t)),q2:.5*(Math.cos(p.w1*t)+Math.cos(p.w2*t))});
-  }else if(kind==='mode'){
-    const p=couplingModel(),anti=E('modeSelect').value==='anti',ww=anti?p.w2:p.w1;span=16;signal=t=>({q1:Math.cos(ww*t),q2:(anti?-1:1)*Math.cos(ww*t)});
-  }
-  const sample=signal(span*.11),ang1=.36*sample.q1,ang2=.36*sample.q2;
-  function pend(cx,a,label){
-    const bx=cx+Lpx*Math.sin(a),by=baseY+Lpx*Math.cos(a);x.strokeStyle='#466171';x.lineWidth=4;x.beginPath();x.moveTo(cx,baseY);x.lineTo(bx,by);x.stroke();x.fillStyle='#c26443';x.beginPath();x.arc(bx,by,13,0,Math.PI*2);x.fill();x.fillStyle='#173e58';x.font='700 11px system-ui';x.fillText(label,cx-7,baseY-7);
-  }
-  pend(cx1,ang1,'1');if(kind!=='inertia')pend(cx2,ang2,'2');
-  if(kind!=='inertia'){x.strokeStyle='#82a94d';x.lineWidth=3;x.beginPath();x.moveTo(cx1,baseY+20);x.lineTo(cx2,baseY+20);x.stroke();}
-  const y0=h*.70,gh=h*.24,left=28,right=w-18,X=t=>left+t/span*(right-left);
-  x.strokeStyle='rgba(46,84,102,.18)';x.lineWidth=1;for(let k=0;k<=10;k++){const xx=left+(right-left)*k/10;x.beginPath();x.moveTo(xx,y0-gh/2);x.lineTo(xx,y0+gh/2);x.stroke();}
-  const a=[],b=[];for(let i=0;i<=900;i++){const t=span*i/900,q=signal(t);a.push({x:X(t),y:y0-q.q1*gh*.42});b.push({x:X(t),y:y0-q.q2*gh*.42});}
-  x.strokeStyle='#d69b25';x.lineWidth=1.7;x.beginPath();a.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke();
-  if(kind!=='inertia'){x.strokeStyle='#2697b0';x.beginPath();b.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke();}
-  const pair=kind==='inertia'?['inertiaCursor1','inertiaCursor2']:kind==='beats'?['beatCursor1','beatCursor2']:['modeCursor1','modeCursor2'];
-  pair.forEach(id=>{E(id).max=span;const v=Math.min(+E(id).value,span);if(v!==+E(id).value)E(id).value=v;});
-  x.setLineDash([4,3]);pair.forEach((id,i)=>{x.strokeStyle=i?'#d8584b':'#7658a8';const xx=X(+E(id).value);x.beginPath();x.moveTo(xx,y0-gh/2);x.lineTo(xx,y0+gh/2);x.stroke();});x.setLineDash([]);
-  if(kind==='inertia')updateInertiaCursor();else if(kind==='beats')updateBeatCursor();
+function clearTiming(){['studentCycles','studentPeriod'].forEach(id=>E(id).value='')}
+function validateTiming(){
+  const mode=E('mode').value,a=+E('aPos').value,target=E('timingTarget').value,dt=Math.abs(+E('cursor2').value-(+E('cursor1').value)),raw=[E('studentCycles').value.trim(),E('studentPeriod').value.trim()];
+  if(raw.some(v=>v==='')){E('msg').className='notice warn';E('msg').textContent='Enter the counted number of periods and T=Δt/N.';return}
+  const N=+raw[0],T=+raw[1];if(!Number.isInteger(N)||N<1||!Number.isFinite(T)||T<=0){E('msg').className='notice warn';E('msg').textContent='Enter an integer cycle count and a positive period.';return}
+  let trueT,minN,label;
+  if(mode==='simple'){trueT=T0();minN=45;label='uncoupled period';}
+  else if(mode==='m1'){trueT=model(a).T1;minN=10;label='mode-1 period';}
+  else if(mode==='m2'){trueT=model(a).T2;minN=10;label='mode-2 period';}
+  else if(target==='fast'){trueT=model(a).Tosc;minN=5;label='fast beat oscillation';}
+  else{if(a<40){E('msg').className='notice warn';E('msg').textContent='For a reliable envelope timing in this virtual bench, choose a ≥ 40 cm; weaker coupling gives an impractically long beat period.';return}trueT=model(a).Tbeat;minN=1;label='beat envelope';}
+  if(N<minN){E('msg').className='notice warn';E('msg').textContent='Use at least '+minN+' complete '+label+' cycles.';return}
+  if(Math.abs(dt-N*trueT)>Math.max(.08,.025*N*trueT)){E('msg').className='notice warn';E('msg').textContent='Move the cursors to equivalent phases and recount the selected periods.';return}
+  const calc=dt/N;if(Math.abs(T-calc)>Math.max(.01,.015*calc)){E('msg').className='notice warn';E('msg').textContent='Recalculate T=(t₂−t₁)/N.';return}
+  if(mode==='simple'){s.simple={N,T};s.simpleTheory=null;E('studentTheoryT').value='';E('msg').className='notice ok';E('msg').textContent='Uncoupled timing accepted. Attach the spring and measure both normal modes at many positions.';}
+  else{const r=rec(a);if(mode==='m1')r.m1={N,T};else if(mode==='m2')r.m2={N,T};else if(target==='fast')r.fast={N,T};else r.beat={N,T};r.K=null;r.beatCheck=null;E('studentK').value='';E('studentToscPred').value='';E('studentTbeatPred').value='';E('msg').className='notice ok';E('msg').textContent=label+' timing accepted at a='+a+' cm.';}
+  clearTiming();renderAll();save();
 }
-function updateInertiaCursor(){
-  const a=+E('inertiaCursor1').value,b=+E('inertiaCursor2').value;E('inertiaT1').textContent=a.toFixed(2)+' s';E('inertiaT2').textContent=b.toFixed(2)+' s';E('inertiaDt').textContent=Math.abs(b-a).toFixed(2)+' s';
+function checkTheory(){
+  if(!s.simple){E('simpleMsg').className='notice warn';E('simpleMsg').textContent='Measure the uncoupled period first.';return}
+  const v=+E('studentTheoryT').value,e=T0();if(!Number.isFinite(v)||v<=0){E('simpleMsg').className='notice warn';E('simpleMsg').textContent='Enter the theoretical period.';return}
+  if(Math.abs(v-e)>.015){E('simpleMsg').className='notice warn';E('simpleMsg').textContent='Recalculate T₀=2π√(L/g) with L=1.00 m.';return}
+  s.simpleTheory=v;E('simpleMsg').className='notice ok';E('simpleMsg').textContent='Theoretical period accepted. Compare it with the 50-period timing result.';renderAll();save();
 }
-function updateBeatCursor(){}
-
-function validateInertia(){
-  const p=inertiaModel(),dt=Math.abs(+E('inertiaCursor2').value-(+E('inertiaCursor1').value)),raw=[E('inertiaCycles').value.trim(),E('studentT0').value.trim(),E('studentJ').value.trim()];
-  if(raw.some(v=>v==='')){E('inertiaMsg').className='notice warn';E('inertiaMsg').textContent='Enter N, T and J.';return;}
-  const [N,T,J]=raw.map(Number);if(!Number.isInteger(N)||N<3||T<=0||J<=0){E('inertiaMsg').className='notice warn';E('inertiaMsg').textContent='Time at least three full periods and enter positive T and J.';return;}
-  if(Math.abs(dt-N*p.T)>Math.max(.06,.035*N*p.T)){E('inertiaMsg').className='notice warn';E('inertiaMsg').textContent='Place the cursors on equivalent phases several periods apart and recount N.';return;}
-  const Tc=dt/N,Jc=(Tc/(2*Math.PI))**2*p.torque;
-  if(Math.abs(T-Tc)>.02){E('inertiaMsg').className='notice warn';E('inertiaMsg').textContent='Recalculate T=(t₂−t₁)/N.';return;}
-  if(Math.abs(J-Jc)>Math.max(.0003,.025*Jc)){E('inertiaMsg').className='notice warn';E('inertiaMsg').textContent='Recalculate J=(T/2π)²Mg(r₁+r₂) using the current mass positions.';return;}
-  s.inertia={T,J,m:p.m,r1:p.r1,r2:p.r2,extra:p.extra};s.coupled={kap:+E('coupling').value,fast:null,beat:null,m1:null,m2:null,analysis:null};
-  E('inertiaMsg').className='notice ok';E('inertiaMsg').textContent='Uncoupled period and moment of inertia accepted. Keep these mass settings for the coupled measurements.';
-  renderAll();save();
+function availableA(){return APOS.filter(a=>{const r=s.records[String(a)];return r?.m1&&r?.m2})}
+function syncAnalysisA(){
+  const vals=availableA(),prev=+E('analysisA').value;E('analysisA').innerHTML=vals.length?vals.map(a=>'<option value="'+a+'">a = '+a+' cm</option>').join(''):'<option value="">Measure both modes first</option>';
+  if(vals.includes(prev))E('analysisA').value=prev;else if(vals.length)E('analysisA').value=vals[0];
+  loadAnalysis();
 }
-
-function currentModelFromMeasuredJ(){
-  if(!s.inertia)return null;
-  const kap=+E('coupling').value,torque=s.inertia.m*g*(s.inertia.r1+s.inertia.r2),w1=Math.sqrt(torque/s.inertia.J),w2=Math.sqrt(w1*w1+2*kap/s.inertia.J),f1=w1/(2*Math.PI),f2=w2/(2*Math.PI);
-  return{kap,w1,w2,f1,f2,T1:1/f1,T2:1/f2,Tosc:2/(f1+f2),Tbeat:2/Math.abs(f2-f1)};
+function loadAnalysis(){
+  const a=+E('analysisA').value,r=s.records[String(a)];E('studentK').value=r?.K??'';E('studentToscPred').value=r?.beatCheck?.Tosc??'';E('studentTbeatPred').value=r?.beatCheck?.Tbeat??'';
 }
-function validateBeat(){
-  if(!s.inertia){E('beatMsg').className='notice warn';E('beatMsg').textContent='Validate the uncoupled inertia first.';return;}
-  if(!sameCoupling())resetCoupled();
-  const p=currentModelFromMeasuredJ(),target=E('beatTarget').value,dt=Math.abs(+E('beatCursor2').value-(+E('beatCursor1').value)),raw=[E('beatCycles').value.trim(),E('studentBeatPeriod').value.trim()];
-  if(raw.some(v=>v==='')){E('beatMsg').className='notice warn';E('beatMsg').textContent='Enter the number of selected periods and the calculated period.';return;}
-  const N=+raw[0],T=+raw[1],trueT=target==='beat'?p.Tbeat:p.Tosc,minN=target==='beat'?1:3;
-  if(!Number.isInteger(N)||N<minN||T<=0){E('beatMsg').className='notice warn';E('beatMsg').textContent='Use '+minN+' or more complete '+(target==='beat'?'beat-envelope':'oscillation')+' periods.';return;}
-  if(Math.abs(dt-N*trueT)>Math.max(.08,.045*N*trueT)){E('beatMsg').className='notice warn';E('beatMsg').textContent='Move the cursors to equivalent '+(target==='beat'?'envelope':'fast-oscillation')+' phases and recount.';return;}
-  const Tc=dt/N;if(Math.abs(T-Tc)>Math.max(.02,.025*Tc)){E('beatMsg').className='notice warn';E('beatMsg').textContent='Recalculate the selected period from Δt/N.';return;}
-  s.coupled[target==='beat'?'beat':'fast']={N,T};
-  E('beatCycles').value='';E('studentBeatPeriod').value='';E('beatMsg').className='notice ok';E('beatMsg').textContent=(target==='beat'?'Beat-envelope':'Fast oscillation')+' period accepted. Measure the other scale as well.';
-  renderAll();save();
+function checkK(){
+  const a=+E('analysisA').value,r=s.records[String(a)];if(!r?.m1||!r?.m2){E('kMsg').className='notice warn';E('kMsg').textContent='Measure both normal modes at the selected spring position first.';return}
+  const f1=1/r.m1.T,f2=1/r.m2.T,e=(f2*f2-f1*f1)/(f2*f2+f1*f1),v=+E('studentK').value;
+  if(!Number.isFinite(v)||v<=0){E('kMsg').className='notice warn';E('kMsg').textContent='Enter K from the two measured mode frequencies.';return}
+  if(Math.abs(v-e)>.006){E('kMsg').className='notice warn';E('kMsg').textContent='Recalculate K=(ω₂²−ω₁²)/(ω₂²+ω₁²).';return}
+  r.K=v;E('kMsg').className='notice ok';E('kMsg').textContent='Coupling coefficient accepted for a='+a+' cm.';renderAll();save();
 }
-function validateMode(){
-  if(!s.inertia){E('modeMsg').className='notice warn';E('modeMsg').textContent='Validate the uncoupled inertia first.';return;}
-  if(!sameCoupling())resetCoupled();
-  const p=currentModelFromMeasuredJ(),mode=E('modeSelect').value,dt=Math.abs(+E('modeCursor2').value-(+E('modeCursor1').value)),raw=[E('modeCycles').value.trim(),E('studentModeT').value.trim(),E('studentModeF').value.trim()],trueT=mode==='sym'?p.T1:p.T2;
-  if(raw.some(v=>v==='')){E('modeMsg').className='notice warn';E('modeMsg').textContent='Enter N, T and f.';return;}
-  const [N,T,f]=raw.map(Number);if(!Number.isInteger(N)||N<3||T<=0||f<=0){E('modeMsg').className='notice warn';E('modeMsg').textContent='Time at least three complete normal-mode cycles.';return;}
-  if(Math.abs(dt-N*trueT)>Math.max(.06,.035*N*trueT)){E('modeMsg').className='notice warn';E('modeMsg').textContent='Place cursors on equivalent normal-mode phases and recount N.';return;}
-  const Tc=dt/N;if(Math.abs(T-Tc)>.02){E('modeMsg').className='notice warn';E('modeMsg').textContent='Recalculate T=Δt/N.';return;}
-  if(Math.abs(f-1/T)>Math.max(.003,.02/T)){E('modeMsg').className='notice warn';E('modeMsg').textContent='Recalculate f=1/T.';return;}
-  s.coupled[mode==='sym'?'m1':'m2']={N,T,f};s.coupled.analysis=null;
-  ['modeCycles','studentModeT','studentModeF','studentKappa','studentBeatPred'].forEach(id=>E(id).value='');
-  E('modeMsg').className='notice ok';E('modeMsg').textContent=(mode==='sym'?'Symmetric':'Antisymmetric')+' normal-mode timing accepted. Measure the other mode separately.';
-  renderAll();save();
+function checkBeat(){
+  const a=+E('analysisA').value,r=s.records[String(a)];if(!r?.m1||!r?.m2||!r?.fast||!r?.beat){E('beatMsg').className='notice warn';E('beatMsg').textContent='Select a position with both normal modes and both direct beat timings.';return}
+  const f1=1/r.m1.T,f2=1/r.m2.T,eFast=2/(f1+f2),eBeat=2/Math.abs(f2-f1),vf=+E('studentToscPred').value,vb=+E('studentTbeatPred').value;
+  if(!Number.isFinite(vf)||!Number.isFinite(vb)||vf<=0||vb<=0){E('beatMsg').className='notice warn';E('beatMsg').textContent='Enter both reconstructed periods.';return}
+  if(Math.abs(vf-eFast)>Math.max(.015,.025*eFast)||Math.abs(vb-eBeat)>Math.max(.12,.03*eBeat)){E('beatMsg').className='notice warn';E('beatMsg').textContent='Recalculate Tosc=2/(f₁+f₂) and Tbeat=2/|f₂−f₁|.';return}
+  r.beatCheck={Tosc:vf,Tbeat:vb,fastErr:100*(r.fast.T-vf)/vf,beatErr:100*(r.beat.T-vb)/vb};E('beatMsg').className='notice ok';E('beatMsg').textContent='Beat reconstruction accepted. Compare direct and reconstructed timings in your discussion.';renderAll();save();
 }
-
-function checkAnalysis(){
-  const c=s.coupled;if(!s.inertia||!c.fast||!c.beat||!c.m1||!c.m2){E('analysisMessage').className='notice warn';E('analysisMessage').textContent='Validate inertia, both beat scales and both normal modes first.';return;}
-  const kappa=+E('studentKappa').value,tb=+E('studentBeatPred').value,w1=2*Math.PI/c.m1.f,w2=2*Math.PI/c.m2.f,kc=s.inertia.J*(w2*w2-w1*w1)/2,tbc=2/Math.abs(c.m2.f-c.m1.f);
-  if(!Number.isFinite(kappa)||!Number.isFinite(tb)||kappa<=0||tb<=0){E('analysisMessage').className='notice warn';E('analysisMessage').textContent='Enter κ and the reconstructed beat period.';return;}
-  if(Math.abs(kappa-kc)>Math.max(.001,.04*kc)){E('analysisMessage').className='notice warn';E('analysisMessage').textContent='Recalculate κ = J(ω₂²−ω₁²)/2 from your measured normal-mode frequencies.';return;}
-  if(Math.abs(tb-tbc)>Math.max(.25,.04*tbc)){E('analysisMessage').className='notice warn';E('analysisMessage').textContent='Recalculate the beat period from 2/|f₂−f₁|.';return;}
-  const beatErr=100*(c.beat.T-tb)/tb,fastPred=2/(c.m1.f+c.m2.f),fastErr=100*(c.fast.T-fastPred)/fastPred;
-  c.analysis={kappa,beatPred:tb,beatErr,fastPred,fastErr};
-  E('analysisMessage').className='notice ok';E('analysisMessage').textContent='Coupling analysis accepted. Direct/reconstructed differences: beat '+beatErr.toFixed(1)+'%, fast '+fastErr.toFixed(1)+'%.';
-  renderAll();save();
+function drawChart(){
+  const rows=APOS.map(a=>s.records[String(a)]).filter(r=>r?.K&&r.m1&&r.m2),a1=rows.map(r=>({x:r.K,y:r.m1.T})),a2=rows.map(r=>({x:r.K,y:r.m2.T}));
+  if(rows.length)U.plot(E('chart'),[{pts:a1,color:'#2baac3'},{pts:a2,color:'#df8746'}],{xlabel:'accepted K',ylabel:'period / s',xmin:0,xmax:.32,ymin:1.5,ymax:2.5});
+  else{const q=U.canvas(E('chart'));q.x.fillStyle='#fff';q.x.fillRect(0,0,q.w,q.h);q.x.fillStyle='#687d90';q.x.font='600 13px system-ui';q.x.textAlign='center';q.x.fillText('Validate K values to build T₁(K) and T₂(K).',q.w/2,q.h/2);}
 }
-
-function renderOutputs(){
-  E('t0Out').textContent=s.inertia?s.inertia.T.toFixed(3)+' s':'—';E('jOut').textContent=s.inertia?s.inertia.J.toFixed(5)+' kg·m²':'—';E('rOut').textContent=s.inertia?((s.inertia.r1*100).toFixed(0)+' / '+(s.inertia.r2*100).toFixed(0)+' cm'):'—';
-  const c=s.coupled;E('tOscOut').textContent=c.fast?c.fast.T.toFixed(3)+' s':'—';E('tBeatOut').textContent=c.beat?c.beat.T.toFixed(3)+' s':'—';E('kOut').textContent=c.analysis?c.analysis.kappa.toFixed(4):'—';
-  E('t1Out').textContent=c.m1?c.m1.T.toFixed(3)+' s':'—';E('t2Out').textContent=c.m2?c.m2.T.toFixed(3)+' s':'—';E('freqOut').textContent=c.m1&&c.m2?c.m1.f.toFixed(3)+' / '+c.m2.f.toFixed(3)+' Hz':'—';
-  E('summaryJ').textContent=E('jOut').textContent;E('summaryT1').textContent=E('t1Out').textContent;E('summaryT2').textContent=E('t2Out').textContent;E('summaryTb').textContent=E('tBeatOut').textContent;
+function renderTable(){
+  E('simpleOut').textContent=s.simple?s.simple.T.toFixed(3)+' s':'—';E('tSimple').textContent=E('simpleOut').textContent;E('tTheory').textContent=s.simpleTheory?s.simpleTheory.toFixed(3)+' s':'—';
+  E('body').innerHTML=APOS.map(a=>{const r=s.records[String(a)];return'<tr><td>'+a+'</td><td>'+(r?.K?r.K.toFixed(3):'—')+'</td><td>'+(r?.m1?r.m1.T.toFixed(3):'—')+'</td><td>'+(r?.m2?r.m2.T.toFixed(3):'—')+'</td><td>'+(r?.fast?r.fast.T.toFixed(3):'—')+'</td><td>'+(r?.beat?r.beat.T.toFixed(2):'—')+'</td></tr>'}).join('');
+  const nm=APOS.filter(a=>s.records[String(a)]?.K).length,nb=APOS.filter(a=>s.records[String(a)]?.fast&&s.records[String(a)]?.beat).length,nc=APOS.filter(a=>s.records[String(a)]?.beatCheck).length,words=s.conclusion.trim().length>=30;
+  E('modeCount').textContent=nm+' / 10';E('beatCount').textContent=nb+' / 5';
+  E('progress').innerHTML='<div class="item '+(s.simple&&s.simpleTheory?'done':'')+'">'+(s.simple&&s.simpleTheory?'✓':'○')+' simple-pendulum baseline</div><div class="item '+(nm>=10?'done':'')+'">'+(nm>=10?'✓':'○')+' ≥10 normal-mode/K positions ('+nm+')</div><div class="item '+(nb>=5?'done':'')+'">'+(nb>=5?'✓':'○')+' ≥5 direct beat positions ('+nb+')</div><div class="item '+(nc>=1?'done':'')+'">'+(nc>=1?'✓':'○')+' beat consistency check</div><div class="item '+(words?'done':'')+'">'+(words?'✓':'○')+' interpretation</div>';
 }
-function overall(){
-  const complete=!!s.coupled.analysis&&s.conclusion.trim().length>=30;
-  if(complete){E('analysisMessage').className='notice ok';E('analysisMessage').textContent='Coupled-pendulum analysis complete. Relate mode splitting to the observed energy-transfer beats.';}
-}
-function renderAll(){
-  drawPend(E('uncoupledCanvas'),'inertia');drawPend(E('coupledCanvas'),'beats');drawPend(E('modeCanvas'),'mode');renderOutputs();overall();
-}
+function renderAll(){draw();renderTable();syncAnalysisA();drawChart()}
 function buildReport(){
-  const c=s.coupled,summary='<p><b>Uncoupled:</b> '+(s.inertia?'T='+s.inertia.T.toFixed(3)+' s, J='+s.inertia.J.toFixed(5)+' kg·m²':'incomplete')+'.</p><p><b>Coupled:</b> '+(c.m1&&c.m2?'T₁='+c.m1.T.toFixed(3)+' s, T₂='+c.m2.T.toFixed(3)+' s':'modes incomplete')+'; '+(c.fast&&c.beat?'Tosc='+c.fast.T.toFixed(3)+' s, Tbeat='+c.beat.T.toFixed(3)+' s':'beats incomplete')+'; '+(c.analysis?'κ='+c.analysis.kappa.toFixed(4):'κ incomplete')+'.</p><p><b>Interpretation:</b> '+U.esc(s.conclusion||'Not completed.')+'</p>';
-  return U.report('Waves Laboratory Practical 1 — Coupled Pendulums',summary);
+  const nm=APOS.filter(a=>s.records[String(a)]?.K),nb=APOS.filter(a=>s.records[String(a)]?.fast&&s.records[String(a)]?.beat);
+  const summary='<p><b>Simple pendulum:</b> '+(s.simple?'T='+s.simple.T.toFixed(3)+' s':'not measured')+(s.simpleTheory?', theory='+s.simpleTheory.toFixed(3)+' s.':'.')+'</p><p><b>Normal-mode/K positions:</b> '+nm.length+'. <b>Beat positions:</b> '+nb.length+'.</p><p><b>Interpretation:</b> '+U.esc(s.conclusion||'Not completed.')+'</p>';
+  return U.report('Wave Laboratory Practical I — Two Coupled Pendulums',summary);
 }
-
-U.tabs();
-E('modeConclusion').value=s.conclusion;
-['extraMass','m1pos','m2pos'].forEach(id=>E(id).addEventListener('input',()=>{resetInertia();renderAll();save();}));
-['inertiaCursor1','inertiaCursor2'].forEach(id=>E(id).addEventListener('input',()=>drawPend(E('uncoupledCanvas'),'inertia')));
-E('recordInertia').onclick=validateInertia;
-E('coupling').addEventListener('change',()=>{resetCoupled();renderAll();save();});
-['initial','beatCursor1','beatCursor2','beatTarget'].forEach(id=>E(id).addEventListener('input',()=>drawPend(E('coupledCanvas'),'beats')));
-E('recordBeat').onclick=validateBeat;
-['modeSelect','channel','modeCursor1','modeCursor2'].forEach(id=>E(id).addEventListener('input',()=>drawPend(E('modeCanvas'),'mode')));
-E('recordMode').onclick=validateMode;E('checkAnalysis').onclick=checkAnalysis;
-E('modeConclusion').addEventListener('input',e=>{s.conclusion=e.target.value;overall();save();});
+U.tabs();E('modeConclusion').value=s.conclusion;
+['aPos','cursor1','cursor2'].forEach(id=>E(id).addEventListener('input',draw));E('mode').addEventListener('change',()=>{clearTiming();if(E('mode').value!=='beats')E('timingTarget').value='fast';draw()});E('timingTarget').addEventListener('change',()=>{clearTiming();draw()});
+E('measure').onclick=validateTiming;E('checkSimpleTheory').onclick=checkTheory;E('analysisA').addEventListener('change',loadAnalysis);E('checkK').onclick=checkK;E('checkBeat').onclick=checkBeat;
+E('modeConclusion').addEventListener('input',e=>{s.conclusion=e.target.value;renderTable();save()});
 E('buildReport').onclick=buildReport;E('printReport').onclick=()=>{if(buildReport())window.print()};
+if(s.simpleTheory)E('studentTheoryT').value=s.simpleTheory;
 if(!E('reportDate').value)E('reportDate').value=new Date().toISOString().slice(0,10);
-if(s.coupled.analysis){E('studentKappa').value=s.coupled.analysis.kappa;E('studentBeatPred').value=s.coupled.analysis.beatPred;}
 window.addEventListener('resize',renderAll);renderAll();save();
 })();
