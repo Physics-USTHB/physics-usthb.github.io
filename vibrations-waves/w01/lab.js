@@ -40,7 +40,6 @@ function draw(){
   x.setLineDash([5,4]);[['cursor1','#7658a8'],['cursor2','#d8584b']].forEach(([id,col])=>{x.strokeStyle=col;const xx=X(+E(id).value);x.beginPath();x.moveTo(xx,y0-gh/2);x.lineTo(xx,y0+gh/2);x.stroke();});x.setLineDash([]);
   E('aRead').textContent=a+' cm';E('t1Out').textContent=(+E('cursor1').value).toFixed(2)+' s';E('t2Out').textContent=(+E('cursor2').value).toFixed(2)+' s';
   E('timingTarget').disabled=mode!=='beats';
-  if(mode==='simple')E('msg').textContent='Spring removed: time about 50 complete periods using equivalent phases.';
 }
 function clearTiming(){['studentCycles','studentPeriod'].forEach(id=>E(id).value='')}
 function validateTiming(){
