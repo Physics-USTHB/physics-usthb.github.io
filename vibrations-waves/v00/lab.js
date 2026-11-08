@@ -1,8 +1,9 @@
 (()=>{
 'use strict';
 const U=VOMUI,E=id=>document.getElementById(id),K='VOM_V00_v2';
-let s=U.load(K,{version:2,records:[],xyObserved:false,xyPhase:null});
-if(s.version!==2)s={version:2,records:[],xyObserved:false,xyPhase:null};
+let s=U.load(K,{version:2,records:[],xyObserved:false,xyPhase:null,xyShape:null});
+if(s.version!==2)s={version:2,records:[],xyObserved:false,xyPhase:null,xyShape:null};
+if(!('xyShape' in s))s.xyShape=null;
 function save(){U.save(K,s)}
 function wf(t,type){
   if(type==='square')return Math.sin(t)>=0?1:-1;
@@ -81,12 +82,23 @@ function take(){
   E('msg').className='notice ok';E('msg').textContent='Sweep measurement validated. Change frequency and/or phase and repeat with a clearly readable display.';
   clearInputs();renderResults();save();
 }
+function expectedXYShape(){
+  if(E('wave').value!=='sine')return null;
+  const p=Math.abs((((+E('phase').value)%360)+360)%360),d0=Math.min(p,Math.abs(360-p),Math.abs(180-p)),d90=Math.min(Math.abs(p-90),Math.abs(p-270));
+  if(d0<=7.5)return'line';
+  if(d90<=7.5&&Math.abs(+E('vdiv').value-(+E('vdiv').value))<1e-9)return'circle';
+  return'ellipse';
+}
 function recordXY(){
   if(E('displayMode').value!=='xy'){E('msg').className='notice warn';E('msg').textContent='Select XY composition mode first.';return}
+  if(E('wave').value!=='sine'){E('msg').className='notice warn';E('msg').textContent='Use a sine wave for the canonical line/ellipse/circle XY phase observation.';return}
   if(E('voltFine').value!=='cal'){E('msg').className='notice warn';E('msg').textContent='Keep the vertical gain calibrated before interpreting the XY trace.';return}
   if(E('coupling1').value==='gnd'||E('coupling2').value==='gnd'){E('msg').className='notice warn';E('msg').textContent='Both channels must carry signals for an XY composition.';return}
-  s.xyObserved=true;s.xyPhase=+E('phase').value;
-  E('msg').className='notice ok';E('msg').textContent='XY composition recorded. Describe the line/ellipse/circle shape and relate it to the phase shift in your discussion.';
+  const shape=E('xyShape').value,expected=expectedXYShape();
+  if(!shape){E('msg').className='notice warn';E('msg').textContent='Observe the XY trace and identify its shape before validating.';return}
+  if(shape!==expected){E('msg').className='notice warn';E('msg').textContent='Re-examine the XY trace and its symmetry before choosing the line/ellipse/circle classification.';return}
+  s.xyObserved=true;s.xyPhase=+E('phase').value;s.xyShape=shape;
+  E('msg').className='notice ok';E('msg').textContent='XY observation accepted. Relate the validated shape to the phase shift in your discussion.';
   renderResults();save();
 }
 function renderResults(){
@@ -98,7 +110,7 @@ function renderResults(){
   E('phiout').textContent=r?(r.phi>=0?'+':'')+r.phi.toFixed(1)+'°':'—';
   E('measurementBody').innerHTML=s.records.length?s.records.map((q,i)=>'<tr><td>'+(i+1)+'</td><td>'+q.generatorF.toFixed(0)+'</td><td>'+q.vpp.toFixed(3)+'</td><td>'+q.Tms.toFixed(3)+'</td><td>'+q.f.toFixed(1)+'</td><td>'+q.dtms.toFixed(3)+'</td><td>'+q.phi.toFixed(1)+'</td></tr>').join(''):'<tr><td colspan="7">No validated sweep measurements yet.</td></tr>';
   const distinct=new Set(s.records.map(q=>q.key)).size,repeat=distinct>=2;
-  E('progress').innerHTML='<div class="item '+(s.records.length?'done':'')+'">'+(s.records.length?'✓':'○')+' amplitude / period / frequency</div><div class="item '+(s.records.length?'done':'')+'">'+(s.records.length?'✓':'○')+' two-channel phase</div><div class="item '+(repeat?'done':'')+'">'+(repeat?'✓':'○')+' repeat at another frequency/phase</div><div class="item '+(s.xyObserved?'done':'')+'">'+(s.xyObserved?'✓':'○')+' XY composition</div>';
+  E('progress').innerHTML='<div class="item '+(s.records.length?'done':'')+'">'+(s.records.length?'✓':'○')+' amplitude / period / frequency</div><div class="item '+(s.records.length?'done':'')+'">'+(s.records.length?'✓':'○')+' two-channel phase</div><div class="item '+(repeat?'done':'')+'">'+(repeat?'✓':'○')+' repeat at another frequency/phase</div><div class="item '+(s.xyObserved?'done':'')+'">'+(s.xyObserved?'✓':'○')+' XY composition'+(s.xyObserved&&s.xyShape?' · '+s.xyShape:'')+'</div>';
   if(s.records.length)U.plot(E('freqChart'),[{pts:s.records.map(q=>({x:q.generatorF,y:q.f}))}],{xlabel:'generator setting / Hz',ylabel:'measured f / Hz'});
   else{
     const q=U.canvas(E('freqChart'));q.x.fillStyle='#fff';q.x.fillRect(0,0,q.w,q.h);q.x.fillStyle='#687d90';q.x.font='600 13px system-ui';q.x.textAlign='center';q.x.fillText('Validate sweep measurements to build the frequency check.',q.w/2,q.h/2);
@@ -108,11 +120,11 @@ function renderResults(){
   E('analysisMessage').textContent=complete?'Instrumentation session complete: compare measured and generator frequencies and discuss the XY trace.':'Two distinct validated sweep measurements plus one XY observation are required.';
 }
 function buildReport(){
-  const summary='<p><b>Validated sweep sets:</b> '+s.records.length+'. <b>Distinct settings:</b> '+new Set(s.records.map(q=>q.key)).size+'. <b>XY observation:</b> '+(s.xyObserved?'completed at CH2 phase '+s.xyPhase+'°':'not completed')+'.</p>'+(s.records.length?'<p><b>Last validated set:</b> Vpp='+s.records.at(-1).vpp.toFixed(3)+' V, T='+s.records.at(-1).Tms.toFixed(3)+' ms, f='+s.records.at(-1).f.toFixed(1)+' Hz, φ='+s.records.at(-1).phi.toFixed(1)+'°.</p>':'');
+  const summary='<p><b>Validated sweep sets:</b> '+s.records.length+'. <b>Distinct settings:</b> '+new Set(s.records.map(q=>q.key)).size+'. <b>XY observation:</b> '+(s.xyObserved?'completed at CH2 phase '+s.xyPhase+'° ('+s.xyShape+')':'not completed')+'.</p>'+(s.records.length?'<p><b>Last validated set:</b> Vpp='+s.records.at(-1).vpp.toFixed(3)+' V, T='+s.records.at(-1).Tms.toFixed(3)+' ms, f='+s.records.at(-1).f.toFixed(1)+' Hz, φ='+s.records.at(-1).phi.toFixed(1)+'°.</p>':'');
   return U.report('Introductory Instrumentation Session — Oscilloscope & Function Generator',summary);
 }
 U.tabs();
-['displayMode','wave','freq','amp','phase','tdiv','vdiv','timeFine','voltFine','coupling1','coupling2','trigger','level'].forEach(id=>E(id).addEventListener('input',draw));
+['displayMode','wave','freq','amp','phase','tdiv','vdiv','timeFine','voltFine','coupling1','coupling2','trigger','level'].forEach(id=>E(id).addEventListener('input',()=>{draw();if(id==='wave'||id==='phase'||id==='displayMode'){E('xyShape').value='';s.xyObserved=false;s.xyShape=null;renderResults();save();}}));
 E('measure').onclick=take;E('recordXY').onclick=recordXY;E('buildReport').onclick=buildReport;E('printReport').onclick=()=>{if(buildReport())window.print()};
 if(!E('reportDate').value)E('reportDate').value=new Date().toISOString().slice(0,10);
 window.addEventListener('resize',()=>{draw();renderResults()});
