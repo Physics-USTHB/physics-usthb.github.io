@@ -157,6 +157,10 @@ function buildReport(){
 }
 
 U.tabs();
+if(s.eye)E('eyeDistance').value=s.eye.delta;
+if(s.loupe)E('loupeDistance').value=s.loupe.d;
+if(s.objective)E('objDistance').value=s.objective.u;
+if(s.micro)E('ocularPosition').value=s.micro.ocular;
 if(s.eyeCalc)E('studentAlpha').value=s.eyeCalc.alphaDeg;
 if(s.loupeCalc){E('studentAlphaPrime').value=s.loupeCalc.alphaPDeg;E('studentLoupeG').value=s.loupeCalc.G;E('studentPower').value=s.loupeCalc.P}
 if(s.objectiveCalc){E('studentP1').value=s.objectiveCalc.pp;E('studentGammaObj').value=s.objectiveCalc.gamma}
