@@ -1,4 +1,5 @@
 import {validateUnit, gradeItem, nextReview, summarizeEvidence, weaknessHypothesis, shuffledOptions} from "./assessment.mjs";
+import {mountSpeaking} from "./speaking.mjs";
 // English for Physicists — local-first development preview.
 // All sample exercises are formative and NOT eligible for CEFR/mastery claims.
 const UNITS=[
@@ -28,6 +29,9 @@ const authoredRoot=document.createElement("section");
 authoredRoot.id="authored-lesson";
 authoredRoot.hidden=true;
 $("lesson").after(authoredRoot);
+const recorderMount=document.createElement("div");
+authoredRoot.after(recorderMount);
+const speaking=mountSpeaking(recorderMount);
 function renderReadingContent(container,paragraph,title){
  const lines=paragraph.split("\n").map(x=>x.trim()).filter(Boolean);
  const tableStart=lines.findIndex(x=>/^\|.*\|$/.test(x));
@@ -326,6 +330,8 @@ function render(){
  const [title,description]=UNITS[selected];
  $("unit-title").textContent="A2."+String(selected+1).padStart(2,"0")+" — "+title;
  $("unit-description").textContent=description;
+ speaking.setPrompt("Speaking task for A2."+String(selected+1).padStart(2,"0")+": "+title+
+ ". Explain an example or one short source in your own words. Speak clearly and check your units.");
  const unit=authoredUnits.get(selected);
  $("unit-status").textContent=unit?"Draft authoring preview: "+unit.items.length+" text questions. All proficiency claims disabled.":
  selected===11?"Limited demo: four text exercises, no automatic CEFR mastery.":
