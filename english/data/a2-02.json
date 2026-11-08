@@ -295,7 +295,8 @@
         "ms",
         "mts"
       ],
-      "feedback": "SI unit symbols do not take plural endings."
+      "feedback": "SI unit symbols do not take plural endings.",
+      "caseSensitive": true
     },
     {
       "id": "A2.02.NUM.001",
@@ -438,7 +439,8 @@
         "V",
         "K"
       ],
-      "feedback": "The symbol V stands for volt."
+      "feedback": "The symbol V stands for volt.",
+      "caseSensitive": true
     },
     {
       "id": "A2.02.UNITS.004",
@@ -456,7 +458,8 @@
         "K",
         "°K"
       ],
-      "feedback": "The kelvin has symbol K, without a degree sign."
+      "feedback": "The kelvin has symbol K, without a degree sign.",
+      "caseSensitive": true
     },
     {
       "id": "A2.02.UNITS.005",
@@ -474,7 +477,8 @@
         "0.35 m",
         "0.35 ms"
       ],
-      "feedback": "Write a space between a numerical value and its unit symbol."
+      "feedback": "Write a space between a numerical value and its unit symbol.",
+      "caseSensitive": true
     },
     {
       "id": "A2.02.READ.001",
@@ -493,7 +497,8 @@
         "3.5 m"
       ],
       "feedback": "The table lists sample A's length as 0.35 m.",
-      "sourceId": "R1"
+      "sourceId": "R1",
+      "caseSensitive": true
     },
     {
       "id": "A2.02.READ.002",
@@ -531,7 +536,8 @@
         "22 K"
       ],
       "feedback": "Sample E records a temperature of 295 K.",
-      "sourceId": "R1"
+      "sourceId": "R1",
+      "caseSensitive": true
     },
     {
       "id": "A2.02.READ.004",
@@ -565,7 +571,8 @@
         "30 s"
       ],
       "feedback": "The time interval in Nora's record is 8.5 s.",
-      "sourceId": "R2"
+      "sourceId": "R2",
+      "caseSensitive": true
     },
     {
       "id": "A2.02.READ.006",
@@ -584,7 +591,8 @@
         "30 s"
       ],
       "feedback": "The workshop notice displays 22 °C.",
-      "sourceId": "R3"
+      "sourceId": "R3",
+      "caseSensitive": true
     },
     {
       "id": "A2.02.READ.007",
@@ -603,7 +611,8 @@
         "3 A"
       ],
       "feedback": "The notice states a demonstration voltage of 3 V.",
-      "sourceId": "R3"
+      "sourceId": "R3",
+      "caseSensitive": true
     },
     {
       "id": "A2.02.READ.008",
