@@ -180,16 +180,28 @@
         </svg>
       </div>
 
-      <div class="core-meters">
-        <div class="core-meter"><span>Voltmeter Vm · <b id="vRangeLabel">20 V range</b></span><strong id="vmeter">SOURCE OFF</strong></div>
-        <div class="core-meter"><span>Ammeter Im · <b id="iRangeLabel">300 mA range</b></span><strong id="imeter">SOURCE OFF</strong></div>
+      <div class="analog-meter-grid">
+        <div class="e03-analog-meter">
+          <div class="analog-meter-head"><span>Voltmeter V<sub>m</sub></span><strong id="vRangeLabel">20 V range</strong></div>
+          <div class="e03-meter-face"><div class="scale-text" id="e03VScaleText">0–100 divisions · 20 V range</div><svg id="e03VScale" class="e03-meter-scale" viewBox="0 0 400 215" aria-label="Virtual analog voltmeter scale"></svg><div class="e03-needle" id="e03VNeedle"></div><div class="e03-pivot"></div><div class="e03-meter-state" id="vmeter">SOURCE OFF</div></div>
+        </div>
+        <div class="e03-analog-meter">
+          <div class="analog-meter-head"><span>Ammeter I<sub>m</sub></span><strong id="iRangeLabel">300 mA range</strong></div>
+          <div class="e03-meter-face"><div class="scale-text" id="e03IScaleText">0–100 divisions · 300 mA range</div><svg id="e03IScale" class="e03-meter-scale" viewBox="0 0 400 215" aria-label="Virtual analog ammeter scale"></svg><div class="e03-needle" id="e03INeedle"></div><div class="e03-pivot"></div><div class="e03-meter-state" id="imeter">SOURCE OFF</div></div>
+        </div>
+      </div>
+      <div class="meter-entry-grid">
+        <label>Voltmeter pointer n<sub>V</sub> / 100<input id="studentVDiv" type="number" min="0" max="100" step="0.1" placeholder="read scale"></label>
+        <label>Calculated V<sub>m</sub> / V<input id="studentVm" type="number" min="0" step="0.001" placeholder="nV/100 × range"></label>
+        <label>Ammeter pointer n<sub>I</sub> / 100<input id="studentIDiv" type="number" min="0" max="100" step="0.1" placeholder="read scale"></label>
+        <label>Calculated I<sub>m</sub> / mA<input id="studentIm" type="number" min="0" step="0.01" placeholder="nI/100 × range"></label>
       </div>
 
       <div class="core-actions">
         <button class="btn secondary" id="verifyWiring" type="button">Verify circuit</button>
         <button class="btn" id="connectSource" type="button" disabled>Connect source</button>
         <button class="btn secondary" id="disconnectSource" type="button" disabled>Disconnect source</button>
-        <button class="btn" id="recordReading" type="button" disabled>Record prescribed reading</button>
+        <button class="btn" id="recordReading" type="button" disabled>Submit meter readings</button>
         <button class="btn secondary" id="newRun" type="button">New specimen</button>
       </div>
       <div class="notice protocol-message" id="benchMessage">Select the resistor configuration, verify the wiring, and begin at selector position 1.</div>
