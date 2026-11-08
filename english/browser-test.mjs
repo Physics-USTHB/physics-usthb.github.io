@@ -24,6 +24,23 @@ try{
  await page.reload({waitUntil:"domcontentloaded"});
  await page.waitForFunction(()=>document.querySelector("#total-attempts")?.textContent==="1",{timeout:20000});
  assert.equal(await page.locator("#first-correct").innerText(),"1","First attempt did not survive reload");
+
+ // First-attempt errors should prompt a relevant, unattempted exercise and a short rule.
+ const second=page.locator('[id="practice-A2.01.BE.002"]');
+ await second.locator('input[value="are"]').check();
+ await second.getByRole("button",{name:"Check answer"}).click();
+ await page.waitForFunction(()=>document.querySelector("#total-attempts")?.textContent==="2");
+ assert.match(await page.locator("#focused-practice").innerText(),/Present simple and classroom questions/);
+ assert.match(await page.locator("#focused-practice").innerText(),/1 of 2 first attempts/);
+ await page.locator("#focused-practice").getByRole("button",{name:"Try a new related question"}).click();
+ assert.equal(await page.evaluate(()=>document.activeElement?.closest("form")?.id),"practice-A2.01.BE.003",
+  "Remediation button must reveal and focus an unattempted related question");
+ // A retry may improve practice, but must not erase the original first-attempt suggestion.
+ await second.locator('input[value="is"]').check();
+ await second.getByRole("button",{name:"Check answer"}).click();
+ await page.waitForFunction(()=>document.querySelector("#total-attempts")?.textContent==="3");
+ assert.match(await page.locator("#focused-practice").innerText(),/1 of 2 first attempts/);
+
  const draft="My name is Nora. I study physics and I work with my classmates. I usually read notes at home. Is our class on Tuesday?";
  await page.locator("#writing-text").fill(draft);
  await page.locator("#guided-writing button").filter({hasText:"Save draft now"}).click();
