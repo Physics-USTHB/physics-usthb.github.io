@@ -3,6 +3,7 @@ import {mountSpeaking} from "./speaking.mjs";
 import {mountWriting, validateWritingCatalog, validateWritingRecords} from "./writing.mjs";
 import {createReadingAloud} from "./read-aloud.mjs";
 import {validateRemediationCatalog,buildFocusedPractice} from "./remediation.mjs";
+import {validateListeningCatalog,mountListeningPractice} from "./listening.mjs";
 // English for Physicists — local-first development preview.
 // All sample exercises are formative and NOT eligible for CEFR/mastery claims.
 const UNITS=[
@@ -38,11 +39,20 @@ authoredRoot.hidden=true;
 $("lesson").after(focusedRoot,authoredRoot);
 const recorderMount=document.createElement("div");
 $("lesson").closest(".card").after(recorderMount);
-const speaking=mountSpeaking(recorderMount);
-const readAloud=createReadingAloud();
+const speaking=mountSpeaking(recorderMount,{onStartRecording:()=>{readAloud.stop();listeningWorkshop?.stop();}});
+const readAloud=createReadingAloud({onStart:()=>listeningWorkshop?.stop()});
 const writingMount=document.createElement("div");
 recorderMount.before(writingMount);
 let writingWorkshop=null;
+const listeningMount=document.createElement("div");
+writingMount.before(listeningMount);
+let listeningWorkshop=null;
+// Keep previously exported listening attempts valid even if the optional lesson data fails to load.
+for(let n=1;n<=12;n++)for(let l=1;l<=2;l++)for(let q=1;q<=2;q++){
+ const id="A2."+String(n).padStart(2,"0")+".L"+String(l).padStart(2,"0")+
+   ".Q"+String(q).padStart(2,"0");
+ allowed.add(id);
+}
 function renderReadingContent(container,paragraph,title){
  const lines=paragraph.split("\n").map(x=>x.trim()).filter(Boolean);
  const tableStart=lines.findIndex(x=>/^\|.*\|$/.test(x));
@@ -469,7 +479,9 @@ function render(){
  $("lesson").hidden=true; // The authored A2.12 unit now replaces the four-question UI demonstration.
  authoredRoot.hidden=!unit;
  renderUnits();if(unit)renderAuthored();
- writingWorkshop?.setUnit("A2."+String(selected+1).padStart(2,"0"));
+ const unitId="A2."+String(selected+1).padStart(2,"0");
+ writingWorkshop?.setUnit(unitId);
+ listeningWorkshop?.setUnit(unitId);
  renderStats();
 }
 $("export").onclick=()=>{
@@ -525,6 +537,26 @@ async function boot(){
  }catch(err){
   remediationNotes=null;
   $("notice").textContent=($("notice").textContent+" Optional targeted study guide unavailable: "+err.message).trim();
+ }
+ try{
+  const response=await fetch("./data/listening.json",{cache:"no-cache"});
+  if(!response.ok)throw Error("Dialogues unavailable");
+  const catalog=await response.json();
+  const errors=validateListeningCatalog(catalog);
+  if(errors.length)throw Error(errors.slice(0,3).join("; "));
+  listeningWorkshop=mountListeningPractice(listeningMount,{
+   catalog,
+   getAttempts:()=>state.attempts,
+   onAttempt:async attempt=>{
+    state.attempts.push(attempt);
+    const saved=await save();
+    renderStats();
+    return saved;
+   },
+   onStartAudio:()=>readAloud.stop()
+  });
+ }catch(error){
+  $("notice").textContent=($("notice").textContent+" Optional listening workshop unavailable: "+error.message).trim();
  }
  await load();
 }

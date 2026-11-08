@@ -1,6 +1,6 @@
 // Optional pronunciation/listening support through the browser's built-in synthetic voice.
 // Public course readings only. This is NOT reviewed narration or listening assessment.
-export function createReadingAloud(){
+export function createReadingAloud({onStart=()=>{}}={}){
  const canSpeak=typeof window!=="undefined" && "speechSynthesis" in window &&
    "SpeechSynthesisUtterance" in window;
  let current=null,controls=null;
@@ -35,6 +35,7 @@ export function createReadingAloud(){
   if(!canSpeak){play.disabled=true;status.textContent="Synthetic read-aloud is unavailable in this browser.";}
   play.onclick=()=>{
    if(!canSpeak)return;
+   onStart();
    stop();
    const text=paragraphs.filter(p=>typeof p==="string").join(" ").replace(/[|*#]/g," ");
    if(!text.trim()){status.textContent="No text available to read.";return;}

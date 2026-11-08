@@ -1,0 +1,1501 @@
+{
+  "schemaVersion": 1,
+  "language": "en-US",
+  "contentStatus": "draft",
+  "audioStatus": "synthetic_browser_voice_only",
+  "assessmentStatus": "formative_not_CEFR",
+  "units": {
+    "A2.01": [
+      {
+        "id": "A2.01.L01",
+        "title": "New classmates",
+        "turns": [
+          {
+            "speaker": "Maya",
+            "text": "Hello, I'm Maya. I am a first-year physics student."
+          },
+          {
+            "speaker": "Jordan",
+            "text": "I'm Jordan. I study physics too, and I usually study at the library."
+          },
+          {
+            "speaker": "Maya",
+            "text": "My mathematics class begins at nine on Monday. What time does your class begin?"
+          },
+          {
+            "speaker": "Jordan",
+            "text": "At ten on Monday. We can review our notes after class."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.01.L01.Q01",
+            "prompt": "What subject do both students study?",
+            "options": [
+              "Physics",
+              "Chemistry",
+              "Biology"
+            ],
+            "accepted": [
+              "Physics"
+            ],
+            "feedback": "Both students say that they study physics.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.01.L01.Q02",
+            "prompt": "When does Maya's mathematics class begin on Monday?",
+            "options": [
+              "At nine",
+              "At ten",
+              "At two"
+            ],
+            "accepted": [
+              "At nine"
+            ],
+            "feedback": "Maya says that her mathematics class starts at nine on Monday.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "I study physics too, and I usually study at the library.",
+          "focus": "Practise the unstressed function words in 'I study physics too' and keep the final /s/ sound in physics.",
+          "assessment": "self_review_only"
+        }
+      },
+      {
+        "id": "A2.01.L02",
+        "title": "The orientation room",
+        "turns": [
+          {
+            "speaker": "Instructor",
+            "text": "Welcome to the department. The laboratory introduction is on Thursday at two in Lab 3."
+          },
+          {
+            "speaker": "Student",
+            "text": "Do we need to bring any equipment?"
+          },
+          {
+            "speaker": "Instructor",
+            "text": "No. Please bring your student card and a notebook. You do not need laboratory equipment for this introduction."
+          },
+          {
+            "speaker": "Student",
+            "text": "Thank you. I will write down the time and room."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.01.L02.Q01",
+            "prompt": "Where is the Thursday introduction?",
+            "options": [
+              "Lab 3",
+              "Room 12",
+              "Hall B"
+            ],
+            "accepted": [
+              "Lab 3"
+            ],
+            "feedback": "The instructor identifies Lab 3.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.01.L02.Q02",
+            "prompt": "What should students bring?",
+            "options": [
+              "A student card and a notebook",
+              "A power supply and cables",
+              "A laboratory coat and a laser"
+            ],
+            "accepted": [
+              "A student card and a notebook"
+            ],
+            "feedback": "The instructor asks for a student card and a notebook, not laboratory equipment.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "Please bring your student card and a notebook.",
+          "focus": "Practise the polite sentence rhythm and make the final /d/ in card audible.",
+          "assessment": "self_review_only"
+        }
+      }
+    ],
+    "A2.02": [
+      {
+        "id": "A2.02.L01",
+        "title": "Reading a virtual table",
+        "turns": [
+          {
+            "speaker": "Tutor",
+            "text": "These are illustrative values from our digital model, not real measurements."
+          },
+          {
+            "speaker": "Amina",
+            "text": "Sample A has a length of 0.35 m. Sample B has a mass of 0.80 kg."
+          },
+          {
+            "speaker": "Tutor",
+            "text": "Good. What is the time interval for Sample C?"
+          },
+          {
+            "speaker": "Amina",
+            "text": "It is 12.5 s. I will keep a space before each unit symbol."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.02.L01.Q01",
+            "prompt": "What quantity does Sample B represent?",
+            "options": [
+              "Mass",
+              "Length",
+              "Time"
+            ],
+            "accepted": [
+              "Mass"
+            ],
+            "feedback": "Sample B is stated as a mass of 0.80 kg.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.02.L01.Q02",
+            "prompt": "What time interval is given for Sample C?",
+            "options": [
+              "12.5 s",
+              "0.80 kg",
+              "0.35 m"
+            ],
+            "accepted": [
+              "12.5 s"
+            ],
+            "feedback": "The simulated time interval is 12.5 seconds.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "Sample B has a mass of 0.80 kg.",
+          "focus": "Practise saying 'zero point eight zero kilograms' while keeping the written unit symbol kg unchanged.",
+          "assessment": "self_review_only"
+        }
+      },
+      {
+        "id": "A2.02.L02",
+        "title": "Thirteen or thirty",
+        "turns": [
+          {
+            "speaker": "Teacher",
+            "text": "Listen to the difference between thirteen and thirty."
+          },
+          {
+            "speaker": "Student",
+            "text": "Thirteen means 13. Thirty means 30."
+          },
+          {
+            "speaker": "Teacher",
+            "text": "Exactly. Now read 0.05 aloud."
+          },
+          {
+            "speaker": "Student",
+            "text": "Zero point zero five. The digits after the decimal point are read separately."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.02.L02.Q01",
+            "prompt": "Which number means thirty?",
+            "options": [
+              "30",
+              "13",
+              "3"
+            ],
+            "accepted": [
+              "30"
+            ],
+            "feedback": "Thirty is the number 30; thirteen is 13.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.02.L02.Q02",
+            "prompt": "How is 0.05 read aloud?",
+            "options": [
+              "Zero point zero five",
+              "Zero point five",
+              "Five point zero"
+            ],
+            "accepted": [
+              "Zero point zero five"
+            ],
+            "feedback": "The student correctly reads the two decimal digits separately.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "Thirteen means 13. Thirty means 30.",
+          "focus": "Pay attention to the different stress patterns in 'thirteen' and 'thirty' in American English.",
+          "assessment": "self_review_only"
+        }
+      }
+    ],
+    "A2.03": [
+      {
+        "id": "A2.03.L01",
+        "title": "An equipment map",
+        "turns": [
+          {
+            "speaker": "Leila",
+            "text": "In the virtual room, there is a ruler to the left of the timer."
+          },
+          {
+            "speaker": "Sam",
+            "text": "Where is the notebook?"
+          },
+          {
+            "speaker": "Leila",
+            "text": "It is under the ruler. There are two labels next to the timer."
+          },
+          {
+            "speaker": "Sam",
+            "text": "I can describe the layout without touching real apparatus."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.03.L01.Q01",
+            "prompt": "Where is the ruler relative to the timer?",
+            "options": [
+              "To the left",
+              "To the right",
+              "Behind the wall"
+            ],
+            "accepted": [
+              "To the left"
+            ],
+            "feedback": "Leila puts the ruler to the left of the timer in the virtual room.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.03.L01.Q02",
+            "prompt": "How many labels are next to the timer?",
+            "options": [
+              "Two",
+              "One",
+              "Three"
+            ],
+            "accepted": [
+              "Two"
+            ],
+            "feedback": "The fictional arrangement has two labels beside the timer.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "There are two labels next to the timer.",
+          "focus": "Contrast 'there are' with 'there is' and pronounce the plural /z/ in labels.",
+          "assessment": "self_review_only"
+        }
+      },
+      {
+        "id": "A2.03.L02",
+        "title": "The labelled boxes",
+        "turns": [
+          {
+            "speaker": "Guide",
+            "text": "Look at the picture of our storage shelf. Box A is on the top shelf."
+          },
+          {
+            "speaker": "Learner",
+            "text": "Is Box B next to Box A?"
+          },
+          {
+            "speaker": "Guide",
+            "text": "No. Box B is below Box A, on the lower shelf. The blue card is between two books."
+          },
+          {
+            "speaker": "Learner",
+            "text": "I see. These are labels in a diagram, not real lab instructions."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.03.L02.Q01",
+            "prompt": "Which box is on the lower shelf?",
+            "options": [
+              "Box B",
+              "Box A",
+              "Neither box"
+            ],
+            "accepted": [
+              "Box B"
+            ],
+            "feedback": "Box B is below Box A on the lower shelf.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.03.L02.Q02",
+            "prompt": "Where is the blue card?",
+            "options": [
+              "Between two books",
+              "Behind Box A",
+              "Inside Box B"
+            ],
+            "accepted": [
+              "Between two books"
+            ],
+            "feedback": "The guide states that the blue card is between two books.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "Box B is below Box A, on the lower shelf.",
+          "focus": "Practise the /b/ at the start of Box and below, and pause naturally at the comma.",
+          "assessment": "self_review_only"
+        }
+      }
+    ],
+    "A2.04": [
+      {
+        "id": "A2.04.L01",
+        "title": "Cart motion now",
+        "turns": [
+          {
+            "speaker": "Noah",
+            "text": "The virtual cart usually moves from left to right in our examples."
+          },
+          {
+            "speaker": "Mila",
+            "text": "What is it doing right now?"
+          },
+          {
+            "speaker": "Noah",
+            "text": "It is moving to the right, but it is slowing down."
+          },
+          {
+            "speaker": "Mila",
+            "text": "So 'usually moves' is a routine, and 'is slowing down' describes now."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.04.L01.Q01",
+            "prompt": "Which expression describes the present action?",
+            "options": [
+              "It is slowing down",
+              "It usually moves",
+              "It moved yesterday"
+            ],
+            "accepted": [
+              "It is slowing down"
+            ],
+            "feedback": "'Is slowing down' is present continuous for an action in progress.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.04.L01.Q02",
+            "prompt": "What direction is the cart moving now?",
+            "options": [
+              "To the right",
+              "To the left",
+              "Upward"
+            ],
+            "accepted": [
+              "To the right"
+            ],
+            "feedback": "Noah explicitly says that the virtual cart is moving to the right.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "It is moving to the right, but it is slowing down.",
+          "focus": "Practise linking 'it is' and keep the /ŋ/ sound at the end of moving.",
+          "assessment": "self_review_only"
+        }
+      },
+      {
+        "id": "A2.04.L02",
+        "title": "A rotating model",
+        "turns": [
+          {
+            "speaker": "Guide",
+            "text": "The simulation usually starts with a stationary wheel."
+          },
+          {
+            "speaker": "Student",
+            "text": "Now the wheel is rotating slowly."
+          },
+          {
+            "speaker": "Guide",
+            "text": "Yes, and the blue marker is moving around the center."
+          },
+          {
+            "speaker": "Student",
+            "text": "I can describe the motion, but the picture does not give me a numerical angular speed."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.04.L02.Q01",
+            "prompt": "What is the wheel doing now?",
+            "options": [
+              "Rotating slowly",
+              "Remaining stationary",
+              "Moving straight upward"
+            ],
+            "accepted": [
+              "Rotating slowly"
+            ],
+            "feedback": "The student says the wheel is rotating slowly.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.04.L02.Q02",
+            "prompt": "Does the picture give a numerical angular speed?",
+            "options": [
+              "No",
+              "Yes, 2 rad/s",
+              "Yes, 10 rad/s"
+            ],
+            "accepted": [
+              "No"
+            ],
+            "feedback": "The student explicitly says no numerical angular speed is provided.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "Now the wheel is rotating slowly.",
+          "focus": "Practise /w/ in wheel and the primary stress in rotating.",
+          "assessment": "self_review_only"
+        }
+      }
+    ],
+    "A2.05": [
+      {
+        "id": "A2.05.L01",
+        "title": "Two model cables",
+        "turns": [
+          {
+            "speaker": "Teacher",
+            "text": "In this fictional comparison, Cable X is 60 cm long and Cable Y is 80 cm long."
+          },
+          {
+            "speaker": "Student",
+            "text": "Cable Y is longer than Cable X."
+          },
+          {
+            "speaker": "Teacher",
+            "text": "By how much?"
+          },
+          {
+            "speaker": "Student",
+            "text": "By 20 cm. This says nothing about how accurate the lengths are."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.05.L01.Q01",
+            "prompt": "Which cable is longer?",
+            "options": [
+              "Cable Y",
+              "Cable X",
+              "They are equal"
+            ],
+            "accepted": [
+              "Cable Y"
+            ],
+            "feedback": "Cable Y is 80 cm while Cable X is 60 cm.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.05.L01.Q02",
+            "prompt": "What is the difference between the cable lengths?",
+            "options": [
+              "20 cm",
+              "20 m",
+              "140 cm"
+            ],
+            "accepted": [
+              "20 cm"
+            ],
+            "feedback": "Subtracting 60 cm from 80 cm gives 20 cm.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "Cable Y is longer than Cable X.",
+          "focus": "Notice the ending /ər/ in longer in American English.",
+          "assessment": "self_review_only"
+        }
+      },
+      {
+        "id": "A2.05.L02",
+        "title": "Virtual spring comparison",
+        "turns": [
+          {
+            "speaker": "Aya",
+            "text": "In the virtual image, Spring A stretches 4 cm and Spring B stretches 6 cm."
+          },
+          {
+            "speaker": "Theo",
+            "text": "So Spring B stretches more than Spring A."
+          },
+          {
+            "speaker": "Aya",
+            "text": "Yes. We can compare these simulated stretches."
+          },
+          {
+            "speaker": "Theo",
+            "text": "But they do not tell us whether a real instrument is accurate."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.05.L02.Q01",
+            "prompt": "How far does Spring A stretch in the model?",
+            "options": [
+              "4 cm",
+              "6 cm",
+              "10 cm"
+            ],
+            "accepted": [
+              "4 cm"
+            ],
+            "feedback": "The simulated stretch of Spring A is 4 cm.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.05.L02.Q02",
+            "prompt": "Which statement is supported?",
+            "options": [
+              "Spring B stretches more",
+              "Spring A stretches more",
+              "Both springs stretch equally"
+            ],
+            "accepted": [
+              "Spring B stretches more"
+            ],
+            "feedback": "The dialogue gives 6 cm for B and 4 cm for A.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "Spring B stretches more than Spring A.",
+          "focus": "Practise the consonant cluster in stretches and the comparative phrase 'more than'.",
+          "assessment": "self_review_only"
+        }
+      }
+    ],
+    "A2.06": [
+      {
+        "id": "A2.06.L01",
+        "title": "Fictional room rules",
+        "turns": [
+          {
+            "speaker": "Instructor",
+            "text": "In this classroom example, you must ask before changing a power-supply setting."
+          },
+          {
+            "speaker": "Student",
+            "text": "Can I change it without approval?"
+          },
+          {
+            "speaker": "Instructor",
+            "text": "No. You must not change it without the instructor's permission."
+          },
+          {
+            "speaker": "Student",
+            "text": "I should read the rules carefully before the activity."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.06.L01.Q01",
+            "prompt": "What must students do before changing a setting?",
+            "options": [
+              "Ask the instructor",
+              "Change it immediately",
+              "Guess a safe setting"
+            ],
+            "accepted": [
+              "Ask the instructor"
+            ],
+            "feedback": "The fictional rule requires instructor permission before any change.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.06.L01.Q02",
+            "prompt": "What does 'must not' mean here?",
+            "options": [
+              "The action is prohibited",
+              "The action is optional",
+              "The action is recommended"
+            ],
+            "accepted": [
+              "The action is prohibited"
+            ],
+            "feedback": "Must not expresses prohibition, not advice.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "You must not change it without the instructor's permission.",
+          "focus": "Stress 'not' when expressing a prohibition. Follow actual local laboratory rules in real situations.",
+          "assessment": "self_review_only"
+        }
+      },
+      {
+        "id": "A2.06.L02",
+        "title": "An optics reminder",
+        "turns": [
+          {
+            "speaker": "Guide",
+            "text": "This is a language exercise about a fictional optics notice."
+          },
+          {
+            "speaker": "Student",
+            "text": "What does the warning say?"
+          },
+          {
+            "speaker": "Guide",
+            "text": "It says you must never look directly into a laser beam. Do not point it toward people."
+          },
+          {
+            "speaker": "Student",
+            "text": "If I do not understand the instructions, I should ask an instructor."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.06.L02.Q01",
+            "prompt": "What does the fictional notice prohibit?",
+            "options": [
+              "Looking directly into a laser beam",
+              "Asking a question",
+              "Reading the rules"
+            ],
+            "accepted": [
+              "Looking directly into a laser beam"
+            ],
+            "feedback": "The notice forbids looking directly into a laser beam.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.06.L02.Q02",
+            "prompt": "What should a student do if the instructions are unclear?",
+            "options": [
+              "Ask an instructor",
+              "Proceed without reading",
+              "Change the equipment"
+            ],
+            "accepted": [
+              "Ask an instructor"
+            ],
+            "feedback": "The student says to ask the instructor for clarification.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "If I do not understand the instructions, I should ask an instructor.",
+          "focus": "Practise clear sentence stress on 'do not' and 'ask'.",
+          "assessment": "self_review_only"
+        }
+      }
+    ],
+    "A2.07": [
+      {
+        "id": "A2.07.L01",
+        "title": "Reporting yesterday's model",
+        "turns": [
+          {
+            "speaker": "Amir",
+            "text": "Yesterday we opened the virtual pendulum model."
+          },
+          {
+            "speaker": "Nina",
+            "text": "I checked the unit labels and recorded a time interval of 2.5 s."
+          },
+          {
+            "speaker": "Amir",
+            "text": "Then I wrote a note about the displayed result."
+          },
+          {
+            "speaker": "Nina",
+            "text": "We did not perform a physical pendulum experiment."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.07.L01.Q01",
+            "prompt": "What time interval did Nina record?",
+            "options": [
+              "2.5 s",
+              "5.2 s",
+              "25 s"
+            ],
+            "accepted": [
+              "2.5 s"
+            ],
+            "feedback": "Nina reports a displayed time interval of 2.5 s.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.07.L01.Q02",
+            "prompt": "Which irregular past-tense verb does Amir use?",
+            "options": [
+              "Wrote",
+              "Checked",
+              "Recorded"
+            ],
+            "accepted": [
+              "Wrote"
+            ],
+            "feedback": "Wrote is the past tense of write.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "I checked the unit labels and recorded a time interval of 2.5 s.",
+          "focus": "Compare the /t/ at the end of checked with the /ɪd/ ending of recorded.",
+          "assessment": "self_review_only"
+        }
+      },
+      {
+        "id": "A2.07.L02",
+        "title": "A screenshot of values",
+        "turns": [
+          {
+            "speaker": "Tutor",
+            "text": "What did you do after the digital trial?"
+          },
+          {
+            "speaker": "Student",
+            "text": "I measured the displayed distance in the virtual scene: 15 cm."
+          },
+          {
+            "speaker": "Tutor",
+            "text": "Did you check the unit?"
+          },
+          {
+            "speaker": "Student",
+            "text": "Yes. I checked the label and saved a screenshot. I did not claim that it was a real measurement."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.07.L02.Q01",
+            "prompt": "What distance was displayed in the virtual scene?",
+            "options": [
+              "15 cm",
+              "50 cm",
+              "15 m"
+            ],
+            "accepted": [
+              "15 cm"
+            ],
+            "feedback": "The student reports a virtual distance of 15 cm.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.07.L02.Q02",
+            "prompt": "What did the student save?",
+            "options": [
+              "A screenshot",
+              "A laboratory sample",
+              "A printed circuit"
+            ],
+            "accepted": [
+              "A screenshot"
+            ],
+            "feedback": "The student says that a screenshot was saved.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "I checked the label and saved a screenshot.",
+          "focus": "Contrast the /t/ in checked and the /d/ in saved.",
+          "assessment": "self_review_only"
+        }
+      }
+    ],
+    "A2.08": [
+      {
+        "id": "A2.08.L01",
+        "title": "When the screen froze",
+        "turns": [
+          {
+            "speaker": "Lina",
+            "text": "At 10:15 I was reading a virtual instrument display."
+          },
+          {
+            "speaker": "Dani",
+            "text": "What happened then?"
+          },
+          {
+            "speaker": "Lina",
+            "text": "The screen froze while I was reading the value."
+          },
+          {
+            "speaker": "Dani",
+            "text": "Did you discover why it froze?"
+          },
+          {
+            "speaker": "Lina",
+            "text": "No, I only recorded what happened in the simulation."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.08.L01.Q01",
+            "prompt": "What was Lina doing when the screen froze?",
+            "options": [
+              "Reading the display",
+              "Writing an email",
+              "Changing a cable"
+            ],
+            "accepted": [
+              "Reading the display"
+            ],
+            "feedback": "Lina was reading the display during the interruption.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.08.L01.Q02",
+            "prompt": "At what time did the interruption happen?",
+            "options": [
+              "10:15",
+              "11:15",
+              "10:50"
+            ],
+            "accepted": [
+              "10:15"
+            ],
+            "feedback": "Lina gives the time as 10:15.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "The screen froze while I was reading the value.",
+          "focus": "Practise the /w/ in while and distinguish froze from was reading.",
+          "assessment": "self_review_only"
+        }
+      },
+      {
+        "id": "A2.08.L02",
+        "title": "Missing digital values",
+        "turns": [
+          {
+            "speaker": "Student",
+            "text": "I was updating a virtual measurement table when two entries disappeared."
+          },
+          {
+            "speaker": "Tutor",
+            "text": "Did you type replacement values?"
+          },
+          {
+            "speaker": "Student",
+            "text": "No. I asked for help because I did not know what caused the problem."
+          },
+          {
+            "speaker": "Tutor",
+            "text": "That was sensible. Missing data should not be invented."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.08.L02.Q01",
+            "prompt": "How many table entries disappeared?",
+            "options": [
+              "Two",
+              "Three",
+              "One"
+            ],
+            "accepted": [
+              "Two"
+            ],
+            "feedback": "The student says two entries disappeared.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.08.L02.Q02",
+            "prompt": "Did the student invent replacement values?",
+            "options": [
+              "No",
+              "Yes",
+              "Only one"
+            ],
+            "accepted": [
+              "No"
+            ],
+            "feedback": "The student asked for help instead of inventing data.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "I was updating a virtual measurement table when two entries disappeared.",
+          "focus": "Practise was updating as a continuing background action and disappeared as the event.",
+          "assessment": "self_review_only"
+        }
+      }
+    ],
+    "A2.09": [
+      {
+        "id": "A2.09.L01",
+        "title": "The unfinished conclusion",
+        "turns": [
+          {
+            "speaker": "Sam",
+            "text": "We have already completed the virtual data table."
+          },
+          {
+            "speaker": "Noura",
+            "text": "Have you written the conclusion yet?"
+          },
+          {
+            "speaker": "Sam",
+            "text": "No, I haven't written it yet."
+          },
+          {
+            "speaker": "Noura",
+            "text": "Then our report is not finished, even though the table is complete."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.09.L01.Q01",
+            "prompt": "Which task has already been completed?",
+            "options": [
+              "The data table",
+              "The conclusion",
+              "The entire report"
+            ],
+            "accepted": [
+              "The data table"
+            ],
+            "feedback": "Sam says the virtual data table is complete.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.09.L01.Q02",
+            "prompt": "What has Sam not written yet?",
+            "options": [
+              "The conclusion",
+              "The data table",
+              "The class schedule"
+            ],
+            "accepted": [
+              "The conclusion"
+            ],
+            "feedback": "Sam explicitly says the conclusion is not written yet.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "No, I haven't written it yet.",
+          "focus": "Practise the contraction haven't and the short final word yet.",
+          "assessment": "self_review_only"
+        }
+      },
+      {
+        "id": "A2.09.L02",
+        "title": "Recent and dated work",
+        "turns": [
+          {
+            "speaker": "Eva",
+            "text": "I have just checked the figures in our fictional report."
+          },
+          {
+            "speaker": "Leo",
+            "text": "When did you draw the graph?"
+          },
+          {
+            "speaker": "Eva",
+            "text": "I drew it on Monday, but I have not checked the axis labels yet."
+          },
+          {
+            "speaker": "Leo",
+            "text": "So the graph is drawn, but the labels still need checking."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.09.L02.Q01",
+            "prompt": "When did Eva draw the graph?",
+            "options": [
+              "On Monday",
+              "On Friday",
+              "This morning"
+            ],
+            "accepted": [
+              "On Monday"
+            ],
+            "feedback": "Eva uses simple past with the finished time on Monday.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.09.L02.Q02",
+            "prompt": "What still needs checking?",
+            "options": [
+              "The axis labels",
+              "The paper size",
+              "The room number"
+            ],
+            "accepted": [
+              "The axis labels"
+            ],
+            "feedback": "Eva says that she has not checked the axis labels yet.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "I have just checked the figures in our fictional report.",
+          "focus": "Practise the reduced have and the consonant sounds in checked.",
+          "assessment": "self_review_only"
+        }
+      }
+    ],
+    "A2.10": [
+      {
+        "id": "A2.10.L01",
+        "title": "A circuit model",
+        "turns": [
+          {
+            "speaker": "Teacher",
+            "text": "In this virtual circuit, resistance stays at 5 ohms."
+          },
+          {
+            "speaker": "Student",
+            "text": "When the voltage rises from 5 V to 10 V, current rises from 1 A to 2 A."
+          },
+          {
+            "speaker": "Teacher",
+            "text": "Good. That result uses the stated fixed-resistance assumption."
+          },
+          {
+            "speaker": "Student",
+            "text": "We should describe these as model values, not measurements from a real circuit."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.10.L01.Q01",
+            "prompt": "What stays constant in the fictional circuit model?",
+            "options": [
+              "Resistance",
+              "Voltage",
+              "Current"
+            ],
+            "accepted": [
+              "Resistance"
+            ],
+            "feedback": "Resistance is explicitly fixed at 5 ohms.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.10.L01.Q02",
+            "prompt": "What current is shown when voltage is 10 V?",
+            "options": [
+              "2 A",
+              "1 A",
+              "10 A"
+            ],
+            "accepted": [
+              "2 A"
+            ],
+            "feedback": "The dialogue states 2 A at 10 V in the model.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "When the voltage rises from 5 V to 10 V, current rises from 1 A to 2 A.",
+          "focus": "Pronounce the unit names clearly and emphasize from and to.",
+          "assessment": "self_review_only"
+        }
+      },
+      {
+        "id": "A2.10.L02",
+        "title": "A conditional position",
+        "turns": [
+          {
+            "speaker": "Maya",
+            "text": "The model starts at zero and moves at 1.5 meters per second."
+          },
+          {
+            "speaker": "Noah",
+            "text": "If that speed stays constant, the predicted position after 3 seconds is 4.5 meters."
+          },
+          {
+            "speaker": "Maya",
+            "text": "Is the predicted value a real measurement?"
+          },
+          {
+            "speaker": "Noah",
+            "text": "No. It is a calculation for the model under that condition."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.10.L02.Q01",
+            "prompt": "What speed is assumed in the model?",
+            "options": [
+              "1.5 m/s",
+              "4.5 m/s",
+              "3 m/s"
+            ],
+            "accepted": [
+              "1.5 m/s"
+            ],
+            "feedback": "The constant-speed assumption is 1.5 meters per second.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.10.L02.Q02",
+            "prompt": "What is the predicted position after 3 seconds?",
+            "options": [
+              "4.5 m",
+              "1.5 m",
+              "3.0 m"
+            ],
+            "accepted": [
+              "4.5 m"
+            ],
+            "feedback": "The model predicts 4.5 meters after 3 seconds, not a physical measurement.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "If that speed stays constant, the predicted position after 3 seconds is 4.5 meters.",
+          "focus": "Pause after the if-clause, then make the result clear.",
+          "assessment": "self_review_only"
+        }
+      }
+    ],
+    "A2.11": [
+      {
+        "id": "A2.11.L01",
+        "title": "Reading a position graph",
+        "turns": [
+          {
+            "speaker": "Guide",
+            "text": "On this simulated graph, the horizontal axis is Time in seconds."
+          },
+          {
+            "speaker": "Student",
+            "text": "The vertical axis is Position in meters."
+          },
+          {
+            "speaker": "Guide",
+            "text": "The line rises from zero meters at zero seconds to four meters at two seconds."
+          },
+          {
+            "speaker": "Student",
+            "text": "That describes the displayed data. A later position would be a prediction."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.11.L01.Q01",
+            "prompt": "What does the horizontal axis show?",
+            "options": [
+              "Time (s)",
+              "Position (m)",
+              "Mass (kg)"
+            ],
+            "accepted": [
+              "Time (s)"
+            ],
+            "feedback": "The guide names time measured in seconds on the horizontal axis.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.11.L01.Q02",
+            "prompt": "What position is shown at two seconds?",
+            "options": [
+              "4 m",
+              "2 m",
+              "0 m"
+            ],
+            "accepted": [
+              "4 m"
+            ],
+            "feedback": "The line ends at 4 meters after 2 seconds in the model.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "The vertical axis is Position in meters.",
+          "focus": "Practise the stress in vertical and position.",
+          "assessment": "self_review_only"
+        }
+      },
+      {
+        "id": "A2.11.L02",
+        "title": "A temperature trend",
+        "turns": [
+          {
+            "speaker": "Mina",
+            "text": "The virtual temperature display reads 20 degrees Celsius at minute zero."
+          },
+          {
+            "speaker": "Omar",
+            "text": "At minute four, it reads 24 degrees Celsius."
+          },
+          {
+            "speaker": "Mina",
+            "text": "The simulated temperature increased by four degrees Celsius."
+          },
+          {
+            "speaker": "Omar",
+            "text": "We cannot call the value at minute five an observation because it is not shown."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.11.L02.Q01",
+            "prompt": "What is the displayed temperature at minute four?",
+            "options": [
+              "24 °C",
+              "20 °C",
+              "4 °C"
+            ],
+            "accepted": [
+              "24 °C"
+            ],
+            "feedback": "The virtual display is 24 °C at minute four.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.11.L02.Q02",
+            "prompt": "What is the increase over the shown interval?",
+            "options": [
+              "4 °C",
+              "24 °C",
+              "20 °C"
+            ],
+            "accepted": [
+              "4 °C"
+            ],
+            "feedback": "The increase is 24 minus 20, or 4 degrees Celsius.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "The simulated temperature increased by four degrees Celsius.",
+          "focus": "Practise increased by rather than increased to when stating a difference.",
+          "assessment": "self_review_only"
+        }
+      }
+    ],
+    "A2.12": [
+      {
+        "id": "A2.12.L01",
+        "title": "The integrated cart report",
+        "turns": [
+          {
+            "speaker": "Tutor",
+            "text": "Your virtual cart table labels Time in seconds and Position in meters."
+          },
+          {
+            "speaker": "Student",
+            "text": "It shows a position of 3.0 m at 2 s."
+          },
+          {
+            "speaker": "Tutor",
+            "text": "Write that as a simulated observation in your report."
+          },
+          {
+            "speaker": "Student",
+            "text": "I will not call it a real laboratory measurement or invent a later data point."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.12.L01.Q01",
+            "prompt": "What position does the virtual table display at 2 s?",
+            "options": [
+              "3.0 m",
+              "2.0 m",
+              "4.5 m"
+            ],
+            "accepted": [
+              "3.0 m"
+            ],
+            "feedback": "The table displays a simulated position of 3.0 m at 2 seconds.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.12.L01.Q02",
+            "prompt": "How should the student describe this result?",
+            "options": [
+              "As a simulated observation",
+              "As a measured real-cart result",
+              "As a proven future prediction"
+            ],
+            "accepted": [
+              "As a simulated observation"
+            ],
+            "feedback": "The tutor asks for a simulated observation, not an actual laboratory measurement.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "It shows a position of 3.0 m at 2 s.",
+          "focus": "Read each numerical quantity and its unit clearly.",
+          "assessment": "self_review_only"
+        }
+      },
+      {
+        "id": "A2.12.L02",
+        "title": "Explaining a project",
+        "turns": [
+          {
+            "speaker": "Hana",
+            "text": "Our group prepared a short explanation of a fictional motion model."
+          },
+          {
+            "speaker": "Tariq",
+            "text": "We described the displayed data first and then the constant-speed assumption."
+          },
+          {
+            "speaker": "Hana",
+            "text": "For a later time, we wrote a conditional prediction, not an observation."
+          },
+          {
+            "speaker": "Tariq",
+            "text": "We also checked that every numerical value had the correct SI unit."
+          }
+        ],
+        "questions": [
+          {
+            "id": "A2.12.L02.Q01",
+            "prompt": "What did the group describe first?",
+            "options": [
+              "The displayed data",
+              "A later prediction",
+              "An unknown real measurement"
+            ],
+            "accepted": [
+              "The displayed data"
+            ],
+            "feedback": "The group described the displayed data before the assumption.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          },
+          {
+            "id": "A2.12.L02.Q02",
+            "prompt": "How did the group treat values at later times?",
+            "options": [
+              "As conditional predictions",
+              "As real observations",
+              "As errors to hide"
+            ],
+            "accepted": [
+              "As conditional predictions"
+            ],
+            "feedback": "They state that later values are conditional predictions, not observations.",
+            "status": "draft",
+            "media": "synthetic_speech_or_transcript",
+            "diagnosticEligible": false
+          }
+        ],
+        "pronunciation": {
+          "phrase": "We also checked that every numerical value had the correct SI unit.",
+          "focus": "Practise the consonants in checked and the stress in numerical.",
+          "assessment": "self_review_only"
+        }
+      }
+    ]
+  }
+}
