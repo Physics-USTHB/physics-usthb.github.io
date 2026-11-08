@@ -62,3 +62,18 @@
 .student-result-entry{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin:10px 0 12px}.student-result-entry label{font-size:.64rem;color:#617589;font-weight:800}.student-result-entry input{width:100%;margin-top:5px;border:1px solid #d5e0eb;border-radius:9px;padding:8px;background:#fff}.student-result-entry .btn{padding:9px 11px;font-size:.7rem}
 @media(max-width:850px){.range-panel-grid{grid-template-columns:1fr 1fr}.range-rule{grid-column:1/-1}}
 @media(max-width:520px){.range-panel-head{flex-direction:column}.range-panel-grid,.student-result-entry{grid-template-columns:1fr}.range-rule{grid-column:auto}}
+
+
+/* Practical 3 review: analog scale-reading station */
+.analog-meter-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.e03-analog-meter{padding:11px;border:1px solid #294257;border-radius:13px;background:#06131d}
+.analog-meter-head{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:.64rem;text-transform:uppercase;letter-spacing:.07em;color:#718da1}.analog-meter-head strong{font-family:var(--mono);font-size:.62rem;color:#a5c0d0}
+.e03-meter-face{position:relative;height:235px;margin-top:8px;border:1px solid #3d5364;border-radius:15px;background:linear-gradient(#f8f4e9,#e9e3d4);overflow:hidden}
+.e03-meter-face .scale-text{position:absolute;left:0;right:0;top:10px;text-align:center;color:#4f6270;font-family:var(--mono);font-size:.62rem;font-weight:800}
+.e03-meter-scale{position:absolute;left:50%;bottom:9px;width:390px;max-width:98%;height:205px;transform:translateX(-50%)}.e03-meter-scale line{stroke:#314a5a;stroke-width:1}.e03-meter-scale line.major{stroke-width:2}.e03-meter-scale text{fill:#314a5a;font-family:var(--mono);font-size:11px;font-weight:800;text-anchor:middle}
+.e03-needle{position:absolute;left:50%;bottom:18px;width:3px;height:145px;background:#b52f38;transform-origin:50% 100%;transform:rotate(-150deg);border-radius:3px;box-shadow:0 0 2px rgba(0,0,0,.3)}
+.e03-pivot{position:absolute;left:50%;bottom:11px;width:16px;height:16px;border-radius:50%;background:#24313a;transform:translateX(-50%);box-shadow:0 0 0 3px #d8d0c1}
+.e03-meter-state{position:absolute;right:10px;bottom:10px;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.78);border:1px solid #c8c1b4;color:#5a6d79;font-family:var(--mono);font-size:.59rem;font-weight:900}
+.meter-entry-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:11px}.meter-entry-grid label{font-size:.58rem;color:#8ca6ba;text-transform:uppercase;letter-spacing:.05em;font-weight:800}.meter-entry-grid input{width:100%;margin-top:5px;border:1px solid #36556b;background:#07131c;color:#eaf9ff;border-radius:8px;padding:8px}.meter-entry-grid input::placeholder{color:#577084}
+@media(max-width:840px){.analog-meter-grid{grid-template-columns:1fr}.meter-entry-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.meter-entry-grid{grid-template-columns:1fr}.e03-meter-face{height:215px}}
