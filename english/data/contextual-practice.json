@@ -331,7 +331,7 @@
           "family": "A2.12.CTX.grammar",
           "status": "draft",
           "media": "text",
-          "prompt": "Choose the correct present-tense description of the displayed model: Position ___ from left to right on the graph.",
+          "prompt": "Choose the correct description of the plotted virtual model: Position ___ as time increases.",
           "accepted": [
             "increases"
           ],
@@ -340,7 +340,7 @@
             "increased yesterday",
             "is increase"
           ],
-          "feedback": "Increases is a correct present-simple description of the graph trend.",
+          "feedback": "Increases correctly describes the displayed positive position trend as the model time increases.",
           "sourceId": "R5",
           "importStatus": "new_original_contextual_practice"
         },
@@ -1289,7 +1289,7 @@
           "family": "A2.07.CTX.vocab",
           "status": "draft",
           "media": "text",
-          "prompt": "Which verb means one full repeated motion of the pendulum?",
+          "prompt": "Which verb describes repeated back-and-forth motion of a pendulum?",
           "accepted": [
             "Oscillate"
           ],
@@ -1298,7 +1298,7 @@
             "Calibrate",
             "Condense"
           ],
-          "feedback": "Oscillate describes repeated movement about an equilibrium position.",
+          "feedback": "Oscillate means to move repeatedly back and forth about an equilibrium position.",
           "sourceId": "R5",
           "importStatus": "new_original_contextual_practice"
         },
