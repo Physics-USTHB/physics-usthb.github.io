@@ -112,6 +112,68 @@ try{
   assert.equal(await audioPage.getByRole("button",{name:"Save recording to my device"}).isDisabled(),true);
  }finally{await audioContext.close();}
 
+
+ // Original dialogue practice: mock browser speech synthesis for deterministic checks.
+ const listeningContext=await browser.newContext();
+ try{
+  await listeningContext.addInitScript(()=>{
+   window.__syntheticSpeech={played:[],cancels:0};
+   Object.defineProperty(window,"speechSynthesis",{configurable:true,value:{
+    cancel(){window.__syntheticSpeech.cancels++;},
+    getVoices(){return [{lang:"en-US",name:"Test synthetic English voice"}];},
+    speak(utterance){window.__syntheticSpeech.played.push(utterance.text);}
+   }});
+   window.SpeechSynthesisUtterance=class{
+    constructor(text){this.text=text;this.lang="en-US";this.rate=1;this.volume=1;this.voice=null;}
+   };
+  });
+  const listenPage=await listeningContext.newPage();
+  const listeningOutbound=[];
+  listenPage.on("request",req=>{if(!req.url().startsWith("http://127.0.0.1:8080/"))listeningOutbound.push(req.url());});
+  await listenPage.goto("http://127.0.0.1:8080/english/",{waitUntil:"domcontentloaded"});
+  await listenPage.waitForFunction(()=>document.querySelector("#unit-status")?.textContent.includes("34 text questions"));
+  assert.equal(await listenPage.locator(".listening-scene").count(),2,"Two dialogues should appear per A2 module");
+  assert.equal(await listenPage.locator(".listening-scene form").count(),4,"Each module needs four dialogue questions");
+  assert.equal(await listenPage.locator(".pronunciation-focus blockquote").count(),2,"Two pronunciation lines should appear per unit");
+  await listenPage.getByRole("button",{name:"Hear dialogue"}).first().click();
+  const playback=await listenPage.evaluate(()=>window.__syntheticSpeech.played);
+  assert.equal(playback.length,1);
+  assert.ok(playback[0].includes("Maya says:"));
+  const q1=listenPage.locator('[id="listen-A2.01.L01.Q01"]');
+  await q1.locator('input[value="Physics"]').check();
+  await q1.getByRole("button",{name:"Check comprehension"}).click();
+  await listenPage.waitForFunction(()=>document.querySelector("#total-attempts")?.textContent==="1");
+  const transcript=listenPage.locator('[id="transcript-A2.01.L01"]');
+  await transcript.locator("summary").click();
+  assert.equal(await transcript.getAttribute("open"),"");
+  const q2=listenPage.locator('[id="listen-A2.01.L01.Q02"]');
+  await q2.locator('input[value="At nine"]').check();
+  await q2.getByRole("button",{name:"Check comprehension"}).click();
+  await listenPage.waitForFunction(()=>document.querySelector("#total-attempts")?.textContent==="2");
+  const history=await listenPage.evaluate(()=>new Promise((resolve,reject)=>{
+   const r=indexedDB.open("physics-usthb-english-v1",1);
+   r.onerror=()=>reject(r.error);
+   r.onsuccess=()=>{
+    const db=r.result,req=db.transaction("records","readonly").objectStore("records").get("attempts");
+    req.onsuccess=()=>{db.close();resolve(req.result);};
+    req.onerror=()=>reject(req.error);
+   };
+  }));
+  const one=history.attempts.find(x=>x.id==="A2.01.L01.Q01");
+  const two=history.attempts.find(x=>x.id==="A2.01.L01.Q02");
+  assert.equal(one?.correct,true);
+  assert.equal(one?.independent,false,"Synthetic speech must never count as independent proficiency evidence");
+  assert.equal(one?.hintsUsed,0);
+  assert.equal(two?.correct,true);
+  assert.equal(two?.independent,false);
+  assert.equal(two?.hintsUsed,1,"Transcript reveal must mark assisted practice");
+  await listenPage.locator("#units button").nth(1).click();
+  assert.equal(await listenPage.locator(".listening-scene").count(),2,"A2.02 dialogues not loaded on navigation");
+  const canceled=await listenPage.evaluate(()=>window.__syntheticSpeech.cancels);
+  assert.ok(canceled>=2,"Changing units must cancel synthetic playback");
+  assert.deepEqual(listeningOutbound,[],"Optional dialogue practice must not invoke third-party services itself");
+ }finally{await listeningContext.close();}
+
  assert.deepEqual(outbound,[],"Assessment content unexpectedly requested a third-party service");
  console.log("English A2 browser checks passed: 12 units, feedback, persistence, privacy isolation, graph, export, deletion and import.");
 }finally{
