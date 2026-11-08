@@ -19,3 +19,10 @@
 .calibration-box strong{align-self:center;color:#193f57}.calibration-box label{font-size:10px;text-transform:uppercase;font-weight:800}.calibration-box input{width:100%;margin-top:5px;padding:8px;border:1px solid #d1dde6;border-radius:8px;background:#fff;color:#173e58}.calibration-box em{align-self:center;font-style:normal;font-weight:800;color:#2e7382}
 @media(max-width:900px){.calibration-box{grid-template-columns:1fr 1fr 1fr}.student-optics-entry.analysis-entry{grid-template-columns:1fr 1fr}.student-optics-entry.analysis-entry .btn{grid-column:1/-1}}
 @media(max-width:560px){.student-optics-entry,.student-optics-entry.analysis-entry,.calibration-box{grid-template-columns:1fr}.student-optics-entry.analysis-entry .btn{grid-column:auto}}
+
+
+/* VOM Practical 1: RLC cursor measurement */
+.cursor-panel{margin-top:12px;padding:12px;border:1px solid #31526a;border-radius:11px;background:#0a1b27}
+.cursor-panel .small-note{margin:8px 0 0;color:#9db5c6!important}
+.controls label strong{display:block;margin-top:5px;font:700 11px ui-monospace,monospace;color:#c9f5f5;text-transform:none}
+.card .controls label strong{color:#315a70}
