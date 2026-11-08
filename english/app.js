@@ -33,7 +33,7 @@ function renderAuthored(){
  const label=document.createElement("h3");
  label.textContent=current.id+" — Original readings and formative practice";authoredRoot.append(label);
  const warning=document.createElement("p");warning.className="muted minor";
- warning.textContent=current.items.length+" draft questions. Correct responses are recorded for practice, not verified proficiency. Listening and pronunciation media are not yet available.";
+ warning.textContent=current.items.length+" text practice questions. Answers are formative, not externally validated CEFR proficiency evidence. Original listening media is still in production.";
  authoredRoot.append(warning);
  const sources=document.createElement("section"),sourceTitle=document.createElement("h3");
  sourceTitle.textContent="Reading library";sources.append(sourceTitle);
@@ -99,7 +99,7 @@ function renderAuthored(){
  }
 }
 async function loadAuthoredUnits(){
- for(const n of [1,2]){
+ for(let n=1;n<=12;n++){
   const id="A2."+String(n).padStart(2,"0");
   try{
    const response=await fetch("./data/a2-"+String(n).padStart(2,"0")+".json",{cache:"no-cache"});
@@ -297,9 +297,9 @@ function render(){
  $("unit-status").textContent=unit?"Draft authoring preview: "+unit.items.length+" text questions. All proficiency claims disabled.":
  selected===11?"Limited demo: four text exercises, no automatic CEFR mastery.":
  "This unit has draft authoring material but is not approved or activated in the application.";
- $("lesson").hidden=selected!==11;
+ $("lesson").hidden=true; // The authored A2.12 unit now replaces the four-question UI demonstration.
  authoredRoot.hidden=!unit;
- renderUnits();if(selected===11)renderQuestions();if(unit)renderAuthored();renderStats();
+ renderUnits();if(unit)renderAuthored();renderStats();
 }
 $("export").onclick=()=>{
  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
