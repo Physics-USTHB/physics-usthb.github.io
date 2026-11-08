@@ -1,0 +1,705 @@
+{
+  "schemaVersion": 1,
+  "id": "A2.04",
+  "title": "Motion & Change",
+  "status": "draft",
+  "language": "en-US",
+  "license": "original-course-content",
+  "pedagogicalStatus": "Unreviewed draft: formative practice only; CEFR mastery disabled.",
+  "sources": [
+    {
+      "id": "R1",
+      "title": "A cart on a marked track",
+      "paragraphs": [
+        "In the teaching room, Maya watches a small cart on a straight, level track. The track has two labels: A is on the left and B is on the right. The teacher usually shows one short demonstration at the start of class. First, the cart is at A, and it is not moving. The teacher starts the demonstration. Now the cart is moving to the right. At the next picture, it is moving faster. Near B, the cart slows down. In the final picture, it is at rest again. Maya writes down what she sees, not what she guesses. She writes, “The cart is moving to the right” while the cart moves. She writes, “The cart stops near B” when she summarizes the sequence. The teacher says that a longer arrow in a drawing may show a larger speed, but students must read the key before using any arrow. Maya is careful: a picture tells her the position at one moment; a caption may also tell her the motion. The class often compares a general fact with a description of what is happening now."
+      ]
+    },
+    {
+      "id": "R2",
+      "title": "An observation notebook",
+      "paragraphs": [
+        "Leo works in a practice room with two safe digital displays. One display shows a wheel that turns. The other shows a platform that moves up and down. Every Monday, Leo studies motion words in English. Today, the wheel is rotating slowly. The platform is rising in the first picture, but it is falling in the second picture. Leo does not say that the platform is falling all the time. That is not what the pictures show. In his notebook, he uses the present continuous for actions in the pictures. He uses the present simple for regular class activities. His partner sometimes forgets to add “is” before a verb ending in -ing. Leo asks her to read the complete sentence aloud. The students need clear descriptions so another person can understand their notes without seeing the pictures."
+      ]
+    },
+    {
+      "id": "R3",
+      "title": "Motion observation log",
+      "paragraphs": [
+        "Virtual cart observation — a sequence of labeled frames (the recorded descriptions, not inferred speeds): 0 s: cart at A, stopped; 2 s: cart moving right; 4 s: cart moving right faster; 6 s: cart slowing down near B; 8 s: cart stopped at B. The right direction is from A to B. All frames are part of a virtual teaching animation.",
+        "Time | Explicit caption\n0 s | At A, stopped\n2 s | Moving right\n4 s | Moving right faster\n6 s | Slowing down near B\n8 s | Stopped at B"
+      ]
+    },
+    {
+      "id": "R4",
+      "title": "Class notice",
+      "paragraphs": [
+        "The motion class meets on Tuesdays. Students often use a virtual track on the classroom computer. Today the teacher is showing a wheel and a cart. Students are taking short notes. They usually check captions before they describe the pictures. The virtual wheel is rotating clockwise in the first frame and is not moving in the second frame."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "A2.04.SVC.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.SVC.tense_context_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best form. On most Mondays the instructor ___ the same motion video.",
+      "accepted": [
+        "shows"
+      ],
+      "feedback": "A regular Monday routine takes present simple.",
+      "options": [
+        "shows",
+        "is showing"
+      ]
+    },
+    {
+      "id": "A2.04.SVC.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.SVC.tense_context_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best form. Look! The cart ___ toward B now.",
+      "accepted": [
+        "is moving"
+      ],
+      "feedback": "Now and look signal an action in progress.",
+      "options": [
+        "moves",
+        "is moving"
+      ]
+    },
+    {
+      "id": "A2.04.SVC.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.SVC.tense_context_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best form. The platform ___ up in this frame.",
+      "accepted": [
+        "is rising"
+      ],
+      "feedback": "A frame shows the action happening at that moment.",
+      "options": [
+        "rises",
+        "is rising"
+      ]
+    },
+    {
+      "id": "A2.04.SVC.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.SVC.tense_context_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best form. The class normally ___ observations after a demonstration.",
+      "accepted": [
+        "writes"
+      ],
+      "feedback": "Normally introduces a habit.",
+      "options": [
+        "writes",
+        "is writing"
+      ]
+    },
+    {
+      "id": "A2.04.SVC.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.SVC.tense_context_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best form. Listen: the teacher ___ the movement right now.",
+      "accepted": [
+        "is describing"
+      ],
+      "feedback": "Use is + -ing for something happening now.",
+      "options": [
+        "describes",
+        "is describing"
+      ]
+    },
+    {
+      "id": "A2.04.SVC.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.SVC.tense_context_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best form. My partner ___ the arrow key before each task.",
+      "accepted": [
+        "checks"
+      ],
+      "feedback": "Before each task describes a routine.",
+      "options": [
+        "checks",
+        "is checking"
+      ]
+    },
+    {
+      "id": "A2.04.SVC.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.SVC.tense_context_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best form. The wheel ___ slowly in the picture we are studying.",
+      "accepted": [
+        "is rotating"
+      ],
+      "feedback": "The current pictured action needs a progressive form.",
+      "options": [
+        "rotates",
+        "is rotating"
+      ]
+    },
+    {
+      "id": "A2.04.SVC.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.SVC.tense_context_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best form. Every Wednesday, we ___ a short virtual experiment.",
+      "accepted": [
+        "watch"
+      ],
+      "feedback": "Every Wednesday marks a recurring activity.",
+      "options": [
+        "watch",
+        "are watching"
+      ]
+    },
+    {
+      "id": "A2.04.FREQ.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.FREQ.adverb_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct frequency adverb form: Maya ___ reads the arrow key first.",
+      "accepted": [
+        "always"
+      ],
+      "feedback": "Place always before the main verb reads.",
+      "options": [
+        "always",
+        "is always"
+      ]
+    },
+    {
+      "id": "A2.04.FREQ.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.FREQ.adverb_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct frequency adverb form: The wheel ___ stops at the end.",
+      "accepted": [
+        "usually"
+      ],
+      "feedback": "Place usually before stops.",
+      "options": [
+        "usually",
+        "is usually"
+      ]
+    },
+    {
+      "id": "A2.04.FREQ.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.FREQ.adverb_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct frequency adverb form: The students ___ check their notes.",
+      "accepted": [
+        "often"
+      ],
+      "feedback": "Place often before check.",
+      "options": [
+        "often",
+        "are often"
+      ]
+    },
+    {
+      "id": "A2.04.FREQ.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.FREQ.adverb_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct frequency adverb form: We ___ use the model after class.",
+      "accepted": [
+        "sometimes"
+      ],
+      "feedback": "Sometimes goes before the action verb here.",
+      "options": [
+        "sometimes",
+        "are sometimes"
+      ]
+    },
+    {
+      "id": "A2.04.FREQ.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.FREQ.adverb_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct frequency adverb form: The cart is ___ moving during the pause.",
+      "accepted": [
+        "never"
+      ],
+      "feedback": "Place never after the auxiliary is.",
+      "options": [
+        "never",
+        "does never"
+      ]
+    },
+    {
+      "id": "A2.04.FREQ.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.FREQ.adverb_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct frequency adverb form: The wheel is ___ stationary in the first frame.",
+      "accepted": [
+        "usually"
+      ],
+      "feedback": "Usually follows a form of be.",
+      "options": [
+        "usually",
+        "does usually"
+      ]
+    },
+    {
+      "id": "A2.04.FREQ.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.FREQ.adverb_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct frequency adverb form: Leo ___ forgets the letter B.",
+      "accepted": [
+        "rarely"
+      ],
+      "feedback": "Rarely comes before forgets.",
+      "options": [
+        "rarely",
+        "is rarely"
+      ]
+    },
+    {
+      "id": "A2.04.FREQ.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.04.FREQ.adverb_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct frequency adverb form: The screen is ___ ready at the start.",
+      "accepted": [
+        "often"
+      ],
+      "feedback": "With is, place the adverb after is.",
+      "options": [
+        "often",
+        "does often"
+      ]
+    },
+    {
+      "id": "A2.04.ING.001",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.04.ING.morphology_recall",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Write the -ing form of “move”.",
+      "accepted": [
+        "moving"
+      ],
+      "feedback": "Drop final silent e before -ing."
+    },
+    {
+      "id": "A2.04.ING.002",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.04.ING.morphology_recall",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Write the -ing form of “rise”.",
+      "accepted": [
+        "rising"
+      ],
+      "feedback": "Rise loses the silent e."
+    },
+    {
+      "id": "A2.04.ING.003",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.04.ING.morphology_recall",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Write the -ing form of “stop”.",
+      "accepted": [
+        "stopping"
+      ],
+      "feedback": "Double final p in stop → stopping."
+    },
+    {
+      "id": "A2.04.ING.004",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.04.ING.morphology_recall",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Write the -ing form of “run”.",
+      "accepted": [
+        "running"
+      ],
+      "feedback": "Double final n in run → running."
+    },
+    {
+      "id": "A2.04.ING.005",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.04.ING.morphology_recall",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Write the -ing form of “rotate”.",
+      "accepted": [
+        "rotating"
+      ],
+      "feedback": "Drop final e before -ing."
+    },
+    {
+      "id": "A2.04.ING.006",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.04.ING.morphology_recall",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Write the -ing form of “fall”.",
+      "accepted": [
+        "falling"
+      ],
+      "feedback": "Just add -ing."
+    },
+    {
+      "id": "A2.04.ING.007",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.04.ING.morphology_recall",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Write the -ing form of “write”.",
+      "accepted": [
+        "writing"
+      ],
+      "feedback": "Drop final silent e."
+    },
+    {
+      "id": "A2.04.ING.008",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.04.ING.morphology_recall",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Write the -ing form of “sit”.",
+      "accepted": [
+        "sitting"
+      ],
+      "feedback": "Double final t."
+    },
+    {
+      "id": "A2.04.VOC.001",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.04.VOC.context_word_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best motion word: The virtual wheel turns around its center. It can ___.",
+      "accepted": [
+        "rotate"
+      ],
+      "feedback": "Rotate means turn around a central point.",
+      "options": [
+        "rotate",
+        "rise",
+        "fall"
+      ]
+    },
+    {
+      "id": "A2.04.VOC.002",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.04.VOC.context_word_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best motion word: A model platform moves upward. It ___.",
+      "accepted": [
+        "rises"
+      ],
+      "feedback": "Rise means move upward.",
+      "options": [
+        "rises",
+        "falls",
+        "stops"
+      ]
+    },
+    {
+      "id": "A2.04.VOC.003",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.04.VOC.context_word_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best motion word: A model platform moves downward. It ___.",
+      "accepted": [
+        "falls"
+      ],
+      "feedback": "Fall describes downward movement; this is not necessarily free fall.",
+      "options": [
+        "falls",
+        "rises",
+        "rotates"
+      ]
+    },
+    {
+      "id": "A2.04.VOC.004",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.04.VOC.context_word_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best motion word: The cart changes from rest to movement. It starts to ___.",
+      "accepted": [
+        "move"
+      ],
+      "feedback": "Move means change position.",
+      "options": [
+        "move",
+        "weigh",
+        "measure"
+      ]
+    },
+    {
+      "id": "A2.04.VOC.005",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.04.VOC.context_word_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best motion word: The cart changes from moving to being still. It ___.",
+      "accepted": [
+        "stops"
+      ],
+      "feedback": "Stop means finish moving.",
+      "options": [
+        "stops",
+        "rises",
+        "spins"
+      ]
+    },
+    {
+      "id": "A2.04.VOC.006",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.04.VOC.context_word_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best motion word: The cart is moving more slowly now. It is ___.",
+      "accepted": [
+        "slowing down"
+      ],
+      "feedback": "Slowing down means decreasing speed.",
+      "options": [
+        "slowing down",
+        "speeding up",
+        "rotating"
+      ]
+    },
+    {
+      "id": "A2.04.VOC.007",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.04.VOC.context_word_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best motion word: The cart is moving faster now. It is ___.",
+      "accepted": [
+        "speeding up"
+      ],
+      "feedback": "Speeding up means increasing speed.",
+      "options": [
+        "speeding up",
+        "slowing down",
+        "stopping"
+      ]
+    },
+    {
+      "id": "A2.04.VOC.008",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.04.VOC.context_word_choice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best motion word: An arrow points to the left. The ___ is left.",
+      "accepted": [
+        "direction"
+      ],
+      "feedback": "Direction answers which way.",
+      "options": [
+        "direction",
+        "distance",
+        "time"
+      ]
+    },
+    {
+      "id": "A2.04.REA.001",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.04.REA.source_details_R1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R1: Where is marker A?",
+      "accepted": [
+        "on the left"
+      ],
+      "feedback": "Marker A is on the left.",
+      "options": [
+        "on the left",
+        "on the right",
+        "above the track"
+      ]
+    },
+    {
+      "id": "A2.04.REA.002",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.04.REA.source_details_R1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R1: Where is marker B?",
+      "accepted": [
+        "on the right"
+      ],
+      "feedback": "Marker B is on the right.",
+      "options": [
+        "on the right",
+        "on the left",
+        "below the track"
+      ]
+    },
+    {
+      "id": "A2.04.REA.003",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.04.REA.source_details_R1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R1: What does Maya write while the cart moves?",
+      "accepted": [
+        "The cart is moving to the right."
+      ],
+      "feedback": "Maya writes the current observation.",
+      "options": [
+        "The cart is moving to the right.",
+        "The cart is falling.",
+        "The wheel is stopping."
+      ]
+    },
+    {
+      "id": "A2.04.REA.004",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.04.REA.source_details_R1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R1: What happens near B before the cart stops?",
+      "accepted": [
+        "it slows down"
+      ],
+      "feedback": "The text states it slows down near B.",
+      "options": [
+        "it slows down",
+        "it rises",
+        "it turns left"
+      ]
+    },
+    {
+      "id": "A2.04.REA.005",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.04.REA.source_details_R1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R1: What does the teacher normally show at the start of class?",
+      "accepted": [
+        "one short demonstration"
+      ],
+      "feedback": "The passage states this class routine.",
+      "options": [
+        "one short demonstration",
+        "one long lecture",
+        "an exam"
+      ]
+    },
+    {
+      "id": "A2.04.REA.006",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.04.REA.source_details_R1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R1: Why does Maya check the key for arrows?",
+      "accepted": [
+        "an arrow needs a key to show what it means"
+      ],
+      "feedback": "The passage warns against guessing the arrow meaning.",
+      "options": [
+        "an arrow needs a key to show what it means",
+        "every arrow always shows a force",
+        "arrows never show speed"
+      ]
+    },
+    {
+      "id": "A2.04.REA.007",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.04.REA.source_details_R1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R1: In which sentence is Maya describing a habit?",
+      "accepted": [
+        "The teacher usually shows a short demonstration."
+      ],
+      "feedback": "Usually marks a habit.",
+      "options": [
+        "The teacher usually shows a short demonstration.",
+        "The cart is moving to the right now.",
+        "The cart is slowing down."
+      ]
+    },
+    {
+      "id": "A2.04.REA.008",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.04.REA.source_details_R1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R1: Does one still picture always give the cart’s speed?",
+      "accepted": [
+        "no"
+      ],
+      "feedback": "The passage explains that a single picture alone gives position, not necessarily speed.",
+      "options": [
+        "no",
+        "yes"
+      ]
+    }
+  ]
+}
