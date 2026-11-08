@@ -56,10 +56,28 @@ function drawScope(canvas,target,angle,color='#65dfe8'){
   const d=scopeScore(angle,target),off=Math.max(-w*.35,Math.min(w*.35,signedOffset(target,angle)*12)),blur=focusGood()?3:10,width=slitGood()?5:18;
   x.fillStyle=color;x.globalAlpha=d<5?Math.max(.15,1-d/5):.08;x.filter='blur('+blur+'px)';x.fillRect(w/2+off-width/2,h*.18,width,h*.64);x.filter='none';x.globalAlpha=1;
 }
+
+function drawGoniometer(){
+  const c=E('goniometerCanvas');if(!c)return;
+  const{x,w,h}=U.canvas(c),cx=w/2,cy=h/2,R=Math.min(w,h)*.31,a=(+E('scopeAngle').value-90)*DEG;
+  x.fillStyle='#f8fafc';x.fillRect(0,0,w,h);
+  x.strokeStyle='#8da2b2';x.lineWidth=2;x.beginPath();x.arc(cx,cy,R,0,Math.PI*2);x.stroke();
+  for(let d=0;d<360;d+=10){const q=(d-90)*DEG,maj=d%30===0,r1=R-(maj?12:6);x.strokeStyle=maj?'#5c7385':'#aebdca';x.lineWidth=maj?1.6:1;x.beginPath();x.moveTo(cx+r1*Math.cos(q),cy+r1*Math.sin(q));x.lineTo(cx+R*Math.cos(q),cy+R*Math.sin(q));x.stroke();}
+  x.fillStyle='rgba(71,121,214,.12)';x.beginPath();x.arc(cx,cy,R*.28,0,Math.PI*2);x.fill();x.strokeStyle='#4779d6';x.stroke();
+  x.save();x.translate(cx,cy);x.rotate(-Math.PI/6);x.fillStyle='rgba(220,185,90,.4)';x.strokeStyle='#a77a20';x.lineWidth=2;x.beginPath();x.moveTo(-34,28);x.lineTo(34,28);x.lineTo(0,-32);x.closePath();x.fill();x.stroke();x.restore();
+  const colA=-Math.PI/2,colEnd={x:cx+R*.95*Math.cos(colA),y:cy+R*.95*Math.sin(colA)};
+  U.line(x,{x:cx,y:cy},colEnd,'#2a8a65',7);
+  x.fillStyle='#2a8a65';x.font='700 12px system-ui';x.textAlign='center';x.fillText('collimator / slit',colEnd.x,colEnd.y-10);
+  const telEnd={x:cx+R*.95*Math.cos(a),y:cy+R*.95*Math.sin(a)};
+  U.line(x,{x:cx,y:cy},telEnd,'#173c58',8);
+  x.fillStyle='#173c58';x.fillText('telescope',telEnd.x,telEnd.y-10);
+  x.fillStyle='#596f82';x.font='11px system-ui';x.fillText('prism table',cx,cy+R*.42);
+  x.textAlign='left';x.fillText('θ = '+fmt(+E('scopeAngle').value),18,22);
+}
 function renderAdjust(){
   const a=+E('scopeAngle').value,d=scopeScore(a,s.run.theta0);
   E('thetaRead').textContent=fmt(a);E('slitRead').textContent=slitGood()?'fine':'too wide';E('focusRead').textContent=focusGood()?'sharp':'blurred';E('alignRead').textContent=d<.05?'centred':d<1?'near':'search';
-  drawScope(E('scopeCanvas'),s.run.theta0,a);
+  drawScope(E('scopeCanvas'),s.run.theta0,a);drawGoniometer();
   E('adjustProgress').innerHTML=[['Fine slit',slitGood()],['Sharp reticle/slit image',focusGood()],['θ₀ recorded',s.zero!=null]].map(q=>'<div class="step '+(q[1]?'done':'')+'"><span class="progress-dot"></span>'+q[0]+'</div>').join('');
 }
 function recordZero(){
