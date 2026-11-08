@@ -1,0 +1,162 @@
+// English for Physicists — local-first development preview.
+// All sample exercises are formative and NOT eligible for CEFR/mastery claims.
+const UNITS=[
+["Being a Physics Student","Present simple, introductions, questions and academic email"],
+["Numbers, Quantities & SI Units","Scientific numbers, SI units, articles and plurals"],
+["Laboratory Equipment & Position","Apparatus, positions, there is/are and instructions"],
+["Motion & Change","Present simple/continuous and movement language"],
+["Measurement & Comparison","Comparatives, quantities and measured values"],
+["Laboratory Instructions & Safety","Obligations, advice, prohibition and sequencing"],
+["What Happened in the Experiment?","Simple past and reporting completed experiments"],
+["Processes & Troubleshooting","Past continuous, when/while and clarification"],
+["Results & Experience","Present perfect and discussing recent results"],
+["Cause, Effect & Conditions","Because/so and simple conditional reasoning"],
+["Graphs, Predictions & Trends","Describing figures and cautious predictions"],
+["A2 Integrated Physics Project","An integrated, evidence-aware laboratory communication portfolio"]
+];
+const QUESTIONS=[
+{id:"A2.demo.read.1",type:"text",skill:"reading",prompt:"According to the virtual-cart table, what position is displayed at 2 seconds? Include a unit.",accepted:["3 m","3.0 m","3 meters","3.0 meters"],feedback:"At 2 s the model displays 3.0 m. The unit symbol m is not pluralized."},
+{id:"A2.demo.gram.1",type:"text",skill:"grammar",prompt:"Complete the simple past: “Yesterday, we ___ the values.” Use record.",accepted:["recorded"],feedback:"A completed past activity uses the regular verb form recorded."},
+{id:"A2.demo.disc.1",type:"choice",skill:"scientific discourse",prompt:"Which statement is supported by the data?",options:["The model displays 4.5 m at 3 s.","A real cart was measured at 6.0 m at 4 s."],accepted:["The model displays 4.5 m at 3 s."],feedback:"This source is a simulation and ends at 3 s. Do not invent a real measurement or later observation."},
+{id:"A2.demo.math.1",type:"choice",skill:"mathematical English",prompt:"Which label correctly describes the horizontal axis?",options:["Time (s)","Position (s)"],accepted:["Time (s)"],feedback:"Time is on the horizontal axis; seconds (s) is its unit."}
+];
+const $=id=>document.getElementById(id), allowed=new Set(QUESTIONS.map(q=>q.id));
+const normalize=s=>String(s).trim().toLowerCase().replace(/\s+/g," ").replace(/[.!?]+$/,"");
+let selected=11, db=null, store="memory", state={schema:1,attempts:[]};
+
+function validHistory(h){
+ return h && h.schema===1 && Array.isArray(h.attempts) && h.attempts.length<=50000 &&
+ h.attempts.every(a=>a && allowed.has(a.id) && typeof a.at==="string" && a.at.length<=40 &&
+ typeof a.answer==="string" && a.answer.length<=300 && typeof a.first==="boolean" && typeof a.correct==="boolean");
+}
+function openDB(){
+ return new Promise((resolve,reject)=>{
+  if(!("indexedDB" in window)){reject(Error("Unsupported"));return;}
+  const r=indexedDB.open("physics-usthb-english-v1",1);
+  r.onupgradeneeded=()=>r.result.createObjectStore("records");
+  r.onsuccess=()=>resolve(r.result);
+  r.onerror=()=>reject(r.error||Error("Storage failure"));
+ });
+}
+function readDB(){
+ return new Promise((resolve,reject)=>{
+  const r=db.transaction("records","readonly").objectStore("records").get("attempts");
+  r.onsuccess=()=>resolve(r.result);
+  r.onerror=()=>reject(r.error);
+ });
+}
+function saveDB(value){
+ return new Promise((resolve,reject)=>{
+  const tx=db.transaction("records","readwrite");
+  tx.objectStore("records").put(value,"attempts");
+  tx.oncomplete=()=>resolve();
+  tx.onerror=()=>reject(tx.error);
+ });
+}
+async function load(){
+ try{
+  db=await openDB();store="indexeddb";
+  const obj=await readDB();if(validHistory(obj))state=obj;
+ }catch(_){
+  try{
+   const raw=localStorage.getItem("physics-usthb-english-preview-v1");
+   if(raw){const h=JSON.parse(raw);if(validHistory(h))state=h;}
+   localStorage.setItem("physics-usthb-english-health","ok");
+   localStorage.removeItem("physics-usthb-english-health");
+   store="localStorage";
+  }catch(_){store="memory";}
+ }
+ $("storage-status").textContent=store==="indexeddb"?"Progress saved privately in this browser (IndexedDB).":
+ store==="localStorage"?"Using browser localStorage fallback; export a backup regularly.":
+ "Browser storage is unavailable: progress is temporary. Export before leaving.";
+ render();
+}
+async function save(){
+ try{
+  if(store==="indexeddb")await saveDB(state);
+  if(store==="localStorage")localStorage.setItem("physics-usthb-english-preview-v1",JSON.stringify(state));
+ }catch(_){store="memory";$("storage-status").textContent="Local save failed. Progress is temporary; export now.";}
+}
+function renderUnits(){
+ const target=$("units");target.replaceChildren();
+ UNITS.forEach(([title],i)=>{
+  const b=document.createElement("button");b.type="button";b.setAttribute("aria-current",String(i===selected));
+  b.textContent="A2."+String(i+1).padStart(2,"0")+" — "+title;
+  const meta=document.createElement("small");
+  meta.textContent=i===11?"Development sample":"Draft awaiting review";b.append(meta);
+  b.onclick=()=>{selected=i;render();};target.append(b);
+ });
+}
+function renderQuestions(){
+ const target=$("questions");target.replaceChildren();
+ for(const q of QUESTIONS){
+  const form=document.createElement("form");
+  const set=document.createElement("fieldset"),legend=document.createElement("legend");
+  legend.textContent=q.prompt;set.append(legend);
+  let input=null;
+  if(q.type==="text"){
+   input=document.createElement("input");input.type="text";input.maxLength=300;input.required=true;
+   input.setAttribute("aria-label",q.prompt);set.append(input);
+  }else{
+   for(const option of q.options){
+    const label=document.createElement("label");label.className="option";
+    const radio=document.createElement("input");radio.type="radio";radio.name=q.id;radio.value=option;radio.required=true;
+    label.append(radio,document.createTextNode(" "+option));set.append(label);
+   }
+  }
+  const submit=document.createElement("button");submit.type="submit";submit.className="btn";submit.textContent="Check answer";
+  const feedback=document.createElement("p");feedback.className="feedback";feedback.setAttribute("role","status");
+  form.append(set,submit,feedback);
+  form.onsubmit=async e=>{
+   e.preventDefault();
+   const answer=q.type==="text"?input.value:(form.querySelector("input:checked")?.value||"");
+   if(!answer)return;
+   const correct=q.accepted.some(v=>normalize(v)===normalize(answer));
+   const first=!state.attempts.some(a=>a.id===q.id);
+   state.attempts.push({id:q.id,at:new Date().toISOString(),answer:answer.slice(0,300),first,correct});
+   await save();
+   feedback.textContent=(correct?"Correct. ":"Try again. ")+q.feedback+" This is practice, not verified mastery.";
+   feedback.className="feedback "+(correct?"good":"bad");
+   renderStats();
+  };
+  target.append(form);
+ }
+}
+function renderStats(){
+ $("total-attempts").textContent=String(state.attempts.length);
+ $("first-correct").textContent=String(state.attempts.filter(a=>a.first&&a.correct).length);
+}
+function render(){
+ const [title,description]=UNITS[selected];
+ $("unit-title").textContent="A2."+String(selected+1).padStart(2,"0")+" — "+title;
+ $("unit-description").textContent=description;
+ $("unit-status").textContent=selected===11?"Limited demo: four text exercises, no automatic CEFR mastery.":
+ "This unit has draft authoring material but is not approved or activated in the application.";
+ $("lesson").hidden=selected!==11;
+ renderUnits();if(selected===11)renderQuestions();renderStats();
+}
+$("export").onclick=()=>{
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="physics-usthb-a2-preview-progress.json";a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+ $("notice").textContent="Export prepared. Keep the file private.";
+};
+$("import-button").onclick=()=>$("import-file").click();
+$("import-file").onchange=async e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ try{
+  if(file.size>5_000_000)throw Error("File too large");
+  const h=JSON.parse(await file.text());
+  if(!validHistory(h))throw Error("Incompatible or invalid file");
+  state={schema:1,attempts:h.attempts};await save();render();
+  $("notice").textContent="Progress imported; previous preview history replaced.";
+ }catch(err){$("notice").textContent="Import failed: "+err.message;}
+ e.target.value="";
+};
+$("clear").onclick=async()=>{
+ if(!confirm("Clear all English preview progress stored in this browser profile?"))return;
+ state={schema:1,attempts:[]};await save();render();
+ $("notice").textContent="Local preview progress cleared.";
+};
+load();
