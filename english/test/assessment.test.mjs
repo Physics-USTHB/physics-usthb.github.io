@@ -1,7 +1,7 @@
 // Run: node --test english/test/assessment.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import {readFileSync} from "node:fs";
+import {readFileSync,readdirSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 import {dirname,resolve} from "node:path";
 import {normalizeAnswer,validateUnit,gradeItem,nextReview,summarizeEvidence,weaknessHypothesis} from "../assessment.mjs";
@@ -99,4 +99,40 @@ test("SI symbols retain case-sensitive meanings while ordinary English is case-i
  assert.equal(gradeItem(length,"0.35 M",{firstAttempt:true,hintsUsed:0}).correct,false);
  const plain=unit.items.find(i=>i.id==="A2.01.BE.001");
  assert.equal(gradeItem(plain,"AM",{firstAttempt:true,hintsUsed:0}).correct,true);
+});
+
+
+test("every A2 unit contains valid original draft practice and no reserved checkpoint prompts",()=>{
+ const dirRoot=resolve(dir,"../data");
+ const files=readdirSync(dirRoot).filter(x=>/^a2-\d{2}\.json$/.test(x)).sort();
+ assert.equal(files.length,12);
+ const globalIds=new Set(),total=[];
+ for(const [i,name] of files.entries()){
+  assert.equal(name,"a2-"+String(i+1).padStart(2,"0")+".json");
+  const course=JSON.parse(readFileSync(resolve(dirRoot,name),"utf8"));
+  assert.equal(course.id,"A2."+String(i+1).padStart(2,"0"));
+  assert.deepEqual(validateUnit(course),[],name+" invalid");
+  assert.ok(course.items.length>=20,"not enough practice in "+name);
+  for(const item of course.items){
+   assert.ok(!globalIds.has(item.id),"duplicate item "+item.id);
+   globalIds.add(item.id);total.push(item);
+   assert.equal(item.status,"draft");
+   assert.doesNotMatch(item.prompt,/CHECKPOINT|DELAYED|HOLDOUT|RESERVED/i);
+   assert.equal(item.media,"text");
+   if(item.caseSensitive)assert.equal(item.type,"single_choice");
+  }
+ }
+ assert.ok(total.length>=350,"too few imported draft items");
+});
+
+test("teaching notes exist for all A2 units without proficiency promises",()=>{
+ const notes=JSON.parse(readFileSync(resolve(dir,"../data/concepts.json"),"utf8"));
+ assert.equal(notes.schemaVersion,1);
+ assert.equal(Object.keys(notes.units).length,12);
+ for(let i=1;i<=12;i++){
+  const entry=notes.units["A2."+String(i).padStart(2,"0")];
+  assert.ok(entry?.goal.length>=20);
+  assert.ok(entry?.pronunciation.length>=20);
+  assert.ok(entry?.notes.length>=3);
+ }
 });
