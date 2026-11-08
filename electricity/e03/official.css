@@ -41,13 +41,24 @@
 .mode-lab .learn-only{display:none!important}
 .mode-learn .lab-only{display:none!important}
 
-/* E03 fidelity pass: explicit TP3 wiring */
+/* E03 fidelity pass: explicit Practical 3 wiring */
 .e03-wiring-box{margin:15px 0;border:1px solid #29465e;border-radius:13px;background:#081722;padding:12px}
 .e03-wiring-head{display:flex;justify-content:space-between;gap:14px;align-items:baseline}.e03-wiring-head strong{font-size:.8rem;color:#e4f8ff}.e03-wiring-head span{font-size:.61rem;color:#7893a7}
 .e03-wiring-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.e03-wiring-grid label{font-size:.58rem;color:#8ba3b4;text-transform:uppercase;letter-spacing:.05em;font-weight:800}.e03-wiring-grid select{width:100%;margin-top:5px;border:1px solid #36556b;background:#07131c;color:#eaf9ff;border-radius:8px;padding:7px}
 .e03-wiring-status{margin-top:9px;padding:8px 9px;border-radius:8px;background:#142635;border:1px solid #31516b;color:#a8bfce;font-size:.68rem}.e03-wiring-status.ok{background:#0a2a22;border-color:#2c765f;color:#8de9c4}.e03-wiring-status.bad{background:#2a161b;border-color:#84404f;color:#ffb8c5}
 @media(max-width:900px){.e03-wiring-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.e03-wiring-grid{grid-template-columns:1fr}.e03-wiring-head{flex-direction:column}}
 
-/* TP3 fidelity: student graphical construction */
+/* Practical 3 fidelity: student graphical construction */
 .construction-entry{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:end;margin:12px 0}.construction-entry label{font-size:.63rem;font-weight:800;color:#5f7488}.construction-entry input{width:100%;margin-top:5px;border:1px solid #d5e0eb;border-radius:9px;padding:8px;background:#fff}.construction-entry .btn{padding:9px 11px;font-size:.7rem}.construction-table{margin-top:10px}.construction-table .core-table{min-width:470px}
 @media(max-width:760px){.construction-entry{grid-template-columns:1fr 1fr}.construction-entry .btn{grid-column:1/-1}}@media(max-width:480px){.construction-entry{grid-template-columns:1fr}}
+
+
+/* Practical 3 review: meter ranges, connection state and student-derived graph results */
+.range-panel{margin:13px 0 15px;padding:12px;border:1px solid #29465e;border-radius:13px;background:#081722}
+.range-panel-head{display:flex;justify-content:space-between;gap:14px;align-items:baseline}.range-panel-head strong{font-size:.8rem;color:#e4f8ff}.range-panel-head span{font-size:.61rem;color:#7893a7}
+.range-panel-grid{display:grid;grid-template-columns:1fr 1fr minmax(220px,1.2fr);gap:8px;align-items:end;margin-top:10px}.range-panel-grid label{font-size:.58rem;color:#8ba3b4;text-transform:uppercase;letter-spacing:.05em;font-weight:800}.range-panel-grid select{width:100%;margin-top:5px;border:1px solid #36556b;background:#07131c;color:#eaf9ff;border-radius:8px;padding:8px}
+.range-rule{min-height:38px;display:flex;align-items:center;padding:8px 10px;border-radius:9px;border:1px solid #31516b;background:#142635;color:#a8bfce;font-size:.68rem}.range-rule.ok{background:#0a2a22;border-color:#2c765f;color:#8de9c4}.range-rule.warn{background:#2b2513;border-color:#76672c;color:#f3df9a}.range-rule.bad{background:#2a161b;border-color:#84404f;color:#ffb8c5}
+.core-meter span b{font-family:var(--mono);font-size:.58rem;color:#8aa8ba;font-weight:700}
+.student-result-entry{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin:10px 0 12px}.student-result-entry label{font-size:.64rem;color:#617589;font-weight:800}.student-result-entry input{width:100%;margin-top:5px;border:1px solid #d5e0eb;border-radius:9px;padding:8px;background:#fff}.student-result-entry .btn{padding:9px 11px;font-size:.7rem}
+@media(max-width:850px){.range-panel-grid{grid-template-columns:1fr 1fr}.range-rule{grid-column:1/-1}}
+@media(max-width:520px){.range-panel-head{flex-direction:column}.range-panel-grid,.student-result-entry{grid-template-columns:1fr}.range-rule{grid-column:auto}}
