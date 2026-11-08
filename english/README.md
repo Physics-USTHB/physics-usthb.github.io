@@ -1,8 +1,8 @@
-# English for Physicists — A2 development branch
+# English for Physicists — A2 learning beta
 
-**Version:** A2 beta 0.3 — guided writing and optional synthetic listening. Existing A2 beta merged in PR #3; this is a separate enhancement branch.
+**Version:** A2 beta 0.4 — targeted formative study guidance. A2 beta 0.2 and 0.3 were merged through PRs #3 and #4.
 
-## Working in the feature branch
+## Working in the beta
 
 - Standalone English development entry point; physics practicums and LaTeX Studio untouched.
 - Navigation for all 12 A2 units.
@@ -15,7 +15,8 @@
 - Four previous demonstration questions remain archived in browser-history compatibility only. A2.12 now provides separate authored text practice; its full capstone rubric and media are pending.
 - Shared versioned JSON schema for active draft units, validated in-browser before activation.
 - First-attempt and retry tracking, with draft items explicitly excluded from verified proficiency evidence.
-- Deterministic constrained-response grading, conservative weakness hypotheses, evidence summaries and local practice scheduling.
+- Deterministic constrained-response grading, conservative weakness hypotheses (not active for drafts), evidence summaries and local practice scheduling.
+- **39 original skill-scoped study guides** across the 12 units, selected from the learner's incorrect *first attempts*; each suggests a short explanation and a related question. Retries do not count as independent diagnostic evidence.
 - Initial review intervals of 1, 3, 7, 14, 30 and 60 days, subject to future calibration.
 - Browser-local IndexedDB progress with localStorage fallback and backup export/import/clear.
 - Node regression tests and dedicated English GitHub Actions workflow.
@@ -49,7 +50,11 @@ From repository root: node --test english/test/*.test.mjs
 
 GitHub Actions runs the same command for changes in the English directory.
 
-**Privacy:** local progress belongs to a browser profile, not a verified individual. Two people sharing a profile can access each other's progress. The live site and production homepage are unchanged by this draft PR.
+**Privacy:** local progress belongs to a browser profile, not a verified individual. Two people sharing a profile can access each other's progress. No new personal data is collected by the targeted practice suggestions.
 ## Current enhancement release
 
-This update adds guided writing, synthetic read-aloud, microphone-discard privacy handling, and automated schema/browser tests for writing persistence and privacy. No official CEFR outcomes are inferred from writing self-checks or synthetic speech. This enhancement is reviewed in its own pull request before merging.
+A2 beta 0.4 adds local, skill-scoped **formative study recommendations** using the existing first-attempt practice history. The recommended next question is unattempted and within the same item family when possible. The engine falls back to an unattempted question in the same skill, and only suggests a retry if no new item is available. Recommendations show a short rule, physics-language example, and optional reading source link.
+
+The recommender explicitly **does not diagnose student weaknesses, assign CEFR mastery, alter scoring, or transmit records to a server**. Source questions and the study guides are drafts pending expert review. Node and browser tests verify first-attempt isolation and recommendation navigation.
+
+The beta is linked from the main site. Existing practicums and LaTeX Studio are unchanged by this release.
