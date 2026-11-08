@@ -4,19 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="USTHB-aligned virtual oscilloscope laboratory for L1 ST/SM electricity.">
-  <title>E04 — The Oscilloscope | Physics USTHB</title>
+  <title>Laboratory Practical 4 — The Oscilloscope | Physics USTHB</title>
   <link rel="stylesheet" href="../../assets/styles.css">
   <link rel="stylesheet" href="e04.css">
 </head>
 <body class="lab-page">
-<header class="topbar"><div class="shell nav"><a class="brand" href="../../index.html"><span class="brandmark">Φ</span><span class="brandcopy"><strong>Physics USTHB</strong><small>Electricity laboratory</small></span></a><nav class="navlinks"><a href="../index.html">Electricity Lab</a><a href="../e03/index.html">E03</a><a href="../../index.html">Home</a></nav></div></header>
+<header class="topbar"><div class="shell nav"><a class="brand" href="../../index.html"><span class="brandmark">Φ</span><span class="brandcopy"><strong>Physics USTHB</strong><small>Electricity laboratory</small></span></a><nav class="navlinks"><a href="../index.html">Electricity Lab</a><a href="../e03/index.html">Previous: Practical 3</a><a href="../e05/index.html">Next: Practical 5</a><a href="../../index.html">Home</a></nav></div></header>
 
 <section class="labmast">
   <div class="shell labmast-grid">
     <div>
-      <div class="breadcrumbs">Virtual Laboratory / Electricity & Circuits / E04</div>
+      <div class="breadcrumbs">Virtual Laboratory / Electricity & Circuits / Laboratory Practical 4</div>
       <h1>The Oscilloscope</h1>
-      <div class="labmeta"><span class="pill">USTHB TP4 core</span><span class="pill">XY & sweep modes</span><span class="pill">Triggering</span><span class="pill">Phase & impedance</span></div>
+      <div class="labmeta"><span class="pill">USTHB Practical 4 core</span><span class="pill">XY & sweep modes</span><span class="pill">Triggering</span><span class="pill">Phase & impedance</span></div>
     </div>
     <div class="mode-card no-print"><div><strong>Guidance mode</strong><div class="mini" id="modeDescription">Protocol guidance and diagnostic hints are visible.</div></div><div class="segmented"><button class="modebtn active" data-mode="learn" type="button">Learn</button><button class="modebtn" data-mode="lab" type="button">Lab</button></div></div>
   </div>
@@ -58,7 +58,7 @@
   </div>
 
   <article class="paper" style="margin-top:18px">
-    <h2>Front-panel controls used in this TP</h2>
+    <h2>Front-panel controls used in this practical</h2>
     <div class="control-map">
       <div class="control-chip"><b>2–3</b><span>Intensity & focus</span></div>
       <div class="control-chip"><b>5A/5B</b><span>AC–DC–GND coupling</span></div>
@@ -131,7 +131,7 @@
 
     <aside class="scope-side">
       <article class="scope-card"><h4>Sweep calibration task</h4><p>The handout requires 0.5 s/div and a 10-division crossing time of 5 s.</p><div class="measure-grid"><div class="measure-box"><span>Screen width</span><strong>10 div</strong></div><div class="measure-box"><span>Expected</span><strong>5.0 s</strong></div><div class="measure-box"><span>Your effective time</span><strong id="screenTime">5.0 s</strong></div><div class="measure-box"><span>Status</span><strong id="calStatus">—</strong></div></div></article>
-      <article class="scope-card"><h4>Frequency measurement</h4><p>Stabilise the waveform with the trigger, then infer frequency from the number of horizontal divisions occupied by one period.</p><div class="measure-grid"><div class="measure-box"><span>Period divisions</span><strong id="periodDivs">—</strong></div><div class="measure-box"><span>T measured</span><strong id="periodMeasured">—</strong></div><div class="measure-box"><span>f measured</span><strong id="freqMeasured">—</strong></div><div class="measure-box"><span>Generator</span><strong id="freqGenerator">10 Hz</strong></div></div></article>
+      <article class="scope-card"><h4>Frequency measurement</h4><p>Stabilise the waveform, read one period in horizontal divisions, then calculate T and f yourself.</p><div class="student-scope-entry"><label>Period / divisions<input id="sweepStudentDivs" type="number" min="0" step="0.01"></label><label>Calculated T / s<input id="sweepStudentT" type="number" min="0" step="0.000001"></label><label>Calculated f / Hz<input id="sweepStudentF" type="number" min="0" step="0.1"></label></div><div class="measure-grid"><div class="measure-box"><span>Accepted period</span><strong id="periodDivs">—</strong></div><div class="measure-box"><span>T measured</span><strong id="periodMeasured">—</strong></div><div class="measure-box"><span>f measured</span><strong id="freqMeasured">—</strong></div><div class="measure-box"><span>Generator setting</span><strong id="freqGenerator">10 Hz</strong></div></div></article>
     </aside>
   </div>
 </section>
@@ -163,8 +163,8 @@
       <div class="notice" id="resistorMessage">Adjust the decade resistance until the two sinusoidal amplitudes are equal.</div>
     </div>
     <aside class="scope-side">
-      <article class="scope-card"><h4>Balance condition</h4><div class="measure-grid"><div class="measure-box"><span>CH1 amplitude</span><strong id="rAmp1">— V</strong></div><div class="measure-box"><span>CH2 amplitude</span><strong id="rAmp2">— V</strong></div><div class="measure-box"><span>Ratio</span><strong id="rRatio">—</strong></div><div class="measure-box"><span>Rx result</span><strong id="rxResult">— Ω</strong></div></div></article>
-      <article class="scope-card"><h4>Phase</h4><div class="measure-grid"><div class="measure-box"><span>Δt</span><strong id="rDt">—</strong></div><div class="measure-box"><span>T</span><strong id="rT">—</strong></div><div class="measure-box"><span>φ sweep</span><strong id="rPhiSweep">—°</strong></div><div class="measure-box"><span>φ XY</span><strong id="rPhiXY">—°</strong></div></div></article>
+      <article class="scope-card"><h4>Balance condition</h4><div class="measure-grid"><div class="measure-box"><span>CH1 amplitude</span><strong id="rAmp1">— V</strong></div><div class="measure-box"><span>CH2 amplitude</span><strong id="rAmp2">— V</strong></div><div class="measure-box"><span>Ratio</span><strong id="rRatio">—</strong></div><div class="measure-box"><span>Accepted Rx</span><strong id="rxResult">— Ω</strong></div></div></article>
+      <article class="scope-card"><h4>Your resistance & phase calculation</h4><div class="student-scope-entry"><label>Rx from balance / Ω<input id="rStudentRx" type="number" min="0" step="1"></label><label>Δt / divisions<input id="rStudentDtDiv" type="number" min="0" step="0.01"></label><label>φ = 360° Δt/T<input id="rStudentPhi" type="number" step="0.1"></label><button class="btn" id="checkResistorAnalysis" type="button">Check calculation</button></div><div class="measure-grid"><div class="measure-box"><span>Accepted Δt</span><strong id="rDt">—</strong></div><div class="measure-box"><span>Period T</span><strong id="rT">—</strong></div><div class="measure-box"><span>φ sweep</span><strong id="rPhiSweep">—°</strong></div><div class="measure-box"><span>φ XY</span><strong id="rPhiXY">—°</strong></div></div></article>
     </aside>
   </div>
 </section>
@@ -196,8 +196,8 @@
       <div class="notice" id="capMessage">Adjust the decade resistance until the resistor and capacitor voltage amplitudes are equal.</div>
     </div>
     <aside class="scope-side">
-      <article class="scope-card"><h4>Impedance result</h4><div class="measure-grid"><div class="measure-box"><span>Balanced Rd</span><strong id="zcResult">— Ω</strong></div><div class="measure-box"><span>φ sweep</span><strong id="cPhiSweep">—°</strong></div><div class="measure-box"><span>φ XY</span><strong id="cPhiXY">—°</strong></div><div class="measure-box"><span>Derived C</span><strong id="cResult">— µF</strong></div></div></article>
-      <article class="scope-card"><h4>Lissajous relation</h4><div class="formula-scope">sin φ = OE / OF</div><p>At quadrature and equal amplitudes, the XY trace approaches a circle.</p></article>
+      <article class="scope-card"><h4>Your impedance, phase & capacitance calculation</h4><div class="student-scope-entry"><label>Zc from balance / Ω<input id="cStudentZ" type="number" min="0" step="1"></label><label>Δt / divisions<input id="cStudentDtDiv" type="number" min="0" step="0.01"></label><label>φ = 360° Δt/T<input id="cStudentPhi" type="number" min="0" step="0.1"></label><label>C = 1/(2πfZc) / µF<input id="cStudentC" type="number" min="0" step="0.001"></label><button class="btn" id="checkCapAnalysis" type="button">Check calculation</button></div><div class="measure-grid"><div class="measure-box"><span>Accepted Zc</span><strong id="zcResult">— Ω</strong></div><div class="measure-box"><span>φ sweep</span><strong id="cPhiSweep">—°</strong></div><div class="measure-box"><span>φ XY</span><strong id="cPhiXY">—°</strong></div><div class="measure-box"><span>Accepted C</span><strong id="cResult">— µF</strong></div></div></article>
+      <article class="scope-card"><h4>Lissajous relation</h4><div class="formula-scope">sin φ = OE / OF</div><p>At quadrature and equal amplitudes, the XY trace approaches a circle. Use it as an independent phase check after the sweep calculation.</p></article>
     </aside>
   </div>
 </section>
@@ -219,13 +219,13 @@
 
 <section class="tabpanel" id="report">
   <article class="paper no-print"><h2>Laboratory report</h2>
-    <p class="mini"><strong>Privacy:</strong> student name and group stay only in this open page and are not saved. Measurements and report text autosave locally in this browser.</p><div class="report-grid"><label>Student name<input id="studentName" type="text"></label><label>Group / section<input id="studentGroup" type="text"></label><label>Date<input id="reportDate" type="date"></label><label>Mode<input id="reportMode" type="text" readonly></label><label class="wide">Discussion<textarea id="reportDiscussion" placeholder="Discuss XY motion, sweep calibration, triggering, frequency measurement, amplitude balance, phase and the Lissajous confirmation."></textarea></label><label class="wide">Conclusion<textarea id="reportConclusion" placeholder="State the measured Rx, capacitor impedance/capacitance and what the oscilloscope modes allowed you to verify."></textarea></label></div><div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button><button class="btn ghost" id="clearLocalProgress" type="button">Clear local data</button></div></article>
-  <div class="report-preview" id="reportPreview"><h2>Laboratory Report — E04</h2><p class="mini">Complete the required oscilloscope tasks and build the report.</p></div>
+    <p class="mini"><strong>Privacy:</strong> student name, email and group stay only in this open page and are not saved. Measurements and report text autosave locally in this browser.</p><div class="report-grid"><label>Student name<input id="studentName" type="text"></label><label>Email<input id="studentEmail" type="email" placeholder="name@example.com" required></label><label>Group / section<input id="studentGroup" type="text"></label><label>Date<input id="reportDate" type="date"></label><label>Mode<input id="reportMode" type="text" readonly></label><label class="wide">Discussion<textarea id="reportDiscussion" placeholder="Discuss XY motion, sweep calibration, triggering, frequency measurement, amplitude balance, phase and the Lissajous confirmation."></textarea></label><label class="wide">Conclusion<textarea id="reportConclusion" placeholder="State the measured Rx, capacitor impedance/capacitance and what the oscilloscope modes allowed you to verify."></textarea></label></div><div class="actions"><button class="btn" id="buildReport" type="button">Build report</button><button class="btn ghost" id="printReport" type="button">Print / Save as PDF</button><button class="btn ghost" id="clearLocalProgress" type="button">Clear local data</button></div></article>
+  <div class="report-preview" id="reportPreview"><h2>Laboratory Practical 4 Report — E04</h2><p class="mini">Complete the required oscilloscope tasks and build the report.</p></div>
 </section>
 <section class="tabpanel" id="printable-report"><div class="report-preview" id="printOnlyPreview"></div></section>
 </main>
 
-<footer class="footer"><div class="shell">E04 • The Oscilloscope • Physics USTHB interactive laboratory · <a href="../../privacy.html">Privacy</a></div></footer>
+<footer class="footer"><div class="shell">Laboratory Practical 4 · The Oscilloscope · Physics USTHB · <a href="../../privacy.html">Privacy</a></div></footer>
 <script src="lab.js"></script>
 </body>
 </html>
