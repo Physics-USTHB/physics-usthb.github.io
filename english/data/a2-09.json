@@ -1,0 +1,857 @@
+{
+  "schemaVersion": 1,
+  "id": "A2.09",
+  "title": "Results & Experience",
+  "status": "draft",
+  "language": "en-US",
+  "license": "original-course-content",
+  "pedagogicalStatus": "Unreviewed draft: formative practice only; CEFR mastery disabled.",
+  "sources": [
+    {
+      "id": "R1",
+      "title": "Virtual pendulum assignment progress (reading; practice)",
+      "paragraphs": [
+        "Maya is preparing a short assignment about a virtual pendulum. She has watched the introduction and has completed the first table. She has already drawn the position-time graph, but she has not written the conclusion yet. Yesterday, she watched the introduction at 4 p.m. She plans to write the conclusion after checking the labels on her graph. Her message reports progress on a simulation assignment, not results from a physical experiment."
+      ]
+    },
+    {
+      "id": "R2",
+      "title": "Physics problem-set checklist (reading; practice)",
+      "paragraphs": [
+        "On Wednesday, Karim worked on a physics problem set. He solved questions 1 and 2 in the afternoon. Today, he has checked both answers and has just corrected a unit in question 2. He has not started question 3 yet. The instructions ask students to show the numerical value and its unit. Karim has completed two questions, but the full assignment is not finished."
+      ]
+    },
+    {
+      "id": "R3",
+      "title": "Virtual circuit report update (reading; practice)",
+      "paragraphs": [
+        "The student team has finished the circuit simulation and has saved its voltage-current table. Nora has already checked the column headings. The group has not added the graph caption yet. On Monday, they ran the simulation for the first time. Today, they have made a clearer table. Their progress note is about a model, not a real electrical circuit."
+      ]
+    },
+    {
+      "id": "R4",
+      "title": "Office-hour study plan (reading; practice)",
+      "paragraphs": [
+        "Samir has read the chapter about waves, but he has not finished the practice questions yet. He has already made a list of new words, including frequency, amplitude and period. His tutor asked him on Tuesday to describe one graph in English. He has just recorded a one-minute explanation. The tutor has not reviewed the recording yet. The message does not claim that Samir has passed a speaking test."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "A2.09.PPF.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PPF.auxiliary_agreement",
+      "status": "draft",
+      "media": "text",
+      "prompt": "We ___ the virtual table. (finish)",
+      "accepted": [
+        "have finished"
+      ],
+      "feedback": "Present perfect = have/has + past participle. The auxiliary agrees with the subject; irregular participles require the correct form.",
+      "options": [
+        "have finished",
+        "has finished"
+      ]
+    },
+    {
+      "id": "A2.09.PPF.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PPF.past_participle",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Nora ___ her report. (save)",
+      "accepted": [
+        "has saved"
+      ],
+      "feedback": "Present perfect = have/has + past participle. The auxiliary agrees with the subject; irregular participles require the correct form.",
+      "options": [
+        "has saved",
+        "have saved"
+      ]
+    },
+    {
+      "id": "A2.09.PPF.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PPF.auxiliary_agreement",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The group ___ three screenshots. (take)",
+      "accepted": [
+        "has taken"
+      ],
+      "feedback": "Present perfect = have/has + past participle. The auxiliary agrees with the subject; irregular participles require the correct form.",
+      "options": [
+        "has taken",
+        "has took"
+      ]
+    },
+    {
+      "id": "A2.09.PPF.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PPF.past_participle",
+      "status": "draft",
+      "media": "text",
+      "prompt": "I ___ the introduction. (read)",
+      "accepted": [
+        "have read"
+      ],
+      "feedback": "Present perfect = have/has + past participle. The auxiliary agrees with the subject; irregular participles require the correct form.",
+      "options": [
+        "have read",
+        "has read"
+      ]
+    },
+    {
+      "id": "A2.09.PPF.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PPF.auxiliary_agreement",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The students ___ the graph. (draw)",
+      "accepted": [
+        "have drawn"
+      ],
+      "feedback": "Present perfect = have/has + past participle. The auxiliary agrees with the subject; irregular participles require the correct form.",
+      "options": [
+        "have drawn",
+        "have drew"
+      ]
+    },
+    {
+      "id": "A2.09.PPF.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PPF.past_participle",
+      "status": "draft",
+      "media": "text",
+      "prompt": "She ___ the labels. (check)",
+      "accepted": [
+        "has checked"
+      ],
+      "feedback": "Present perfect = have/has + past participle. The auxiliary agrees with the subject; irregular participles require the correct form.",
+      "options": [
+        "has checked",
+        "have checked"
+      ]
+    },
+    {
+      "id": "A2.09.PPF.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PPF.auxiliary_agreement",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The tutor ___ the note. (see)",
+      "accepted": [
+        "has seen"
+      ],
+      "feedback": "Present perfect = have/has + past participle. The auxiliary agrees with the subject; irregular participles require the correct form.",
+      "options": [
+        "has seen",
+        "has saw"
+      ]
+    },
+    {
+      "id": "A2.09.PPF.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PPF.past_participle",
+      "status": "draft",
+      "media": "text",
+      "prompt": "We ___ our measurements from the model. (record)",
+      "accepted": [
+        "have recorded"
+      ],
+      "feedback": "Present perfect = have/has + past participle. The auxiliary agrees with the subject; irregular participles require the correct form.",
+      "options": [
+        "have recorded",
+        "have record"
+      ]
+    },
+    {
+      "id": "A2.09.EVN.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.EVN.life_experience_questions",
+      "status": "draft",
+      "media": "text",
+      "prompt": "___ you ever used a virtual oscilloscope?",
+      "accepted": [
+        "Have"
+      ],
+      "feedback": "Use have/has + ever in questions about experience and have/has + never to say an experience has not happened up to now.",
+      "options": [
+        "Have",
+        "Has"
+      ]
+    },
+    {
+      "id": "A2.09.EVN.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.EVN.never_negation",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Has Maya ___ described a graph in English?",
+      "accepted": [
+        "ever"
+      ],
+      "feedback": "Use have/has + ever in questions about experience and have/has + never to say an experience has not happened up to now.",
+      "options": [
+        "ever",
+        "yesterday"
+      ]
+    },
+    {
+      "id": "A2.09.EVN.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.EVN.life_experience_questions",
+      "status": "draft",
+      "media": "text",
+      "prompt": "I have ___ presented a physics poster before. This is my first time.",
+      "accepted": [
+        "never"
+      ],
+      "feedback": "Use have/has + ever in questions about experience and have/has + never to say an experience has not happened up to now.",
+      "options": [
+        "never",
+        "ever"
+      ]
+    },
+    {
+      "id": "A2.09.EVN.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.EVN.never_negation",
+      "status": "draft",
+      "media": "text",
+      "prompt": "He has ___ been to a science museum, so he wants to go for the first time.",
+      "accepted": [
+        "never"
+      ],
+      "feedback": "Use have/has + ever in questions about experience and have/has + never to say an experience has not happened up to now.",
+      "options": [
+        "never",
+        "ever"
+      ]
+    },
+    {
+      "id": "A2.09.EVN.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.EVN.life_experience_questions",
+      "status": "draft",
+      "media": "text",
+      "prompt": "___ they ever read an English physics article?",
+      "accepted": [
+        "Have"
+      ],
+      "feedback": "Use have/has + ever in questions about experience and have/has + never to say an experience has not happened up to now.",
+      "options": [
+        "Have",
+        "Did have"
+      ]
+    },
+    {
+      "id": "A2.09.EVN.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.EVN.never_negation",
+      "status": "draft",
+      "media": "text",
+      "prompt": "She has never ___ a lab report in English.",
+      "accepted": [
+        "written"
+      ],
+      "feedback": "Use have/has + ever in questions about experience and have/has + never to say an experience has not happened up to now.",
+      "options": [
+        "written",
+        "wrote"
+      ]
+    },
+    {
+      "id": "A2.09.EVN.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.EVN.life_experience_questions",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the natural experience question.",
+      "accepted": [
+        "Have you ever watched a wave demonstration?"
+      ],
+      "feedback": "Use have/has + ever in questions about experience and have/has + never to say an experience has not happened up to now.",
+      "options": [
+        "Have you ever watched a wave demonstration?",
+        "Have you watched yesterday a wave demonstration?"
+      ]
+    },
+    {
+      "id": "A2.09.EVN.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.EVN.never_negation",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which sentence means “at no time in my life until now”?",
+      "accepted": [
+        "I have never used this app."
+      ],
+      "feedback": "Use have/has + ever in questions about experience and have/has + never to say an experience has not happened up to now.",
+      "options": [
+        "I have never used this app.",
+        "I did not use this app on Monday."
+      ]
+    },
+    {
+      "id": "A2.09.JAY.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.JAY.completion_recent",
+      "status": "draft",
+      "media": "text",
+      "prompt": "“Have you finished the table ___?” “Not yet.”",
+      "accepted": [
+        "yet"
+      ],
+      "feedback": "Just emphasizes very recent completion; already emphasizes completion before now or expectation; yet typically marks a question or an unfinished task. Other natural placements may exist; this item checks the shown slot.",
+      "options": [
+        "yet",
+        "last Tuesday"
+      ]
+    },
+    {
+      "id": "A2.09.JAY.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.JAY.pending_yet",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The graph is ready now. I have ___ finished it.",
+      "accepted": [
+        "just"
+      ],
+      "feedback": "Just emphasizes very recent completion; already emphasizes completion before now or expectation; yet typically marks a question or an unfinished task. Other natural placements may exist; this item checks the shown slot.",
+      "options": [
+        "just",
+        "last week"
+      ]
+    },
+    {
+      "id": "A2.09.JAY.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.JAY.completion_recent",
+      "status": "draft",
+      "media": "text",
+      "prompt": "She has ___ checked the units, so there is no need to check the same draft again now.",
+      "accepted": [
+        "already"
+      ],
+      "feedback": "Just emphasizes very recent completion; already emphasizes completion before now or expectation; yet typically marks a question or an unfinished task. Other natural placements may exist; this item checks the shown slot.",
+      "options": [
+        "already",
+        "never"
+      ]
+    },
+    {
+      "id": "A2.09.JAY.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.JAY.pending_yet",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The report is incomplete. We have not added the caption ___.",
+      "accepted": [
+        "yet"
+      ],
+      "feedback": "Just emphasizes very recent completion; already emphasizes completion before now or expectation; yet typically marks a question or an unfinished task. Other natural placements may exist; this item checks the shown slot.",
+      "options": [
+        "yet",
+        "ago"
+      ]
+    },
+    {
+      "id": "A2.09.JAY.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.JAY.completion_recent",
+      "status": "draft",
+      "media": "text",
+      "prompt": "“Is the simulation ready?” “Yes, I have ___ opened it.”",
+      "accepted": [
+        "already"
+      ],
+      "feedback": "Just emphasizes very recent completion; already emphasizes completion before now or expectation; yet typically marks a question or an unfinished task. Other natural placements may exist; this item checks the shown slot.",
+      "options": [
+        "already",
+        "yesterday"
+      ]
+    },
+    {
+      "id": "A2.09.JAY.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.JAY.pending_yet",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The file was saved a few seconds ago. I have ___ saved it.",
+      "accepted": [
+        "just"
+      ],
+      "feedback": "Just emphasizes very recent completion; already emphasizes completion before now or expectation; yet typically marks a question or an unfinished task. Other natural placements may exist; this item checks the shown slot.",
+      "options": [
+        "just",
+        "in 2022"
+      ]
+    },
+    {
+      "id": "A2.09.JAY.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.JAY.completion_recent",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Have the students submitted the assignment ___?",
+      "accepted": [
+        "yet"
+      ],
+      "feedback": "Just emphasizes very recent completion; already emphasizes completion before now or expectation; yet typically marks a question or an unfinished task. Other natural placements may exist; this item checks the shown slot.",
+      "options": [
+        "yet",
+        "last month"
+      ]
+    },
+    {
+      "id": "A2.09.JAY.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.JAY.pending_yet",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The experiment note is ready. We have ___ written it.",
+      "accepted": [
+        "already"
+      ],
+      "feedback": "Just emphasizes very recent completion; already emphasizes completion before now or expectation; yet typically marks a question or an unfinished task. Other natural placements may exist; this item checks the shown slot.",
+      "options": [
+        "already",
+        "tomorrow"
+      ]
+    },
+    {
+      "id": "A2.09.PVS.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PVS.finished_time_contrast",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Select the sentence for a finished time yesterday.",
+      "accepted": [
+        "I saved the table yesterday."
+      ],
+      "feedback": "Simple past normally reports a completed action at a specified finished past time; present perfect links past events to the present or experiences without a finished-time expression. American English also permits simple past in some recent-result situations, so test only unambiguous contexts.",
+      "options": [
+        "I saved the table yesterday.",
+        "I have saved the table yesterday."
+      ]
+    },
+    {
+      "id": "A2.09.PVS.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PVS.unspecified_time_contrast",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Select the sentence for an unspecified time before now.",
+      "accepted": [
+        "I have used a graphing app before."
+      ],
+      "feedback": "Simple past normally reports a completed action at a specified finished past time; present perfect links past events to the present or experiences without a finished-time expression. American English also permits simple past in some recent-result situations, so test only unambiguous contexts.",
+      "options": [
+        "I have used a graphing app before.",
+        "I have used a graphing app last Monday."
+      ]
+    },
+    {
+      "id": "A2.09.PVS.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PVS.finished_time_contrast",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: Nora ___ the simulation at 4 p.m. yesterday.",
+      "accepted": [
+        "opened"
+      ],
+      "feedback": "Simple past normally reports a completed action at a specified finished past time; present perfect links past events to the present or experiences without a finished-time expression. American English also permits simple past in some recent-result situations, so test only unambiguous contexts.",
+      "options": [
+        "opened",
+        "has opened"
+      ]
+    },
+    {
+      "id": "A2.09.PVS.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PVS.unspecified_time_contrast",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: We ___ the draft already, so it is available now.",
+      "accepted": [
+        "have finished"
+      ],
+      "feedback": "Simple past normally reports a completed action at a specified finished past time; present perfect links past events to the present or experiences without a finished-time expression. American English also permits simple past in some recent-result situations, so test only unambiguous contexts.",
+      "options": [
+        "have finished",
+        "finished last Thursday"
+      ]
+    },
+    {
+      "id": "A2.09.PVS.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PVS.finished_time_contrast",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: Yesterday evening, Karim ___ question two.",
+      "accepted": [
+        "solved"
+      ],
+      "feedback": "Simple past normally reports a completed action at a specified finished past time; present perfect links past events to the present or experiences without a finished-time expression. American English also permits simple past in some recent-result situations, so test only unambiguous contexts.",
+      "options": [
+        "solved",
+        "has solved"
+      ]
+    },
+    {
+      "id": "A2.09.PVS.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PVS.unspecified_time_contrast",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: The team ___ its table, and it is ready to share now.",
+      "accepted": [
+        "has completed"
+      ],
+      "feedback": "Simple past normally reports a completed action at a specified finished past time; present perfect links past events to the present or experiences without a finished-time expression. American English also permits simple past in some recent-result situations, so test only unambiguous contexts.",
+      "options": [
+        "has completed",
+        "has complete"
+      ]
+    },
+    {
+      "id": "A2.09.PVS.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PVS.finished_time_contrast",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: In 2023, she ___ an introductory physics course.",
+      "accepted": [
+        "took"
+      ],
+      "feedback": "Simple past normally reports a completed action at a specified finished past time; present perfect links past events to the present or experiences without a finished-time expression. American English also permits simple past in some recent-result situations, so test only unambiguous contexts.",
+      "options": [
+        "took",
+        "has taken"
+      ]
+    },
+    {
+      "id": "A2.09.PVS.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.09.PVS.unspecified_time_contrast",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: I ___ this exercise before, but I do not remember the date.",
+      "accepted": [
+        "have seen"
+      ],
+      "feedback": "Simple past normally reports a completed action at a specified finished past time; present perfect links past events to the present or experiences without a finished-time expression. American English also permits simple past in some recent-result situations, so test only unambiguous contexts.",
+      "options": [
+        "have seen",
+        "have saw"
+      ]
+    },
+    {
+      "id": "A2.09.VOC.001",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.09.VOC.progress_verbs",
+      "status": "draft",
+      "media": "text",
+      "prompt": "You have written all the rows in a table. The table is ___.",
+      "accepted": [
+        "complete"
+      ],
+      "feedback": "Choose the word that accurately reports completion status or an action in an academic task; the passage may refer to simulated, not physical, work.",
+      "options": [
+        "complete",
+        "pending"
+      ]
+    },
+    {
+      "id": "A2.09.VOC.002",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.09.VOC.status_nouns",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A report that still needs its conclusion is ___.",
+      "accepted": [
+        "unfinished"
+      ],
+      "feedback": "Choose the word that accurately reports completion status or an action in an academic task; the passage may refer to simulated, not physical, work.",
+      "options": [
+        "unfinished",
+        "submitted"
+      ]
+    },
+    {
+      "id": "A2.09.VOC.003",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.09.VOC.progress_verbs",
+      "status": "draft",
+      "media": "text",
+      "prompt": "To keep a document on your device, ___ it.",
+      "accepted": [
+        "save"
+      ],
+      "feedback": "Choose the word that accurately reports completion status or an action in an academic task; the passage may refer to simulated, not physical, work.",
+      "options": [
+        "save",
+        "erase"
+      ]
+    },
+    {
+      "id": "A2.09.VOC.004",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.09.VOC.status_nouns",
+      "status": "draft",
+      "media": "text",
+      "prompt": "To send completed work for consideration, ___ it.",
+      "accepted": [
+        "submit"
+      ],
+      "feedback": "Choose the word that accurately reports completion status or an action in an academic task; the passage may refer to simulated, not physical, work.",
+      "options": [
+        "submit",
+        "pause"
+      ]
+    },
+    {
+      "id": "A2.09.VOC.005",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.09.VOC.progress_verbs",
+      "status": "draft",
+      "media": "text",
+      "prompt": "To examine whether the units are correct, ___ them.",
+      "accepted": [
+        "check"
+      ],
+      "feedback": "Choose the word that accurately reports completion status or an action in an academic task; the passage may refer to simulated, not physical, work.",
+      "options": [
+        "check",
+        "forget"
+      ]
+    },
+    {
+      "id": "A2.09.VOC.006",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.09.VOC.status_nouns",
+      "status": "draft",
+      "media": "text",
+      "prompt": "To make an incorrect number right, ___ it.",
+      "accepted": [
+        "correct"
+      ],
+      "feedback": "Choose the word that accurately reports completion status or an action in an academic task; the passage may refer to simulated, not physical, work.",
+      "options": [
+        "correct",
+        "repeat incorrectly"
+      ]
+    },
+    {
+      "id": "A2.09.VOC.007",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.09.VOC.progress_verbs",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A written account of what has been done is a progress ___.",
+      "accepted": [
+        "update"
+      ],
+      "feedback": "Choose the word that accurately reports completion status or an action in an academic task; the passage may refer to simulated, not physical, work.",
+      "options": [
+        "update",
+        "voltmeter"
+      ]
+    },
+    {
+      "id": "A2.09.VOC.008",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.09.VOC.status_nouns",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Work you still need to do is ___.",
+      "accepted": [
+        "pending"
+      ],
+      "feedback": "Choose the word that accurately reports completion status or an action in an academic task; the passage may refer to simulated, not physical, work.",
+      "options": [
+        "pending",
+        "completed"
+      ]
+    },
+    {
+      "id": "A2.09.RDG.001",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.09.RDG.progress_reading",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What has Maya already drawn?",
+      "accepted": [
+        "The position-time graph."
+      ],
+      "feedback": "Return to the original progress message. Distinguish completed work, work still pending, and finished-time details.",
+      "options": [
+        "The position-time graph.",
+        "The conclusion."
+      ]
+    },
+    {
+      "id": "A2.09.RDG.002",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.09.RDG.progress_reading",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which part has Maya not written yet?",
+      "accepted": [
+        "The conclusion."
+      ],
+      "feedback": "Return to the original progress message. Distinguish completed work, work still pending, and finished-time details.",
+      "options": [
+        "The conclusion.",
+        "The first table."
+      ]
+    },
+    {
+      "id": "A2.09.RDG.003",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.09.RDG.progress_reading",
+      "status": "draft",
+      "media": "text",
+      "prompt": "When did Maya watch the introduction?",
+      "accepted": [
+        "Yesterday at 4 p.m."
+      ],
+      "feedback": "Return to the original progress message. Distinguish completed work, work still pending, and finished-time details.",
+      "options": [
+        "Yesterday at 4 p.m.",
+        "Today at noon."
+      ]
+    },
+    {
+      "id": "A2.09.RDG.005",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.09.RDG.progress_reading",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which problem-set questions did Karim solve on Wednesday?",
+      "accepted": [
+        "Questions 1 and 2."
+      ],
+      "feedback": "Return to the original progress message. Distinguish completed work, work still pending, and finished-time details.",
+      "options": [
+        "Questions 1 and 2.",
+        "Questions 2 and 3."
+      ]
+    },
+    {
+      "id": "A2.09.RDG.006",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.09.RDG.progress_reading",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What has Karim just corrected?",
+      "accepted": [
+        "A unit in question 2."
+      ],
+      "feedback": "Return to the original progress message. Distinguish completed work, work still pending, and finished-time details.",
+      "options": [
+        "A unit in question 2.",
+        "The title of question 3."
+      ]
+    },
+    {
+      "id": "A2.09.RDG.007",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.09.RDG.progress_reading",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Has he started question 3 yet?",
+      "accepted": [
+        "No, not yet."
+      ],
+      "feedback": "Return to the original progress message. Distinguish completed work, work still pending, and finished-time details.",
+      "options": [
+        "No, not yet.",
+        "Yes, he has finished it."
+      ]
+    },
+    {
+      "id": "A2.09.RDG.008",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.09.RDG.progress_reading",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What must students show in their answers?",
+      "accepted": [
+        "The numerical value and its unit."
+      ],
+      "feedback": "Return to the original progress message. Distinguish completed work, work still pending, and finished-time details.",
+      "options": [
+        "The numerical value and its unit.",
+        "Only a number without a unit."
+      ]
+    },
+    {
+      "id": "A2.09.RDG.009",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.09.RDG.progress_reading",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What has the group finished?",
+      "accepted": [
+        "The circuit simulation."
+      ],
+      "feedback": "Return to the original progress message. Distinguish completed work, work still pending, and finished-time details.",
+      "options": [
+        "The circuit simulation.",
+        "The graph caption."
+      ]
+    }
+  ]
+}

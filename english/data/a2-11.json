@@ -1,0 +1,669 @@
+{
+  "schemaVersion": 1,
+  "id": "A2.11",
+  "title": "Graphs, Predictions & Trends",
+  "status": "draft",
+  "language": "en-US",
+  "license": "original-course-content",
+  "pedagogicalStatus": "Unreviewed draft: formative practice only; CEFR mastery disabled.",
+  "sources": [
+    {
+      "id": "R1",
+      "title": "A virtual cart: distance–time graph",
+      "paragraphs": [
+        "A computer simulation shows a cart moving in a straight line. The horizontal axis is Time (s). The vertical axis is Position (m). The plotted points are (0 s, 0 m), (1 s, 2 m), (2 s, 4 m), (3 s, 6 m), and (4 s, 8 m). The line rises at a steady rate. The model speed is 2 m/s during these four seconds. The graph does not show what actually happens after four seconds. A student may predict later positions only if the constant-speed assumption continues.",
+        "**Visual accessibility:** supply text summary, keyboard-accessible data table, descriptive chart title and visual labels; do not rely on colors alone."
+      ]
+    },
+    {
+      "id": "R2",
+      "title": "A model temperature graph",
+      "paragraphs": [
+        "An educational cooling model displays 32 °C at zero minutes, 30 °C after two minutes, 28 °C after four minutes and 26 °C after six minutes. The horizontal axis shows Time (min) and the vertical axis shows Temperature (°C). The line goes down during the recorded interval. It falls by 2 °C every two minutes in the displayed data. The text does not give a new value after six minutes. The graph describes a simulation, not a physical measurement.",
+        "**Visual accessibility:** supply text summary, keyboard-accessible data table, descriptive chart title and visual labels; do not rely on colors alone."
+      ]
+    },
+    {
+      "id": "R3",
+      "title": "An ideal resistor: a current–voltage graph",
+      "paragraphs": [
+        "A virtual circuit contains an ideal 20 Ω resistor. The displayed current values are 0 A at 0 V, 0.10 A at 2 V, 0.20 A at 4 V and 0.30 A at 6 V. The horizontal axis shows Voltage (V) and the vertical axis shows Current (A). The points make a rising straight line. At a fixed resistance, the model current increases as voltage increases. The values are results of the ideal model, not physical laboratory data.",
+        "**Visual accessibility:** supply text summary, keyboard-accessible data table, descriptive chart title and visual labels; do not rely on colors alone."
+      ]
+    },
+    {
+      "id": "R4",
+      "title": "A horizontal graph and an incomplete label",
+      "paragraphs": [
+        "In a class activity, a virtual sensor displays a constant temperature of 22 °C at 0, 2 and 4 minutes. A student draws a horizontal line. The student first writes only “Time” on the horizontal axis. The tutor asks the student to add the unit: “Time (min).” The vertical axis already says “Temperature (°C).” A horizontal line describes an unchanged value in the displayed interval. It does not prove the value will stay unchanged forever.",
+        "**Visual accessibility:** supply text summary, keyboard-accessible data table, descriptive chart title and visual labels; do not rely on colors alone."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "A2.11.FUT.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.11.FUT.future_0",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete the future form: “The line ___ rise if the model keeps this rate.”",
+      "accepted": [
+        "will"
+      ],
+      "feedback": "Use will + base verb or am/is/are going to + base verb. Both can express predictions in suitable contexts; avoid treating one choice as universally obligatory.",
+      "options": [
+        "will",
+        "was"
+      ]
+    },
+    {
+      "id": "A2.11.FUT.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.11.FUT.future_1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “The data ___ going to appear on the graph after the update.”",
+      "accepted": [
+        "are"
+      ],
+      "feedback": "Use will + base verb or am/is/are going to + base verb. Both can express predictions in suitable contexts; avoid treating one choice as universally obligatory.",
+      "options": [
+        "are",
+        "is"
+      ]
+    },
+    {
+      "id": "A2.11.FUT.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.11.FUT.future_2",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “I ___ plot the points now.” (a decision made while speaking)",
+      "accepted": [
+        "will"
+      ],
+      "feedback": "Use will + base verb or am/is/are going to + base verb. Both can express predictions in suitable contexts; avoid treating one choice as universally obligatory.",
+      "options": [
+        "will",
+        "have"
+      ]
+    },
+    {
+      "id": "A2.11.FUT.004",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.11.FUT.future_0",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “We are going ___ label the axes before class.”",
+      "accepted": [
+        "to"
+      ],
+      "feedback": "Use will + base verb or am/is/are going to + base verb. Both can express predictions in suitable contexts; avoid treating one choice as universally obligatory."
+    },
+    {
+      "id": "A2.11.FUT.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.11.FUT.future_1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Select the grammatical sentence.",
+      "accepted": [
+        "The temperature will increase."
+      ],
+      "feedback": "Use will + base verb or am/is/are going to + base verb. Both can express predictions in suitable contexts; avoid treating one choice as universally obligatory.",
+      "options": [
+        "The temperature will increase.",
+        "The temperature will increases."
+      ]
+    },
+    {
+      "id": "A2.11.FUT.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.11.FUT.future_2",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Select the grammatical sentence.",
+      "accepted": [
+        "I am going to check the graph."
+      ],
+      "feedback": "Use will + base verb or am/is/are going to + base verb. Both can express predictions in suitable contexts; avoid treating one choice as universally obligatory.",
+      "options": [
+        "I am going to check the graph.",
+        "I am going check the graph."
+      ]
+    },
+    {
+      "id": "A2.11.FUT.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.11.FUT.future_0",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which sentence describes a previously made plan?",
+      "accepted": [
+        "We are going to draw the graph this afternoon."
+      ],
+      "feedback": "Use will + base verb or am/is/are going to + base verb. Both can express predictions in suitable contexts; avoid treating one choice as universally obligatory.",
+      "options": [
+        "We are going to draw the graph this afternoon.",
+        "We drew the graph yesterday."
+      ]
+    },
+    {
+      "id": "A2.11.FUT.008",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.11.FUT.future_1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The graph is unlabeled. You decide now: “I ___ add the units.”",
+      "accepted": [
+        "will"
+      ],
+      "feedback": "Use will + base verb or am/is/are going to + base verb. Both can express predictions in suitable contexts; avoid treating one choice as universally obligatory."
+    },
+    {
+      "id": "A2.11.ADV.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.11.ADV.probability_0",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which sentence gives a cautious prediction?",
+      "accepted": [
+        "Maybe the temperature will continue to fall."
+      ],
+      "feedback": "Maybe/perhaps, may/might/could and probably express uncertainty; do not claim a precise future data value from an unextended graph.",
+      "options": [
+        "Maybe the temperature will continue to fall.",
+        "The temperature must reach exactly 20 °C next."
+      ]
+    },
+    {
+      "id": "A2.11.ADV.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.11.ADV.probability_1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “The line will ___ rise if the same model continues.” (express likelihood, not certainty)",
+      "accepted": [
+        "probably"
+      ],
+      "feedback": "Maybe/perhaps, may/might/could and probably express uncertainty; do not claim a precise future data value from an unextended graph.",
+      "options": [
+        "probably",
+        "yesterday"
+      ]
+    },
+    {
+      "id": "A2.11.ADV.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.11.ADV.probability_2",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which adverb signals that a statement is not certain?",
+      "accepted": [
+        "possibly"
+      ],
+      "feedback": "Maybe/perhaps, may/might/could and probably express uncertainty; do not claim a precise future data value from an unextended graph.",
+      "options": [
+        "possibly",
+        "definitely"
+      ]
+    },
+    {
+      "id": "A2.11.ADV.004",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.11.ADV.probability_0",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Fill one word: “___ the graph will rise again.” (express uncertainty)",
+      "accepted": [
+        "Maybe",
+        "Perhaps"
+      ],
+      "feedback": "Maybe/perhaps, may/might/could and probably express uncertainty; do not claim a precise future data value from an unextended graph."
+    },
+    {
+      "id": "A2.11.ADV.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.11.ADV.probability_1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose natural word order.",
+      "accepted": [
+        "The value will probably increase."
+      ],
+      "feedback": "Maybe/perhaps, may/might/could and probably express uncertainty; do not claim a precise future data value from an unextended graph.",
+      "options": [
+        "The value will probably increase.",
+        "The value probably will increases."
+      ]
+    },
+    {
+      "id": "A2.11.ADV.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.11.ADV.probability_2",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose a statement that correctly limits certainty.",
+      "accepted": [
+        "The new value may be higher, but the graph does not show it."
+      ],
+      "feedback": "Maybe/perhaps, may/might/could and probably express uncertainty; do not claim a precise future data value from an unextended graph.",
+      "options": [
+        "The new value may be higher, but the graph does not show it.",
+        "The new value must be 10 because earlier values rose."
+      ]
+    },
+    {
+      "id": "A2.11.ADV.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.11.ADV.probability_0",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which word best expresses strong confidence, rather than a guess?",
+      "accepted": [
+        "definitely"
+      ],
+      "feedback": "Maybe/perhaps, may/might/could and probably express uncertainty; do not claim a precise future data value from an unextended graph.",
+      "options": [
+        "definitely",
+        "maybe"
+      ]
+    },
+    {
+      "id": "A2.11.ADV.008",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.11.ADV.probability_1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “The line ___ not stay flat tomorrow.” (a cautious prediction)",
+      "accepted": [
+        "might"
+      ],
+      "feedback": "Maybe/perhaps, may/might/could and probably express uncertainty; do not claim a precise future data value from an unextended graph."
+    },
+    {
+      "id": "A2.11.GRA.001",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.11.GRA.graph_terms_0",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What is the horizontal line with tick marks called?",
+      "accepted": [
+        "The horizontal axis."
+      ],
+      "feedback": "Name the axis, unit, data point or trend precisely. Graphs should communicate quantities, not just shapes.",
+      "options": [
+        "The horizontal axis.",
+        "The legend only."
+      ]
+    },
+    {
+      "id": "A2.11.GRA.002",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.11.GRA.graph_terms_1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What is the upright line with tick marks called?",
+      "accepted": [
+        "The vertical axis."
+      ],
+      "feedback": "Name the axis, unit, data point or trend precisely. Graphs should communicate quantities, not just shapes.",
+      "options": [
+        "The vertical axis.",
+        "The data table."
+      ]
+    },
+    {
+      "id": "A2.11.GRA.003",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.11.GRA.graph_terms_2",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which word names one marked observation on the graph?",
+      "accepted": [
+        "point"
+      ],
+      "feedback": "Name the axis, unit, data point or trend precisely. Graphs should communicate quantities, not just shapes.",
+      "options": [
+        "point",
+        "page"
+      ]
+    },
+    {
+      "id": "A2.11.GRA.004",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.11.GRA.graph_terms_0",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What should accompany a quantity name in an axis label?",
+      "accepted": [
+        "A unit."
+      ],
+      "feedback": "Name the axis, unit, data point or trend precisely. Graphs should communicate quantities, not just shapes.",
+      "options": [
+        "A unit.",
+        "An email address."
+      ]
+    },
+    {
+      "id": "A2.11.GRA.005",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.11.GRA.graph_terms_1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "In R1, which quantity belongs on the x-axis?",
+      "accepted": [
+        "Time."
+      ],
+      "feedback": "Name the axis, unit, data point or trend precisely. Graphs should communicate quantities, not just shapes.",
+      "options": [
+        "Time.",
+        "Position."
+      ]
+    },
+    {
+      "id": "A2.11.GRA.006",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.11.GRA.graph_terms_2",
+      "status": "draft",
+      "media": "text",
+      "prompt": "In R1, which quantity belongs on the y-axis?",
+      "accepted": [
+        "Position."
+      ],
+      "feedback": "Name the axis, unit, data point or trend precisely. Graphs should communicate quantities, not just shapes.",
+      "options": [
+        "Position.",
+        "Time."
+      ]
+    },
+    {
+      "id": "A2.11.GRA.007",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.11.GRA.graph_terms_0",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What is the name of a graph that joins data points with a line?",
+      "accepted": [
+        "line graph"
+      ],
+      "feedback": "Name the axis, unit, data point or trend precisely. Graphs should communicate quantities, not just shapes.",
+      "options": [
+        "line graph",
+        "pie chart only"
+      ]
+    },
+    {
+      "id": "A2.11.GRA.008",
+      "skill": "vocabulary",
+      "type": "short_answer",
+      "family": "A2.11.GRA.graph_terms_1",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “The line ___ upward from left to right.”",
+      "accepted": [
+        "rises"
+      ],
+      "feedback": "Name the axis, unit, data point or trend precisely. Graphs should communicate quantities, not just shapes."
+    },
+    {
+      "id": "A2.11.RED.001",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.11.RED.fact_retrieval",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What is shown on the horizontal axis?",
+      "accepted": [
+        "Time (s)"
+      ],
+      "feedback": "Read the specific axis, displayed point or interval. Do not treat a model forecast as a measured value.",
+      "options": [
+        "Time (s)",
+        "Position (s)"
+      ]
+    },
+    {
+      "id": "A2.11.RED.002",
+      "skill": "reading",
+      "type": "short_answer",
+      "family": "A2.11.RED.qualitative_trend",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What is the plotted position at 3 s?",
+      "accepted": [
+        "6 m",
+        "6 meters"
+      ],
+      "feedback": "Read the specific axis, displayed point or interval. Do not treat a model forecast as a measured value."
+    },
+    {
+      "id": "A2.11.RED.003",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.11.RED.data_limitations",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which statement describes the graph?",
+      "accepted": [
+        "Position rises steadily."
+      ],
+      "feedback": "Read the specific axis, displayed point or interval. Do not treat a model forecast as a measured value.",
+      "options": [
+        "Position rises steadily.",
+        "Position falls steadily."
+      ]
+    },
+    {
+      "id": "A2.11.RED.004",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.11.RED.fact_retrieval",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Is 12 m at 6 s a displayed position?",
+      "accepted": [
+        "No."
+      ],
+      "feedback": "Read the specific axis, displayed point or interval. Do not treat a model forecast as a measured value.",
+      "options": [
+        "No.",
+        "Yes."
+      ]
+    },
+    {
+      "id": "A2.11.RED.005",
+      "skill": "reading",
+      "type": "short_answer",
+      "family": "A2.11.RED.qualitative_trend",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What is the modeled temperature at 4 min?",
+      "accepted": [
+        "28 °C",
+        "28 degrees Celsius"
+      ],
+      "feedback": "Read the specific axis, displayed point or interval. Do not treat a model forecast as a measured value."
+    },
+    {
+      "id": "A2.11.RED.006",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.11.RED.data_limitations",
+      "status": "draft",
+      "media": "text",
+      "prompt": "How does temperature change during 0–6 min?",
+      "accepted": [
+        "It decreases."
+      ],
+      "feedback": "Read the specific axis, displayed point or interval. Do not treat a model forecast as a measured value.",
+      "options": [
+        "It decreases.",
+        "It increases."
+      ]
+    },
+    {
+      "id": "A2.11.RED.007",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.11.RED.fact_retrieval",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Does the source give a displayed temperature after 6 min?",
+      "accepted": [
+        "No."
+      ],
+      "feedback": "Read the specific axis, displayed point or interval. Do not treat a model forecast as a measured value.",
+      "options": [
+        "No.",
+        "Yes."
+      ]
+    },
+    {
+      "id": "A2.11.RED.008",
+      "skill": "reading",
+      "type": "short_answer",
+      "family": "A2.11.RED.qualitative_trend",
+      "status": "draft",
+      "media": "text",
+      "prompt": "How much does the displayed temperature fall from 0 to 6 min?",
+      "accepted": [
+        "6 °C",
+        "6 degrees Celsius"
+      ],
+      "feedback": "Read the specific axis, displayed point or interval. Do not treat a model forecast as a measured value."
+    },
+    {
+      "id": "A2.11.MAT.001",
+      "skill": "mathematical-english",
+      "type": "short_answer",
+      "family": "A2.11.MAT.axis_quantity_unit",
+      "status": "draft",
+      "media": "text",
+      "prompt": "In R1, what is the change in position from 1 s to 3 s?",
+      "accepted": [
+        "4 m",
+        "4 meters"
+      ],
+      "feedback": "Read the labeled axes first. A slope is a change in the vertical quantity divided by a change in the horizontal quantity; state units and interval."
+    },
+    {
+      "id": "A2.11.MAT.002",
+      "skill": "mathematical-english",
+      "type": "short_answer",
+      "family": "A2.11.MAT.delta_over_delta",
+      "status": "draft",
+      "media": "text",
+      "prompt": "In R1, what is the change in time from 1 s to 3 s?",
+      "accepted": [
+        "2 s",
+        "2 seconds"
+      ],
+      "feedback": "Read the labeled axes first. A slope is a change in the vertical quantity divided by a change in the horizontal quantity; state units and interval."
+    },
+    {
+      "id": "A2.11.MAT.003",
+      "skill": "mathematical-english",
+      "type": "single_choice",
+      "family": "A2.11.MAT.slope_comparison",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which simple rate is change in position divided by change in time?",
+      "accepted": [
+        "2 m/s"
+      ],
+      "feedback": "Read the labeled axes first. A slope is a change in the vertical quantity divided by a change in the horizontal quantity; state units and interval.",
+      "options": [
+        "2 m/s",
+        "2 m"
+      ]
+    },
+    {
+      "id": "A2.11.MAT.004",
+      "skill": "mathematical-english",
+      "type": "single_choice",
+      "family": "A2.11.MAT.axis_quantity_unit",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which axis shows time in R1?",
+      "accepted": [
+        "Horizontal"
+      ],
+      "feedback": "Read the labeled axes first. A slope is a change in the vertical quantity divided by a change in the horizontal quantity; state units and interval.",
+      "options": [
+        "Horizontal",
+        "Vertical"
+      ]
+    },
+    {
+      "id": "A2.11.MAT.005",
+      "skill": "mathematical-english",
+      "type": "short_answer",
+      "family": "A2.11.MAT.delta_over_delta",
+      "status": "draft",
+      "media": "text",
+      "prompt": "In R2, how much does modeled temperature change from 2 to 6 min?",
+      "accepted": [
+        "−4 °C",
+        "-4 °C",
+        "minus 4 °C"
+      ],
+      "feedback": "Read the labeled axes first. A slope is a change in the vertical quantity divided by a change in the horizontal quantity; state units and interval."
+    },
+    {
+      "id": "A2.11.MAT.006",
+      "skill": "mathematical-english",
+      "type": "short_answer",
+      "family": "A2.11.MAT.slope_comparison",
+      "status": "draft",
+      "media": "text",
+      "prompt": "In R2, what is the average change per minute from 0 to 6 min?",
+      "accepted": [
+        "−1 °C/min",
+        "-1 °C/min"
+      ],
+      "feedback": "Read the labeled axes first. A slope is a change in the vertical quantity divided by a change in the horizontal quantity; state units and interval."
+    },
+    {
+      "id": "A2.11.MAT.007",
+      "skill": "mathematical-english",
+      "type": "single_choice",
+      "family": "A2.11.MAT.axis_quantity_unit",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which direction does a negative temperature-versus-time slope indicate?",
+      "accepted": [
+        "The plotted temperature falls."
+      ],
+      "feedback": "Read the labeled axes first. A slope is a change in the vertical quantity divided by a change in the horizontal quantity; state units and interval.",
+      "options": [
+        "The plotted temperature falls.",
+        "The plotted temperature rises."
+      ]
+    }
+  ]
+}

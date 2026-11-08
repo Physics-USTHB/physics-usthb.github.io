@@ -1,0 +1,583 @@
+{
+  "schemaVersion": 1,
+  "id": "A2.12",
+  "title": "A2 Integrated Physics Project",
+  "status": "draft",
+  "language": "en-US",
+  "license": "original-course-content",
+  "pedagogicalStatus": "Unreviewed formative text exercises; not an A2 capstone assessment.",
+  "sources": [
+    {
+      "id": "R1",
+      "title": "Virtual cart: observation sheet",
+      "paragraphs": [
+        "**Source role:** practice; **kind:** reading.",
+        "An instructor runs a virtual straight-line cart model for a class. The timer starts at zero seconds. The program displays 0.0 m at 0 s, 1.5 m at 1 s, 3.0 m at 2 s and 4.5 m at 3 s. The student checks the time label and records each position in a table. The cart moves at a constant modeled speed during the displayed interval. The student writes “Position (m)” beside the vertical axis and “Time (s)” beside the horizontal axis. These are virtual model values, not measurements from a real laboratory. There is no displayed value at four seconds. A future value can be predicted only if an additional motion assumption is stated.",
+        "| Time (s) | Position (m) |\n|---|---|\n| 0 | 0 |\n| 1 | 1.5 |\n| 2 | 3 |\n| 3 | 4.5 |"
+      ]
+    },
+    {
+      "id": "R2",
+      "title": "Temperature monitoring note",
+      "paragraphs": [
+        "**Source role:** practice; **kind:** reading.",
+        "A student opens a safe virtual temperature model. At 0 min, the displayed temperature is 30 °C. At 2 min, it is 28 °C. At 4 min, it is 26 °C. The student records the values with units. The line decreases over the shown interval. The student tells a partner, “The temperature went down by four degrees Celsius in four minutes.” The student does not claim that 24 °C was measured at six minutes because the graph ends at four minutes. The model helps practise the language of observations, not physical temperature measurements.",
+        "| Time (min) | Temperature (°C) |\n|---|---|\n| 0 | 30 |\n| 2 | 28 |\n| 4 | 26 |"
+      ]
+    },
+    {
+      "id": "R3",
+      "title": "Resistance experiment preparation",
+      "paragraphs": [
+        "**Source role:** practice; **kind:** reading.",
+        "A virtual circuit contains an ideal resistor, a variable voltage source and a current display. The student first checks the connection in the simulation. The model gives 0.10 A at 2 V, 0.20 A at 4 V and 0.30 A at 6 V. The current increases as the voltage increases. The student draws a table and labels both quantities. The circuit is an ideal educational model; no real wire or electrical source is connected. In the results paragraph, the student writes “The modeled current increased with voltage.” The student avoids claiming that the results apply to all components.",
+        "| Voltage (V) | Current (A) |\n|---|---|\n| 2 | 0.1 |\n| 4 | 0.2 |\n| 6 | 0.3 |"
+      ]
+    },
+    {
+      "id": "R4",
+      "title": "Small report: a virtual pendulum",
+      "paragraphs": [
+        "**Source role:** practice; **kind:** reading.",
+        "A student uses a simple digital pendulum model and records three displayed periods: 1.2 s, 1.3 s and 1.2 s. The report has four sections: apparatus, procedure, results and conclusion. In the procedure, the student writes that the timer was started and the displayed period was recorded three times. The results section contains the three numbers with the unit s. The conclusion states that the model showed similar but not identical readings. The student does not call these real experimental readings. In a short oral summary, the student says, “We used a virtual pendulum, recorded three periods and compared the displayed values.”",
+        "| Trial | Period (s) |\n|---|---|\n| 1 | 1.2 |\n| 2 | 1.3 |\n| 3 | 1.2 |"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "A2.12.READ.001",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.12.READ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "In R1, what moves in the simulation?",
+      "accepted": [
+        "A cart"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "A cart",
+        "A pendulum"
+      ],
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.READ.002",
+      "skill": "reading",
+      "type": "short_answer",
+      "family": "A2.12.READ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "In R1, what is the displayed position at 2 s?",
+      "accepted": [
+        "3.0 m"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.READ.003",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.12.READ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What unit is used for time in R1?",
+      "accepted": [
+        "seconds"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "seconds",
+        "minutes"
+      ],
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.READ.004",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.12.READ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Does R1 describe real lab measurements?",
+      "accepted": [
+        "No"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.READ.005",
+      "skill": "reading",
+      "type": "short_answer",
+      "family": "A2.12.READ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R1: What is the position at 3 s?",
+      "accepted": [
+        "4.5 m"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.READ.006",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.12.READ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R1: Which quantity increases?",
+      "accepted": [
+        "Position"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "Position",
+        "Time unit"
+      ],
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.READ.007",
+      "skill": "reading",
+      "type": "short_answer",
+      "family": "A2.12.READ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R2: What was the temperature at 2 min?",
+      "accepted": [
+        "28 °C",
+        "28 degrees Celsius"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "sourceId": "R2"
+    },
+    {
+      "id": "A2.12.READ.008",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.12.READ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R2: How did temperature change during the shown interval?",
+      "accepted": [
+        "It decreased"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "It decreased",
+        "It increased"
+      ],
+      "sourceId": "R2"
+    },
+    {
+      "id": "A2.12.GRAM.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.12.GRAM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct simple-past report sentence.",
+      "accepted": [
+        "We recorded the values."
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "We recorded the values.",
+        "We record yesterday the values."
+      ],
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.GRAM.002",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.12.GRAM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: \"The cart ___ at constant speed in the model yesterday.\" (move, simple past)",
+      "accepted": [
+        "moved"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "sourceId": "R4"
+    },
+    {
+      "id": "A2.12.GRAM.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.12.GRAM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct present simple observation.",
+      "accepted": [
+        "The line rises steadily."
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "The line rises steadily.",
+        "The line rising steadily."
+      ],
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.GRAM.004",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.12.GRAM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: \"The sensor ___ showing 28 degrees now.",
+      "accepted": [
+        "is"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "sourceId": "R2"
+    },
+    {
+      "id": "A2.12.GRAM.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.12.GRAM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct passive? No: select the simple A2 procedure sentence.",
+      "accepted": [
+        "We started the timer."
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "We started the timer.",
+        "Timer was initiating experimental methodology."
+      ],
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.GRAM.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.12.GRAM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct question.",
+      "accepted": [
+        "Did you check the labels?"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "Did you check the labels?",
+        "Did you checked the labels?"
+      ],
+      "sourceId": "R4"
+    },
+    {
+      "id": "A2.12.GRAM.007",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.12.GRAM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: \"The student did not ___ a future value.",
+      "accepted": [
+        "record"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.GRAM.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.12.GRAM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which sentence is a plan for later?",
+      "accepted": [
+        "We are going to draw the graph."
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "We are going to draw the graph.",
+        "We drew the graph yesterday."
+      ],
+      "sourceId": "R2"
+    },
+    {
+      "id": "A2.12.VOC.001",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.12.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which word names a device that measures time?",
+      "accepted": [
+        "timer"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "timer",
+        "ruler"
+      ],
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.VOC.002",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.12.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What is a result?",
+      "accepted": [
+        "An observed or displayed outcome"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "An observed or displayed outcome",
+        "A safety rule only"
+      ],
+      "sourceId": "R4"
+    },
+    {
+      "id": "A2.12.VOC.003",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.12.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which section names the equipment?",
+      "accepted": [
+        "Apparatus"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "Apparatus",
+        "Conclusion"
+      ],
+      "sourceId": "R2"
+    },
+    {
+      "id": "A2.12.VOC.004",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.12.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What does \"record a value\" mean?",
+      "accepted": [
+        "Write down a measured or displayed quantity"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "Write down a measured or displayed quantity",
+        "Erase all data"
+      ],
+      "sourceId": "R3"
+    },
+    {
+      "id": "A2.12.VOC.005",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.12.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which verb best fits \"___ the axes\"?",
+      "accepted": [
+        "label"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "label",
+        "interrupt"
+      ],
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.VOC.006",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.12.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which verb best fits \"___ a graph\"?",
+      "accepted": [
+        "plot"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "plot",
+        "eat"
+      ],
+      "sourceId": "R4"
+    },
+    {
+      "id": "A2.12.VOC.007",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.12.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The number 28 °C is a ___.",
+      "accepted": [
+        "temperature value"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "temperature value",
+        "time interval"
+      ],
+      "sourceId": "R2"
+    },
+    {
+      "id": "A2.12.VOC.008",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.12.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which is a unit of position?",
+      "accepted": [
+        "meter"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "meter",
+        "second"
+      ],
+      "sourceId": "R3"
+    },
+    {
+      "id": "A2.12.MATH.001",
+      "skill": "mathematical-english",
+      "type": "short_answer",
+      "family": "A2.12.MATH.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R1: Say 1.5 m in written words.",
+      "accepted": [
+        "one point five meters"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.MATH.002",
+      "skill": "mathematical-english",
+      "type": "single_choice",
+      "family": "A2.12.MATH.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R1: What unit belongs with the cart positions?",
+      "accepted": [
+        "m"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "m",
+        "s"
+      ],
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.MATH.003",
+      "skill": "mathematical-english",
+      "type": "short_answer",
+      "family": "A2.12.MATH.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R1: What change in position occurs between 1 and 3 seconds?",
+      "accepted": [
+        "3.0 m",
+        "3 m"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.MATH.004",
+      "skill": "mathematical-english",
+      "type": "short_answer",
+      "family": "A2.12.MATH.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R1: How much time passes from 0 s to 3 s?",
+      "accepted": [
+        "3 s",
+        "3 seconds"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.12.MATH.005",
+      "skill": "mathematical-english",
+      "type": "short_answer",
+      "family": "A2.12.MATH.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R2: What was the starting temperature?",
+      "accepted": [
+        "30 °C",
+        "30 degrees Celsius"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "sourceId": "R2"
+    },
+    {
+      "id": "A2.12.MATH.006",
+      "skill": "mathematical-english",
+      "type": "short_answer",
+      "family": "A2.12.MATH.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R2: The temperature falls from 30 °C to 26 °C. How much does it fall BY?",
+      "accepted": [
+        "4 °C",
+        "4 degrees Celsius"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "sourceId": "R2"
+    },
+    {
+      "id": "A2.12.MATH.007",
+      "skill": "mathematical-english",
+      "type": "single_choice",
+      "family": "A2.12.MATH.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R2: Which unit goes with the horizontal axis?",
+      "accepted": [
+        "min"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "options": [
+        "min",
+        "°C"
+      ],
+      "sourceId": "R2"
+    },
+    {
+      "id": "A2.12.MATH.008",
+      "skill": "mathematical-english",
+      "type": "short_answer",
+      "family": "A2.12.MATH.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "R3: The current at 6 V is ___ amperes.",
+      "accepted": [
+        "0.30",
+        "0.3"
+      ],
+      "feedback": "Check the supplied source and the exact language target. A correct answer after a hint is practice, not independent mastery.",
+      "sourceId": "R3"
+    }
+  ]
+}

@@ -1,0 +1,270 @@
+{
+  "schemaVersion": 1,
+  "language": "en-US",
+  "units": {
+    "A2.01": {
+      "goal": "Introduce yourself as a physics student, ask basic questions and understand a course timetable.",
+      "notes": [
+        [
+          "The verb be",
+          "Use I am, you/we/they are, and he/she/it is. Make a question by moving be before the subject: “Is this the laboratory?”"
+        ],
+        [
+          "Present-simple routines",
+          "Use the base verb after I/you/we/they, but add -s for he/she/it: “She studies physics.”"
+        ],
+        [
+          "Questions",
+          "Use do or does with ordinary present-simple verbs: “Does she study physics?” The main verb stays in the base form."
+        ],
+        [
+          "Academic etiquette",
+          "Use a clear subject line, a greeting, a concise question and a polite closing in an email to an instructor."
+        ]
+      ],
+      "pronunciation": "Practise spelling names and email addresses aloud. Say @ as “at” and . as “dot.”"
+    },
+    "A2.02": {
+      "goal": "Read, write, compare and pronounce scientific quantities and SI units.",
+      "notes": [
+        [
+          "Scientific quantities",
+          "A quantity is what is measured (for example, mass); a unit expresses its value (for example, kilogram, symbol kg)."
+        ],
+        [
+          "Numbers in spoken English",
+          "Read 0.05 as “zero point zero five.” Distinguish thirteen from thirty and read 1/2 as “one-half” or “a half.”"
+        ],
+        [
+          "Countable and uncountable",
+          "Say “three measurements” but “some equipment.” Use how many with countable plurals and how much with uncountable nouns."
+        ],
+        [
+          "SI conventions",
+          "Write a space between numbers and SI unit symbols: 2 m, 4.5 V. Unit symbols are not pluralized and capitalization matters (K is kelvin; k is a prefix)."
+        ]
+      ],
+      "pronunciation": "Practise thirteen/thirty, decimal points, fractions, and grouped quantity-plus-unit phrases."
+    },
+    "A2.03": {
+      "goal": "Identify apparatus and describe where items are located in a labelled teaching room.",
+      "notes": [
+        [
+          "There is / there are",
+          "Use there is for one item and there are for more than one. Ask “Is there a ruler?” and “Are there two timers?”"
+        ],
+        [
+          "Position words",
+          "Use on, under, between, next to, behind, in front of, on the left and on the right. State the viewing direction before giving relative positions."
+        ],
+        [
+          "Near and far",
+          "This/these refer to nearby objects; that/those refer to more distant objects. Match singular and plural."
+        ],
+        [
+          "Instructions",
+          "Sequence actions with first, next, then and finally. This lesson uses paper cards or disconnected apparatus only."
+        ]
+      ],
+      "pronunciation": "Pay attention to this/these and that/those; pronounce final plural -s clearly."
+    },
+    "A2.04": {
+      "goal": "Describe routine physics activities and motion happening now.",
+      "notes": [
+        [
+          "Present simple",
+          "Use it for habits, schedules and general statements: “The class meets every Tuesday.”"
+        ],
+        [
+          "Present continuous",
+          "Use am/is/are + verb-ing to describe an action in progress: “The cart is moving right now.”"
+        ],
+        [
+          "Motion verbs",
+          "Use rotate, rise, fall, speed up, slow down, stop and remain at rest when supported by the given source."
+        ],
+        [
+          "Evidence",
+          "Describe a displayed motion caption or data. Do not invent a velocity from an unlabeled still image."
+        ]
+      ],
+      "pronunciation": "Practise linked phrases such as “is moving” and contrast stress on “usually” versus “now.”"
+    },
+    "A2.05": {
+      "goal": "Compare physical quantities and report differences without overclaiming.",
+      "notes": [
+        [
+          "Comparatives",
+          "Compare two values with longer than, shorter than, higher than or more than. Do not use a superlative for a comparison between only two values."
+        ],
+        [
+          "Superlatives",
+          "For three or more values, use the highest, shortest or most useful when the comparison is justified."
+        ],
+        [
+          "Equality and sufficiency",
+          "Use as ... as, not as ... as, too short and long enough. Example: “The cable is long enough for this setup.”"
+        ],
+        [
+          "Accuracy caution",
+          "Two close readings are not automatically accurate. Accuracy requires a reference or justified criterion."
+        ]
+      ],
+      "pronunciation": "Read comparative endings clearly; say quantities with units before making comparisons."
+    },
+    "A2.06": {
+      "goal": "Understand laboratory instructions, permissions and safety language.",
+      "notes": [
+        [
+          "Obligation",
+          "Must and have to express requirements in the stated situation: “You must follow the instructor's instructions.”"
+        ],
+        [
+          "Advice",
+          "Should expresses recommendations, not the same level of obligation as must."
+        ],
+        [
+          "Prohibition",
+          "Must not means an action is prohibited. Don't have to means it is not required; the two are not interchangeable."
+        ],
+        [
+          "Permission and requests",
+          "Use “Can I...?” or “Could you...?” for requests. Real laboratory rules always take precedence over fictional language exercises."
+        ]
+      ],
+      "pronunciation": "Emphasize the word not in prohibitions. Practise polite rising intonation in requests."
+    },
+    "A2.07": {
+      "goal": "Describe completed experiments and observations using the simple past.",
+      "notes": [
+        [
+          "Simple past",
+          "Use the past form for completed events: “Yesterday we recorded the values.”"
+        ],
+        [
+          "Regular verbs",
+          "Most regular past forms end in -ed, but pronunciation varies: /t/, /d/ or /ɪd/."
+        ],
+        [
+          "Irregular verbs",
+          "Learn high-frequency forms such as take/took, see/saw, write/wrote and make/made."
+        ],
+        [
+          "Reporting evidence",
+          "Write what was actually done or displayed, then separate observations from interpretations."
+        ]
+      ],
+      "pronunciation": "Practise measured, checked and recorded; listen for the three pronunciations of -ed."
+    },
+    "A2.08": {
+      "goal": "Explain what was happening when a classroom or virtual-lab event occurred.",
+      "notes": [
+        [
+          "Past continuous",
+          "Use was/were + verb-ing for an ongoing activity in the past: “She was reading the display.”"
+        ],
+        [
+          "Interrupted actions",
+          "Combine past continuous with simple past: “She was writing when the screen went dark.”"
+        ],
+        [
+          "When and while",
+          "When often introduces the short event; while often introduces the ongoing background action."
+        ],
+        [
+          "Troubleshooting communication",
+          "State what happened, when it happened, and what you observed. Ask for clarification without guessing a cause."
+        ]
+      ],
+      "pronunciation": "Group information into short phrases; practise contrastive stress in “was writing” versus “went dark.”"
+    },
+    "A2.09": {
+      "goal": "Discuss completed work, recent experience and unfinished assignments.",
+      "notes": [
+        [
+          "Present perfect",
+          "Use have/has + past participle: “We have finished the table.”"
+        ],
+        [
+          "Already, just and yet",
+          "Already describes completion, just often indicates very recent completion, and yet commonly appears in questions or negatives."
+        ],
+        [
+          "Experience",
+          "Use ever and never to ask about or describe experience, without inventing any laboratory result."
+        ],
+        [
+          "Time distinction",
+          "Use simple past with a specific finished time: “We finished on Monday.”"
+        ]
+      ],
+      "pronunciation": "Practise natural contractions (I've, she's, haven't) while keeping the full forms recognizable."
+    },
+    "A2.10": {
+      "goal": "Explain simple physical causes and results, then state conditions and predictions.",
+      "notes": [
+        [
+          "Because and so",
+          "Because introduces a reason; so introduces a result. Do not combine both carelessly for the same relationship."
+        ],
+        [
+          "Zero conditional",
+          "Use if + present simple, present simple for general rules under stated assumptions."
+        ],
+        [
+          "First conditional",
+          "Use if + present simple, will + base verb for a possible future result."
+        ],
+        [
+          "Physics assumptions",
+          "A model prediction is not a measured value. State conditions such as constant resistance or constant speed explicitly."
+        ]
+      ],
+      "pronunciation": "Use a clear pause between conditional clauses; stress the physical assumption."
+    },
+    "A2.11": {
+      "goal": "Describe simple graphs and distinguish observed trends from predictions.",
+      "notes": [
+        [
+          "Axes and units",
+          "Always identify a horizontal and vertical quantity with units, such as Time (s) and Position (m)."
+        ],
+        [
+          "Trends",
+          "Use increases, decreases, remains constant, rises and falls only for the shown interval."
+        ],
+        [
+          "Future statements",
+          "Use will or be going to for suitable predictions; neither one makes an unobserved value a measurement."
+        ],
+        [
+          "Difference and uncertainty",
+          "“Increased from 2 to 5” describes endpoints; “increased by 3” describes the difference. Use may, might and probably cautiously."
+        ]
+      ],
+      "pronunciation": "Read graph axes aloud and clearly distinguish by from to when describing numerical changes."
+    },
+    "A2.12": {
+      "goal": "Integrate A2 reading, grammar, mathematics and scientific explanation in a virtual experimental context.",
+      "notes": [
+        [
+          "Before analysing",
+          "Read the apparatus description, quantities, units, observations and assumptions."
+        ],
+        [
+          "Describe the process",
+          "Use first, then, next and finally to describe a simple procedure."
+        ],
+        [
+          "Report results",
+          "Give measured or simulated values with their units, and distinguish an observation from a prediction."
+        ],
+        [
+          "Communicate the outcome",
+          "Explain your result simply, write a short paragraph and record a spoken summary for self-review once recording tools are available. This draft practice is not yet a final proficiency examination."
+        ]
+      ],
+      "pronunciation": "Practise reading a quantity, its unit, and a full sentence explaining its meaning."
+    }
+  }
+}

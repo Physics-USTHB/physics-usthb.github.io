@@ -1,0 +1,655 @@
+{
+  "schemaVersion": 1,
+  "id": "A2.02",
+  "title": "Numbers, Quantities & SI Units",
+  "status": "draft",
+  "language": "en-US",
+  "license": "original-course-content",
+  "pedagogicalStatus": "Unreviewed author draft; formative practice only",
+  "sources": [
+    {
+      "id": "R1",
+      "title": "A Virtual Measurement Table",
+      "paragraphs": [
+        "These are example values for language practice, not measurements from a real laboratory.",
+        "Sample A: length — 0.35 m (meter). Sample B: mass — 0.80 kg (kilogram).",
+        "Sample C: time interval — 12.5 s (second). Sample D: electric current — 0.20 A (ampere).",
+        "Sample E: temperature — 295 K (kelvin). Sample F: voltage — 4.5 V (volt).",
+        "Sample G: force — 3.0 N (newton). Sample H: energy — 6.0 J (joule).",
+        "A quantity is what we measure; a unit states how its value is expressed. Write a space before an SI unit symbol. Symbols do not have a plural -s."
+      ]
+    },
+    {
+      "id": "R2",
+      "title": "Nora's Measurement Desk",
+      "paragraphs": [
+        "Nora has a ruler, a digital scale, and a timer. She records the length of a small block as 0.24 m, its mass as 0.60 kg, and a time interval as 8.5 s.",
+        "Nora says: 'There is some equipment on the desk.' She can also say: 'There are three instruments on the desk.'",
+        "Her classmate asks, 'How many measurements did you record?' She answers, 'Three.' He asks, 'How much time did you measure?' She replies, 'Eight point five seconds.'"
+      ]
+    },
+    {
+      "id": "R3",
+      "title": "Workshop Notice",
+      "paragraphs": [
+        "The room temperature display reads 22 °C. A small mass has a value of 0.25 kg. The timer is set to 30 s.",
+        "A demonstration uses 3 V. A straight line is approximately 2 m long.",
+        "V is the symbol for the volt, a unit used to express voltage. The symbol °C refers to degree Celsius, not to coulomb."
+      ]
+    },
+    {
+      "id": "R4",
+      "title": "A Class Discussion of Numbers",
+      "paragraphs": [
+        "The instructor asks, 'Are thirteen and thirty the same?' Kai says, 'No: thirteen is 13, but thirty is 30.'",
+        "'Read 0.05.' Kai says, 'Zero point zero five.'",
+        "'And read 1/2.' Kai says, 'One-half or a half.'",
+        "'Which is larger: 0.6 or 0.06?' Kai answers, 'Zero point six is larger.'"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "A2.02.ART.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.02.ART.new-a",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A ruler is introduced for the first time. I need ___ ruler.",
+      "accepted": [
+        "a"
+      ],
+      "options": [
+        "a",
+        "an",
+        "the"
+      ],
+      "feedback": "Ruler begins with a consonant sound; use a."
+    },
+    {
+      "id": "A2.02.ART.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.02.ART.new-an",
+      "status": "draft",
+      "media": "text",
+      "prompt": "An ammeter is introduced for the first time. She has ___ ammeter.",
+      "accepted": [
+        "an"
+      ],
+      "options": [
+        "an",
+        "a",
+        "the"
+      ],
+      "feedback": "Ammeter begins with a vowel sound; use an."
+    },
+    {
+      "id": "A2.02.ART.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.02.ART.new-an",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the article for a newly introduced instrument: There is ___ instrument.",
+      "accepted": [
+        "an"
+      ],
+      "options": [
+        "a",
+        "an",
+        "the"
+      ],
+      "feedback": "Instrument begins with a vowel sound."
+    },
+    {
+      "id": "A2.02.ART.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.02.ART.known-the",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: Nora has a ruler. ___ ruler is on the desk.",
+      "accepted": [
+        "The"
+      ],
+      "options": [
+        "The",
+        "A",
+        "An"
+      ],
+      "feedback": "Use the for a specific ruler already mentioned."
+    },
+    {
+      "id": "A2.02.ART.005",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.02.ART.new-a",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: We need ___ voltmeter for the example.",
+      "accepted": [
+        "a"
+      ],
+      "feedback": "The word voltmeter begins with a consonant sound."
+    },
+    {
+      "id": "A2.02.ART.006",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.02.ART.known-the",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: I see a display. ___ display shows 22 °C.",
+      "accepted": [
+        "The"
+      ],
+      "feedback": "Use the to refer back to the introduced display."
+    },
+    {
+      "id": "A2.02.CN.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.02.COUNT.equipment",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the natural English phrase.",
+      "accepted": [
+        "some equipment"
+      ],
+      "options": [
+        "three equipments",
+        "an equipment",
+        "some equipment"
+      ],
+      "feedback": "Equipment is ordinarily uncountable in this meaning."
+    },
+    {
+      "id": "A2.02.CN.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.02.COUNT.measurements",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the natural English phrase.",
+      "accepted": [
+        "three measurements"
+      ],
+      "options": [
+        "three measurement",
+        "three measurements",
+        "three equipments"
+      ],
+      "feedback": "Measurement is countable; the plural is measurements."
+    },
+    {
+      "id": "A2.02.CN.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.02.COUNT.information",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which noun is generally uncountable in this meaning?",
+      "accepted": [
+        "information"
+      ],
+      "options": [
+        "ruler",
+        "information",
+        "timer"
+      ],
+      "feedback": "Information is an uncountable noun in ordinary academic English."
+    },
+    {
+      "id": "A2.02.CN.004",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.02.COUNT.instruments",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: There are two ___ on the desk.",
+      "accepted": [
+        "instruments"
+      ],
+      "feedback": "Use the plural form instruments after two."
+    },
+    {
+      "id": "A2.02.QUANT.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.02.QUANT.how-much",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: ___ time do we have?",
+      "accepted": [
+        "How much"
+      ],
+      "options": [
+        "How much",
+        "How many"
+      ],
+      "feedback": "Use how much with uncountable time."
+    },
+    {
+      "id": "A2.02.QUANT.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.02.QUANT.how-many",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: ___ measurements are in the table?",
+      "accepted": [
+        "How many"
+      ],
+      "options": [
+        "How many",
+        "How much"
+      ],
+      "feedback": "Use how many with countable plural measurements."
+    },
+    {
+      "id": "A2.02.QUANT.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.02.QUANT.some",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: We have ___ equipment in the cabinet.",
+      "accepted": [
+        "some"
+      ],
+      "options": [
+        "some",
+        "many",
+        "three"
+      ],
+      "feedback": "Use some with the uncountable noun equipment."
+    },
+    {
+      "id": "A2.02.PLURAL.001",
+      "skill": "grammar",
+      "type": "short_answer",
+      "family": "A2.02.PLURAL.timer",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: Two ___ are on the table. (timer)",
+      "accepted": [
+        "timers"
+      ],
+      "feedback": "Add -s to make the plural timers."
+    },
+    {
+      "id": "A2.02.PLURAL.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.02.PLURAL.symbol",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which is the correct SI unit symbol for two meters?",
+      "accepted": [
+        "m"
+      ],
+      "options": [
+        "m",
+        "ms",
+        "mts"
+      ],
+      "feedback": "SI unit symbols do not take plural endings.",
+      "caseSensitive": true
+    },
+    {
+      "id": "A2.02.NUM.001",
+      "skill": "mathematical-english",
+      "type": "single_choice",
+      "family": "A2.02.NUM.decimal",
+      "status": "draft",
+      "media": "text",
+      "prompt": "How do we read the number 0.05?",
+      "accepted": [
+        "zero point zero five"
+      ],
+      "options": [
+        "zero point zero five",
+        "zero five",
+        "five point zero"
+      ],
+      "feedback": "Read each digit after the decimal point."
+    },
+    {
+      "id": "A2.02.NUM.002",
+      "skill": "mathematical-english",
+      "type": "single_choice",
+      "family": "A2.02.NUM.thirteen",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which numeral represents thirteen?",
+      "accepted": [
+        "13"
+      ],
+      "options": [
+        "13",
+        "30",
+        "3"
+      ],
+      "feedback": "Thirteen is 13; thirty is 30."
+    },
+    {
+      "id": "A2.02.NUM.003",
+      "skill": "mathematical-english",
+      "type": "single_choice",
+      "family": "A2.02.NUM.fraction",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose a natural way to read 1/2.",
+      "accepted": [
+        "one-half"
+      ],
+      "options": [
+        "one-half",
+        "one-two",
+        "half point"
+      ],
+      "feedback": "The fraction 1/2 can be read one-half or a half."
+    },
+    {
+      "id": "A2.02.NUM.004",
+      "skill": "mathematical-english",
+      "type": "single_choice",
+      "family": "A2.02.NUM.compare",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which value is larger?",
+      "accepted": [
+        "0.6"
+      ],
+      "options": [
+        "0.06",
+        "0.6"
+      ],
+      "feedback": "Six tenths is larger than six hundredths."
+    },
+    {
+      "id": "A2.02.NUM.005",
+      "skill": "mathematical-english",
+      "type": "single_choice",
+      "family": "A2.02.NUM.approx",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What does approximately mean?",
+      "accepted": [
+        "close but not exact"
+      ],
+      "options": [
+        "close but not exact",
+        "exactly equal",
+        "impossible"
+      ],
+      "feedback": "Approximately signals a close estimate, not necessarily an exact value."
+    },
+    {
+      "id": "A2.02.UNITS.001",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.02.UNIT.quantity",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which quantity is expressed in kilograms?",
+      "accepted": [
+        "mass"
+      ],
+      "options": [
+        "mass",
+        "time",
+        "length"
+      ],
+      "feedback": "The kilogram (kg) is the SI base unit of mass."
+    },
+    {
+      "id": "A2.02.UNITS.002",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.02.UNIT.quantity",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which quantity is expressed in seconds?",
+      "accepted": [
+        "time"
+      ],
+      "options": [
+        "current",
+        "voltage",
+        "time"
+      ],
+      "feedback": "The second (s) is the SI base unit of time."
+    },
+    {
+      "id": "A2.02.UNITS.003",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.02.UNIT.symbol",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What is the unit symbol for the volt?",
+      "accepted": [
+        "V"
+      ],
+      "options": [
+        "A",
+        "V",
+        "K"
+      ],
+      "feedback": "The symbol V stands for volt.",
+      "caseSensitive": true
+    },
+    {
+      "id": "A2.02.UNITS.004",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.02.UNIT.symbol",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What is the symbol for the kelvin?",
+      "accepted": [
+        "K"
+      ],
+      "options": [
+        "k",
+        "K",
+        "°K"
+      ],
+      "feedback": "The kelvin has symbol K, without a degree sign.",
+      "caseSensitive": true
+    },
+    {
+      "id": "A2.02.UNITS.005",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.02.UNIT.spacing",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correctly spaced SI value.",
+      "accepted": [
+        "0.35 m"
+      ],
+      "options": [
+        "0.35m",
+        "0.35 m",
+        "0.35 ms"
+      ],
+      "feedback": "Write a space between a numerical value and its unit symbol.",
+      "caseSensitive": true
+    },
+    {
+      "id": "A2.02.READ.001",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.02.READ.R1.values",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What length appears for sample A?",
+      "accepted": [
+        "0.35 m"
+      ],
+      "options": [
+        "0.35 m",
+        "0.35 kg",
+        "3.5 m"
+      ],
+      "feedback": "The table lists sample A's length as 0.35 m.",
+      "sourceId": "R1",
+      "caseSensitive": true
+    },
+    {
+      "id": "A2.02.READ.002",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.02.READ.R1.units",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What unit is used for sample D's electric current?",
+      "accepted": [
+        "ampere"
+      ],
+      "options": [
+        "ampere",
+        "second",
+        "kelvin"
+      ],
+      "feedback": "The unit for current in the table is ampere.",
+      "sourceId": "R1"
+    },
+    {
+      "id": "A2.02.READ.003",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.02.READ.R1.values",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What temperature is listed for sample E?",
+      "accepted": [
+        "295 K"
+      ],
+      "options": [
+        "295 K",
+        "295 °C",
+        "22 K"
+      ],
+      "feedback": "Sample E records a temperature of 295 K.",
+      "sourceId": "R1",
+      "caseSensitive": true
+    },
+    {
+      "id": "A2.02.READ.004",
+      "skill": "reading",
+      "type": "short_answer",
+      "family": "A2.02.READ.R2.values",
+      "status": "draft",
+      "media": "text",
+      "prompt": "How many measurements does Nora write?",
+      "accepted": [
+        "three",
+        "3"
+      ],
+      "feedback": "Nora records length, mass and a time interval.",
+      "sourceId": "R2"
+    },
+    {
+      "id": "A2.02.READ.005",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.02.READ.R2.values",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What time interval does Nora record?",
+      "accepted": [
+        "8.5 s"
+      ],
+      "options": [
+        "8.5 s",
+        "12.5 s",
+        "30 s"
+      ],
+      "feedback": "The time interval in Nora's record is 8.5 s.",
+      "sourceId": "R2",
+      "caseSensitive": true
+    },
+    {
+      "id": "A2.02.READ.006",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.02.READ.R3.notice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What does the room-temperature display show?",
+      "accepted": [
+        "22 °C"
+      ],
+      "options": [
+        "22 °C",
+        "295 K",
+        "30 s"
+      ],
+      "feedback": "The workshop notice displays 22 °C.",
+      "sourceId": "R3",
+      "caseSensitive": true
+    },
+    {
+      "id": "A2.02.READ.007",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.02.READ.R3.notice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What voltage does the demonstration use?",
+      "accepted": [
+        "3 V"
+      ],
+      "options": [
+        "3 V",
+        "30 V",
+        "3 A"
+      ],
+      "feedback": "The notice states a demonstration voltage of 3 V.",
+      "sourceId": "R3",
+      "caseSensitive": true
+    },
+    {
+      "id": "A2.02.READ.008",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.02.READ.R4.numbers",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which is larger according to the discussion?",
+      "accepted": [
+        "0.6"
+      ],
+      "options": [
+        "0.6",
+        "0.06"
+      ],
+      "feedback": "Kai says that 0.6 is larger than 0.06.",
+      "sourceId": "R4"
+    },
+    {
+      "id": "A2.02.READ.009",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.02.READ.R4.numbers",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What number is described as thirty?",
+      "accepted": [
+        "30"
+      ],
+      "options": [
+        "13",
+        "30",
+        "3"
+      ],
+      "feedback": "Thirty represents the number 30.",
+      "sourceId": "R4"
+    }
+  ]
+}

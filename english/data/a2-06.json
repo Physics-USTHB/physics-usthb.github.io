@@ -1,0 +1,729 @@
+{
+  "schemaVersion": 1,
+  "id": "A2.06",
+  "title": "Laboratory Instructions & Safety",
+  "status": "draft",
+  "language": "en-US",
+  "license": "original-course-content",
+  "pedagogicalStatus": "Unreviewed draft: formative practice only; CEFR mastery disabled.",
+  "sources": [
+    {
+      "id": "R1",
+      "title": "Virtual setup card",
+      "paragraphs": [
+        "This is a computer simulation, not a physical electrical experiment. First, read the setup card on the screen. Next, check the cable symbols in the diagram. Then, ask your instructor if a symbol is unclear. Finally, select Run in the simulation. Do not connect real laboratory equipment during this activity. The screen instructions are for the virtual task only."
+      ]
+    },
+    {
+      "id": "R2",
+      "title": "Teaching-room notice",
+      "paragraphs": [
+        "In this example teaching room, the posted rules say that food and drinks are not allowed at the benches. Students must ask the instructor before using electrical equipment. If a cable looks damaged, do not use it or touch the damaged part; inform the instructor. The instructor decides how to make the area safe. The notice also says students should keep notebooks away from the edges of tables. This last sentence is advice in the example, not the same type of rule as the other instructions."
+      ]
+    },
+    {
+      "id": "R3",
+      "title": "Optics demonstration notice",
+      "paragraphs": [
+        "In the fictional optics demonstration in this lesson, only the instructor operates the laser. Students must not look directly into the beam and must not adjust the laser. They may ask questions from the marked observation area. If a warning indicator appears unexpectedly, students stop participating and inform the instructor. This practice text does not replace local laser-safety training."
+      ]
+    },
+    {
+      "id": "R4",
+      "title": "Warm-surface demonstration",
+      "paragraphs": [
+        "A teacher demonstrates a warm metal plate. First, the teacher checks the equipment and starts the demonstration. Students observe from the marked line. When the display is switched off, students must not assume the plate is cool. They must not touch it unless the instructor explicitly says it is safe. They can write notes or ask for clarification while waiting. Students do not operate this apparatus in the language activity."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "A2.06.MOD.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.MOD.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best modal phrase. The example room rule requires an instructor’s approval. Students ___ ask before using a power supply.",
+      "accepted": [
+        "must"
+      ],
+      "feedback": "A posted requirement takes must; advice takes should.",
+      "options": [
+        "must",
+        "should"
+      ]
+    },
+    {
+      "id": "A2.06.MOD.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.MOD.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best modal phrase. The note suggests keeping writing clear; it is useful advice, not a rule. You ___ label each observation clearly.",
+      "accepted": [
+        "should"
+      ],
+      "feedback": "Should gives advice here, rather than a requirement.",
+      "options": [
+        "should",
+        "must"
+      ]
+    },
+    {
+      "id": "A2.06.MOD.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.MOD.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best modal phrase. The activity rules require students to read the virtual warning first. They ___ read it before clicking Start.",
+      "accepted": [
+        "have to"
+      ],
+      "feedback": "Have to expresses a rule imposed by the activity.",
+      "options": [
+        "have to",
+        "could"
+      ]
+    },
+    {
+      "id": "A2.06.MOD.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.MOD.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best modal phrase. It is optional to write a title in this short practice note. You ___ write a title.",
+      "accepted": [
+        "do not have to"
+      ],
+      "feedback": "Do not have to means optional; must not means prohibited.",
+      "options": [
+        "do not have to",
+        "must not"
+      ]
+    },
+    {
+      "id": "A2.06.MOD.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.MOD.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best modal phrase. The sample room prohibits food at the bench. You ___ bring food to the bench.",
+      "accepted": [
+        "must not"
+      ],
+      "feedback": "Must not means prohibited, not optional.",
+      "options": [
+        "must not",
+        "do not have to"
+      ]
+    },
+    {
+      "id": "A2.06.MOD.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.MOD.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best modal phrase. The instructor recommends writing short notes. You ___ write short notes.",
+      "accepted": [
+        "should"
+      ],
+      "feedback": "Should expresses a recommendation.",
+      "options": [
+        "should",
+        "must not"
+      ]
+    },
+    {
+      "id": "A2.06.MOD.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.MOD.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best modal phrase. This model exercise requires checking the on-screen diagram before Run. You ___ check it first.",
+      "accepted": [
+        "must"
+      ],
+      "feedback": "Must expresses a necessary action in this task.",
+      "options": [
+        "must",
+        "might"
+      ]
+    },
+    {
+      "id": "A2.06.MOD.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.MOD.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best modal phrase. The instructor says a blue pen is not required. Students ___ use a blue pen.",
+      "accepted": [
+        "do not have to"
+      ],
+      "feedback": "No obligation is not prohibition.",
+      "options": [
+        "do not have to",
+        "must not"
+      ]
+    },
+    {
+      "id": "A2.06.REQ.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.REQ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "You want the instructor to check your virtual circuit. Which is a polite request? Choose the best sentence.",
+      "accepted": [
+        "Could you check my virtual circuit, please?"
+      ],
+      "feedback": "Can I/Could I ask permission; Could you + base verb makes a polite request.",
+      "options": [
+        "Could you check my virtual circuit, please?",
+        "You must check my circuit!"
+      ]
+    },
+    {
+      "id": "A2.06.REQ.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.REQ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A student asks permission to borrow a ruler. Choose the best sentence.",
+      "accepted": [
+        "Could I borrow this ruler, please?"
+      ],
+      "feedback": "Can I/Could I ask permission; Could you + base verb makes a polite request.",
+      "options": [
+        "Could I borrow this ruler, please?",
+        "I borrow your ruler now."
+      ]
+    },
+    {
+      "id": "A2.06.REQ.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.REQ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A student wants help reading a diagram. Choose the best sentence.",
+      "accepted": [
+        "Could you explain this diagram, please?"
+      ],
+      "feedback": "Can I/Could I ask permission; Could you + base verb makes a polite request.",
+      "options": [
+        "Could you explain this diagram, please?",
+        "You explain diagram now."
+      ]
+    },
+    {
+      "id": "A2.06.REQ.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.REQ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A student wants to speak to the instructor. Choose the best sentence.",
+      "accepted": [
+        "Can I ask a question?"
+      ],
+      "feedback": "Can I/Could I ask permission; Could you + base verb makes a polite request.",
+      "options": [
+        "Can I ask a question?",
+        "I must ask?"
+      ]
+    },
+    {
+      "id": "A2.06.REQ.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.REQ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A student cannot see the last line on the board. Choose the best sentence.",
+      "accepted": [
+        "Could you repeat the last step, please?"
+      ],
+      "feedback": "Can I/Could I ask permission; Could you + base verb makes a polite request.",
+      "options": [
+        "Could you repeat the last step, please?",
+        "Repeat!"
+      ]
+    },
+    {
+      "id": "A2.06.REQ.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.REQ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The student wants permission to examine a printed handout. Choose the best sentence.",
+      "accepted": [
+        "Could I read the handout, please?"
+      ],
+      "feedback": "Can I/Could I ask permission; Could you + base verb makes a polite request.",
+      "options": [
+        "Could I read the handout, please?",
+        "I must read your handout."
+      ]
+    },
+    {
+      "id": "A2.06.REQ.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.REQ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A student needs to hear the number again. Choose the best sentence.",
+      "accepted": [
+        "Could you say that number again, please?"
+      ],
+      "feedback": "Can I/Could I ask permission; Could you + base verb makes a polite request.",
+      "options": [
+        "Could you say that number again, please?",
+        "Number again."
+      ]
+    },
+    {
+      "id": "A2.06.REQ.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.REQ.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A student wants permission to take notes. Choose the best sentence.",
+      "accepted": [
+        "Can I take notes now?"
+      ],
+      "feedback": "Can I/Could I ask permission; Could you + base verb makes a polite request.",
+      "options": [
+        "Can I take notes now?",
+        "Can I to take notes now?"
+      ]
+    },
+    {
+      "id": "A2.06.PRO.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.PRO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The activity forbids touching physical apparatus. Select the accurate notice.",
+      "accepted": [
+        "Do not touch the real equipment."
+      ],
+      "feedback": "Use do not + base verb or must not + base verb for prohibition; optional is different.",
+      "options": [
+        "Do not touch the real equipment.",
+        "Not touch the real equipment."
+      ]
+    },
+    {
+      "id": "A2.06.PRO.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.PRO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A rule forbids food near the bench. Select the accurate notice.",
+      "accepted": [
+        "Do not bring food to the bench."
+      ],
+      "feedback": "Use do not + base verb or must not + base verb for prohibition; optional is different.",
+      "options": [
+        "Do not bring food to the bench.",
+        "Does not bring food to the bench."
+      ]
+    },
+    {
+      "id": "A2.06.PRO.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.PRO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A warning prohibits looking into a laser beam. Select the accurate notice.",
+      "accepted": [
+        "Do not look into the laser beam."
+      ],
+      "feedback": "Use do not + base verb or must not + base verb for prohibition; optional is different.",
+      "options": [
+        "Do not look into the laser beam.",
+        "Do not looking into the laser beam."
+      ]
+    },
+    {
+      "id": "A2.06.PRO.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.PRO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A note forbids adjusting the instructor’s laser. Select the accurate notice.",
+      "accepted": [
+        "You must not adjust the laser."
+      ],
+      "feedback": "Use do not + base verb or must not + base verb for prohibition; optional is different.",
+      "options": [
+        "You must not adjust the laser.",
+        "You do not have to adjust the laser."
+      ]
+    },
+    {
+      "id": "A2.06.PRO.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.PRO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A notice prohibits using a damaged cable. Select the accurate notice.",
+      "accepted": [
+        "Students must not use the cable."
+      ],
+      "feedback": "Use do not + base verb or must not + base verb for prohibition; optional is different.",
+      "options": [
+        "Students must not use the cable.",
+        "Students should use the cable."
+      ]
+    },
+    {
+      "id": "A2.06.PRO.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.PRO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The example says an action is forbidden, not merely optional. Select the accurate notice.",
+      "accepted": [
+        "You must not open the case."
+      ],
+      "feedback": "Use do not + base verb or must not + base verb for prohibition; optional is different.",
+      "options": [
+        "You must not open the case.",
+        "You do not have to open the case."
+      ]
+    },
+    {
+      "id": "A2.06.PRO.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.PRO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A posted warning prohibits touching a warm surface. Select the accurate notice.",
+      "accepted": [
+        "Do not touch the surface."
+      ],
+      "feedback": "Use do not + base verb or must not + base verb for prohibition; optional is different.",
+      "options": [
+        "Do not touch the surface.",
+        "Do not to touch the surface."
+      ]
+    },
+    {
+      "id": "A2.06.PRO.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.06.PRO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The supervisor prohibits entering the marked area. Select the accurate notice.",
+      "accepted": [
+        "Do not enter the marked area."
+      ],
+      "feedback": "Use do not + base verb or must not + base verb for prohibition; optional is different.",
+      "options": [
+        "Do not enter the marked area.",
+        "Do not entering the marked area."
+      ]
+    },
+    {
+      "id": "A2.06.VOC.001",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.06.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What does “turn off” mean in a short classroom instruction?",
+      "accepted": [
+        "stop the device operating by using its control"
+      ],
+      "feedback": "Choose the meaning that fits the instruction; words cannot replace actual safety training.",
+      "options": [
+        "stop the device operating by using its control",
+        "begin the device operating"
+      ]
+    },
+    {
+      "id": "A2.06.VOC.002",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.06.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "“Turn on” a virtual display means:",
+      "accepted": [
+        "make the display start"
+      ],
+      "feedback": "Choose the meaning that fits the instruction; words cannot replace actual safety training.",
+      "options": [
+        "make the display start",
+        "make the display stop"
+      ]
+    },
+    {
+      "id": "A2.06.VOC.003",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.06.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "To “check the diagram” means to:",
+      "accepted": [
+        "examine it for mistakes or missing parts"
+      ],
+      "feedback": "Choose the meaning that fits the instruction; words cannot replace actual safety training.",
+      "options": [
+        "examine it for mistakes or missing parts",
+        "put it in a drawer"
+      ]
+    },
+    {
+      "id": "A2.06.VOC.004",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.06.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "“Inform the instructor” means:",
+      "accepted": [
+        "tell the instructor"
+      ],
+      "feedback": "Choose the meaning that fits the instruction; words cannot replace actual safety training.",
+      "options": [
+        "tell the instructor",
+        "ignore the instructor"
+      ]
+    },
+    {
+      "id": "A2.06.VOC.005",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.06.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "“Protect your eyes” means:",
+      "accepted": [
+        "keep your eyes safe"
+      ],
+      "feedback": "Choose the meaning that fits the instruction; words cannot replace actual safety training.",
+      "options": [
+        "keep your eyes safe",
+        "close every book"
+      ]
+    },
+    {
+      "id": "A2.06.VOC.006",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.06.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A “warning” is:",
+      "accepted": [
+        "a message about possible danger"
+      ],
+      "feedback": "Choose the meaning that fits the instruction; words cannot replace actual safety training.",
+      "options": [
+        "a message about possible danger",
+        "a measurement number"
+      ]
+    },
+    {
+      "id": "A2.06.VOC.007",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.06.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A “hazard” is:",
+      "accepted": [
+        "a possible source of harm"
+      ],
+      "feedback": "Choose the meaning that fits the instruction; words cannot replace actual safety training.",
+      "options": [
+        "a possible source of harm",
+        "a harmless unit of length"
+      ]
+    },
+    {
+      "id": "A2.06.VOC.008",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.06.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "“Damaged” describes equipment that is:",
+      "accepted": [
+        "not in good condition"
+      ],
+      "feedback": "Choose the meaning that fits the instruction; words cannot replace actual safety training.",
+      "options": [
+        "not in good condition",
+        "new and tested"
+      ]
+    },
+    {
+      "id": "A2.06.RDG.001",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.06.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R1, answer: Is the task described as a real experiment or a simulation?",
+      "accepted": [
+        "a computer simulation"
+      ],
+      "feedback": "Use only details stated in the text; do not infer an additional laboratory procedure.",
+      "sourceId": "R1",
+      "options": [
+        "a computer simulation",
+        "a physical electrical experiment"
+      ]
+    },
+    {
+      "id": "A2.06.RDG.002",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.06.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R1, answer: What should a student do if a symbol is unclear?",
+      "accepted": [
+        "ask the instructor"
+      ],
+      "feedback": "Use only details stated in the text; do not infer an additional laboratory procedure.",
+      "sourceId": "R1",
+      "options": [
+        "ask the instructor",
+        "guess and click Run"
+      ]
+    },
+    {
+      "id": "A2.06.RDG.003",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.06.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R1, answer: What does the card say about connecting real equipment?",
+      "accepted": [
+        "do not connect it for this activity"
+      ],
+      "feedback": "Use only details stated in the text; do not infer an additional laboratory procedure.",
+      "sourceId": "R1",
+      "options": [
+        "do not connect it for this activity",
+        "connect it before selecting Run"
+      ]
+    },
+    {
+      "id": "A2.06.RDG.004",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.06.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R2, answer: What must students do before using electrical equipment in the example room?",
+      "accepted": [
+        "ask the instructor"
+      ],
+      "feedback": "Use only details stated in the text; do not infer an additional laboratory procedure.",
+      "sourceId": "R2",
+      "options": [
+        "ask the instructor",
+        "choose a pen"
+      ]
+    },
+    {
+      "id": "A2.06.RDG.006",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.06.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R2, answer: Which sentence is advice rather than a posted requirement?",
+      "accepted": [
+        "keep notebooks away from table edges"
+      ],
+      "feedback": "Use only details stated in the text; do not infer an additional laboratory procedure.",
+      "sourceId": "R2",
+      "options": [
+        "keep notebooks away from table edges",
+        "food and drinks are not allowed"
+      ]
+    },
+    {
+      "id": "A2.06.RDG.007",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.06.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R3, answer: Who operates the demonstration laser?",
+      "accepted": [
+        "the instructor"
+      ],
+      "feedback": "Use only details stated in the text; do not infer an additional laboratory procedure.",
+      "sourceId": "R3",
+      "options": [
+        "the instructor",
+        "any student"
+      ]
+    },
+    {
+      "id": "A2.06.RDG.008",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.06.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R3, answer: Where may students ask questions?",
+      "accepted": [
+        "from the marked observation area"
+      ],
+      "feedback": "Use only details stated in the text; do not infer an additional laboratory procedure.",
+      "sourceId": "R3",
+      "options": [
+        "from the marked observation area",
+        "while adjusting the laser"
+      ]
+    },
+    {
+      "id": "A2.06.RDG.009",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.06.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R3, answer: What should students do if a warning indicator appears unexpectedly?",
+      "accepted": [
+        "stop participating and inform the instructor"
+      ],
+      "feedback": "Use only details stated in the text; do not infer an additional laboratory procedure.",
+      "sourceId": "R3",
+      "options": [
+        "stop participating and inform the instructor",
+        "ignore the indicator"
+      ]
+    }
+  ]
+}

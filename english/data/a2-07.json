@@ -1,0 +1,721 @@
+{
+  "schemaVersion": 1,
+  "id": "A2.07",
+  "title": "What Happened in the Experiment?",
+  "status": "draft",
+  "language": "en-US",
+  "license": "original-course-content",
+  "pedagogicalStatus": "Unreviewed draft: formative practice only; CEFR mastery disabled.",
+  "sources": [
+    {
+      "id": "R1",
+      "title": "Pendulum observation diary (reading; practice)",
+      "paragraphs": [
+        "On Monday, Lina watched a pendulum in a classroom video. She started a timer and counted ten complete oscillations. In the first trial, the timer showed 14.8 seconds. She repeated the video measurement and recorded 15.0 seconds in the second trial. Lina wrote both numbers in her notebook. She did not change the length of the pendulum. She checked the table and sent the results to her lab partner. This was a learning activity using recorded video, not a claim about a physical laboratory experiment."
+      ]
+    },
+    {
+      "id": "R2",
+      "title": "Virtual circuit notebook (reading; practice)",
+      "paragraphs": [
+        "Yesterday, Omar opened a circuit simulation. He chose a resistor and set the virtual source to 6.0 V. The screen showed a current of 0.12 A. Omar read the value, took a screenshot, and saved a graph. He did not connect any real wires. At the end, he wrote: \"The virtual current was 0.12 A.\" The numbers belong to this fictional simulation record, not to an official lab handout."
+      ]
+    },
+    {
+      "id": "R3",
+      "title": "Optics class log (reading; practice)",
+      "paragraphs": [
+        "Last Thursday, Maya examined three simple ray diagrams. First, she marked the lens position. Then she drew one horizontal incident ray and its refracted path in a model drawing. After that, she compared the first diagram with the second. She found two different image positions. She did not use a real laser or any other optical apparatus. Finally, she wrote a short description of the diagrams."
+      ]
+    },
+    {
+      "id": "R4",
+      "title": "Temperature-simulation record (reading; practice)",
+      "paragraphs": [
+        "Two days ago, a group observed a computer model of a warming object. At the beginning, the display read 21.0 °C. Four minutes later, it read 25.0 °C. The students recorded the two readings and calculated a difference of 4.0 °C. They did not touch a hot object. Their teacher asked, \"Did the simulated temperature increase?\" They answered yes and explained that the later reading was higher."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "A2.07.REG.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.REG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Yesterday, we ___ the ruler before the simulation. (check)",
+      "accepted": [
+        "checked"
+      ],
+      "feedback": "The required simple past form is “checked”; regular -ed.",
+      "options": [
+        "checked",
+        "check"
+      ]
+    },
+    {
+      "id": "A2.07.REG.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.REG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Last Tuesday, Maya ___ the table headings. (label)",
+      "accepted": [
+        "labeled"
+      ],
+      "feedback": "The required simple past form is “labeled”; US English spelling: labeled.",
+      "options": [
+        "labeled",
+        "label"
+      ]
+    },
+    {
+      "id": "A2.07.REG.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.REG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "On Monday, the student ___ the result. (record)",
+      "accepted": [
+        "recorded"
+      ],
+      "feedback": "The required simple past form is “recorded”; regular -ed.",
+      "options": [
+        "recorded",
+        "record"
+      ]
+    },
+    {
+      "id": "A2.07.REG.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.REG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "During the model activity, I ___ the button. (press)",
+      "accepted": [
+        "pressed"
+      ],
+      "feedback": "The required simple past form is “pressed”; regular -ed.",
+      "options": [
+        "pressed",
+        "press"
+      ]
+    },
+    {
+      "id": "A2.07.REG.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.REG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The class ___ the virtual screen after the test. (close)",
+      "accepted": [
+        "closed"
+      ],
+      "feedback": "The required simple past form is “closed”; verb ends in -e: add -d.",
+      "options": [
+        "closed",
+        "closeed"
+      ]
+    },
+    {
+      "id": "A2.07.REG.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.REG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "I ___ the plotted points on Friday. (mark)",
+      "accepted": [
+        "marked"
+      ],
+      "feedback": "The required simple past form is “marked”; regular -ed.",
+      "options": [
+        "marked",
+        "markd"
+      ]
+    },
+    {
+      "id": "A2.07.REG.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.REG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "They ___ the moving cart on the screen. (watch)",
+      "accepted": [
+        "watched"
+      ],
+      "feedback": "The required simple past form is “watched”; regular -ed.",
+      "options": [
+        "watched",
+        "watchs"
+      ]
+    },
+    {
+      "id": "A2.07.REG.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.REG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The student ___ the arrow in the diagram. (move)",
+      "accepted": [
+        "moved"
+      ],
+      "feedback": "The required simple past form is “moved”; verb ends in -e: add -d.",
+      "options": [
+        "moved",
+        "moveed"
+      ]
+    },
+    {
+      "id": "A2.07.IRR.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.IRR.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The class ___ the virtual simulation yesterday. (begin)",
+      "accepted": [
+        "began"
+      ],
+      "feedback": "Past simple of this verb: “began”. Irregular verbs do not all take -ed.",
+      "options": [
+        "began",
+        "beginned"
+      ]
+    },
+    {
+      "id": "A2.07.IRR.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.IRR.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "I ___ the displayed result in the notebook. (write)",
+      "accepted": [
+        "wrote"
+      ],
+      "feedback": "Past simple of this verb: “wrote”. Irregular verbs do not all take -ed.",
+      "options": [
+        "wrote",
+        "writed"
+      ]
+    },
+    {
+      "id": "A2.07.IRR.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.IRR.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Yesterday, we ___ two values on the screen. (see)",
+      "accepted": [
+        "saw"
+      ],
+      "feedback": "Past simple of this verb: “saw”. Irregular verbs do not all take -ed.",
+      "options": [
+        "saw",
+        "seed"
+      ]
+    },
+    {
+      "id": "A2.07.IRR.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.IRR.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "I ___ the first mark on the diagram. (make)",
+      "accepted": [
+        "made"
+      ],
+      "feedback": "Past simple of this verb: “made”. Irregular verbs do not all take -ed.",
+      "options": [
+        "made",
+        "maked"
+      ]
+    },
+    {
+      "id": "A2.07.IRR.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.IRR.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Our group ___ the chart to the instructor. (give)",
+      "accepted": [
+        "gave"
+      ],
+      "feedback": "Past simple of this verb: “gave”. Irregular verbs do not all take -ed.",
+      "options": [
+        "gave",
+        "gived"
+      ]
+    },
+    {
+      "id": "A2.07.IRR.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.IRR.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The student ___ a line on the graph. (draw)",
+      "accepted": [
+        "drew"
+      ],
+      "feedback": "Past simple of this verb: “drew”. Irregular verbs do not all take -ed.",
+      "options": [
+        "drew",
+        "drawed"
+      ]
+    },
+    {
+      "id": "A2.07.IRR.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.IRR.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "We ___ a table in the report. (have)",
+      "accepted": [
+        "had"
+      ],
+      "feedback": "Past simple of this verb: “had”. Irregular verbs do not all take -ed.",
+      "options": [
+        "had",
+        "haved"
+      ]
+    },
+    {
+      "id": "A2.07.IRR.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.IRR.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "I ___ the sample graph from the folder. (take)",
+      "accepted": [
+        "took"
+      ],
+      "feedback": "Past simple of this verb: “took”. Irregular verbs do not all take -ed.",
+      "options": [
+        "took",
+        "taked"
+      ]
+    },
+    {
+      "id": "A2.07.QNG.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.QNG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct negative: “We checked the table” →",
+      "accepted": [
+        "We did not check the table."
+      ],
+      "feedback": "Use did/did not + base verb, except that past forms of be normally use was/were directly.",
+      "options": [
+        "We did not check the table.",
+        "We did not checked the table."
+      ]
+    },
+    {
+      "id": "A2.07.QNG.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.QNG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct question for the answer “Yes, I recorded it.”",
+      "accepted": [
+        "Did you record the value?"
+      ],
+      "feedback": "Use did/did not + base verb, except that past forms of be normally use was/were directly.",
+      "options": [
+        "Did you record the value?",
+        "Did you recorded the value?"
+      ]
+    },
+    {
+      "id": "A2.07.QNG.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.QNG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct negative: “She drew a ray” →",
+      "accepted": [
+        "She did not draw a ray."
+      ],
+      "feedback": "Use did/did not + base verb, except that past forms of be normally use was/were directly.",
+      "options": [
+        "She did not draw a ray.",
+        "She did not drew a ray."
+      ]
+    },
+    {
+      "id": "A2.07.QNG.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.QNG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct question for “No, he did not use real wires.”",
+      "accepted": [
+        "Did he use real wires?"
+      ],
+      "feedback": "Use did/did not + base verb, except that past forms of be normally use was/were directly.",
+      "options": [
+        "Did he use real wires?",
+        "Did he used real wires?"
+      ]
+    },
+    {
+      "id": "A2.07.QNG.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.QNG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct negative with “see.”",
+      "accepted": [
+        "We did not see a graph."
+      ],
+      "feedback": "Use did/did not + base verb, except that past forms of be normally use was/were directly.",
+      "options": [
+        "We did not see a graph.",
+        "We did not saw a graph."
+      ]
+    },
+    {
+      "id": "A2.07.QNG.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.QNG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct past question about the time of an activity.",
+      "accepted": [
+        "When did you start?"
+      ],
+      "feedback": "Use did/did not + base verb, except that past forms of be normally use was/were directly.",
+      "options": [
+        "When did you start?",
+        "When did you started?"
+      ]
+    },
+    {
+      "id": "A2.07.QNG.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.QNG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct short answer to “Did they record the reading?”",
+      "accepted": [
+        "Yes, they did."
+      ],
+      "feedback": "Use did/did not + base verb, except that past forms of be normally use was/were directly.",
+      "options": [
+        "Yes, they did.",
+        "Yes, they recorded."
+      ]
+    },
+    {
+      "id": "A2.07.QNG.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.07.QNG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct short answer to “Did she change the lens?”",
+      "accepted": [
+        "No, she did not."
+      ],
+      "feedback": "Use did/did not + base verb, except that past forms of be normally use was/were directly.",
+      "options": [
+        "No, she did not.",
+        "No, she did not changed."
+      ]
+    },
+    {
+      "id": "A2.07.VOC.001",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.07.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "To “record a reading” means to:",
+      "accepted": [
+        "write down the measurement"
+      ],
+      "feedback": "Use the action verb in its laboratory-note meaning; do not invent actions or equipment.",
+      "options": [
+        "write down the measurement",
+        "erase the observation"
+      ]
+    },
+    {
+      "id": "A2.07.VOC.002",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.07.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "To “repeat a trial” means to:",
+      "accepted": [
+        "perform or observe it again"
+      ],
+      "feedback": "Use the action verb in its laboratory-note meaning; do not invent actions or equipment.",
+      "options": [
+        "perform or observe it again",
+        "delete every result"
+      ]
+    },
+    {
+      "id": "A2.07.VOC.003",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.07.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "To “mark a position” means to:",
+      "accepted": [
+        "indicate its location on a drawing"
+      ],
+      "feedback": "Use the action verb in its laboratory-note meaning; do not invent actions or equipment.",
+      "options": [
+        "indicate its location on a drawing",
+        "change the units"
+      ]
+    },
+    {
+      "id": "A2.07.VOC.004",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.07.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "To “draw a ray” means to:",
+      "accepted": [
+        "make a line representing a light path"
+      ],
+      "feedback": "Use the action verb in its laboratory-note meaning; do not invent actions or equipment.",
+      "options": [
+        "make a line representing a light path",
+        "measure a sound level"
+      ]
+    },
+    {
+      "id": "A2.07.VOC.005",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.07.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "To “save a graph” means to:",
+      "accepted": [
+        "keep an electronic copy"
+      ],
+      "feedback": "Use the action verb in its laboratory-note meaning; do not invent actions or equipment.",
+      "options": [
+        "keep an electronic copy",
+        "remove its labels"
+      ]
+    },
+    {
+      "id": "A2.07.VOC.006",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.07.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "To “compare two values” means to:",
+      "accepted": [
+        "look for similarities or differences"
+      ],
+      "feedback": "Use the action verb in its laboratory-note meaning; do not invent actions or equipment.",
+      "options": [
+        "look for similarities or differences",
+        "pretend they are identical"
+      ]
+    },
+    {
+      "id": "A2.07.VOC.007",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.07.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "To “set a virtual source to 6.0 V” means to:",
+      "accepted": [
+        "select that value in the simulation"
+      ],
+      "feedback": "Use the action verb in its laboratory-note meaning; do not invent actions or equipment.",
+      "options": [
+        "select that value in the simulation",
+        "connect an unknown real battery"
+      ]
+    },
+    {
+      "id": "A2.07.VOC.008",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.07.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "To “count oscillations” means to:",
+      "accepted": [
+        "find the number of complete cycles"
+      ],
+      "feedback": "Use the action verb in its laboratory-note meaning; do not invent actions or equipment.",
+      "options": [
+        "find the number of complete cycles",
+        "measure the color of a spring"
+      ]
+    },
+    {
+      "id": "A2.07.RDG.001",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.07.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R1 (“Pendulum observation diary”). How many complete oscillations did Lina count in the video?",
+      "accepted": [
+        "ten"
+      ],
+      "feedback": "The response must be supported by the source diary; avoid outside physics assumptions.",
+      "options": [
+        "ten",
+        "twenty"
+      ]
+    },
+    {
+      "id": "A2.07.RDG.002",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.07.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R1 (“Pendulum observation diary”). What was the first time?",
+      "accepted": [
+        "14.8 seconds"
+      ],
+      "feedback": "The response must be supported by the source diary; avoid outside physics assumptions.",
+      "options": [
+        "14.8 seconds",
+        "15.0 seconds"
+      ]
+    },
+    {
+      "id": "A2.07.RDG.003",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.07.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R1 (“Pendulum observation diary”). Did Lina change the pendulum length?",
+      "accepted": [
+        "no"
+      ],
+      "feedback": "The response must be supported by the source diary; avoid outside physics assumptions.",
+      "options": [
+        "no",
+        "yes"
+      ]
+    },
+    {
+      "id": "A2.07.RDG.004",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.07.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R2 (“Virtual circuit notebook”). What was the selected virtual voltage?",
+      "accepted": [
+        "6.0 V"
+      ],
+      "feedback": "The response must be supported by the source diary; avoid outside physics assumptions.",
+      "options": [
+        "6.0 V",
+        "0.12 V"
+      ]
+    },
+    {
+      "id": "A2.07.RDG.005",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.07.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R2 (“Virtual circuit notebook”). What virtual current appeared on screen?",
+      "accepted": [
+        "0.12 A"
+      ],
+      "feedback": "The response must be supported by the source diary; avoid outside physics assumptions.",
+      "options": [
+        "0.12 A",
+        "6.0 A"
+      ]
+    },
+    {
+      "id": "A2.07.RDG.006",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.07.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R2 (“Virtual circuit notebook”). Did Omar use real wires?",
+      "accepted": [
+        "no"
+      ],
+      "feedback": "The response must be supported by the source diary; avoid outside physics assumptions.",
+      "options": [
+        "no",
+        "yes"
+      ]
+    },
+    {
+      "id": "A2.07.RDG.007",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.07.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R3 (“Optics class log”). What did Maya mark first?",
+      "accepted": [
+        "the lens position"
+      ],
+      "feedback": "The response must be supported by the source diary; avoid outside physics assumptions.",
+      "options": [
+        "the lens position",
+        "the classroom temperature"
+      ]
+    },
+    {
+      "id": "A2.07.RDG.008",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.07.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R3 (“Optics class log”). What did she compare?",
+      "accepted": [
+        "two image positions"
+      ],
+      "feedback": "The response must be supported by the source diary; avoid outside physics assumptions.",
+      "options": [
+        "two image positions",
+        "two pendulum lengths"
+      ]
+    }
+  ]
+}

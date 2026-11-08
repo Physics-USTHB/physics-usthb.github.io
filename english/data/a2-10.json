@@ -1,0 +1,721 @@
+{
+  "schemaVersion": 1,
+  "id": "A2.10",
+  "title": "Cause, Effect & Conditions",
+  "status": "draft",
+  "language": "en-US",
+  "license": "original-course-content",
+  "pedagogicalStatus": "Unreviewed draft: formative practice only; CEFR mastery disabled.",
+  "sources": [
+    {
+      "id": "R1",
+      "title": "Ideal resistor in a virtual circuit (reading; practice)",
+      "paragraphs": [
+        "A computer model shows an ideal 10 Ω resistor. The resistance stays the same. When the model applies 2 V, the current is 0.20 A. When it applies 4 V, the current is 0.40 A. The current increases because the voltage increases while resistance stays constant. The group records these model values in a table. They do not connect a real electrical supply."
+      ]
+    },
+    {
+      "id": "R2",
+      "title": "A virtual cart moving at a steady speed (reading; practice)",
+      "paragraphs": [
+        "A virtual cart travels along a straight line at 2 meters per second. It travels 2 meters in one second and 6 meters in three seconds. Because its speed is constant, the distance increases by 2 meters each second. If the cart continues at the same speed for another two seconds, it will travel another 4 meters. These are computer-model values, not measurements of a real cart."
+      ]
+    },
+    {
+      "id": "R3",
+      "title": "Cooling model and room temperature (reading; practice)",
+      "paragraphs": [
+        "A simple model shows an object at 35 °C in a room at 20 °C. After five minutes, the displayed temperature is 30 °C. The model shows the object cooling because it is warmer than the room. The student predicts that it will continue to cool if the same model conditions continue. The reading does not tell us its exact temperature after another five minutes. All values are simulated."
+      ]
+    },
+    {
+      "id": "R4",
+      "title": "Study habits and understanding a graph (reading; practice)",
+      "paragraphs": [
+        "A physics student does not understand the axes on a graph, so she asks her instructor for help. If the horizontal axis shows time, she will label it “Time (s).” Her instructor explains that a label needs a quantity and a unit. After the explanation, the student corrects the axis label. This is a learning example, not an experiment."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "A2.10.BSO.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.BSO.cause_connector",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “The current increased ___ the voltage increased.”",
+      "accepted": [
+        "because"
+      ],
+      "feedback": "Because introduces the reason; so introduces the result. With the same reason/result pair, their sentence order changes. Avoid “because ... so” as two connectors for one ordinary cause–effect relation.",
+      "options": [
+        "because",
+        "so"
+      ]
+    },
+    {
+      "id": "A2.10.BSO.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.BSO.result_connector",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “The voltage increased, ___ the model current increased.”",
+      "accepted": [
+        "so"
+      ],
+      "feedback": "Because introduces the reason; so introduces the result. With the same reason/result pair, their sentence order changes. Avoid “because ... so” as two connectors for one ordinary cause–effect relation.",
+      "options": [
+        "so",
+        "because"
+      ]
+    },
+    {
+      "id": "A2.10.BSO.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.BSO.sentence_logic",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the sentence that gives a reason.",
+      "accepted": [
+        "The cart traveled farther because it moved for more time."
+      ],
+      "feedback": "Because introduces the reason; so introduces the result. With the same reason/result pair, their sentence order changes. Avoid “because ... so” as two connectors for one ordinary cause–effect relation.",
+      "options": [
+        "The cart traveled farther because it moved for more time.",
+        "The cart traveled farther so it moved for more time."
+      ]
+    },
+    {
+      "id": "A2.10.BSO.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.BSO.cause_connector",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which sentence correctly joins a reason and its result?",
+      "accepted": [
+        "The resistor stayed at 10 Ω, so the current rose when voltage rose."
+      ],
+      "feedback": "Because introduces the reason; so introduces the result. With the same reason/result pair, their sentence order changes. Avoid “because ... so” as two connectors for one ordinary cause–effect relation.",
+      "options": [
+        "The resistor stayed at 10 Ω, so the current rose when voltage rose.",
+        "The resistor stayed at 10 Ω because the current rose when voltage rose."
+      ]
+    },
+    {
+      "id": "A2.10.BSO.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.BSO.result_connector",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “I could not read the graph ___ its horizontal axis had no label.”",
+      "accepted": [
+        "because"
+      ],
+      "feedback": "Because introduces the reason; so introduces the result. With the same reason/result pair, their sentence order changes. Avoid “because ... so” as two connectors for one ordinary cause–effect relation.",
+      "options": [
+        "because",
+        "so"
+      ]
+    },
+    {
+      "id": "A2.10.BSO.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.BSO.sentence_logic",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “The axis had no label, ___ I asked for help.”",
+      "accepted": [
+        "so"
+      ],
+      "feedback": "Because introduces the reason; so introduces the result. With the same reason/result pair, their sentence order changes. Avoid “because ... so” as two connectors for one ordinary cause–effect relation.",
+      "options": [
+        "so",
+        "because"
+      ]
+    },
+    {
+      "id": "A2.10.BSO.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.BSO.cause_connector",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What follows “because” in “The model cooled because the room was cooler”?",
+      "accepted": [
+        "The reason for cooling."
+      ],
+      "feedback": "Because introduces the reason; so introduces the result. With the same reason/result pair, their sentence order changes. Avoid “because ... so” as two connectors for one ordinary cause–effect relation.",
+      "options": [
+        "The reason for cooling.",
+        "The result of cooling."
+      ]
+    },
+    {
+      "id": "A2.10.BSO.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.BSO.result_connector",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What follows “so” in “The room was cooler, so the object cooled”?",
+      "accepted": [
+        "The result."
+      ],
+      "feedback": "Because introduces the reason; so introduces the result. With the same reason/result pair, their sentence order changes. Avoid “because ... so” as two connectors for one ordinary cause–effect relation.",
+      "options": [
+        "The result.",
+        "The reason."
+      ]
+    },
+    {
+      "id": "A2.10.ZCO.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.ZCO.present_present",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A general model rule: “If voltage ___ while resistance stays fixed, current increases.”",
+      "accepted": [
+        "increases"
+      ],
+      "feedback": "The zero conditional generally uses present simple in both parts for a rule or repeated pattern. A physical rule must state its assumptions (such as fixed resistance or constant speed).",
+      "options": [
+        "increases",
+        "will increases"
+      ]
+    },
+    {
+      "id": "A2.10.ZCO.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.ZCO.general_rule",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A general rule: “If the speed stays constant, the cart ___ the same distance each second.”",
+      "accepted": [
+        "travels"
+      ],
+      "feedback": "The zero conditional generally uses present simple in both parts for a rule or repeated pattern. A physical rule must state its assumptions (such as fixed resistance or constant speed).",
+      "options": [
+        "travels",
+        "will travels"
+      ]
+    },
+    {
+      "id": "A2.10.ZCO.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.ZCO.model_condition",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “If the graph has no unit, it ___ incomplete.”",
+      "accepted": [
+        "is"
+      ],
+      "feedback": "The zero conditional generally uses present simple in both parts for a rule or repeated pattern. A physical rule must state its assumptions (such as fixed resistance or constant speed).",
+      "options": [
+        "is",
+        "will is"
+      ]
+    },
+    {
+      "id": "A2.10.ZCO.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.ZCO.present_present",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “If you add two positive distances, the total distance ___ greater.”",
+      "accepted": [
+        "is"
+      ],
+      "feedback": "The zero conditional generally uses present simple in both parts for a rule or repeated pattern. A physical rule must state its assumptions (such as fixed resistance or constant speed).",
+      "options": [
+        "is",
+        "will be greater always for every context"
+      ]
+    },
+    {
+      "id": "A2.10.ZCO.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.ZCO.general_rule",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the usual tense pair in a zero conditional.",
+      "accepted": [
+        "present simple + present simple"
+      ],
+      "feedback": "The zero conditional generally uses present simple in both parts for a rule or repeated pattern. A physical rule must state its assumptions (such as fixed resistance or constant speed).",
+      "options": [
+        "present simple + present simple",
+        "past simple + past simple only"
+      ]
+    },
+    {
+      "id": "A2.10.ZCO.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.ZCO.model_condition",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which sentence describes a general rule?",
+      "accepted": [
+        "If you multiply a positive number by 2, it becomes twice as large."
+      ],
+      "feedback": "The zero conditional generally uses present simple in both parts for a rule or repeated pattern. A physical rule must state its assumptions (such as fixed resistance or constant speed).",
+      "options": [
+        "If you multiply a positive number by 2, it becomes twice as large.",
+        "If you multiply a positive number by 2, it will became twice as large."
+      ]
+    },
+    {
+      "id": "A2.10.ZCO.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.ZCO.present_present",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “If a number is negative, its sign ___ minus.”",
+      "accepted": [
+        "is"
+      ],
+      "feedback": "The zero conditional generally uses present simple in both parts for a rule or repeated pattern. A physical rule must state its assumptions (such as fixed resistance or constant speed).",
+      "options": [
+        "is",
+        "are"
+      ]
+    },
+    {
+      "id": "A2.10.ZCO.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.ZCO.general_rule",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose a general statement about an ideal resistor.",
+      "accepted": [
+        "If resistance stays fixed and voltage increases, current increases."
+      ],
+      "feedback": "The zero conditional generally uses present simple in both parts for a rule or repeated pattern. A physical rule must state its assumptions (such as fixed resistance or constant speed).",
+      "options": [
+        "If resistance stays fixed and voltage increases, current increases.",
+        "If resistance stays fixed and voltage increases, current will increases."
+      ]
+    },
+    {
+      "id": "A2.10.FCO.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.FCO.future_apodosis",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “If the cart stays at 2 m/s for two more seconds, it ___ another 4 m.”",
+      "accepted": [
+        "will travel"
+      ],
+      "feedback": "For ordinary likely future conditions, use present simple after if and will + the base form in the result. A prediction is not a measured observation.",
+      "options": [
+        "will travel",
+        "will travels"
+      ]
+    },
+    {
+      "id": "A2.10.FCO.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.FCO.if_present",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “If the voltage rises and resistance stays fixed, the ideal current ___.”",
+      "accepted": [
+        "will increase"
+      ],
+      "feedback": "For ordinary likely future conditions, use present simple after if and will + the base form in the result. A prediction is not a measured observation.",
+      "options": [
+        "will increase",
+        "will increases"
+      ]
+    },
+    {
+      "id": "A2.10.FCO.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.FCO.prediction_vs_observation",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose a correct future conditional.",
+      "accepted": [
+        "If the model shows a new value, I will record it."
+      ],
+      "feedback": "For ordinary likely future conditions, use present simple after if and will + the base form in the result. A prediction is not a measured observation.",
+      "options": [
+        "If the model shows a new value, I will record it.",
+        "If the model will show a new value, I record it will."
+      ]
+    },
+    {
+      "id": "A2.10.FCO.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.FCO.future_apodosis",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “If the horizontal axis shows time, I ___ it ‘Time (s).’”",
+      "accepted": [
+        "will label"
+      ],
+      "feedback": "For ordinary likely future conditions, use present simple after if and will + the base form in the result. A prediction is not a measured observation.",
+      "options": [
+        "will label",
+        "will labeling"
+      ]
+    },
+    {
+      "id": "A2.10.FCO.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.FCO.if_present",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “If the audio is unclear, we ___ it again.”",
+      "accepted": [
+        "will play"
+      ],
+      "feedback": "For ordinary likely future conditions, use present simple after if and will + the base form in the result. A prediction is not a measured observation.",
+      "options": [
+        "will play",
+        "will playing"
+      ]
+    },
+    {
+      "id": "A2.10.FCO.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.FCO.prediction_vs_observation",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which verb belongs in an ordinary first conditional if-clause?",
+      "accepted": [
+        "stays"
+      ],
+      "feedback": "For ordinary likely future conditions, use present simple after if and will + the base form in the result. A prediction is not a measured observation.",
+      "options": [
+        "stays",
+        "will stays"
+      ]
+    },
+    {
+      "id": "A2.10.FCO.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.FCO.future_apodosis",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “If I finish the table today, I ___ the conclusion tomorrow.”",
+      "accepted": [
+        "will write"
+      ],
+      "feedback": "For ordinary likely future conditions, use present simple after if and will + the base form in the result. A prediction is not a measured observation.",
+      "options": [
+        "will write",
+        "will wrote"
+      ]
+    },
+    {
+      "id": "A2.10.FCO.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.10.FCO.if_present",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Complete: “If the next temperature value is missing, we ___ an exact value.”",
+      "accepted": [
+        "will not claim"
+      ],
+      "feedback": "For ordinary likely future conditions, use present simple after if and will + the base form in the result. A prediction is not a measured observation.",
+      "options": [
+        "will not claim",
+        "will not claimed"
+      ]
+    },
+    {
+      "id": "A2.10.CEV.001",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.10.CEV.cause_effect_lexis",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The ___ of the increase is the higher voltage (at fixed resistance).",
+      "accepted": [
+        "cause"
+      ],
+      "feedback": "Check whether the term names the reason, consequence, condition, observation or prediction; do not confuse model output with a measured physical experiment.",
+      "options": [
+        "cause",
+        "consequence"
+      ]
+    },
+    {
+      "id": "A2.10.CEV.002",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.10.CEV.assumptions",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The ___ is that the model current increases.",
+      "accepted": [
+        "effect"
+      ],
+      "feedback": "Check whether the term names the reason, consequence, condition, observation or prediction; do not confuse model output with a measured physical experiment.",
+      "options": [
+        "effect",
+        "reason"
+      ]
+    },
+    {
+      "id": "A2.10.CEV.003",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.10.CEV.observations_predictions",
+      "status": "draft",
+      "media": "text",
+      "prompt": "A fact that must remain true in the model is a ___.",
+      "accepted": [
+        "condition"
+      ],
+      "feedback": "Check whether the term names the reason, consequence, condition, observation or prediction; do not confuse model output with a measured physical experiment.",
+      "options": [
+        "condition",
+        "conclusion"
+      ]
+    },
+    {
+      "id": "A2.10.CEV.004",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.10.CEV.cause_effect_lexis",
+      "status": "draft",
+      "media": "text",
+      "prompt": "To show what might happen next is to ___.",
+      "accepted": [
+        "predict"
+      ],
+      "feedback": "Check whether the term names the reason, consequence, condition, observation or prediction; do not confuse model output with a measured physical experiment.",
+      "options": [
+        "predict",
+        "record a past observation"
+      ]
+    },
+    {
+      "id": "A2.10.CEV.005",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.10.CEV.assumptions",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The word that introduces a reason is ___.",
+      "accepted": [
+        "because"
+      ],
+      "feedback": "Check whether the term names the reason, consequence, condition, observation or prediction; do not confuse model output with a measured physical experiment.",
+      "options": [
+        "because",
+        "so"
+      ]
+    },
+    {
+      "id": "A2.10.CEV.006",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.10.CEV.observations_predictions",
+      "status": "draft",
+      "media": "text",
+      "prompt": "The word that introduces a result is ___.",
+      "accepted": [
+        "so"
+      ],
+      "feedback": "Check whether the term names the reason, consequence, condition, observation or prediction; do not confuse model output with a measured physical experiment.",
+      "options": [
+        "so",
+        "because"
+      ]
+    },
+    {
+      "id": "A2.10.CEV.007",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.10.CEV.cause_effect_lexis",
+      "status": "draft",
+      "media": "text",
+      "prompt": "“As a result” introduces a ___.",
+      "accepted": [
+        "consequence"
+      ],
+      "feedback": "Check whether the term names the reason, consequence, condition, observation or prediction; do not confuse model output with a measured physical experiment.",
+      "options": [
+        "consequence",
+        "measurement unit"
+      ]
+    },
+    {
+      "id": "A2.10.CEV.008",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.10.CEV.assumptions",
+      "status": "draft",
+      "media": "text",
+      "prompt": "An explanation of *why* something happens gives a ___.",
+      "accepted": [
+        "reason"
+      ],
+      "feedback": "Check whether the term names the reason, consequence, condition, observation or prediction; do not confuse model output with a measured physical experiment.",
+      "options": [
+        "reason",
+        "unit"
+      ]
+    },
+    {
+      "id": "A2.10.RDG.001",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.10.RDG.fact_retrieval",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What remains constant in the virtual circuit?",
+      "accepted": [
+        "Resistance at 10 Ω."
+      ],
+      "feedback": "Identify what the source explicitly states, what causes the change, and which future results are predictions. Do not infer unstated physical results.",
+      "options": [
+        "Resistance at 10 Ω.",
+        "Voltage at 2 V."
+      ]
+    },
+    {
+      "id": "A2.10.RDG.002",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.10.RDG.causal_inference",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which value increases from 0.20 A to 0.40 A?",
+      "accepted": [
+        "Current."
+      ],
+      "feedback": "Identify what the source explicitly states, what causes the change, and which future results are predictions. Do not infer unstated physical results.",
+      "options": [
+        "Current.",
+        "Resistance."
+      ]
+    },
+    {
+      "id": "A2.10.RDG.003",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.10.RDG.limits_of_claim",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Why does the model current rise?",
+      "accepted": [
+        "Voltage rises while resistance stays fixed."
+      ],
+      "feedback": "Identify what the source explicitly states, what causes the change, and which future results are predictions. Do not infer unstated physical results.",
+      "options": [
+        "Voltage rises while resistance stays fixed.",
+        "The resistance doubles."
+      ]
+    },
+    {
+      "id": "A2.10.RDG.004",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.10.RDG.fact_retrieval",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Did the group connect a real electrical supply?",
+      "accepted": [
+        "No."
+      ],
+      "feedback": "Identify what the source explicitly states, what causes the change, and which future results are predictions. Do not infer unstated physical results.",
+      "options": [
+        "No.",
+        "Yes."
+      ]
+    },
+    {
+      "id": "A2.10.RDG.005",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.10.RDG.causal_inference",
+      "status": "draft",
+      "media": "text",
+      "prompt": "How far does the virtual cart go in one second?",
+      "accepted": [
+        "2 m."
+      ],
+      "feedback": "Identify what the source explicitly states, what causes the change, and which future results are predictions. Do not infer unstated physical results.",
+      "options": [
+        "2 m.",
+        "6 m."
+      ]
+    },
+    {
+      "id": "A2.10.RDG.006",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.10.RDG.limits_of_claim",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What speed is held constant?",
+      "accepted": [
+        "2 m/s."
+      ],
+      "feedback": "Identify what the source explicitly states, what causes the change, and which future results are predictions. Do not infer unstated physical results.",
+      "options": [
+        "2 m/s.",
+        "6 m/s."
+      ]
+    },
+    {
+      "id": "A2.10.RDG.007",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.10.RDG.fact_retrieval",
+      "status": "draft",
+      "media": "text",
+      "prompt": "What is the extra distance predicted for two more seconds?",
+      "accepted": [
+        "4 m."
+      ],
+      "feedback": "Identify what the source explicitly states, what causes the change, and which future results are predictions. Do not infer unstated physical results.",
+      "options": [
+        "4 m.",
+        "2 m."
+      ]
+    },
+    {
+      "id": "A2.10.RDG.008",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.10.RDG.causal_inference",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Are the position values physical measurements?",
+      "accepted": [
+        "No, they come from a computer model."
+      ],
+      "feedback": "Identify what the source explicitly states, what causes the change, and which future results are predictions. Do not infer unstated physical results.",
+      "options": [
+        "No, they come from a computer model.",
+        "Yes, they are real cart measurements."
+      ]
+    }
+  ]
+}

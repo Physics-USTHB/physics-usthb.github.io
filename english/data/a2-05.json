@@ -1,0 +1,865 @@
+{
+  "schemaVersion": 1,
+  "id": "A2.05",
+  "title": "Measurement & Comparison",
+  "status": "draft",
+  "language": "en-US",
+  "license": "original-course-content",
+  "pedagogicalStatus": "Unreviewed draft: formative practice only; CEFR mastery disabled.",
+  "sources": [
+    {
+      "id": "R1",
+      "title": "Three identical small springs — measuring extension",
+      "paragraphs": [
+        "In this training example, three springs were each tested with the same hanging mass. Spring A extended by 2 cm, Spring B by 3 cm, and Spring C by 5 cm. Spring C extended the most. Spring A extended the least. Spring B extended more than A but less than C. The three extensions were measured in centimeters. These observations compare the measurements; they do not prove that one spring is better for every experiment. A student checks that the mass is the same before comparing the springs."
+      ]
+    },
+    {
+      "id": "R2",
+      "title": "An equipment comparison note",
+      "paragraphs": [
+        "The laboratory has three cables. Red is 40 cm long, blue is 65 cm long, and green is 65 cm long. The red cable is shorter than the other two. Blue and green are equally long. A student needs a cable at least 50 cm long to reach a socket. The red cable is too short for that connection. The blue and green cables are long enough. The note describes this one task; it does not say that longer cables are always better."
+      ]
+    },
+    {
+      "id": "R3",
+      "title": "Comparing readings: keep the quantities clear",
+      "paragraphs": [
+        "The first table shows two measured temperatures: Cup A is at 22 °C, and Cup B is at 28 °C. Cup B has a higher temperature than Cup A. A second table shows two masses: Block X has a mass of 120 g, and Block Y has a mass of 150 g. Block Y is heavier than Block X. It is not meaningful to say that 150 g is warmer than 28 °C: mass and temperature are different quantities. We compare like with like."
+      ]
+    },
+    {
+      "id": "R4",
+      "title": "A cautious comparison",
+      "paragraphs": [
+        "A group measures the length of a table twice. The first reading is 1.20 m, and the second reading is 1.21 m. The measurements are close, but they are not equal. The group says, “The second reading is slightly higher than the first.” It does not say, “The second reading is more accurate.” The group has no independent reference value. The report should describe the observed difference without inventing a reason for it."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "A2.05.CMP.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.CMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct comparative. Cable Y is ___ than cable X. Y = 80 cm; X = 60 cm.",
+      "accepted": [
+        "longer"
+      ],
+      "feedback": "Use comparative -er for two lengths.",
+      "options": [
+        "longer",
+        "longest"
+      ]
+    },
+    {
+      "id": "A2.05.CMP.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.CMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct comparative. Spring C extends ___ than Spring A.",
+      "accepted": [
+        "more"
+      ],
+      "feedback": "Use more than to compare two measured extensions.",
+      "options": [
+        "more",
+        "most"
+      ]
+    },
+    {
+      "id": "A2.05.CMP.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.CMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct comparative. Cable red is ___ than cable blue.",
+      "accepted": [
+        "shorter"
+      ],
+      "feedback": "Use shorter than for two cables.",
+      "options": [
+        "shorter",
+        "shortest"
+      ]
+    },
+    {
+      "id": "A2.05.CMP.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.CMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct comparative. The measured mass of block Y is ___ than that of X.",
+      "accepted": [
+        "greater"
+      ],
+      "feedback": "Use greater than to compare two numbers.",
+      "options": [
+        "greater",
+        "greatest"
+      ]
+    },
+    {
+      "id": "A2.05.CMP.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.CMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct comparative. Cup B has a ___ temperature than Cup A.",
+      "accepted": [
+        "higher"
+      ],
+      "feedback": "Use higher in a two-item comparison.",
+      "options": [
+        "higher",
+        "highest"
+      ]
+    },
+    {
+      "id": "A2.05.CMP.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.CMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct comparative. The new reading is ___ than the old reading: 2.4 V versus 2.3 V.",
+      "accepted": [
+        "higher"
+      ],
+      "feedback": "High becomes higher.",
+      "options": [
+        "higher",
+        "more high"
+      ]
+    },
+    {
+      "id": "A2.05.CMP.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.CMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct comparative. The second reading is ___ than the first: 1.21 m versus 1.20 m.",
+      "accepted": [
+        "slightly higher"
+      ],
+      "feedback": "The difference is small; slightly higher is justified.",
+      "options": [
+        "slightly higher",
+        "much highest"
+      ]
+    },
+    {
+      "id": "A2.05.CMP.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.CMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct comparative. A 45 g sample is ___ than a 52 g sample.",
+      "accepted": [
+        "lighter"
+      ],
+      "feedback": "The comparative form of light is lighter.",
+      "options": [
+        "lighter",
+        "lightest"
+      ]
+    },
+    {
+      "id": "A2.05.SUP.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.SUP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best superlative. The extensions are 2, 3, and 5 cm. C has the ___ extension.",
+      "accepted": [
+        "greatest"
+      ],
+      "feedback": "Greatest describes the maximum in a group of three.",
+      "options": [
+        "greatest",
+        "greater"
+      ]
+    },
+    {
+      "id": "A2.05.SUP.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.SUP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best superlative. Among cables 40, 65, and 65 cm, the red cable is the ___.",
+      "accepted": [
+        "shortest"
+      ],
+      "feedback": "Shortest refers to a group of more than two.",
+      "options": [
+        "shortest",
+        "shorter"
+      ]
+    },
+    {
+      "id": "A2.05.SUP.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.SUP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best superlative. In the set 4, 6, and 9 cm openings, the 9 cm clamp is the ___.",
+      "accepted": [
+        "widest"
+      ],
+      "feedback": "Use the widest for the largest opening.",
+      "options": [
+        "widest",
+        "wider"
+      ]
+    },
+    {
+      "id": "A2.05.SUP.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.SUP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best superlative. Among three readings 19, 24, and 24 °C, 19 °C is the ___.",
+      "accepted": [
+        "lowest"
+      ],
+      "feedback": "Lowest describes the minimum of three readings.",
+      "options": [
+        "lowest",
+        "lower"
+      ]
+    },
+    {
+      "id": "A2.05.SUP.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.SUP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best superlative. Which is the superlative of heavy?",
+      "accepted": [
+        "heaviest"
+      ],
+      "feedback": "Heavy changes y to i before -est.",
+      "options": [
+        "heaviest",
+        "heavyest"
+      ]
+    },
+    {
+      "id": "A2.05.SUP.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.SUP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best superlative. Which is the superlative of good?",
+      "accepted": [
+        "best"
+      ],
+      "feedback": "Good becomes better, best.",
+      "options": [
+        "best",
+        "goodest"
+      ]
+    },
+    {
+      "id": "A2.05.SUP.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.SUP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best superlative. Choose the appropriate form: the ___ measurement in this table.",
+      "accepted": [
+        "largest"
+      ],
+      "feedback": "Use the superlative with the for a group.",
+      "options": [
+        "largest",
+        "more large"
+      ]
+    },
+    {
+      "id": "A2.05.SUP.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.SUP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the best superlative. With P = 4 cm, Q = 4 cm, R = 7 cm, the ___ extension is 7 cm.",
+      "accepted": [
+        "greatest"
+      ],
+      "feedback": "7 cm is largest of the three reported extensions.",
+      "options": [
+        "greatest",
+        "greater"
+      ]
+    },
+    {
+      "id": "A2.05.EQL.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.EQL.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct structure. Blue is 65 cm and green is 65 cm: Blue is ___ green.",
+      "accepted": [
+        "as long as"
+      ],
+      "feedback": "Equal lengths take as + adjective + as.",
+      "options": [
+        "as long as",
+        "longer as"
+      ]
+    },
+    {
+      "id": "A2.05.EQL.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.EQL.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct structure. A = 45 g and C = 45 g: A is ___ C.",
+      "accepted": [
+        "as heavy as"
+      ],
+      "feedback": "Equal masses take as heavy as.",
+      "options": [
+        "as heavy as",
+        "heavier as"
+      ]
+    },
+    {
+      "id": "A2.05.EQL.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.EQL.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct structure. Cable red is 40 cm and blue is 65 cm: red is ___ blue.",
+      "accepted": [
+        "not as long as"
+      ],
+      "feedback": "Use not as + adjective + as.",
+      "options": [
+        "not as long as",
+        "not long as"
+      ]
+    },
+    {
+      "id": "A2.05.EQL.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.EQL.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct structure. If both lengths are 12 cm, the strips are ___.",
+      "accepted": [
+        "as long as each other"
+      ],
+      "feedback": "They have equal reported lengths.",
+      "options": [
+        "as long as each other",
+        "longer than each other"
+      ]
+    },
+    {
+      "id": "A2.05.EQL.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.EQL.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct structure. The two openings are both 6 cm: one is ___ the other.",
+      "accepted": [
+        "as wide as"
+      ],
+      "feedback": "As wide as communicates equality.",
+      "options": [
+        "as wide as",
+        "more wide as"
+      ]
+    },
+    {
+      "id": "A2.05.EQL.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.EQL.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct structure. A = 2.0 mm and C = 2.0 mm: A is ___ C.",
+      "accepted": [
+        "as thick as"
+      ],
+      "feedback": "Equal plate thicknesses justify equality.",
+      "options": [
+        "as thick as",
+        "thicker as"
+      ]
+    },
+    {
+      "id": "A2.05.EQL.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.EQL.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct structure. Which construction is correct for equal temperatures?",
+      "accepted": [
+        "as warm as"
+      ],
+      "feedback": "Use the positive adjective inside as ... as.",
+      "options": [
+        "as warm as",
+        "as warmer as"
+      ]
+    },
+    {
+      "id": "A2.05.EQL.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.EQL.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct structure. Which construction is correct for unequal lengths?",
+      "accepted": [
+        "not as short as"
+      ],
+      "feedback": "Negative equality uses not as ... as.",
+      "options": [
+        "not as short as",
+        "not shorter as"
+      ]
+    },
+    {
+      "id": "A2.05.ENO.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.ENO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the sentence that fits the stated requirement. The tube is 5 cm wide; the small clamp opens 4 cm. The clamp is ___.",
+      "accepted": [
+        "too narrow"
+      ],
+      "feedback": "The required opening exceeds 4 cm.",
+      "options": [
+        "too narrow",
+        "narrow enough"
+      ]
+    },
+    {
+      "id": "A2.05.ENO.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.ENO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the sentence that fits the stated requirement. The tube is 5 cm wide; the medium clamp opens 6 cm. It is ___.",
+      "accepted": [
+        "wide enough"
+      ],
+      "feedback": "6 cm meets the required 5 cm opening.",
+      "options": [
+        "wide enough",
+        "too narrow"
+      ]
+    },
+    {
+      "id": "A2.05.ENO.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.ENO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the sentence that fits the stated requirement. The cable must be at least 50 cm. The 40 cm cable is ___.",
+      "accepted": [
+        "too short"
+      ],
+      "feedback": "40 cm is below the requirement.",
+      "options": [
+        "too short",
+        "long enough"
+      ]
+    },
+    {
+      "id": "A2.05.ENO.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.ENO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the sentence that fits the stated requirement. The cable must be at least 50 cm. A 65 cm cable is ___.",
+      "accepted": [
+        "long enough"
+      ],
+      "feedback": "65 cm meets the threshold.",
+      "options": [
+        "long enough",
+        "too short"
+      ]
+    },
+    {
+      "id": "A2.05.ENO.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.ENO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the sentence that fits the stated requirement. Which is natural English?",
+      "accepted": [
+        "The opening is wide enough."
+      ],
+      "feedback": "Enough follows an adjective.",
+      "options": [
+        "The opening is wide enough.",
+        "The opening is enough wide."
+      ]
+    },
+    {
+      "id": "A2.05.ENO.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.ENO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the sentence that fits the stated requirement. Which is natural English?",
+      "accepted": [
+        "The cable is too short."
+      ],
+      "feedback": "Too comes before the adjective.",
+      "options": [
+        "The cable is too short.",
+        "The cable is short too."
+      ]
+    },
+    {
+      "id": "A2.05.ENO.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.ENO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the sentence that fits the stated requirement. A 9 cm opening is more than needed for a 5 cm tube. Which statement is factually supported?",
+      "accepted": [
+        "The opening is wide enough."
+      ],
+      "feedback": "An opening above the minimum is wide enough; usefulness needs additional context.",
+      "options": [
+        "The opening is wide enough.",
+        "The opening is too wide to be useful."
+      ]
+    },
+    {
+      "id": "A2.05.ENO.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.05.ENO.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the sentence that fits the stated requirement. A 50 cm cable is required; a 50 cm cable is ___.",
+      "accepted": [
+        "long enough"
+      ],
+      "feedback": "Exactly meeting the minimum satisfies long enough.",
+      "options": [
+        "long enough",
+        "too short"
+      ]
+    },
+    {
+      "id": "A2.05.VOC.001",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.05.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Select the accurate comparison vocabulary. The measured mass is 150 g rather than 120 g. Which word fits?",
+      "accepted": [
+        "heavier"
+      ],
+      "feedback": "Mass is compared with heavier/lighter.",
+      "options": [
+        "heavier",
+        "warmer"
+      ]
+    },
+    {
+      "id": "A2.05.VOC.002",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.05.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Select the accurate comparison vocabulary. The temperature reading changes from 22 °C to 28 °C. The second is ___.",
+      "accepted": [
+        "higher"
+      ],
+      "feedback": "Temperature readings can be higher/lower.",
+      "options": [
+        "higher",
+        "longer"
+      ]
+    },
+    {
+      "id": "A2.05.VOC.003",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.05.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Select the accurate comparison vocabulary. Two cables are 65 cm long. Their lengths are ___.",
+      "accepted": [
+        "equal"
+      ],
+      "feedback": "Equal means the measured numbers are the same.",
+      "options": [
+        "equal",
+        "distant"
+      ]
+    },
+    {
+      "id": "A2.05.VOC.004",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.05.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Select the accurate comparison vocabulary. The difference between 1.20 m and 1.21 m is ___.",
+      "accepted": [
+        "small"
+      ],
+      "feedback": "Small/slight describes the size of the reported difference.",
+      "options": [
+        "small",
+        "largest"
+      ]
+    },
+    {
+      "id": "A2.05.VOC.005",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.05.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Select the accurate comparison vocabulary. A cable shorter than needed is ___.",
+      "accepted": [
+        "too short"
+      ],
+      "feedback": "This expresses failure to meet a minimum length.",
+      "options": [
+        "too short",
+        "equal"
+      ]
+    },
+    {
+      "id": "A2.05.VOC.006",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.05.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Select the accurate comparison vocabulary. To compare two readings fairly, use the same ___.",
+      "accepted": [
+        "unit"
+      ],
+      "feedback": "Use consistent units (or valid conversions).",
+      "options": [
+        "unit",
+        "color"
+      ]
+    },
+    {
+      "id": "A2.05.VOC.007",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.05.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Select the accurate comparison vocabulary. Which word best describes 9 cm compared with 4 cm for a clamp opening?",
+      "accepted": [
+        "wider"
+      ],
+      "feedback": "Width/opening uses wider.",
+      "options": [
+        "wider",
+        "taller"
+      ]
+    },
+    {
+      "id": "A2.05.VOC.008",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.05.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Select the accurate comparison vocabulary. Which phrase compares two lengths?",
+      "accepted": [
+        "longer than"
+      ],
+      "feedback": "Comparatives generally use than.",
+      "options": [
+        "longer than",
+        "longest than"
+      ]
+    },
+    {
+      "id": "A2.05.RDG.001",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.05.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R1. Which spring has the greatest measured extension?",
+      "accepted": [
+        "C"
+      ],
+      "feedback": "R1 reports C = 5 cm versus A = 2 cm and B = 3 cm.",
+      "sourceId": "R1",
+      "options": [
+        "C",
+        "A"
+      ]
+    },
+    {
+      "id": "A2.05.RDG.002",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.05.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R1. Which spring has the least measured extension?",
+      "accepted": [
+        "A"
+      ],
+      "feedback": "R1 reports A = 2 cm, the minimum.",
+      "sourceId": "R1",
+      "options": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": "A2.05.RDG.003",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.05.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R1. What was held the same in the test?",
+      "accepted": [
+        "the hanging mass"
+      ],
+      "feedback": "The passage explicitly states the same hanging mass was used.",
+      "sourceId": "R1",
+      "options": [
+        "the hanging mass",
+        "the spring material"
+      ]
+    },
+    {
+      "id": "A2.05.RDG.004",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.05.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R1. Does R1 prove that Spring C is best for every experiment?",
+      "accepted": [
+        "no"
+      ],
+      "feedback": "The reading limits the claim to extension measurements.",
+      "sourceId": "R1",
+      "options": [
+        "no",
+        "yes"
+      ]
+    },
+    {
+      "id": "A2.05.RDG.005",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.05.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R2. Which cable is too short for the stated 50 cm requirement?",
+      "accepted": [
+        "red"
+      ],
+      "feedback": "Red = 40 cm and the minimum is 50 cm.",
+      "sourceId": "R2",
+      "options": [
+        "red",
+        "green"
+      ]
+    },
+    {
+      "id": "A2.05.RDG.006",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.05.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R2. Which two cables have equal measured lengths?",
+      "accepted": [
+        "blue and green"
+      ],
+      "feedback": "Both blue and green are 65 cm.",
+      "sourceId": "R2",
+      "options": [
+        "blue and green",
+        "red and green"
+      ]
+    },
+    {
+      "id": "A2.05.RDG.007",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.05.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R2. What is the minimum required cable length?",
+      "accepted": [
+        "50 cm"
+      ],
+      "feedback": "The task requires at least 50 cm.",
+      "sourceId": "R2",
+      "options": [
+        "50 cm",
+        "65 cm"
+      ]
+    },
+    {
+      "id": "A2.05.RDG.008",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.05.RDG.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Read R2. Does the passage say longer cables are always better?",
+      "accepted": [
+        "no"
+      ],
+      "feedback": "It explicitly limits the claim to this setup.",
+      "sourceId": "R2",
+      "options": [
+        "no",
+        "yes"
+      ]
+    }
+  ]
+}

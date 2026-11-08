@@ -1,0 +1,917 @@
+{
+  "schemaVersion": 1,
+  "id": "A2.03",
+  "title": "Laboratory Equipment & Position",
+  "status": "draft",
+  "language": "en-US",
+  "license": "original-course-content",
+  "pedagogicalStatus": "Unreviewed draft: formative practice only; CEFR mastery disabled.",
+  "sources": [
+    {
+      "id": "R1",
+      "title": "The first laboratory bench (learning)",
+      "paragraphs": [
+        "In this beginner lesson, all equipment is disconnected and used only for naming and position practice. On the worktable, there is one meterstick and there are two timers. The digital scale is next to the meterstick. A notebook is between the two timers. A plastic tray is behind the notebook. Under the worktable is an empty equipment box.",
+        "Maya says, “This is my notebook. These are our timers.” She points across the classroom: “That is the instructor’s cart. Those are the extra rulers.” Nothing in this text requires students to connect or energize electrical equipment."
+      ]
+    },
+    {
+      "id": "R2",
+      "title": "A classroom inventory (learning)",
+      "paragraphs": [
+        "| Label | Item | Number | Location |\n|---|---|---:|---|\n| A | meterstick | 1 | on the left shelf |\n| B | timer | 2 | on the middle shelf |\n| C | digital scale | 1 | on the right shelf |\n| D | plastic tray | 1 | under the middle shelf |\n| E | notebook | 3 | in the cabinet |\n| F | thermometer | 1 | in the drawer |",
+        "These labels describe a fictional teaching room, not an inventory at USTHB. An ammeter measures electric current; a voltmeter measures voltage. A thermometer measures temperature; a meterstick measures length. This is identification practice only."
+      ]
+    },
+    {
+      "id": "R3",
+      "title": "Setup instructions on a paper worksheet (learning)",
+      "paragraphs": [
+        "This task uses cards with equipment pictures, not working electrical apparatus.",
+        "First, put the *timer* card in the center of the desk outline. Next, place the *ruler* card to the left of the timer. Then put the *scale* card to the right of the timer. Finally, draw a notebook below the timer. The words left and right describe the worksheet as you face it; the front edge is at the bottom. Check the labels before you finish."
+      ]
+    },
+    {
+      "id": "R4",
+      "title": "Two students describe a layout (learning)",
+      "paragraphs": [
+        "**Lena:** Is there a ruler next to the tray?\n**Noah:** Yes, there is. The ruler is on the left of the tray.\n**Lena:** Are there three timers on this desk?\n**Noah:** No, there aren't. There are two timers. One is near us and the other is across the desk.\n**Lena:** Is the notebook between them?\n**Noah:** Yes. First we check the labels, then we copy the positions, and finally we compare our drawings.",
+        "“Near us” and “across the desk” depend on the speakers’ positions. Such expressions are never used for machine-scored position questions without an explicit viewpoint."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "A2.03.TIA.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.TIA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct word. There ___ a notebook on the desk.",
+      "accepted": [
+        "is"
+      ],
+      "feedback": "Use “there is” for one notebook.",
+      "options": [
+        "is",
+        "are"
+      ]
+    },
+    {
+      "id": "A2.03.TIA.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.TIA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct word. There ___ two timers in the drawer.",
+      "accepted": [
+        "are"
+      ],
+      "feedback": "Use “there are” for two timers.",
+      "options": [
+        "are",
+        "is"
+      ]
+    },
+    {
+      "id": "A2.03.TIA.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.TIA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct word. There ___ an empty case under the table.",
+      "accepted": [
+        "is"
+      ],
+      "feedback": "One case takes “is.”",
+      "options": [
+        "is",
+        "are"
+      ]
+    },
+    {
+      "id": "A2.03.TIA.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.TIA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct word. There ___ three rulers on the shelf.",
+      "accepted": [
+        "are"
+      ],
+      "feedback": "The plural “rulers” takes “are.”",
+      "options": [
+        "are",
+        "is"
+      ]
+    },
+    {
+      "id": "A2.03.TIA.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.TIA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct word. ___ there a thermometer in this drawer?",
+      "accepted": [
+        "Is"
+      ],
+      "feedback": "A singular object needs “Is there ...?”",
+      "options": [
+        "Is",
+        "Are"
+      ]
+    },
+    {
+      "id": "A2.03.TIA.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.TIA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct word. ___ there two scales in the storeroom?",
+      "accepted": [
+        "Are"
+      ],
+      "feedback": "A plural subject requires “Are there ...?”",
+      "options": [
+        "Are",
+        "Is"
+      ]
+    },
+    {
+      "id": "A2.03.TIA.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.TIA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct word. No, there ___. (one ruler; negative)",
+      "accepted": [
+        "isn’t"
+      ],
+      "feedback": "Use “there isn’t” with one item.",
+      "options": [
+        "isn’t",
+        "aren’t"
+      ]
+    },
+    {
+      "id": "A2.03.TIA.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.TIA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the correct word. No, there ___. (three timers; negative)",
+      "accepted": [
+        "aren’t"
+      ],
+      "feedback": "Use “there aren’t” with plural items.",
+      "options": [
+        "aren’t",
+        "isn’t"
+      ]
+    },
+    {
+      "id": "A2.03.DEM.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.DEM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "From the speaker’s viewpoint: one ruler in my hand. Choose the demonstrative.",
+      "accepted": [
+        "this"
+      ],
+      "feedback": "Check both number (one/more than one) and distance from the speaker.",
+      "options": [
+        "this",
+        "that",
+        "these",
+        "those"
+      ]
+    },
+    {
+      "id": "A2.03.DEM.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.DEM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "From the speaker’s viewpoint: two rulers next to me. Choose the demonstrative.",
+      "accepted": [
+        "these"
+      ],
+      "feedback": "Check both number (one/more than one) and distance from the speaker.",
+      "options": [
+        "this",
+        "that",
+        "these",
+        "those"
+      ]
+    },
+    {
+      "id": "A2.03.DEM.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.DEM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "From the speaker’s viewpoint: one timer on a distant shelf. Choose the demonstrative.",
+      "accepted": [
+        "that"
+      ],
+      "feedback": "Check both number (one/more than one) and distance from the speaker.",
+      "options": [
+        "this",
+        "that",
+        "these",
+        "those"
+      ]
+    },
+    {
+      "id": "A2.03.DEM.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.DEM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "From the speaker’s viewpoint: three timers across the room. Choose the demonstrative.",
+      "accepted": [
+        "those"
+      ],
+      "feedback": "Check both number (one/more than one) and distance from the speaker.",
+      "options": [
+        "this",
+        "that",
+        "these",
+        "those"
+      ]
+    },
+    {
+      "id": "A2.03.DEM.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.DEM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "From the speaker’s viewpoint: one notebook near the speaker. Choose the demonstrative.",
+      "accepted": [
+        "this"
+      ],
+      "feedback": "Check both number (one/more than one) and distance from the speaker.",
+      "options": [
+        "this",
+        "that",
+        "these",
+        "those"
+      ]
+    },
+    {
+      "id": "A2.03.DEM.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.DEM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "From the speaker’s viewpoint: two notebooks far from speaker. Choose the demonstrative.",
+      "accepted": [
+        "those"
+      ],
+      "feedback": "Check both number (one/more than one) and distance from the speaker.",
+      "options": [
+        "this",
+        "that",
+        "these",
+        "those"
+      ]
+    },
+    {
+      "id": "A2.03.DEM.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.DEM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "From the speaker’s viewpoint: one scale far from speaker. Choose the demonstrative.",
+      "accepted": [
+        "that"
+      ],
+      "feedback": "Check both number (one/more than one) and distance from the speaker.",
+      "options": [
+        "this",
+        "that",
+        "these",
+        "those"
+      ]
+    },
+    {
+      "id": "A2.03.DEM.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.DEM.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "From the speaker’s viewpoint: four labels near speaker. Choose the demonstrative.",
+      "accepted": [
+        "these"
+      ],
+      "feedback": "Check both number (one/more than one) and distance from the speaker.",
+      "options": [
+        "this",
+        "that",
+        "these",
+        "those"
+      ]
+    },
+    {
+      "id": "A2.03.PRE.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.PRE.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "D1: The ruler is ___ the timer.",
+      "accepted": [
+        "to the left of"
+      ],
+      "feedback": "Use the viewpoint and position in D1; the best relation is “to the left of.”",
+      "options": [
+        "to the left of",
+        "to the right of",
+        "behind"
+      ]
+    },
+    {
+      "id": "A2.03.PRE.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.PRE.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "D1: The scale is ___ the timer.",
+      "accepted": [
+        "to the right of"
+      ],
+      "feedback": "Use the viewpoint and position in D1; the best relation is “to the right of.”",
+      "options": [
+        "to the right of",
+        "to the left of",
+        "under"
+      ]
+    },
+    {
+      "id": "A2.03.PRE.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.PRE.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "D1: The tray is ___ the timer.",
+      "accepted": [
+        "behind"
+      ],
+      "feedback": "Use the viewpoint and position in D1; the best relation is “behind.”",
+      "options": [
+        "behind",
+        "in front of",
+        "between"
+      ]
+    },
+    {
+      "id": "A2.03.PRE.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.PRE.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "D1: The notebook is ___ the timer.",
+      "accepted": [
+        "in front of"
+      ],
+      "feedback": "Use the viewpoint and position in D1; the best relation is “in front of.”",
+      "options": [
+        "in front of",
+        "behind",
+        "under"
+      ]
+    },
+    {
+      "id": "A2.03.PRE.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.PRE.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "D1: The timer is ___ the ruler and the scale.",
+      "accepted": [
+        "between"
+      ],
+      "feedback": "Use the viewpoint and position in D1; the best relation is “between.”",
+      "options": [
+        "between",
+        "under",
+        "inside"
+      ]
+    },
+    {
+      "id": "A2.03.PRE.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.PRE.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "D1: The toolbox is ___ the table.",
+      "accepted": [
+        "under"
+      ],
+      "feedback": "Use the viewpoint and position in D1; the best relation is “under.”",
+      "options": [
+        "under",
+        "on",
+        "in"
+      ]
+    },
+    {
+      "id": "A2.03.PRE.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.PRE.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "D1: The thermometer is ___ the drawer.",
+      "accepted": [
+        "in"
+      ],
+      "feedback": "Use the viewpoint and position in D1; the best relation is “in.”",
+      "options": [
+        "in",
+        "on",
+        "behind"
+      ]
+    },
+    {
+      "id": "A2.03.PRE.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.PRE.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "D2: The meterstick is ___ the upper-left part of the shelf plan.",
+      "accepted": [
+        "in"
+      ],
+      "feedback": "Use the viewpoint and position in D2; the best relation is “in.”",
+      "options": [
+        "in",
+        "under",
+        "between"
+      ]
+    },
+    {
+      "id": "A2.03.IMP.001",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.IMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the imperative form: ___ the ruler card on the left of the paper.",
+      "accepted": [
+        "Place"
+      ],
+      "feedback": "Instructions usually start with the base form. A negative imperative starts with “Do not.”",
+      "options": [
+        "Place",
+        "Places",
+        "Placing"
+      ]
+    },
+    {
+      "id": "A2.03.IMP.002",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.IMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the imperative form: ___ the labels carefully.",
+      "accepted": [
+        "Read"
+      ],
+      "feedback": "Instructions usually start with the base form. A negative imperative starts with “Do not.”",
+      "options": [
+        "Read",
+        "Reads",
+        "Reading"
+      ]
+    },
+    {
+      "id": "A2.03.IMP.003",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.IMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the imperative form: ___ the notebook next to the tray.",
+      "accepted": [
+        "Put"
+      ],
+      "feedback": "Instructions usually start with the base form. A negative imperative starts with “Do not.”",
+      "options": [
+        "Put",
+        "Puts",
+        "Putting"
+      ]
+    },
+    {
+      "id": "A2.03.IMP.004",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.IMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the imperative form: ___ the timer in the middle of the diagram.",
+      "accepted": [
+        "Draw"
+      ],
+      "feedback": "Instructions usually start with the base form. A negative imperative starts with “Do not.”",
+      "options": [
+        "Draw",
+        "Draws",
+        "Drawing"
+      ]
+    },
+    {
+      "id": "A2.03.IMP.005",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.IMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the imperative form: ___ the second picture with the first.",
+      "accepted": [
+        "Compare"
+      ],
+      "feedback": "Instructions usually start with the base form. A negative imperative starts with “Do not.”",
+      "options": [
+        "Compare",
+        "Compares",
+        "Comparing"
+      ]
+    },
+    {
+      "id": "A2.03.IMP.006",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.IMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the imperative form: ___ connect the unpowered display cards to anything.",
+      "accepted": [
+        "Do not"
+      ],
+      "feedback": "Instructions usually start with the base form. A negative imperative starts with “Do not.”",
+      "options": [
+        "Do not",
+        "Not",
+        "Does not"
+      ]
+    },
+    {
+      "id": "A2.03.IMP.007",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.IMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the imperative form: ___ touch the instructor’s equipment.",
+      "accepted": [
+        "Do not"
+      ],
+      "feedback": "Instructions usually start with the base form. A negative imperative starts with “Do not.”",
+      "options": [
+        "Do not",
+        "Does not",
+        "Not"
+      ]
+    },
+    {
+      "id": "A2.03.IMP.008",
+      "skill": "grammar",
+      "type": "single_choice",
+      "family": "A2.03.IMP.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Choose the imperative form: ___ the name of each object in your notebook.",
+      "accepted": [
+        "Write"
+      ],
+      "feedback": "Instructions usually start with the base form. A negative imperative starts with “Do not.”",
+      "options": [
+        "Write",
+        "Writes",
+        "Writing"
+      ]
+    },
+    {
+      "id": "A2.03.VOC.001",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.03.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which instrument is used to measure a time interval?",
+      "accepted": [
+        "stopwatch"
+      ],
+      "feedback": "The best term is “stopwatch”; confirm its use in the source glossary.",
+      "options": [
+        "stopwatch",
+        "thermometer",
+        "meterstick"
+      ]
+    },
+    {
+      "id": "A2.03.VOC.002",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.03.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which object is used to measure length?",
+      "accepted": [
+        "meterstick"
+      ],
+      "feedback": "The best term is “meterstick”; confirm its use in the source glossary.",
+      "options": [
+        "meterstick",
+        "voltmeter",
+        "scale"
+      ]
+    },
+    {
+      "id": "A2.03.VOC.003",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.03.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which instrument is used to measure temperature?",
+      "accepted": [
+        "thermometer"
+      ],
+      "feedback": "The best term is “thermometer”; confirm its use in the source glossary.",
+      "options": [
+        "thermometer",
+        "ammeter",
+        "ruler"
+      ]
+    },
+    {
+      "id": "A2.03.VOC.004",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.03.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which instrument is used to measure mass?",
+      "accepted": [
+        "digital scale"
+      ],
+      "feedback": "The best term is “digital scale”; confirm its use in the source glossary.",
+      "options": [
+        "digital scale",
+        "timer",
+        "voltmeter"
+      ]
+    },
+    {
+      "id": "A2.03.VOC.005",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.03.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which instrument measures electric current?",
+      "accepted": [
+        "ammeter"
+      ],
+      "feedback": "The best term is “ammeter”; confirm its use in the source glossary.",
+      "options": [
+        "ammeter",
+        "voltmeter",
+        "thermometer"
+      ]
+    },
+    {
+      "id": "A2.03.VOC.006",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.03.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which instrument measures voltage?",
+      "accepted": [
+        "voltmeter"
+      ],
+      "feedback": "The best term is “voltmeter”; confirm its use in the source glossary.",
+      "options": [
+        "voltmeter",
+        "ammeter",
+        "stopwatch"
+      ]
+    },
+    {
+      "id": "A2.03.VOC.007",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.03.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which item usually contains paper notes?",
+      "accepted": [
+        "notebook"
+      ],
+      "feedback": "The best term is “notebook”; confirm its use in the source glossary.",
+      "options": [
+        "notebook",
+        "ammeter",
+        "meterstick"
+      ]
+    },
+    {
+      "id": "A2.03.VOC.008",
+      "skill": "vocabulary",
+      "type": "single_choice",
+      "family": "A2.03.VOC.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "Which object is useful for holding several small cards?",
+      "accepted": [
+        "tray"
+      ],
+      "feedback": "The best term is “tray”; confirm its use in the source glossary.",
+      "options": [
+        "tray",
+        "thermometer",
+        "stopwatch"
+      ]
+    },
+    {
+      "id": "A2.03.REA.001",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.03.REA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R1: How many timers are on the worktable?",
+      "accepted": [
+        "two"
+      ],
+      "feedback": "The answer is stated in R1; locate it before deciding.",
+      "sourceId": "R1",
+      "options": [
+        "one",
+        "two",
+        "three"
+      ]
+    },
+    {
+      "id": "A2.03.REA.002",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.03.REA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R1: What is between the two timers?",
+      "accepted": [
+        "a notebook"
+      ],
+      "feedback": "The answer is stated in R1; locate it before deciding.",
+      "sourceId": "R1",
+      "options": [
+        "a notebook",
+        "a scale",
+        "a meterstick"
+      ]
+    },
+    {
+      "id": "A2.03.REA.003",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.03.REA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R1: Where is the empty equipment box?",
+      "accepted": [
+        "under the worktable"
+      ],
+      "feedback": "The answer is stated in R1; locate it before deciding.",
+      "sourceId": "R1",
+      "options": [
+        "under the worktable",
+        "on the worktable",
+        "on the cart"
+      ]
+    },
+    {
+      "id": "A2.03.REA.004",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.03.REA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R2: How many notebooks are in the cabinet?",
+      "accepted": [
+        "three"
+      ],
+      "feedback": "The answer is stated in R2; locate it before deciding.",
+      "sourceId": "R2",
+      "options": [
+        "one",
+        "two",
+        "three"
+      ]
+    },
+    {
+      "id": "A2.03.REA.005",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.03.REA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R2: Which item is in the drawer?",
+      "accepted": [
+        "thermometer"
+      ],
+      "feedback": "The answer is stated in R2; locate it before deciding.",
+      "sourceId": "R2",
+      "options": [
+        "thermometer",
+        "digital scale",
+        "meterstick"
+      ]
+    },
+    {
+      "id": "A2.03.REA.006",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.03.REA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R2: Which item is on the right shelf?",
+      "accepted": [
+        "digital scale"
+      ],
+      "feedback": "The answer is stated in R2; locate it before deciding.",
+      "sourceId": "R2",
+      "options": [
+        "digital scale",
+        "meterstick",
+        "timer"
+      ]
+    },
+    {
+      "id": "A2.03.REA.007",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.03.REA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R2: Where are the two timers?",
+      "accepted": [
+        "middle shelf"
+      ],
+      "feedback": "The answer is stated in R2; locate it before deciding.",
+      "sourceId": "R2",
+      "options": [
+        "middle shelf",
+        "left shelf",
+        "right shelf"
+      ]
+    },
+    {
+      "id": "A2.03.REA.008",
+      "skill": "reading",
+      "type": "single_choice",
+      "family": "A2.03.REA.practice",
+      "status": "draft",
+      "media": "text",
+      "prompt": "After reading R3: What should the student put at the center of the paper?",
+      "accepted": [
+        "timer card"
+      ],
+      "feedback": "The answer is stated in R3; locate it before deciding.",
+      "sourceId": "R3",
+      "options": [
+        "timer card",
+        "scale card",
+        "ruler card"
+      ]
+    }
+  ]
+}
