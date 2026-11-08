@@ -69,7 +69,7 @@ for (const n of ['e01','e02','e03','e04','e05']) {
   assert.ok(existsSync(htmlPath), 'Existing physics practical missing: ' + n);
   const labHtml = read('../electricity/' + n + '/index.html');
   assert.ok(labHtml.includes('id="clearLocalProgress"'), n + ' must offer clear-local-data control');
-  assert.ok(labHtml.includes('name and group stay only in this open page'), n + ' must disclose identity policy');
+  assert.ok(/student name(?:, email)? and group stay only in this open page/.test(labHtml), n + ' must disclose identity policy');
   const scriptName = n === 'e03' ? 'official.js' : 'lab.js';
   const labJs = read('../electricity/' + n + '/' + scriptName);
   new Script(labJs, {filename: n + '/' + scriptName});
