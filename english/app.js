@@ -39,7 +39,7 @@ authoredRoot.hidden=true;
 $("lesson").after(focusedRoot,authoredRoot);
 const recorderMount=document.createElement("div");
 $("lesson").closest(".card").after(recorderMount);
-const speaking=mountSpeaking(recorderMount);
+const speaking=mountSpeaking(recorderMount,{onStartRecording:()=>{readAloud.stop();listeningWorkshop?.stop();}});
 const readAloud=createReadingAloud({onStart:()=>listeningWorkshop?.stop()});
 const writingMount=document.createElement("div");
 recorderMount.before(writingMount);
