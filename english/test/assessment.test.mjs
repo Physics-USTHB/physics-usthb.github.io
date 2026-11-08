@@ -7,12 +7,17 @@ import {dirname,resolve} from "node:path";
 import {normalizeAnswer,validateUnit,gradeItem,nextReview,summarizeEvidence,weaknessHypothesis} from "../assessment.mjs";
 const dir=dirname(fileURLToPath(import.meta.url));
 const unit=JSON.parse(readFileSync(resolve(dir,"../data/a2-01.json"),"utf8"));
+const unit2=JSON.parse(readFileSync(resolve(dir,"../data/a2-02.json"),"utf8"));
 
 test("authored unit validates; IDs are unique, references and answers exist",()=>{
  assert.deepEqual(validateUnit(unit),[]);
+ assert.deepEqual(validateUnit(unit2),[]);
  assert.equal(unit.items.length,34);
+ assert.equal(unit2.items.length,34);
  assert.equal(new Set(unit.items.map(i=>i.id)).size,unit.items.length);
  assert.ok(unit.items.every(i=>i.status==="draft"));
+ assert.ok(unit2.items.every(i=>i.status==="draft"));
+ assert.equal(new Set([...unit.items,...unit2.items].map(i=>i.id)).size,68);
 });
 
 test("normalization accepts case, terminal punctuation, Unicode quote variants",()=>{
@@ -70,4 +75,15 @@ test("review suggestion requires errors across distinct families and days",()=>{
  assert.equal(d.errorDates,2);
  assert.equal(d.status,"review_suggested");
  assert.equal(d.diagnosis,"none");
+});
+
+
+test("static course entry point references available scripts and has no missing DOM IDs",()=>{
+ const html=readFileSync(resolve(dir,"../index.html"),"utf8");
+ const app=readFileSync(resolve(dir,"../app.js"),"utf8");
+ const ids=[...app.matchAll(/\$\("([^"]+)"\)/g)].map(m=>m[1]);
+ for(const id of new Set(ids)) assert.ok(html.includes('id="'+id+'"'),"missing DOM id: "+id);
+ assert.match(app,/loadAuthoredUnits\(\)/);
+ assert.match(app,/state\.reviews/);
+ assert.match(html,/Draft only/);
 });
