@@ -57,9 +57,12 @@ function take(){
   if(E('coupling1').value==='gnd'||E('coupling2').value==='gnd'){E('msg').className='notice warn';E('msg').textContent='Both signals must be connected rather than grounded for this two-channel measurement.';return}
   if(!stable()){E('msg').className='notice warn';E('msg').textContent='Trace is not synchronised. Select CH1 AUTO and keep trigger LEVEL inside the CH1 waveform.';return}
   if(!validDisplay(q)){E('msg').className='notice warn';E('msg').textContent='Improve VOLT/DIV and TIME/DIV so the waveform amplitude and one period are clearly readable.';return}
+  const fields=['studentVppDiv','studentPeriodDiv','studentDtDiv','studentVpp','studentPeriod','studentFreq','studentPhi'];
+  const raw=Object.fromEntries(fields.map(id=>[id,E(id).value.trim()]));
+  if(fields.some(id=>raw[id]==='')){E('msg').className='notice warn';E('msg').textContent='Enter all cursor readings and calculated values before validation.';return}
   const vals={
-    vppDiv:+E('studentVppDiv').value,periodDiv:+E('studentPeriodDiv').value,dtDiv:+E('studentDtDiv').value,
-    vpp:+E('studentVpp').value,Tms:+E('studentPeriod').value,f:+E('studentFreq').value,phi:+E('studentPhi').value
+    vppDiv:+raw.studentVppDiv,periodDiv:+raw.studentPeriodDiv,dtDiv:+raw.studentDtDiv,
+    vpp:+raw.studentVpp,Tms:+raw.studentPeriod,f:+raw.studentFreq,phi:+raw.studentPhi
   };
   if(Object.values(vals).some(v=>!Number.isFinite(v))||vals.vppDiv<=0||vals.periodDiv<=0||vals.vpp<=0||vals.Tms<=0||vals.f<=0){
     E('msg').className='notice warn';E('msg').textContent='Enter all cursor readings and calculated values before validation.';return;
