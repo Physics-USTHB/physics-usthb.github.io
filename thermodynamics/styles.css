@@ -14,3 +14,10 @@
 .water-table input{width:130px;padding:6px;border:1px solid #d5e0e8;border-radius:7px}
 @media(max-width:760px){.vom-entry-grid,.student-optics-entry,.analysis-entry{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.vom-entry-grid,.student-optics-entry,.analysis-entry{grid-template-columns:1fr}}
+
+
+/* Thermodynamics Practical 1 procedure gate */
+.procedure-action{display:none;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;margin-top:12px;padding:12px;border:1px solid #355867;border-radius:12px;background:#081a1d}
+.procedure-action label{display:block;font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#8eabb4}
+.procedure-action select{width:100%;margin-top:6px;padding:9px;border:1px solid #3e6472;border-radius:8px;background:#071519;color:#e8f6f8}
+@media(max-width:620px){.procedure-action{grid-template-columns:1fr}}
