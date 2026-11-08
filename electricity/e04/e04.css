@@ -37,3 +37,12 @@
 .connection-status{margin-top:9px;padding:8px 9px;border-radius:8px;background:#0a2a22;border:1px solid #2c765f;color:#8de9c4;font-size:.67rem}.connection-status.bad{background:#2a161b;border-color:#84404f;color:#ffb8c5}
 @media(max-width:900px){.front-panel-grid{grid-template-columns:repeat(2,1fr)}.connection-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.front-panel-grid,.connection-grid{grid-template-columns:1fr}.connection-title{flex-direction:column}}
+
+
+/* Practical 4 review: student oscilloscope calculations */
+.student-scope-entry{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:11px 0 13px}
+.student-scope-entry label{font-size:.62rem;color:#617789;font-weight:800}.student-scope-entry input{width:100%;margin-top:5px;padding:8px;border:1px solid #d4dfe8;border-radius:9px;background:#fff;color:#173b59}
+.student-scope-entry .btn{align-self:end;padding:9px 10px;font-size:.7rem}
+.scope-card .student-scope-entry{grid-template-columns:1fr}
+@media(min-width:1081px){.scope-card .student-scope-entry{grid-template-columns:1fr 1fr}.scope-card .student-scope-entry .btn{grid-column:1/-1}}
+@media(max-width:600px){.student-scope-entry{grid-template-columns:1fr}}
