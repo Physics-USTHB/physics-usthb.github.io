@@ -1,6 +1,7 @@
 // Optional browser read-aloud, using the selected voice and the complete source text.
 // Original recorded General American narration is not yet available or assessed.
 import {speechChunks} from "./speech-chunks.mjs";
+import {prepareCourseSpeech} from "./science-speech.mjs";
 export function createReadingAloud({onStart=()=>{},getVoice=()=>null}={}){
  const supported=typeof window!=="undefined"&&"speechSynthesis" in window &&
    "SpeechSynthesisUtterance" in window;
@@ -37,7 +38,7 @@ export function createReadingAloud({onStart=()=>{},getVoice=()=>null}={}){
    if(!supported)return;
    onStart();
    stop();
-   const text=(Array.isArray(paragraphs)?paragraphs:[]).filter(p=>typeof p==="string").join(" ");
+   const text=(Array.isArray(paragraphs)?paragraphs:[]).filter(p=>typeof p==="string").map(prepareCourseSpeech).join(" ");
    const chunks=speechChunks(text);
    if(!chunks.length){status.textContent="No text is available to read.";return;}
    const session={chunks,index:0,play,halt,status};
