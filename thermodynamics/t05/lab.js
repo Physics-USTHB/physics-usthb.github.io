@@ -1,9 +1,9 @@
 (()=>{'use strict';
-const U=ThermoUI,E=id=>document.getElementById(id),K='THERMO_T05_v2',TAU=Math.PI*2;
+const U=ThermoUI,E=id=>document.getElementById(id),K='THERMO_T05_v3',TAU=Math.PI*2;
 function q(x,step){return Math.round(x/step)*step}
-function makeRun(){return{id:'T05-'+Math.random().toString(36).slice(2,7).toUpperCase(),Rh:4.6+Math.random()*.45,ambient:22.5+Math.random()*2.0,friction:.48+Math.random()*.16,phase:Math.random()*6.28}}
+function makeRun(){return{id:'T05-'+Math.random().toString(36).slice(2,7).toUpperCase(),Rh:4.6+Math.random()*.45,ambient:22.5+Math.random()*2.0,friction:.0014+Math.random()*.0008,phase:Math.random()*6.28}}
 let s=U.load(K,null);
-if(!s||s.version!==2)s={version:2,run:makeRun(),points:[],analyses:{},interpretation:''};
+if(!s||s.version!==3)s={version:3,run:makeRun(),points:[],analyses:{},interpretation:''};
 s.points=Array.isArray(s.points)?s.points:[];s.analyses=s.analyses||{};s.interpretation=s.interpretation||'';
 function save(){U.save(K,s)}
 function pointKey(U,tau){return(+U).toFixed(1)+'|'+(+tau).toFixed(3)}
@@ -11,10 +11,11 @@ function model(){
  const U=+E('heaterV').value,tau=+E('torque').value,I=U/s.run.Rh,thermal=U*I,heatFrac=(U-7.5)/4.5,stall=.022+.026*Math.max(0,heatFrac),loadFrac=tau/stall;
  const Th=s.run.ambient+90+155*Math.max(0,heatFrac)-28*Math.max(0,loadFrac),Tc=s.run.ambient+6+14*Math.max(0,heatFrac)+9*Math.max(0,loadFrac);
  let rpm=(430+850*Math.max(0,heatFrac))*Math.max(0,1-Math.pow(Math.max(0,loadFrac),1.28));rpm=Math.max(0,rpm);
- const shaft=TAU*(rpm/60)*tau,indicated=shaft+s.run.friction*(.72+.28*Math.max(0,heatFrac))*(rpm>0?1:.15),work=rpm>5?indicated/(rpm/60):.03;
+ const shaft=TAU*(rpm/60)*tau,frictionTorque=s.run.friction*(.72+.28*Math.max(0,heatFrac));
+ const indicated=rpm>5?TAU*(rpm/60)*(tau+frictionTorque):0,work=rpm>5?TAU*(tau+frictionTorque):0;
  const carnot=1-(Tc+273.15)/(Th+273.15),eta=thermal>0?shaft/thermal:0;
- const vamp=5.4e-6,pmean=101300+900*Math.max(0,heatFrac),phi=.58+.10*Math.max(0,loadFrac),pamp=Math.max(1500,work/(Math.PI*vamp*Math.max(.15,Math.sin(phi))));
- const pts=[];for(let i=0;i<=180;i++){const a=TAU*i/180,V=40e-6+vamp*Math.cos(a),P=pmean+pamp*Math.cos(a-phi);pts.push({V,P})}
+ const vamp=5.4e-6,pmean=101300+900*Math.max(0,heatFrac),phi=.58+.10*Math.max(0,loadFrac),pamp=work/(Math.PI*vamp*Math.sin(phi));
+ const pts=[];for(let i=0;i<=180;i++){const a=TAU*i/180,V=40e-6+vamp*Math.cos(a),P=pmean+pamp*Math.cos(a+phi);pts.push({V,P})}
  return{U:q(U,.01),tau:q(tau,.001),I:q(I,.001),Th:q(Th,.1),Tc:q(Tc,.1),rpm:q(rpm,1),thermal,shaft,indicated,work,carnot,eta,pts,stall};
 }
 function setupCanvas(){const c=E('engineCanvas'),d=window.devicePixelRatio||1,w=c.clientWidth||900,h=c.clientHeight||390;c.width=w*d;c.height=h*d;const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return{x,w,h}}
