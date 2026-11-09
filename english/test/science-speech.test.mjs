@@ -43,6 +43,13 @@ test("speed, acceleration, length, frequency, and unit singulars are covered",()
  "one meter per second, two meters per second squared, three centimeters, one hertz, five kilograms, twenty kelvins, and three minutes.");
 });
 
+test("numbers before fully written physics units are pronounced naturally",()=>{
+ assert.equal(scienceToSpeech("Resistance stays at 5 ohms for 2 seconds."),
+  "Resistance stays at five ohms for two seconds.");
+ assert.equal(scienceToSpeech("The temperature changed by 4 degrees Celsius in 3 minutes."),
+  "The temperature changed by four degrees Celsius in three minutes.");
+});
+
 test("screen text remains unchanged: only separate speech strings are transformed",()=>{
  const displayed="The simulation shows 0.35 m at 1.5 s.";
  const spoken=prepareCourseSpeech(displayed);
