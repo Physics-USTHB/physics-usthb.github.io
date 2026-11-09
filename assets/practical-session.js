@@ -35,5 +35,7 @@ function init(){
   b.addEventListener('click',clearCurrentPractical);
   host.appendChild(b);
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+function loadUncertainty(){if(window.PracticalUncertainty||document.querySelector('script[data-practical-uncertainty]'))return;const s=document.createElement('script');s.src='/assets/practical-uncertainty.js';s.defer=true;s.dataset.practicalUncertainty='1';document.head.appendChild(s)}
+function boot(){init();loadUncertainty()}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
