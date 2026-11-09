@@ -1,14 +1,18 @@
 (()=>{
 'use strict';
-const U=VOMUI,E=id=>document.getElementById(id),K='VOM_W01_v3',G=9.81,LP=1.00,TAU=Math.PI*2,APOS=[10,15,20,25,30,35,40,45,50,55,60,65,70,75,80];
+const U=VOMUI,E=id=>document.getElementById(id),K='VOM_W01_v4',G=9.81,LP=1.00,TAU=Math.PI*2,APOS=[10,15,20,25,30,35,40,45,50,55,60,65,70,75,80];
 let s=U.load(K,null);
-if(!s||s.version!==3)s={version:3,simple:null,simpleTheory:null,records:{},conclusion:''};
+if(!s||s.version!==4)s={version:4,simple:null,simpleTheory:null,records:{},conclusion:''};
 s.records=s.records||{};s.conclusion=s.conclusion||'';
 function save(){U.save(K,s)}
 function T0(){return TAU*Math.sqrt(LP/G)}
 function model(a){
-  const Kc=.28*(a/80)**2,w0=TAU/T0(),w1=w0*Math.sqrt(1-Kc),w2=w0*Math.sqrt(1+Kc),f1=w1/TAU,f2=w2/TAU;
-  return{K:Kc,w1,w2,f1,f2,T1:1/f1,T2:1/f2,Tosc:2/(f1+f2),Tbeat:2/Math.abs(f2-f1)};
+  // The in-phase mode leaves the coupling spring unextended: ω1²=g/L.
+  // The anti-phase mode adds spring restoring torque ∝a²: ω2²=ω1²+2κ(a)ω1².
+  const kappa=(.28/(1-.28))*(a/80)**2,w0=TAU/T0(),w1=w0,w2=w0*Math.sqrt(1+2*kappa);
+  const Kc=kappa/(1+kappa),f1=w1/TAU,f2=w2/TAU;
+  // Consecutive maxima of the energy/amplitude-magnitude envelope are 1/|f2−f1| apart.
+  return{K:Kc,w1,w2,f1,f2,T1:1/f1,T2:1/f2,Tosc:2/(f1+f2),Tbeat:1/Math.abs(f2-f1)};
 }
 function rec(a){return s.records[String(a)]||(s.records[String(a)]={a,m1:null,m2:null,fast:null,beat:null,K:null,beatCheck:null})}
 function signal(t,mode,a){
@@ -83,9 +87,9 @@ function checkK(){
 }
 function checkBeat(){
   const a=+E('analysisA').value,r=s.records[String(a)];if(!r?.m1||!r?.m2||!r?.fast||!r?.beat){E('beatMsg').className='notice warn';E('beatMsg').textContent='Select a position with both normal modes and both direct beat timings.';return}
-  const f1=1/r.m1.T,f2=1/r.m2.T,eFast=2/(f1+f2),eBeat=2/Math.abs(f2-f1),vf=+E('studentToscPred').value,vb=+E('studentTbeatPred').value;
+  const f1=1/r.m1.T,f2=1/r.m2.T,eFast=2/(f1+f2),eBeat=1/Math.abs(f2-f1),vf=+E('studentToscPred').value,vb=+E('studentTbeatPred').value;
   if(!Number.isFinite(vf)||!Number.isFinite(vb)||vf<=0||vb<=0){E('beatMsg').className='notice warn';E('beatMsg').textContent='Enter both reconstructed periods.';return}
-  if(Math.abs(vf-eFast)>Math.max(.015,.025*eFast)||Math.abs(vb-eBeat)>Math.max(.12,.03*eBeat)){E('beatMsg').className='notice warn';E('beatMsg').textContent='Recalculate Tosc=2/(f₁+f₂) and Tbeat=2/|f₂−f₁|.';return}
+  if(Math.abs(vf-eFast)>Math.max(.015,.025*eFast)||Math.abs(vb-eBeat)>Math.max(.12,.03*eBeat)){E('beatMsg').className='notice warn';E('beatMsg').textContent='Recalculate Tosc=2/(f₁+f₂) and the successive beat-envelope maxima period Tbeat=1/|f₂−f₁|.';return}
   r.beatCheck={Tosc:vf,Tbeat:vb,fastErr:100*(r.fast.T-vf)/vf,beatErr:100*(r.beat.T-vb)/vb};E('beatMsg').className='notice ok';E('beatMsg').textContent='Beat reconstruction accepted. Compare direct and reconstructed timings in your discussion.';renderAll();save();
 }
 function drawChart(){
