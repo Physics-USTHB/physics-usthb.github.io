@@ -624,3 +624,4 @@ function init(){
 }
 init();
 })();
+;(()=>{if(window.__PhysicsUSTHBPracticalSessionLoader)return;window.__PhysicsUSTHBPracticalSessionLoader=true;const s=document.createElement('script');s.src='/assets/practical-session.js';s.defer=true;document.head.appendChild(s)})();
