@@ -1,6 +1,6 @@
 # English for Physicists — A2 learning beta
 
-**Version:** A2 beta 0.6 — contextual physics-English practice and source-linked numeracy. Earlier releases 0.2–0.5 were merged via PRs #3–#6.
+**Version:** A2 beta 0.7 — guided question-at-a-time practice, shared first-attempt history and scheduled reviews. Earlier releases 0.2–0.6 were merged via PRs #3–#7.
 
 ## Working in the beta
 
@@ -16,6 +16,7 @@
 - Shared versioned JSON schema for active draft units, validated in-browser before activation.
 - First-attempt and retry tracking, with draft items explicitly excluded from verified proficiency evidence.
 - Deterministic constrained-response grading, conservative weakness hypotheses (not active for drafts), evidence summaries and local practice scheduling.
+- **One-question-at-a-time Quick practice**, available in every unit, offers four modes: unattempted questions, reviews due, unresolved first-attempt errors, and the full set. It uses exactly the same items, progress history and review scheduling as the complete practice library, not a separate hidden scoring system.
 - **60 original skill-scoped study guides** across the 12 units, selected from the learner's incorrect *first attempts*; each suggests a short explanation and a related question. Retries do not count as independent diagnostic evidence.
 - Initial review intervals of 1, 3, 7, 14, 30 and 60 days, subject to future calibration.
 - Browser-local IndexedDB progress with localStorage fallback and backup export/import/clear.
@@ -72,3 +73,11 @@ Every A2 unit now has a new short fictional physics source (R5) with six origina
 The new content is stored separately in `english/data/contextual-practice.json` and merged at load time; this preserves all older item IDs and saved practice histories. An independent validation module rejects duplicate IDs, repeated prompts, missing sources, invalid choices, and accidental promotion of draft work to reviewed assessments. There are now 60 skill-scoped formative remediation guides, including evidence-awareness and numeracy for every A2 unit.
 
 **Review status:** this is an author-level structural and internal scientific-consistency review only, not a claim of professional educational/linguistic/psychometric sign-off. No CEFR certification, independently verified weakness diagnosis, original recorded audio, or secure high-stakes examinations are provided by this update.
+
+## A2 beta 0.7 — guided Quick practice
+
+The **Quick practice** section is shown after each unit's source readings and before the full library. A student can select one of four modes and answer a question with the same grade contract and item ID used in the full practice list. This means first attempts, retries, due dates and locally stored progress remain consistent across both views. Next and source-navigation controls work with keyboard and mobile layouts, and a question's choices are shuffled without altering answer keys.
+
+Modes are defined precisely: **New questions** have no prior attempt; **Scheduled reviews due** require a saved review due at or before the device clock; **Revisit first-attempt errors** shows items answered incorrectly first and not subsequently answered correctly; **All questions** offers the full draft text set. Those selections are study conveniences, not validated learner diagnostics, and the review interval algorithm remains an uncalibrated baseline.
+
+This release adds no new CEFR scoring, verified speaking/listening results, school authentication, network tracking, or high-stakes exam security. Source exercises remain expert-review drafts. CI checks pure queue logic plus browser behavior, due-date persistence, independent first attempts, source navigation and browser-profile isolation.
