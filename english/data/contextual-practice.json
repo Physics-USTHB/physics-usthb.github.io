@@ -291,7 +291,7 @@
           "family": "A2.12.CTX.read-values",
           "status": "draft",
           "media": "text",
-          "prompt": "What position does the model display at 2 s?",
+          "prompt": "According to the integrated cart report, what position is shown at t = 2 seconds?",
           "accepted": [
             "3.0 m"
           ],
