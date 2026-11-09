@@ -8,7 +8,15 @@ function draw(){
  const c=E('config').value,loc=E('projection').value,correct=c==='plate'?loc==='focal':loc==='mirrors';
  if(!correct){x.fillStyle='#6c7582';x.font='700 18px system-ui';x.textAlign='center';x.fillText('Fringes blurred / wrong localisation plane',w/2,h/2);return}
  if(c==='plate'){
-  const cx=w/2,cy=h/2,e=+E('offset').value*1e-6;for(let r=10;r<Math.min(w,h)*.48;r+=7){const ph=4*Math.PI*e/LAM+2*Math.PI*r*r/(Math.min(w,h)*170),I=.12+.88*(1+Math.cos(ph))/2;x.strokeStyle='rgba(255,90,70,'+I+')';x.lineWidth=3;x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.stroke()}
+  const cx=w/2,cy=h/2,e=+E('offset').value*1e-6,R=Math.min(w,h)*.48,tilt=+E('tilt').value*1e-3;
+  // Equal-inclination Michelson fringes: optical path difference δ(i)=2e cos(i).
+  // The image-focal-plane radius maps to observation inclination via tan(i)=r/f.
+  const contrast=.95*Math.exp(-Math.pow(tilt/.0006,2));
+  for(let r=R;r>=0;r-=1){
+   const inclination=Math.atan(.55*r/R),delta=2*e*Math.cos(inclination),phase=2*Math.PI*delta/LAM;
+   const intensity=.5+.5*contrast*Math.cos(phase),red=Math.round(30+225*intensity),green=Math.round(8+72*intensity),blue=Math.round(12+65*intensity);
+   x.fillStyle='rgb('+red+','+green+','+blue+')';x.beginPath();x.arc(cx,cy,r+1,0,Math.PI*2);x.fill();
+  }
  }else{
   const a=+E('tilt').value*1e-3,period=LAM/(2*Math.max(a,1e-6)),pix=period/.0005*38;for(let xx=0;xx<w;xx++){const I=.1+.9*(1+Math.cos(2*Math.PI*xx/pix))/2,r=Math.round(255*I),g=Math.round(62*I),b=Math.round(52*I);x.fillStyle='rgb('+r+','+g+','+b+')';x.fillRect(xx,0,1,h)}
  }
