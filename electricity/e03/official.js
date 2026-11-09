@@ -446,6 +446,7 @@ function drawCore(){
   const all=[...rows('resistor'),...rows('lamp')];const maxI=Math.max(.12,...all.map(d=>d.im))*1.08,maxV=Math.max(10,...all.map(d=>d.vm))*1.05;const{X,Y}=axes(ctx,w,h,maxI,maxV);
   plotSeries(ctx,rows('resistor'),X,Y,'#1f6fb8');plotSeries(ctx,rows('lamp'),X,Y,'#b26b16');
   ctx.font='12px system-ui';ctx.textAlign='left';ctx.fillStyle='#1f6fb8';ctx.fillText('● Resistor',w-185,25);ctx.fillStyle='#b26b16';ctx.fillText('● Lamp',w-95,25);
+  const puSeries=[{pointUncertainty:true,noErrorBars:true,pts:rows('resistor').map(d=>({x:d.im,y:d.vm,ux:d.uIm,uy:d.uV}))},{pointUncertainty:true,noErrorBars:true,pts:rows('lamp').map(d=>({x:d.im,y:d.vm,ux:d.uIm,uy:d.uV}))}],g={ctx,X,Y};c.__physicsPlotMeta={g,series:puSeries,opt:{xlabel:'measured current I_m / A',ylabel:'voltage / V'}};c.__physicsRedrawPlot=drawCore;if(window.PracticalUncertainty)window.PracticalUncertainty.registerPlot(c,g,puSeries,c.__physicsPlotMeta.opt);
 }
 
 function componentVoltageAtCurrent(task,im){
@@ -515,6 +516,7 @@ function drawSum(){
   if(parallel.length){ctx.strokeStyle='#168b78';ctx.lineWidth=2.3;ctx.beginPath();parallel.forEach((d,i)=>i?ctx.lineTo(X(d.im),Y(d.vm)):ctx.moveTo(X(d.im),Y(d.vm)));ctx.stroke();}
   plotSeries(ctx,rows('series'),X,Y,'#7a3db8',false,'open');plotSeries(ctx,rows('parallel'),X,Y,'#168b78',false,'square');
   ctx.font='12px system-ui';ctx.textAlign='left';ctx.fillStyle='#7a3db8';ctx.fillText('Series sum + ○ verification',w-265,23);ctx.fillStyle='#168b78';ctx.fillText('Parallel sum + ■ verification',w-265,41);
+  const puSeries=[{pointUncertainty:true,noErrorBars:true,pts:rows('series').map(d=>({x:d.im,y:d.vm,ux:d.uIm,uy:d.uV}))},{pointUncertainty:true,noErrorBars:true,pts:rows('parallel').map(d=>({x:d.im,y:d.vm,ux:d.uIm,uy:d.uV}))}],g={ctx,X,Y};c.__physicsPlotMeta={g,series:puSeries,opt:{xlabel:'measured current I_m / A',ylabel:'voltage / V'}};c.__physicsRedrawPlot=drawSum;if(window.PracticalUncertainty)window.PracticalUncertainty.registerPlot(c,g,puSeries,c.__physicsPlotMeta.opt);
 }
 
 function renderAdvancedTable(){
