@@ -11,16 +11,38 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - name: Archive source content (transport test)
+      - name: Archive current A2 source data
         run: |
-          mkdir -p dist
-          cp english/data/a2-01.json dist/source-a2-01.json
+          mkdir -p dist/source
+          cp english/data/a2-*.json dist/source/
+          cp english/data/contextual-practice.json dist/source/
+          cp english/data/listening.json dist/source/
+          cp english/data/writing.json dist/source/
+          cp english/data/concepts.json dist/source/
+          cp english/data/remediation.json dist/source/
+          python - <<'PY'
+          import os,zipfile,json
+          files=sorted(os.listdir('dist/source'))
+          assert len(files)==17,(len(files),files)
+          with zipfile.ZipFile('dist/current-english-a2-sources.zip','w',compression=zipfile.ZIP_DEFLATED) as z:
+            for name in files:
+              with open('dist/source/'+name,encoding='utf-8') as f:json.load(f)
+              z.write('dist/source/'+name,'source/'+name)
+          print('Exported',len(files),'course JSON files')
+          PY
+      - name: Download official H5P Column example for library reference
+        continue-on-error: true
+        run: |
+          curl -fL --retry 2 --max-time 35 --silent --show-error \
+            'https://h5p.org/sites/default/files/h5p/exports/h5p-column-34794.h5p' \
+            -o dist/official-h5p-column-example.h5p
           python - <<'PY'
           import zipfile
-          with zipfile.ZipFile('dist/check.zip','w') as z:z.write('dist/source-a2-01.json','source-a2-01.json')
+          p='dist/official-h5p-column-example.h5p'
+          with zipfile.ZipFile(p) as z:print('Example library files:',len(z.namelist()),'root:',z.namelist()[:7])
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: a2-export-test
-          path: dist/check.zip
+          name: a2-current-sources-for-h5p
+          path: dist/
           retention-days: 1
