@@ -1,7 +1,10 @@
 (()=>{'use strict';
 const U=PhysOptUI,E=id=>document.getElementById(id),K='PHYSOPT_P01_v2',DEG=Math.PI/180;
-let s=U.load(K,null);if(!s||s.version!==2)s={version:2,rows:[],analysis:{malus:null,state:null},interpretation:''};s.rows=Array.isArray(s.rows)?s.rows:[];s.analysis=s.analysis||{malus:null,state:null};s.interpretation=s.interpretation||'';
+let s=U.load(K,null);if(!s||s.version!==2)s={version:2,rows:[],analysis:{malus:null,state:null},interpretation:''};s.rows=Array.isArray(s.rows)?s.rows:[];s.analysis=s.analysis||{malus:null,state:null};s.interpretation=s.interpretation||'';s.montage=s.montage||{beam:'',pol:'',detector:'',meter:'',verified:false};
 function save(){U.save(K,s)}
+function montageOK(){const m=s.montage;return m.beam==='sdl'&&m.pol==='pa'&&m.detector==='after'&&m.meter==='meter'}
+function renderMontage(){E('setupBeam').value=s.montage.beam||'';E('setupPol').value=s.montage.pol||'';E('setupDetector').value=s.montage.detector||'';E('setupMeter').value=s.montage.meter||'';const ok=s.montage.verified&&montageOK();E('montageMsg').className=ok?'notice ok':'notice';E('montageMsg').textContent=ok?'Optical montage verified. The λ/4 plate can later be inserted between P and A.':'Assemble the source–optics–detector chain before recording detector values.'}
+function verifyMontage(){s.montage={beam:E('setupBeam').value,pol:E('setupPol').value,detector:E('setupDetector').value,meter:E('setupMeter').value,verified:false};if(!montageOK()){E('montageMsg').className='notice warn';E('montageMsg').textContent='Recheck the USTHB beam path: source → diaphragm → converging lens → polariser → analyser → photodetector, with the detector connected to the readout.';save();return}s.montage.verified=true;renderMontage();save()}
 function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
 function stableNoise(){
  const z=Math.sin((+E('ana').value+1)*12.9898+(+E('pol').value+3)*7.312+(+E('plateAngle').value+5)*2.173+(E('plate').value==='in'?9.17:1.3))*43758.5453;return((z-Math.floor(z))-.5)*.008;
@@ -32,6 +35,7 @@ function coverageMalus(){
 }
 function qwpRows(){return s.rows.filter(q=>q.plate==='in'&&qwpFortyFive(q))}
 function record(){
+ if(!s.montage.verified||!montageOK()){E('msg').className='notice warn';E('msg').textContent='Verify the optical montage before recording detector readings.';return}
  const v=+E('studentIntensity').value,truth=measuredIntensity();if(!Number.isFinite(v)){E('msg').className='notice warn';E('msg').textContent='Read the detector needle on the 0–1 scale and enter the intensity.';return}
  if(Math.abs(v-truth)>.018){E('msg').className='notice warn';E('msg').textContent='Re-read the analogue detector scale; the needle position does not match the entered value.';return}
  const row={plate:E('plate').value,pol:+E('pol').value,pa:+E('plateAngle').value,ana:+E('ana').value,I:v},k=s.rows.findIndex(q=>q.plate===row.plate&&q.pol===row.pol&&q.pa===row.pa&&q.ana===row.ana);if(k>=0)s.rows[k]=row;else s.rows.push(row);
@@ -69,8 +73,8 @@ function render(){
 }
 function blankMalus(){const q=U.canvas(E('malusChart'));q.x.fillStyle='#fff';q.x.fillRect(0,0,q.w,q.h);q.x.fillStyle='#687d90';q.x.font='600 13px system-ui';q.x.textAlign='center';q.x.fillText('Record a broad plate-out analyser scan to build I versus cos²θ.',q.w/2,q.h/2)}
 function buildReport(){
- const a=s.analysis.malus,b=s.analysis.state,summary='<p><b>Recorded detector points:</b> '+s.rows.length+'.</p><p><b>Malus analysis:</b> '+(a?'I₀='+a.i0.toFixed(3)+', Ibg='+a.bg.toFixed(3)+', extinction='+a.ext.toFixed(1)+':1':'not validated')+'. <b>λ/4 analysis:</b> '+(b?b.state+', modulation='+b.mod.toFixed(1)+'%':'not validated')+'.</p><p><b>Interpretation:</b> '+U.esc(s.interpretation||'Not completed.')+'</p>';return U.report('Laboratory Practical 1 — Polarisation of Light',summary);
+ const a=s.analysis.malus,b=s.analysis.state,summary='<p><b>Optical montage:</b> '+(s.montage.verified&&montageOK()?'verified':'not verified')+'.</p>'+'<p><b>Recorded detector points:</b> '+s.rows.length+'.</p><p><b>Malus analysis:</b> '+(a?'I₀='+a.i0.toFixed(3)+', Ibg='+a.bg.toFixed(3)+', extinction='+a.ext.toFixed(1)+':1':'not validated')+'. <b>λ/4 analysis:</b> '+(b?b.state+', modulation='+b.mod.toFixed(1)+'%':'not validated')+'.</p><p><b>Interpretation:</b> '+U.esc(s.interpretation||'Not completed.')+'</p>';return U.report('Laboratory Practical 1 — Polarisation of Light',summary);
 }
-U.tabs();E('interpretation').value=s.interpretation;if(s.analysis.malus){E('studentI0').value=s.analysis.malus.i0;E('studentBg').value=s.analysis.malus.bg;E('studentExt').value=s.analysis.malus.ext}if(s.analysis.state){E('studentState').value=s.analysis.state.state;E('studentModulation').value=s.analysis.state.mod}
+U.tabs();renderMontage();E('verifyMontage').onclick=verifyMontage;['setupBeam','setupPol','setupDetector','setupMeter'].forEach(id=>E(id).addEventListener('change',e=>{const map={setupBeam:'beam',setupPol:'pol',setupDetector:'detector',setupMeter:'meter'};s.montage[map[id]]=e.target.value;s.montage.verified=false;renderMontage();save()}));E('interpretation').value=s.interpretation;if(s.analysis.malus){E('studentI0').value=s.analysis.malus.i0;E('studentBg').value=s.analysis.malus.bg;E('studentExt').value=s.analysis.malus.ext}if(s.analysis.state){E('studentState').value=s.analysis.state.state;E('studentModulation').value=s.analysis.state.mod}
 ['pol','plateAngle','ana'].forEach(id=>E(id).addEventListener('input',()=>{E('studentIntensity').value='';draw()}));E('plate').addEventListener('change',()=>{E('studentIntensity').value='';draw()});E('record').onclick=record;E('checkMalus').onclick=checkMalus;E('checkState').onclick=checkState;E('interpretation').addEventListener('input',e=>{s.interpretation=e.target.value;render();save()});E('buildReport').onclick=buildReport;E('printReport').onclick=()=>{if(buildReport())window.print()};if(!E('reportDate').value)E('reportDate').value=new Date().toISOString().slice(0,10);window.addEventListener('resize',render);render();save();
 })();
