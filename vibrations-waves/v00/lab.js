@@ -1,10 +1,22 @@
 (()=>{
 'use strict';
 const U=VOMUI,E=id=>document.getElementById(id),K='VOM_V00_v2';
-let s=U.load(K,{version:2,records:[],xyObserved:false,xyPhase:null,xyShape:null});
-if(s.version!==2)s={version:2,records:[],xyObserved:false,xyPhase:null,xyShape:null};
-if(!('xyShape' in s))s.xyShape=null;
+const loaded=U.load(K,null);
+let s=loaded&&loaded.version===3?loaded:{version:3,records:Array.isArray(loaded?.records)?loaded.records:[],xyObserved:!!loaded?.xyObserved,xyPhase:loaded?.xyPhase??null,xyShape:loaded?.xyShape??null,wiring:{ch1:'',ch2:'',common:''},montageVerified:false};
+s.wiring=s.wiring||{ch1:'',ch2:'',common:''};
+s.montageVerified=!!s.montageVerified;
 function save(){U.save(K,s)}
+function montageOK(){return s.wiring.ch1==='gbf'&&s.wiring.ch2==='vc'&&s.wiring.common==='shared'}
+function renderMontage(){
+  E('wireCh1').value=s.wiring.ch1||'';E('wireCh2').value=s.wiring.ch2||'';E('wireCommon').value=s.wiring.common||'';
+  const ok=s.montageVerified&&montageOK();E('montageMsg').className=ok?'notice ok':'notice';
+  E('montageMsg').textContent=ok?'Connections verified: CH1 = e(t), CH2 = vC(t), common shared.':'Make the three connections before using the oscilloscope for the phase and XY measurements.';
+}
+function verifyMontage(){
+  s.wiring={ch1:E('wireCh1').value,ch2:E('wireCh2').value,common:E('wireCommon').value};
+  if(!montageOK()){s.montageVerified=false;E('montageMsg').className='notice warn';E('montageMsg').textContent='Incorrect connection. Use CH1 for the GBF output e(t), CH2 across the capacitor for vC(t), and one shared common.';save();return}
+  s.montageVerified=true;E('montageMsg').className='notice ok';E('montageMsg').textContent='Connections verified. You may now perform the sweep and XY measurements.';save();
+}
 function wf(t,type){
   if(type==='square')return Math.sin(t)>=0?1:-1;
   if(type==='triangle')return 2/Math.PI*Math.asin(Math.sin(t));
@@ -52,6 +64,7 @@ function clearInputs(){
   ['studentVppDiv','studentPeriodDiv','studentDtDiv','studentVpp','studentPeriod','studentFreq','studentPhi'].forEach(id=>E(id).value='');
 }
 function take(){
+  if(!s.montageVerified||!montageOK()){E('msg').className='notice warn';E('msg').textContent='Verify the oscilloscope/GBF/RC connections before taking quantitative measurements.';return}
   const q=expected();
   if(E('displayMode').value!=='sweep'){E('msg').className='notice warn';E('msg').textContent='Return to Y–t sweep mode for quantitative amplitude, period and phase measurement.';return}
   if(!calReady()){E('msg').className='notice warn';E('msg').textContent='Lock both the TIME and vertical fine controls in CAL before using the graticule quantitatively.';return}
@@ -90,6 +103,7 @@ function expectedXYShape(){
   return'ellipse';
 }
 function recordXY(){
+  if(!s.montageVerified||!montageOK()){E('msg').className='notice warn';E('msg').textContent='Verify the oscilloscope/GBF/RC connections before using XY mode.';return}
   if(E('displayMode').value!=='xy'){E('msg').className='notice warn';E('msg').textContent='Select XY composition mode first.';return}
   if(E('wave').value!=='sine'){E('msg').className='notice warn';E('msg').textContent='Use a sine wave for the canonical line/ellipse/circle XY phase observation.';return}
   if(E('voltFine').value!=='cal'){E('msg').className='notice warn';E('msg').textContent='Keep the vertical gain calibrated before interpreting the XY trace.';return}
@@ -120,10 +134,12 @@ function renderResults(){
   E('analysisMessage').textContent=complete?'Instrumentation session complete: compare measured and generator frequencies and discuss the XY trace.':'Two distinct validated sweep measurements plus one XY observation are required.';
 }
 function buildReport(){
-  const summary='<p><b>Validated sweep sets:</b> '+s.records.length+'. <b>Distinct settings:</b> '+new Set(s.records.map(q=>q.key)).size+'. <b>XY observation:</b> '+(s.xyObserved?'completed at CH2 phase '+s.xyPhase+'° ('+s.xyShape+')':'not completed')+'.</p>'+(s.records.length?'<p><b>Last validated set:</b> Vpp='+s.records.at(-1).vpp.toFixed(3)+' V, T='+s.records.at(-1).Tms.toFixed(3)+' ms, f='+s.records.at(-1).f.toFixed(1)+' Hz, φ='+s.records.at(-1).phi.toFixed(1)+'°.</p>':'');
+  const summary='<p><b>Connection setup:</b> '+(s.montageVerified&&montageOK()?'verified':'not verified')+'.</p><p><b>Validated sweep sets:</b> '+s.records.length+'. <b>Distinct settings:</b> '+new Set(s.records.map(q=>q.key)).size+'. <b>XY observation:</b> '+(s.xyObserved?'completed at CH2 phase '+s.xyPhase+'° ('+s.xyShape+')':'not completed')+'.</p>'+(s.records.length?'<p><b>Last validated set:</b> Vpp='+s.records.at(-1).vpp.toFixed(3)+' V, T='+s.records.at(-1).Tms.toFixed(3)+' ms, f='+s.records.at(-1).f.toFixed(1)+' Hz, φ='+s.records.at(-1).phi.toFixed(1)+'°.</p>':'');
   return U.report('Introductory Instrumentation Session — Oscilloscope & Function Generator',summary);
 }
 U.tabs();
+renderMontage();E('verifyMontage').onclick=verifyMontage;
+['wireCh1','wireCh2','wireCommon'].forEach(id=>E(id).addEventListener('change',e=>{s.wiring[id==='wireCh1'?'ch1':id==='wireCh2'?'ch2':'common']=e.target.value;s.montageVerified=false;renderMontage();save()}));
 ['displayMode','wave','freq','amp','phase','tdiv','vdiv','timeFine','voltFine','coupling1','coupling2','trigger','level'].forEach(id=>E(id).addEventListener('input',()=>{draw();if(id==='wave'||id==='phase'||id==='displayMode'){E('xyShape').value='';s.xyObserved=false;s.xyShape=null;renderResults();save();}}));
 E('measure').onclick=take;E('recordXY').onclick=recordXY;E('buildReport').onclick=buildReport;E('printReport').onclick=()=>{if(buildReport())window.print()};
 if(!E('reportDate').value)E('reportDate').value=new Date().toISOString().slice(0,10);

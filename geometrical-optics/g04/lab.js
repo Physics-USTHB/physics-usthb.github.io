@@ -13,10 +13,25 @@ let s={
   objectiveCalc:loaded.objectiveCalc||null,
   micro:loaded.micro&&loaded.micro.u!=null?{u:+loaded.micro.u,ocular:+loaded.micro.ocular}:null,
   microCalc:loaded.microCalc||null,
-  routeDiff:loaded.routeDiff??null
+  routeDiff:loaded.routeDiff??null,
+  montage:loaded.montage||{eye:{order:'',retina:'',verified:false},loupe:{order:'',eye:'',verified:false},micro:{order:'',screen:'',verified:false}}
 };
 if(migrating){s.eyeCalc=null;s.loupeCalc=null;s.objectiveCalc=null;s.micro=null;s.microCalc=null}
 function save(){U.save(K,s)}
+function eyeMontageOK(){const m=s.montage.eye;return m.order==='olr'&&m.retina==='fixed'&&m.verified}
+function loupeMontageOK(){const m=s.montage.loupe;return m.order==='oler'&&m.eye==='relaxed'&&m.verified}
+function microMontageOK(){const m=s.montage.micro;return m.order==='ooer'&&m.screen==='insertable'&&m.verified}
+function renderMontages(){
+ E('eyeSetup').value=s.montage.eye.order||'';E('eyeRetinaSetup').value=s.montage.eye.retina||'';E('eyeMontageMsg').className=eyeMontageOK()?'notice ok':'notice';E('eyeMontageMsg').textContent=eyeMontageOK()?'Eye model verified. Adjust object–eye distance.':'Realise the figure-6 model before searching for maximum accommodation.';
+ E('loupeSetup').value=s.montage.loupe.order||'';E('loupeEyeSetup').value=s.montage.loupe.eye||'';E('loupeMontageMsg').className=loupeMontageOK()?'notice ok':'notice';E('loupeMontageMsg').textContent=loupeMontageOK()?'Magnifier arrangement verified. Focus the relaxed eye.':'Realise the figure-7 magnifier arrangement before focusing it.';
+ E('microSetup').value=s.montage.micro.order||'';E('microScreenSetup').value=s.montage.micro.screen||'';E('microMontageMsg').className=microMontageOK()?'notice ok':'notice';E('microMontageMsg').textContent=microMontageOK()?'Microscope train verified. Proceed with the insertable intermediate screen.':'Assemble the objective–ocular–eye train before the intermediate-image and final observations.';
+}
+function verifyMontage(kind){
+ if(kind==='eye'){const m=s.montage.eye={order:E('eyeSetup').value,retina:E('eyeRetinaSetup').value,verified:false};if(m.order!=='olr'||m.retina!=='fixed'){E('eyeMontageMsg').className='notice warn';E('eyeMontageMsg').textContent='Use object AB → eye lens L1 → fixed retina/screen.';save();return}m.verified=true}
+ if(kind==='loupe'){const m=s.montage.loupe={order:E('loupeSetup').value,eye:E('loupeEyeSetup').value,verified:false};if(m.order!=='oler'||m.eye!=='relaxed'){E('loupeMontageMsg').className='notice warn';E('loupeMontageMsg').textContent='Use object AB → magnifier L2 → relaxed model eye L1 → retina.';save();return}m.verified=true}
+ if(kind==='micro'){const m=s.montage.micro={order:E('microSetup').value,screen:E('microScreenSetup').value,verified:false};if(m.order!=='ooer'||m.screen!=='insertable'){E('microMontageMsg').className='notice warn';E('microMontageMsg').textContent='Use object → objective L1 → ocular L2 → eye L3, with an insertable intermediate screen between objective and ocular.';save();return}m.verified=true}
+ renderMontages();save()
+}
 function lensF(u,v){return 1/(1/u+1/v)}
 const fEyeMax=lensF(deltaTrue,retina);
 function drawTrain(canvas,parts){
@@ -41,6 +56,7 @@ function renderEye(){
   E('alphaAnalysis').textContent=E('alphaOut').textContent;
 }
 function recordEye(){
+  if(!eyeMontageOK()){E('eyeMessage').className='notice warn';E('eyeMessage').textContent='Verify the naked-eye model before taking the near-point measurement.';return}
   const d=+E('eyeDistance').value,pp=1/(1/fEyeMax-1/d);
   if(Math.abs(pp-retina)>.15){E('eyeMessage').className='notice warn';E('eyeMessage').textContent='The image is not on the retina. Move the model eye until maximum accommodation gives a sharp image.';return}
   s.eye={delta:d};s.eyeCalc=null;s.loupeCalc=null;s.micro=null;s.microCalc=null;s.routeDiff=null;s.routeDiff=null;
@@ -68,6 +84,7 @@ function renderLoupe(){
   E('loupeAnalysis').textContent=s.loupeCalc?Number(s.loupeCalc.G).toFixed(2):'—';
 }
 function recordLoupe(){
+  if(!loupeMontageOK()){E('loupeMessage').className='notice warn';E('loupeMessage').textContent='Verify the magnifier montage before measuring.';return}
   if(!s.eyeCalc){E('loupeMessage').className='notice warn';E('loupeMessage').textContent='Measure and calculate the naked-eye reference angle α first.';return}
   const d=+E('loupeDistance').value;
   if(Math.abs(d-fLoupe)>.15){E('loupeMessage').className='notice warn';E('loupeMessage').textContent='The relaxed eye is not focused. Place the object in the magnifier focal plane.';return}
@@ -109,6 +126,7 @@ function renderMicro(){
   E('microAnalysis').textContent=s.microCalc?Number(s.microCalc.G).toFixed(2):'—';
 }
 function measureObjective(){
+  if(!microMontageOK()){E('microMessage').className='notice warn';E('microMessage').textContent='Verify the microscope optical train before inserting the intermediate screen.';return}
   const u=+E('objDistance').value,pp=objectiveImage(u);
   if(Math.abs(pp-targetP1)>.5){E('microMessage').className='notice warn';E('microMessage').textContent='The intermediate image is not sharp on the fixed screen. Refocus the objective first.';return}
   s.objective={u};s.objectiveCalc=null;s.micro=null;s.microCalc=null;s.routeDiff=null;s.routeDiff=null;
@@ -126,6 +144,7 @@ function checkObjectiveCalc(){
   render();save();
 }
 function assembleMicroscope(){
+  if(!microMontageOK()){E('microMessage').className='notice warn';E('microMessage').textContent='Verify the microscope optical train before final observation.';return}
   if(!s.eyeCalc||!s.loupeCalc||!s.objectiveCalc){E('microMessage').className='notice warn';E('microMessage').textContent='Complete the eye, magnifier and objective calculations first.';return}
   const u=+E('objDistance').value,pp=objectiveImage(u),ocular=+E('ocularPosition').value,target=targetP1+fLoupe;
   if(Math.abs(pp-targetP1)>.5||Math.abs(ocular-target)>.5){E('microMessage').className='notice warn';E('microMessage').textContent='The optical train is not aligned: refocus the intermediate image and place it in the ocular front focal plane.';return}
@@ -167,11 +186,12 @@ function checkRouteDiff(){
 }
 function render(){renderEye();renderLoupe();renderMicro();analysis()}
 function buildReport(){
-  const summary='<p><b>Near point δ′:</b> '+E('deltaOut').textContent+' · <b>accepted α:</b> '+E('alphaOut').textContent+'.</p><p><b>Magnifier:</b> α′='+E('alphaPrimeOut').textContent+', Gocu='+E('loupeGOut').textContent+', P='+E('powerOut').textContent+'.</p><p><b>Objective:</b> p′₁='+E('p1Out').textContent+', |γobj|='+E('gammaObjOut').textContent+'. <b>Microscope:</b> Gc='+E('microGOut').textContent+', |γobj|×Gocu='+E('productOut').textContent+'. <b>Route difference:</b> '+(s.routeDiff!=null?Number(s.routeDiff).toFixed(1)+'%':'not validated')+'.</p>';
+  const summary='<p><b>Montages:</b> eye '+(eyeMontageOK()?'verified':'pending')+', magnifier '+(loupeMontageOK()?'verified':'pending')+', microscope '+(microMontageOK()?'verified':'pending')+'.</p>'+'<p><b>Near point δ′:</b> '+E('deltaOut').textContent+' · <b>accepted α:</b> '+E('alphaOut').textContent+'.</p><p><b>Magnifier:</b> α′='+E('alphaPrimeOut').textContent+', Gocu='+E('loupeGOut').textContent+', P='+E('powerOut').textContent+'.</p><p><b>Objective:</b> p′₁='+E('p1Out').textContent+', |γobj|='+E('gammaObjOut').textContent+'. <b>Microscope:</b> Gc='+E('microGOut').textContent+', |γobj|×Gocu='+E('productOut').textContent+'. <b>Route difference:</b> '+(s.routeDiff!=null?Number(s.routeDiff).toFixed(1)+'%':'not validated')+'.</p>';
   return U.report('Laboratory Practical 4 — Eye, Magnifier & Microscope',summary);
 }
 
-U.tabs();
+U.tabs();renderMontages();E('verifyEyeMontage').onclick=()=>verifyMontage('eye');E('verifyLoupeMontage').onclick=()=>verifyMontage('loupe');E('verifyMicroMontage').onclick=()=>verifyMontage('micro');
+[['eyeSetup','eye','order'],['eyeRetinaSetup','eye','retina'],['loupeSetup','loupe','order'],['loupeEyeSetup','loupe','eye'],['microSetup','micro','order'],['microScreenSetup','micro','screen']].forEach(([id,k,f])=>E(id).addEventListener('change',e=>{s.montage[k][f]=e.target.value;s.montage[k].verified=false;renderMontages();save()}));
 if(s.eye)E('eyeDistance').value=s.eye.delta;
 if(s.loupe)E('loupeDistance').value=s.loupe.d;
 if(s.objective)E('objDistance').value=s.objective.u;

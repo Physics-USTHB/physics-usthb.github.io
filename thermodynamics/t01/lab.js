@@ -109,7 +109,7 @@ function recordReading(){
   if(Math.abs(v-truth)>.11){E('benchMsg').className='notice warn';E('benchMsg').textContent='Re-read the instrument to the stated 0.1 '+(step.kind==='M'?'g':'°C')+' resolution.';return}
   st.readings[step.key]=v;st.step++;s.analysis[p]=null;E('studentReading').value='';
   if(st.step>=f.length){E('benchMsg').className='notice ok';E('benchMsg').textContent=(p==='steam'?'Steam-condensation':'Ice-fusion')+' measurement sequence complete. Calculate the masses and latent heat in Energy Balances.';}
-  else{const nx=STEPS[st.step];E('benchMsg').className='notice ok';E('benchMsg').textContent='Reading accepted. Next: '+nx.label+'.';}
+  else{const nx=f[st.step];E('benchMsg').className='notice ok';E('benchMsg').textContent='Reading accepted. Next: '+nx.label+'.';}
   renderAll();save();
 }
 function performAction(){

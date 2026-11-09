@@ -5,7 +5,12 @@ function makeRun(){return{id:'W03-'+Math.random().toString(36).slice(2,7).toUppe
 let s=U.load(K,null);
 if(!s||s.version!==3)s={version:3,run:makeRun(),water:[],fluid:null,solidL:null,solidT:null,temps:[],analysis:{water:null,young:null}};
 s.water=Array.isArray(s.water)?s.water:[];s.temps=Array.isArray(s.temps)?s.temps:[];s.analysis=s.analysis||{water:null,young:null};
+s.montage=s.montage||{medium:'',incidence:'',receiver:'',verifiedFor:null};
 function save(){U.save(K,s)}
+function requiredMontage(task=E('task').value){if(task==='fluid')return{medium:'fluid',incidence:'normal'};if(task==='solidL')return{medium:'solid',incidence:'normal'};if(task==='solidT')return{medium:'solid',incidence:'angled'};return{medium:'water',incidence:'normal'}}
+function montageOK(task=E('task').value){const r=requiredMontage(task),m=s.montage;return m.medium===r.medium&&m.incidence===r.incidence&&m.receiver==='aligned'&&m.verifiedFor===task}
+function renderMontage(){E('setupMedium').value=s.montage.medium||'';E('setupIncidence').value=s.montage.incidence||'';E('setupReceiver').value=s.montage.receiver||'';const task=E('task').value,ok=montageOK(task);E('montageMsg').className=ok?'notice ok':'notice';E('montageMsg').textContent=ok?'Arrangement verified for '+task+'. Proceed with the pulse measurement.':'Configure the material and incidence for the selected ultrasound task before recording a transit time.'}
+function verifyMontage(){const task=E('task').value,r=requiredMontage(task);s.montage={medium:E('setupMedium').value,incidence:E('setupIncidence').value,receiver:E('setupReceiver').value,verifiedFor:null};if(s.montage.medium!==r.medium||s.montage.incidence!==r.incidence||s.montage.receiver!=='aligned'){E('montageMsg').className='notice warn';E('montageMsg').textContent=task==='solidT'?'For transverse-wave work, immerse the solid in the water path and use adjustable oblique incidence with aligned transducers.':'Recheck the selected material, incidence and transmitter/receiver alignment for this task.';save();return}s.montage.verifiedFor=task;renderMontage();save()}
 function waterSpeed(T=25){return 1402.388+5.0383*T-.058109*T*T+.000334*T*T*T+s.run.waterBias}
 function expected(task=E('task').value){
   const x=+E('xpos').value/100,T=+E('temp').value,ang=+E('angle').value,waterV=waterSpeed(T);
@@ -34,7 +39,7 @@ function draw(){
 }
 function clearEntry(){['studentTime','studentSpeed','studentCritical'].forEach(id=>E(id).value='')}
 function syncTask(){
-  const task=E('task').value,solidT=task==='solidT';E('xpos').disabled=task!=='water';E('temp').disabled=task!=='temp';E('angle').disabled=!solidT;E('cursor1').disabled=solidT;E('cursor2').disabled=solidT;E('studentTime').disabled=solidT;E('studentCritical').disabled=!solidT;E('studentSpeed').disabled=task==='water';
+  const task=E('task').value,solidT=task==='solidT';s.montage.verifiedFor=null;renderMontage();E('xpos').disabled=task!=='water';E('temp').disabled=task!=='temp';E('angle').disabled=!solidT;E('cursor1').disabled=solidT;E('cursor2').disabled=solidT;E('studentTime').disabled=solidT;E('studentCritical').disabled=!solidT;E('studentSpeed').disabled=task==='water';
   if(task==='fluid'||task==='solidT'){if(!s.analysis.water){E('msg').className='notice warn';E('msg').textContent='Complete the water x–t analysis first; this task uses the measured water speed as its reference.';}}
   else E('msg').className='notice';
   clearEntry();draw();
@@ -47,6 +52,7 @@ function validateTime(p){
 }
 function record(){
   const task=E('task').value,p=expected(task);
+  if(!montageOK(task)){E('msg').className='notice warn';E('msg').textContent='Verify the ultrasound propagation arrangement for the selected task before recording.';return}
   if((task==='fluid'||task==='solidT')&&!s.analysis.water){E('msg').className='notice warn';E('msg').textContent='Complete and validate the water x–t analysis first.';return}
   if(task==='solidT'){
     const ang=+E('angle').value,sc=+E('studentCritical').value,v=+E('studentSpeed').value;
@@ -102,10 +108,10 @@ function table(){
 }
 function renderAll(){draw();table();charts()}
 function buildReport(){
-  const w=s.analysis.water,y=s.analysis.young,summary='<p><b>Water:</b> '+(w?'v='+w.v.toFixed(1)+' m/s, B='+w.B.toFixed(3)+' GPa':'analysis incomplete')+'. <b>Temperature points:</b> '+s.temps.length+'/10.</p><p><b>Unknown fluid:</b> '+(s.fluid?s.fluid.v.toFixed(0)+' m/s':'not validated')+'. <b>Solid:</b> '+(s.solidL&&s.solidT?'VL='+s.solidL.v.toFixed(0)+' m/s, VT='+s.solidT.v.toFixed(0)+' m/s':'incomplete')+(y?', E='+y.E.toFixed(1)+' GPa.':'.')+'</p>';
+  const w=s.analysis.water,y=s.analysis.young,summary='<p><b>Last verified propagation arrangement:</b> '+U.esc(s.montage.verifiedFor||'none')+'.</p>'+'<p><b>Water:</b> '+(w?'v='+w.v.toFixed(1)+' m/s, B='+w.B.toFixed(3)+' GPa':'analysis incomplete')+'. <b>Temperature points:</b> '+s.temps.length+'/10.</p><p><b>Unknown fluid:</b> '+(s.fluid?s.fluid.v.toFixed(0)+' m/s':'not validated')+'. <b>Solid:</b> '+(s.solidL&&s.solidT?'VL='+s.solidL.v.toFixed(0)+' m/s, VT='+s.solidT.v.toFixed(0)+' m/s':'incomplete')+(y?', E='+y.E.toFixed(1)+' GPa.':'.')+'</p>';
   return U.report('Wave Laboratory Practical III — Ultrasound in Fluids & Solids',summary);
 }
-U.tabs();E('task').addEventListener('change',syncTask);['xpos','temp','angle','cursor1','cursor2'].forEach(id=>E(id).addEventListener('input',draw));E('record').onclick=record;E('checkWater').onclick=checkWater;E('checkYoung').onclick=checkYoung;
+U.tabs();renderMontage();E('verifyMontage').onclick=verifyMontage;['setupMedium','setupIncidence','setupReceiver'].forEach(id=>E(id).addEventListener('change',e=>{const map={setupMedium:'medium',setupIncidence:'incidence',setupReceiver:'receiver'};s.montage[map[id]]=e.target.value;s.montage.verifiedFor=null;renderMontage();save()}));E('task').addEventListener('change',syncTask);['xpos','temp','angle','cursor1','cursor2'].forEach(id=>E(id).addEventListener('input',draw));E('record').onclick=record;E('checkWater').onclick=checkWater;E('checkYoung').onclick=checkYoung;
 E('buildReport').onclick=buildReport;E('printReport').onclick=()=>{if(buildReport())window.print()};
 if(s.analysis.water){E('studentWaterV').value=s.analysis.water.v;E('studentBulk').value=s.analysis.water.B}if(s.analysis.young)E('studentYoung').value=s.analysis.young.E;
 if(!E('reportDate').value)E('reportDate').value=new Date().toISOString().slice(0,10);

@@ -22,12 +22,16 @@ let s={
   pairs:current?{...(loaded.pairs||{})}:migratedPairs,
   pairCalcs:{...(loaded.pairCalcs||{})},
   pairDraft:{...(loaded.pairDraft||{})},
-  comparison:loaded.comparison||null
+  comparison:loaded.comparison||null,
+  autoMontage:loaded.autoMontage||{order:'',mirror:'',verified:false}
 };
 if(migrating){
   s.conjCalc={};s.conjDraft={};s.graphF=null;s.besselCalc=null;s.silberCalc=null;s.pairCalcs={};s.pairDraft={};
 }
 function save(){U.save(K,s)}
+function autoMontageOK(){return s.autoMontage.order==='olm'&&s.autoMontage.mirror==='tilted'&&s.autoMontage.verified}
+function renderAutoMontage(){E('autoSetupOrder').value=s.autoMontage.order||'';E('autoSetupMirror').value=s.autoMontage.mirror||'';E('autoMontageMsg').className=autoMontageOK()?'notice ok':'notice';E('autoMontageMsg').textContent=autoMontageOK()?'Autocollimation montage verified. Adjust the lens position for coincidence.':'Assemble the autocollimation train before searching for image coincidence.'}
+function verifyAutoMontage(){s.autoMontage={order:E('autoSetupOrder').value,mirror:E('autoSetupMirror').value,verified:false};if(s.autoMontage.order!=='olm'||s.autoMontage.mirror!=='tilted'){E('autoMontageMsg').className='notice warn';E('autoMontageMsg').textContent='Use object/hole → converging lens → plane mirror, with the mirror behind the lens and slightly tilted.';save();return}s.autoMontage.verified=true;renderAutoMontage();save()}
 function pairLabelFromKey(key){
   if(key==='20,10')return '+200 mm + +100 mm';
   if(key==='20,5')return '+200 mm + +50 mm';
@@ -175,6 +179,7 @@ function renderAuto(){
   E('fAuto').textContent=s.auto!=null?Number(s.auto).toFixed(2)+' cm':'—';
 }
 function recordAuto(){
+  if(!autoMontageOK()){E('autoMessage').className='notice warn';E('autoMessage').textContent='Verify the autocollimation montage before recording coincidence.';return}
   const l=+E('autoLens').value;
   if(Math.abs(l-F)>.25){E('autoMessage').className='notice warn';E('autoMessage').textContent='The reflected image is not coincident with the object/hole plane.';return}
   s.auto=l;E('autoMessage').className='notice ok';E('autoMessage').textContent='Autocollimation coincidence recorded: the object–lens distance is the measured focal length.';render();save();
@@ -197,6 +202,7 @@ function renderPair(){
   pairPrompt();
 }
 function recordPair(){
+  if(!autoMontageOK()){E('pairMessage').className='notice warn';E('pairMessage').textContent='Use the verified autocollimation montage for the attached-lens measurement.';return}
   const q=pairVals(),m=+E('pairLens').value,key=E('pairSelect').value;
   if(Math.abs(m-q.fe)>.25){E('pairMessage').className='notice warn';E('pairMessage').textContent='Autocollimation has not yet returned the image to the object plane.';return}
   s.pairs[key]={label:pairLabelFromKey(key),meas:m};delete s.pairCalcs[key];delete s.pairDraft[key];E('pairCalcValue').value='';
@@ -244,11 +250,11 @@ function render(){
 }
 function buildReport(){
   const pairDone=Object.keys(s.pairCalcs).length;
-  const summary='<p><b>Conjugate pairs:</b> '+Object.keys(s.conj).length+'/5; reciprocal table '+(allConjCalculated()?'validated':'incomplete')+'; <b>f graph:</b> '+E('fGraph').textContent+'.</p><p><b>Bessel:</b> '+E('fBessel2').textContent+' · <b>Silbermann:</b> '+E('fSilber').textContent+' · <b>Autocollimation:</b> '+E('fAuto').textContent+'.</p><p><b>Method comparison:</b> '+(s.comparison?'mean f='+Number(s.comparison.mean).toFixed(2)+' cm, spread='+Number(s.comparison.spread).toFixed(2)+' cm':'not validated')+'. <b>Lens associations:</b> '+pairDone+'/3 calculations validated.</p>';
+  const summary='<p><b>Autocollimation montage:</b> '+(autoMontageOK()?'verified':'not verified')+'.</p>'+'<p><b>Conjugate pairs:</b> '+Object.keys(s.conj).length+'/5; reciprocal table '+(allConjCalculated()?'validated':'incomplete')+'; <b>f graph:</b> '+E('fGraph').textContent+'.</p><p><b>Bessel:</b> '+E('fBessel2').textContent+' · <b>Silbermann:</b> '+E('fSilber').textContent+' · <b>Autocollimation:</b> '+E('fAuto').textContent+'.</p><p><b>Method comparison:</b> '+(s.comparison?'mean f='+Number(s.comparison.mean).toFixed(2)+' cm, spread='+Number(s.comparison.spread).toFixed(2)+' cm':'not validated')+'. <b>Lens associations:</b> '+pairDone+'/3 calculations validated.</p>';
   return U.report('Laboratory Practical 3 — Focometry',summary);
 }
 
-U.tabs();
+U.tabs();renderAutoMontage();E('verifyAutoMontage').onclick=verifyAutoMontage;['autoSetupOrder','autoSetupMirror'].forEach(id=>E(id).addEventListener('change',e=>{if(id==='autoSetupOrder')s.autoMontage.order=e.target.value;else s.autoMontage.mirror=e.target.value;s.autoMontage.verified=false;renderAutoMontage();save()}));
 if(s.graphF!=null)E('studentGraphF').value=s.graphF;
 if(s.besselCalc){E('studentBesselD').value=s.besselCalc.d;E('studentBesselF').value=s.besselCalc.f;E('studentGamma1').value=s.besselCalc.g1;E('studentGamma2').value=s.besselCalc.g2}
 if(s.silberCalc)E('studentSilberF').value=s.silberCalc.f;

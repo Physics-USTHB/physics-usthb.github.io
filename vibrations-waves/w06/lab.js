@@ -9,7 +9,19 @@ function makeRun(){
 let s=U.load(K,null);
 if(!s||s.version!==3)s={version:3,run:makeRun(),pulseSpeed:null,attenuation:[],reflections:[],pulseAnalysis:null,delays:[],modes:{short:[],open:[]},sinAnalysis:null,zin:{short:null,open:null,zc:null},faults:{A:null,B:null}};
 s.attenuation=Array.isArray(s.attenuation)?s.attenuation:[];s.reflections=Array.isArray(s.reflections)?s.reflections:[];s.delays=Array.isArray(s.delays)?s.delays:[];s.modes=s.modes||{short:[],open:[]};s.zin=s.zin||{short:null,open:null,zc:null};s.faults=s.faults||{A:null,B:null};
+s.montage=s.montage||{pulse:{input:'',load:'',coils:'',verifiedFor:null},sin:{ch1:'',ch2:'',load:'',verifiedFor:null},zin:{r:'',scope:'',load:'',verifiedFor:null}};
 function save(){U.save(K,s)}
+function pulseMontageOK(){const m=s.montage.pulse,l=E('pulseLoad').value;return m.input==='A'&&m.coils==='series'&&m.load===l&&m.verifiedFor===l}
+function sinMontageOK(){const m=s.montage.sin,l=E('sinTerm').value,ch2=l==='matched'?'D':'BC';return m.ch1==='A'&&m.ch2===ch2&&m.load===l&&m.verifiedFor===l}
+function zMontageOK(){const m=s.montage.zin,l=E('zTerm').value;return m.r==='100'&&m.scope==='vgve'&&m.load===l&&m.verifiedFor===l}
+function renderMontages(){
+  const p=s.montage.pulse;E('pulseSetupInput').value=p.input||'';E('pulseSetupLoad').value=p.load||'';E('pulseSetupCoils').value=p.coils||'';E('pulseMontageMsg').className=pulseMontageOK()?'notice ok':'notice';E('pulseMontageMsg').textContent=pulseMontageOK()?'Pulse montage verified for '+E('pulseLoad').value+' termination.':'Connect the two coils into the 200 m line, feed/observe it at A, and install the selected termination at D.';
+  const n=s.montage.sin;E('sinSetupCh1').value=n.ch1||'';E('sinSetupCh2').value=n.ch2||'';E('sinSetupLoad').value=n.load||'';E('sinMontageMsg').className=sinMontageOK()?'notice ok':'notice';E('sinMontageMsg').textContent=sinMontageOK()?'Sinusoidal montage verified for '+E('sinTerm').value+'.':'Make the connections appropriate to the currently selected termination.';
+  const z=s.montage.zin;E('zSetupR').value=z.r||'';E('zSetupScope').value=z.scope||'';E('zSetupLoad').value=z.load||'';E('zMontageMsg').className=zMontageOK()?'notice ok':'notice';E('zMontageMsg').textContent=zMontageOK()?'Input-impedance montage verified for '+E('zTerm').value+'.':'Install RA and the selected open/short termination before measuring the input impedance.';
+}
+function verifyPulseMontage(){const l=E('pulseLoad').value;s.montage.pulse={input:E('pulseSetupInput').value,load:E('pulseSetupLoad').value,coils:E('pulseSetupCoils').value,verifiedFor:null};if(s.montage.pulse.input!=='A'||s.montage.pulse.coils!=='series'||s.montage.pulse.load!==l){E('pulseMontageMsg').className='notice warn';E('pulseMontageMsg').textContent='Feed and observe the line at A, connect B–C to make 200 m, and install the same termination selected for the measurement at D.';save();return}s.montage.pulse.verifiedFor=l;renderMontages();save()}
+function verifySinMontage(){const l=E('sinTerm').value,ch2=l==='matched'?'D':'BC';s.montage.sin={ch1:E('sinSetupCh1').value,ch2:E('sinSetupCh2').value,load:E('sinSetupLoad').value,verifiedFor:null};if(s.montage.sin.ch1!=='A'||s.montage.sin.ch2!==ch2||s.montage.sin.load!==l){E('sinMontageMsg').className='notice warn';E('sinMontageMsg').textContent=l==='matched'?'Matched propagation: CH1=A, CH2=D, matched Zc at D.':'Mode search: CH1=A, move CH2 to B–C, and install the selected '+l+' termination at D.';save();return}s.montage.sin.verifiedFor=l;renderMontages();save()}
+function verifyZMontage(){const l=E('zTerm').value;s.montage.zin={r:E('zSetupR').value,scope:E('zSetupScope').value,load:E('zSetupLoad').value,verifiedFor:null};if(s.montage.zin.r!=='100'||s.montage.zin.scope!=='vgve'||s.montage.zin.load!==l){E('zMontageMsg').className='notice warn';E('zMontageMsg').textContent='Use RA=100 Ω in series, measure Vg and Ve (VR=Vg−Ve), and install the selected '+l+' termination.';save();return}s.montage.zin.verifiedFor=l;renderMontages();save()}
 function gamma(load=E('pulseLoad').value){
   if(load==='open')return 1;if(load==='short')return-1;if(load==='matched')return 0;const R=+E('rv').value;return(R-s.run.Zc)/(R+s.run.Zc);
 }
@@ -36,6 +48,7 @@ function drawPulse(){
 }
 function pulseExpectedDelay(){return 2*X/s.run.v}
 function checkPulseSpeed(){
+  if(!pulseMontageOK()){E('pulseMsg').className='notice warn';E('pulseMsg').textContent='Verify the pulse-regime wiring for the selected termination first.';return}
   const load=E('pulseLoad').value;if(load!=='open'&&load!=='short'){E('pulseMsg').className='notice warn';E('pulseMsg').textContent='Use an open or short termination so the returned pulse is clearly visible.';return}
   const td=+E('pulseTdiv').value*1e-6,t1=+E('pulseC1').value*td,t2=+E('pulseC2').value*td,expected=pulseExpectedDelay(),c1=.55e-6,c2=c1+expected;
   if(Math.abs(t1-c1)>.07e-6||Math.abs(t2-c2)>.07e-6){E('pulseMsg').className='notice warn';E('pulseMsg').textContent='Place the two vertical cursors on the incident and reflected pulse peaks.';return}
@@ -46,6 +59,7 @@ function checkPulseSpeed(){
   s.pulseSpeed={dt:dt*1e-6,v:v*1e8,u:u*1e8};E('pulseMsg').className='notice ok';E('pulseMsg').textContent='Pulse round-trip speed accepted. Continue with attenuation and variable-load reflection measurements.';renderAll();save();
 }
 function recordAttenuation(){
+  if(!pulseMontageOK()){E('pulseAnalysisMsg').className='notice warn';E('pulseAnalysisMsg').textContent='Verify the pulse-regime wiring before recording attenuation.';return}
   const x=+E('pathDistance').value,vd=+E('pulseVdiv').value,trueA=s.run.A0*Math.exp(-s.run.alpha*x),div=trueA/vd,sd=+E('studentPathAmpDiv').value;
   if(!Number.isFinite(sd)||sd<=0){E('pulseAnalysisMsg').className='notice warn';E('pulseAnalysisMsg').textContent='Read the selected-path pulse amplitude in vertical divisions.';return}
   if(Math.abs(sd-div)>.10){E('pulseAnalysisMsg').className='notice warn';E('pulseAnalysisMsg').textContent='Re-read the selected-path pulse amplitude using the displayed VOLT/DIV.';return}
@@ -55,6 +69,7 @@ function attenuationFit(){
   if(new Set(s.attenuation.map(q=>q.x)).size<5)return null;const pts=s.attenuation.map(q=>({x:q.x,y:Math.log(q.A)})),n=pts.length,mx=pts.reduce((a,p)=>a+p.x,0)/n,my=pts.reduce((a,p)=>a+p.y,0)/n;let nu=0,de=0;pts.forEach(p=>{nu+=(p.x-mx)*(p.y-my);de+=(p.x-mx)**2});const b=nu/de,a=my-b*mx;return{alpha:-b,a};
 }
 function recordReflection(){
+  if(!pulseMontageOK()){E('pulseAnalysisMsg').className='notice warn';E('pulseAnalysisMsg').textContent='Verify the variable-load pulse wiring before recording reflection.';return}
   if(E('pulseLoad').value!=='variable'){E('pulseAnalysisMsg').className='notice warn';E('pulseAnalysisMsg').textContent='Select the variable terminal resistor Rv for the reflection sweep.';return}
   const fit=attenuationFit();if(!fit){E('pulseAnalysisMsg').className='notice warn';E('pulseAnalysisMsg').textContent='Record amplitudes at all five path lengths first so the round-trip attenuation correction is known.';return}
   const enteredAlpha=+E('studentAlpha').value;if(!Number.isFinite(enteredAlpha)||Math.abs(enteredAlpha-fit.alpha)>Math.max(.000015,.05*fit.alpha)){E('pulseAnalysisMsg').className='notice warn';E('pulseAnalysisMsg').textContent='First determine α from the slope of ln(amplitude) versus travelled distance.';return}
@@ -98,6 +113,7 @@ function drawSin(){
   E('sinFreqRead').textContent=(f/1e6).toFixed(3)+' MHz';
 }
 function recordSinDelay(){
+  if(!sinMontageOK()){E('sinMsg').className='notice warn';E('sinMsg').textContent='Verify the matched sinusoidal wiring before recording delay.';return}
   if(E('sinTerm').value!=='matched'){E('sinMsg').className='notice warn';E('sinMsg').textContent='Use the matched termination for the input/output propagation-delay measurement.';return}
   const f=+E('sinFreq').value*1e6,delay=X/s.run.v,cycles=f*delay,N=Math.floor(cycles),frac=cycles-N,phase=frac*360;
   const n=+E('studentDelayCycles').value,p=+E('studentResidualPhase').value,dt=+E('studentSinDelay').value,v=+E('studentSinV').value;
@@ -112,6 +128,7 @@ function nearestMode(term,f){
   const n=Math.max(0,Math.round((4*X*f/s.run.v-1)/2)),target=(2*n+1)*s.run.v/(4*X),lambda=4*X/(2*n+1);return{n,target,lambda};
 }
 function recordMode(){
+  if(!sinMontageOK()){E('sinMsg').className='notice warn';E('sinMsg').textContent='Verify the rewired open/short sinusoidal montage before marking a mode.';return}
   const term=E('sinTerm').value;if(term!=='short'&&term!=='open'){E('sinMsg').className='notice warn';E('sinMsg').textContent='Select short or open termination for normal-mode minima.';return}
   const f=+E('sinFreq').value*1e6,m=nearestMode(term,f),A=inputAmplitude(term,f);
   if(Math.abs(f-m.target)>14000||A>.18){E('sinMsg').className='notice warn';E('sinMsg').textContent='Tune the generator to a clear input-amplitude minimum before marking the mode.';return}
@@ -135,6 +152,7 @@ function drawZ(){
 }
 function clearZ(){['studentVgDiv','studentVeDiv','studentVRDiv','studentVg','studentVe','studentVR','studentZe'].forEach(id=>E(id).value='')}
 function recordZin(){
+  if(!zMontageOK()){E('zMsg').className='notice warn';E('zMsg').textContent='Verify the input-impedance circuit for the selected termination first.';return}
   const term=E('zTerm').value,Ze=zinTrue(term),Vg=VS,Ve=Vg*Ze/(RA+Ze),Vr=Vg-Ve,vd=.5,raw=['studentVgDiv','studentVeDiv','studentVRDiv','studentVg','studentVe','studentVR','studentZe'].map(id=>E(id).value.trim());if(raw.some(v=>v==='')){E('zMsg').className='notice warn';E('zMsg').textContent='Enter all three amplitude readings, voltages and |Ze|.';return}
   const [dg,de,dr,sg,se,sr,sz]=raw.map(Number);if(Math.abs(dg-Vg/vd)>.09||Math.abs(de-Ve/vd)>.09||Math.abs(dr-Vr/vd)>.09){E('zMsg').className='notice warn';E('zMsg').textContent='Re-read Vg, Ve and VR amplitudes from the fixed 0.50 V/div traces.';return}
   if(Math.abs(sg-dg*vd)>.015||Math.abs(se-de*vd)>.015||Math.abs(sr-dr*vd)>.015){E('zMsg').className='notice warn';E('zMsg').textContent='Convert each amplitude from divisions to volts.';return}
@@ -178,14 +196,15 @@ function renderMetrics(){
 }
 function renderAll(){drawPulse();drawSin();drawZ();drawFault();drawCharts();renderMetrics()}
 function buildReport(){
-  const p=s.pulseAnalysis,a=s.sinAnalysis,summary='<p><b>Pulse regime:</b> '+(s.pulseSpeed?'v='+(s.pulseSpeed.v/1e8).toFixed(3)+'×10⁸ m/s':'speed incomplete')+(p?', α='+p.alpha.toFixed(6)+' m⁻¹, Zc='+p.Zc.toFixed(1)+' Ω, r='+p.r.toFixed(4)+' Ω/m, L′='+p.L.toFixed(3)+' µH/m, C′='+p.C.toFixed(1)+' pF/m.':'.')+'</p><p><b>Sinusoidal regime:</b> '+(a?'vmatched='+(a.matched/1e8).toFixed(3)+', vshort='+(a.short/1e8).toFixed(3)+', vopen='+(a.open/1e8).toFixed(3)+' ×10⁸ m/s.':'analysis incomplete.')+'</p><p><b>Characteristic impedance from open/short input impedances:</b> '+(s.zin.zc?s.zin.zc.toFixed(1)+' Ω':'not completed')+'. <b>Fault analyses:</b> AX '+(s.faults.A?'accepted':'pending')+', BX '+(s.faults.B?'accepted':'pending')+'.</p>';
+  const p=s.pulseAnalysis,a=s.sinAnalysis,summary='<p><b>Connection work:</b> pulse '+U.esc(s.montage.pulse.verifiedFor||'pending')+', sinusoidal '+U.esc(s.montage.sin.verifiedFor||'pending')+', impedance '+U.esc(s.montage.zin.verifiedFor||'pending')+'.</p>'+'<p><b>Pulse regime:</b> '+(s.pulseSpeed?'v='+(s.pulseSpeed.v/1e8).toFixed(3)+'×10⁸ m/s':'speed incomplete')+(p?', α='+p.alpha.toFixed(6)+' m⁻¹, Zc='+p.Zc.toFixed(1)+' Ω, r='+p.r.toFixed(4)+' Ω/m, L′='+p.L.toFixed(3)+' µH/m, C′='+p.C.toFixed(1)+' pF/m.':'.')+'</p><p><b>Sinusoidal regime:</b> '+(a?'vmatched='+(a.matched/1e8).toFixed(3)+', vshort='+(a.short/1e8).toFixed(3)+', vopen='+(a.open/1e8).toFixed(3)+' ×10⁸ m/s.':'analysis incomplete.')+'</p><p><b>Characteristic impedance from open/short input impedances:</b> '+(s.zin.zc?s.zin.zc.toFixed(1)+' Ω':'not completed')+'. <b>Fault analyses:</b> AX '+(s.faults.A?'accepted':'pending')+', BX '+(s.faults.B?'accepted':'pending')+'.</p>';
   return U.report('Wave Laboratory Practical VI — Waves Along a Coaxial Line',summary);
 }
-U.tabs();
-['pulseC1','pulseC2','rv'].forEach(id=>E(id).addEventListener('input',drawPulse));['pulseLoad','pulseTdiv','pulseVdiv','pathDistance'].forEach(id=>E(id).addEventListener('change',drawPulse));
+U.tabs();renderMontages();E('verifyPulseMontage').onclick=verifyPulseMontage;E('verifySinMontage').onclick=verifySinMontage;E('verifyZMontage').onclick=verifyZMontage;
+[['pulseSetupInput','pulse','input'],['pulseSetupLoad','pulse','load'],['pulseSetupCoils','pulse','coils'],['sinSetupCh1','sin','ch1'],['sinSetupCh2','sin','ch2'],['sinSetupLoad','sin','load'],['zSetupR','zin','r'],['zSetupScope','zin','scope'],['zSetupLoad','zin','load']].forEach(([id,k,f])=>E(id).addEventListener('change',e=>{s.montage[k][f]=e.target.value;s.montage[k].verifiedFor=null;renderMontages();save()}));
+['pulseC1','pulseC2','rv'].forEach(id=>E(id).addEventListener('input',drawPulse));['pulseLoad','pulseTdiv','pulseVdiv','pathDistance'].forEach(id=>E(id).addEventListener('change',()=>{if(id==='pulseLoad'){s.montage.pulse.verifiedFor=null;renderMontages();save()}drawPulse()}));
 E('checkPulseSpeed').onclick=checkPulseSpeed;E('recordAttenuation').onclick=recordAttenuation;E('recordReflection').onclick=recordReflection;E('checkPulseAnalysis').onclick=checkPulseAnalysis;
-['sinFreq'].forEach(id=>E(id).addEventListener('input',drawSin));['sinTerm','sinTdiv'].forEach(id=>E(id).addEventListener('change',drawSin));E('recordSinDelay').onclick=recordSinDelay;E('recordMode').onclick=recordMode;E('checkSinAnalysis').onclick=checkSinAnalysis;
-E('zTerm').addEventListener('change',()=>{clearZ();drawZ()});E('recordZin').onclick=recordZin;E('checkZcSin').onclick=checkZcSin;
+['sinFreq'].forEach(id=>E(id).addEventListener('input',drawSin));['sinTerm','sinTdiv'].forEach(id=>E(id).addEventListener('change',()=>{if(id==='sinTerm'){s.montage.sin.verifiedFor=null;renderMontages();save()}drawSin()}));E('recordSinDelay').onclick=recordSinDelay;E('recordMode').onclick=recordMode;E('checkSinAnalysis').onclick=checkSinAnalysis;
+E('zTerm').addEventListener('change',()=>{s.montage.zin.verifiedFor=null;renderMontages();save();clearZ();drawZ()});E('recordZin').onclick=recordZin;E('checkZcSin').onclick=checkZcSin;
 E('faultEnd').addEventListener('change',()=>{clearFault();drawFault()});E('checkFaults').onclick=checkFaults;
 E('buildReport').onclick=buildReport;E('printReport').onclick=()=>{if(buildReport())window.print()};
 if(s.pulseSpeed){E('studentPulseDt').value=s.pulseSpeed.dt*1e6;E('studentPulseV').value=s.pulseSpeed.v/1e8;E('studentPulseU').value=s.pulseSpeed.u/1e8}
