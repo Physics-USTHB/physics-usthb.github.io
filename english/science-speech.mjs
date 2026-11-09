@@ -68,6 +68,10 @@ const quantity=new RegExp("(?<![\\p{L}\\p{N}.])(-?\\d{1,4}(?:\\.\\d+)?)[ \\t]*("
 const axisNames="Time|Position|Mass|Length|Voltage|Current|Temperature|Frequency|Resistance|Extension|Speed|Distance|Energy|Power|Period|Acceleration|Pressure|Volume";
 const axis=new RegExp("\\b("+axisNames+")\\s*\\(\\s*("+symbols+")\\s*\\)","gi");
 
+const namedUnitWords="ohms?|volts?|amperes?|meters?|seconds?|kilograms?|grams?|centimeters?|millimeters?|minutes?|hours?|kelvins?|hertz|pascals?|degrees?\\s+Celsius|radians?";
+const namedQuantity=new RegExp("(?<![\\p{L}\\p{N}.])(-?\\d{1,4}(?:\\.\\d+)?)(?=\\s+(?:"+namedUnitWords+")(?![\\p{L}\\p{N}]))","giu");
+
+
 export function scienceToSpeech(input){
  if(typeof input!=="string")throw Error("Speech input must be a string");
  return input
@@ -76,6 +80,7 @@ export function scienceToSpeech(input){
    return name?quantityName+", in "+name[1]:quantityName+" ("+symbol+")";
   })
   .replace(quantity,(_,number,symbol)=>speakNumber(number)+" "+speakUnit(symbol,number))
+  .replace(namedQuantity,(_,number)=>speakNumber(number))
   .replace(/(?<![\p{L}\p{N}.])(-?\d{1,4}\.\d+)(?![\p{L}\p{N}])/gu,
    (_,number)=>speakNumber(number));
 }
