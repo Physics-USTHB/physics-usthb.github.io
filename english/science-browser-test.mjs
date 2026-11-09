@@ -29,7 +29,7 @@ try{
  await page.locator("#units button").nth(10).click();
  await page.waitForFunction(()=>document.querySelector("#unit-title")?.textContent.includes("A2.11"));
  const graphSource=page.locator('[id="reading-A2.11-R1"]');
- await graphSource.locator("summary").click();
+ await graphSource.evaluate(el=>{el.open=true;});
  assert.match(await graphSource.innerText(),/2 m\/s/,"Original SI symbols must remain visible to students");
  assert.match(await graphSource.innerText(),/Position \(m\)/);
  await graphSource.getByRole("button",{name:"Hear reading"}).click();
