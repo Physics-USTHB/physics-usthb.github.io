@@ -1,6 +1,6 @@
 # English for Physicists — A2 learning beta
 
-**Version:** A2 beta 0.8 — selectable natural browser voices and smoother narration. Earlier releases 0.2–0.7 were merged through PRs #3–#8.
+**Version:** A2 beta 0.9 — physics-aware numerical speech and accessible data-table narration. Earlier releases 0.2–0.8 were merged through PRs #3–#9.
 
 ## Working in the beta
 
@@ -92,3 +92,18 @@ Readings and dialogues default to a more natural 1.0 speaking rate, while slower
 **Limits:** These improvements depend on the device, browser, installed voices and possibly the browser's speech provider. They are not original neural audio recordings, do not guarantee that a natural-sounding voice exists, and never assess pronunciation or CEFR proficiency. The selected browser voice may run on-device or use the browser's remote provider; only public fictional course text is played. Neither exercise answers nor private microphone recordings are passed to any newly introduced service.
 
 Tests cover voice preference selection and reload, enhanced-voice suggestions, unavailable voices, privacy labels, automatic turn-switching, natural speed, and complete reading text. The A2 educational content remains unreviewed draft material pending independent language and physics evaluation.
+
+
+## A2 beta 0.9 — physics-aware narration
+
+The browser synthesizer can otherwise pronounce physics symbols as disconnected letters, misread decimals, or read Markdown data tables as punctuation. The English course now converts **only the text sent to the browser speech engine**, leaving all visible scientific expressions and stored exercise content unchanged.
+
+- `0.80 kg` is spoken as *zero point eight zero kilograms*, preserving the trailing zero.
+- `2 m/s` becomes *two meters per second*, `20 Ω` becomes *twenty ohms*, and `0.10 A` becomes *zero point one zero amperes*.
+- `Time (s)` and `Position (m)` are read as graph-axis quantities with the proper unit names.
+- Original Markdown data tables are narrated by column and row, rather than as vertical bars and hyphens.
+- Optional course read-aloud, synthetic dialogues, and repeat-after-me phrases all use the same conversion.
+
+Course texts, SI symbols, exercise answer keys, and saved practice history are not modified. Pure tests and browser tests verify original displayed text against spoken utterances, decimals, compound units, graph labels and numerical tables.
+
+This makes synthetic speech more comprehensible, but **does not replace original recorded American-English audio**. Voice quality, timing and accent still depend on the browser and installed voices. Some browser voices send public fictional course text to an external speech provider, depending on the device. No new third-party API, student microphone upload, CEFR certification, or audio archive is introduced. Human language/physics review remains a separate requirement.
