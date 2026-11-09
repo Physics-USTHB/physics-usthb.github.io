@@ -41,6 +41,38 @@ jobs:
           p='dist/official-h5p-column-example.h5p'
           with zipfile.ZipFile(p) as z:print('Example library files:',len(z.namelist()),'root:',z.namelist()[:7])
           PY
+      - name: Capture official H5P library sources for fully bundled exports
+        run: |
+          set -e
+          mkdir -p dist/h5p-libraries
+          git clone -q --depth 1 https://github.com/h5p/h5p-column.git dist/h5p-libraries/H5P.Column
+          git clone -q --depth 1 https://github.com/h5p/h5p-advanced-text.git dist/h5p-libraries/H5P.AdvancedText
+          git clone -q --depth 1 https://github.com/h5p/h5p-multi-choice.git dist/h5p-libraries/H5P.MultiChoice
+          git clone -q --depth 1 https://github.com/h5p/h5p-blanks.git dist/h5p-libraries/H5P.Blanks
+          git clone -q --depth 1 https://github.com/h5p/font-awesome.git dist/h5p-libraries/FontAwesome
+          git clone -q --depth 1 https://github.com/h5p/h5p-joubel-ui.git dist/h5p-libraries/H5P.JoubelUI
+          git clone -q --depth 1 https://github.com/h5p/h5p-question.git dist/h5p-libraries/H5P.Question
+          git clone -q --depth 1 https://github.com/h5p/h5p-components.git dist/h5p-libraries/H5P.Components
+          git clone -q --depth 1 https://github.com/h5p/h5p-transition.git dist/h5p-libraries/H5P.Transition
+          git clone -q --depth 1 https://github.com/h5p/h5p-font-icons.git dist/h5p-libraries/H5P.FontIcons
+          git clone -q --depth 1 https://github.com/otacke/h5p-text-utilities.git dist/h5p-libraries/H5P.TextUtilities
+          git clone -q --depth 1 https://github.com/h5p/jquery-ui.git dist/h5p-libraries/jQuery.ui
+          find dist/h5p-libraries -name .git -type d -prune -exec rm -rf {} +
+          python - <<'PY'
+          import os,json,zipfile
+          root='dist/h5p-libraries'
+          names=os.listdir(root)
+          for name in names:
+            with open(f'{root}/{name}/library.json') as f:d=json.load(f)
+            assert d['machineName']==name,(name,d['machineName'])
+            print(name,d['majorVersion'],d['minorVersion'],d.get('preloadedDependencies',[]))
+          with zipfile.ZipFile('dist/h5p-runtime-libraries.zip','w',zipfile.ZIP_DEFLATED) as z:
+            for directory,_,filenames in os.walk(root):
+              for name in filenames:
+                if name.startswith('.'):continue
+                path=os.path.join(directory,name)
+                z.write(path,os.path.relpath(path,'dist/'))
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: a2-current-sources-for-h5p
