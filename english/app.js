@@ -4,6 +4,7 @@ import {mountWriting, validateWritingCatalog, validateWritingRecords} from "./wr
 import {createReadingAloud} from "./read-aloud.mjs";
 import {validateRemediationCatalog,buildFocusedPractice} from "./remediation.mjs";
 import {validateListeningCatalog,mountListeningPractice} from "./listening.mjs";
+import {validateContextualPack,extendUnitWithContext} from "./contextual.mjs";
 // English for Physicists — local-first development preview.
 // All sample exercises are formative and NOT eligible for CEFR/mastery claims.
 const UNITS=[
@@ -30,6 +31,7 @@ const $=id=>document.getElementById(id), allowed=new Set(QUESTIONS.map(q=>q.id))
 const authoredUnits=new Map();
 let lessonNotes={};
 let remediationNotes=null;
+let contextualPack=null;
 const focusedRoot=document.createElement("section");
 focusedRoot.id="focused-practice";
 focusedRoot.setAttribute("aria-label","Personalized formative practice suggestions");
@@ -155,7 +157,7 @@ function renderAuthored(){
  }
  authoredRoot.append(sources);
  let lastSkill="",practiceGroup=null;
- for(const item of current.items){
+ for(const item of [...current.items].sort((a,b)=>a.skill.localeCompare(b.skill))){
   if(item.skill!==lastSkill){
    practiceGroup=document.createElement("details");practiceGroup.open=lastSkill==="";
    const summary=document.createElement("summary");
@@ -216,7 +218,9 @@ async function loadAuthoredUnits(){
   try{
    const response=await fetch("./data/a2-"+String(n).padStart(2,"0")+".json",{cache:"no-cache"});
    if(!response.ok)throw Error("Could not load "+id+" data");
-   const unit=await response.json(),issues=validateUnit(unit);
+   const original=await response.json();
+   const unit=contextualPack?extendUnitWithContext(original,contextualPack):original;
+   const issues=validateUnit(unit);
    if(issues.length)throw Error(id+" data validation failed: "+issues.slice(0,3).join("; "));
    authoredUnits.set(n-1,unit);
    for(const item of unit.items)allowed.add(item.id);
@@ -526,6 +530,16 @@ async function boot(){
    onSave:save
   });
  }catch(err){$("notice").textContent="Writing workshop unavailable: "+err.message;}
+ try{
+  const response=await fetch("./data/contextual-practice.json",{cache:"no-cache"});
+  if(!response.ok)throw Error("Contextual practice not available");
+  const pack=await response.json(),issues=validateContextualPack(pack);
+  if(issues.length)throw Error(issues.slice(0,3).join("; "));
+  contextualPack=pack;
+ }catch(error){
+  contextualPack=null;
+  $("notice").textContent=($("notice").textContent+" Contextual practice could not load: "+error.message).trim();
+ }
  await loadAuthoredUnits();
  try{
   const response=await fetch("./data/remediation.json",{cache:"no-cache"});
