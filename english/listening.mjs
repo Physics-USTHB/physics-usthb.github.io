@@ -55,7 +55,7 @@ export function listeningQuestionIds(catalog){
  return new Set(Object.values(catalog.units).flatMap(scene=>scene.flatMap(s=>s.questions.map(q=>q.id))));
 }
 
-export function mountListeningPractice(container,{catalog,getAttempts,onAttempt,onStartAudio=()=>{}}){
+export function mountListeningPractice(container,{catalog,getAttempts,onAttempt,onStartAudio=()=>{},getVoice=()=>null,getDialogueVoice=()=>null}){
  if(!container||typeof getAttempts!=="function"||typeof onAttempt!=="function")
    throw Error("Missing listening practice dependencies");
  const errors=validateListeningCatalog(catalog);
@@ -73,32 +73,51 @@ export function mountListeningPractice(container,{catalog,getAttempts,onAttempt,
   if(playStatus&&old)playStatus.textContent="Playback stopped. Synthetic speech is practice support only.";
   playButton=null;stopButton=null;playStatus=null;
  }
- function play(text,speed,button,halt,status){
+ function play(content,speed,button,halt,status){
   if(!canSpeak)return;
   stop();
   onStartAudio();
-  const u=new SpeechSynthesisUtterance(text.slice(0,3000));
-  u.lang="en-US";u.rate=speed;u.volume=1;
-  const voices=window.speechSynthesis.getVoices();
-  u.voice=voices.find(v=>v.lang?.toLowerCase()==="en-us")||
-    voices.find(v=>v.lang?.toLowerCase().startsWith("en"))||null;
-  playing=u;playButton=button;stopButton=halt;playStatus=status;
+  const turns=Array.isArray(content)?content.map((t,i)=>({
+   text:String(t.text||"").trim(),
+   speaker:String(t.speaker||""),
+   voice:getDialogueVoice(i)||getVoice()
+  })): [{text:String(content||"").trim(),speaker:"",voice:getVoice()}];
+  if(!turns.some(t=>t.text)){status.textContent="No text available for speech playback.";return;}
+  // Each character speaks their own complete turn; no robotic "Maya says" narration.
+  // Chosen voices come from the student's own browser/device speech service.
+  const session={index:0,turns,button,halt,status};
+  playing=session;playButton=button;stopButton=halt;playStatus=status;
   button.disabled=true;halt.disabled=false;
-  status.textContent="Synthetic speech playing. The voice and accent depend on your browser.";
-  u.onend=()=>{
-   if(playing!==u)return;
-   playing=null;button.disabled=false;halt.disabled=true;
-   status.textContent="Playback complete. This was not a certified listening test.";
-   playButton=null;stopButton=null;playStatus=null;
-  };
-  u.onerror=()=>{
-   if(playing!==u)return;
-   playing=null;button.disabled=false;halt.disabled=true;
-   status.textContent="Speech playback was unavailable. Use the visible transcript instead.";
-   playButton=null;stopButton=null;playStatus=null;
-  };
-  try{window.speechSynthesis.speak(u);}
-  catch(_){status.textContent="Speech synthesis failed. Use the transcript instead.";stop();}
+  function next(){
+   if(playing!==session)return;
+   if(session.index>=session.turns.length){
+    playing=null;button.disabled=false;halt.disabled=true;
+    status.textContent="Playback complete. This was not a certified listening test.";
+    playButton=null;stopButton=null;playStatus=null;
+    return;
+   }
+   const turn=session.turns[session.index++];
+   if(!turn.text){next();return;}
+   const utterance=new SpeechSynthesisUtterance(turn.text);
+   utterance.lang="en-US";utterance.rate=speed;utterance.pitch=1;utterance.volume=1;
+   if(turn.voice)utterance.voice=turn.voice;
+   status.textContent=(turn.speaker?turn.speaker+" speaking. ":"")+
+     "Synthetic voice, not a reviewed American-English recording.";
+   utterance.onend=()=>{if(playing===session)next();};
+   utterance.onerror=()=>{
+    if(playing!==session)return;
+    playing=null;button.disabled=false;halt.disabled=true;
+    playButton=null;stopButton=null;playStatus=null;
+    status.textContent="Speech playback was interrupted. Use the written transcript instead.";
+   };
+   try{window.speechSynthesis.speak(utterance);}
+   catch(_){
+    playing=null;button.disabled=false;halt.disabled=true;
+    playButton=null;stopButton=null;playStatus=null;
+    status.textContent="Speech synthesis is unavailable. Use the transcript instead.";
+   }
+  }
+  next();
  }
  function render(unitId){
   stop();root.replaceChildren();unit=unitId;
@@ -113,7 +132,7 @@ export function mountListeningPractice(container,{catalog,getAttempts,onAttempt,
    const section=document.createElement("section");section.className="listening-scene";section.id="dialogue-"+scene.id;
    const title=document.createElement("h3");title.textContent=scene.title;
    const mode=document.createElement("p");mode.className="muted minor";
-   mode.textContent="Fictional classroom dialogue · optional synthetic audio · transcript available without a microphone";
+   mode.textContent="Fictional classroom dialogue · separate speaker turns · optional synthetic audio · full transcript available";
    section.append(title,mode);
    const controls=document.createElement("div");
    const hear=document.createElement("button");hear.type="button";hear.className="btn";
@@ -122,13 +141,13 @@ export function mountListeningPractice(container,{catalog,getAttempts,onAttempt,
    halt.textContent="Stop playback";halt.disabled=true;
    const paceLabel=document.createElement("label");paceLabel.textContent="Speech speed ";
    const pace=document.createElement("select");pace.setAttribute("aria-label","Synthetic speech speed for "+scene.title);
-   for(const [val,label] of [["0.8","Slower"],["1","Normal"],["1.15","Faster"]]){
+   for(const [val,label] of [["0.9","Slower"],["1","Natural"],["1.1","Faster"]]){
     const option=document.createElement("option");option.value=val;option.textContent=label;pace.append(option);
    }
-   pace.value="0.8";paceLabel.append(pace);
+   pace.value="1";paceLabel.append(pace);
    const status=document.createElement("p");status.className="muted minor";status.setAttribute("role","status");
    if(!canSpeak){hear.disabled=true;status.textContent="This browser has no speech synthesizer. Use the transcript for accessible reading practice.";}
-   hear.onclick=()=>play(scene.turns.map(t=>t.speaker+" says: "+t.text).join(" "),Number(pace.value),hear,halt,status);
+   hear.onclick=()=>play(scene.turns,Number(pace.value),hear,halt,status);
    halt.onclick=stop;
    controls.append(hear,halt,paceLabel);section.append(controls,status);
    const transcript=document.createElement("details");
@@ -188,7 +207,7 @@ export function mountListeningPractice(container,{catalog,getAttempts,onAttempt,
    const stopPhrase=document.createElement("button");stopPhrase.type="button";stopPhrase.className="btn light";stopPhrase.textContent="Stop phrase";stopPhrase.disabled=true;
    const phraseStatus=document.createElement("p");phraseStatus.className="muted minor";phraseStatus.setAttribute("role","status");
    if(!canSpeak){listenPhrase.disabled=true;phraseStatus.textContent="Use the written phrase and the optional private recording tool to practise without synthetic audio.";}
-   listenPhrase.onclick=()=>play(scene.pronunciation.phrase,0.9,listenPhrase,stopPhrase,phraseStatus);
+   listenPhrase.onclick=()=>play(scene.pronunciation.phrase,1.0,listenPhrase,stopPhrase,phraseStatus);
    stopPhrase.onclick=stop;
    const note=document.createElement("p");note.className="muted minor";
    note.textContent="Repeat it aloud. You may record yourself using the private Speaking practice section below; no automatic accent or pronunciation grade is given.";
