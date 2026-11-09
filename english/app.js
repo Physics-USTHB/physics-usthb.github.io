@@ -5,6 +5,7 @@ import {createReadingAloud} from "./read-aloud.mjs";
 import {validateRemediationCatalog,buildFocusedPractice} from "./remediation.mjs";
 import {validateListeningCatalog,mountListeningPractice} from "./listening.mjs";
 import {validateContextualPack,extendUnitWithContext} from "./contextual.mjs";
+import {mountQuickPractice} from "./quick-practice.mjs";
 // English for Physicists — local-first development preview.
 // All sample exercises are formative and NOT eligible for CEFR/mastery claims.
 const UNITS=[
@@ -49,6 +50,7 @@ let writingWorkshop=null;
 const listeningMount=document.createElement("div");
 writingMount.before(listeningMount);
 let listeningWorkshop=null;
+let quickSession=null;
 // Keep previously exported listening attempts valid even if the optional lesson data fails to load.
 for(let n=1;n<=12;n++)for(let l=1;l<=2;l++)for(let q=1;q<=2;q++){
  const id="A2."+String(n).padStart(2,"0")+".L"+String(l).padStart(2,"0")+
@@ -120,8 +122,21 @@ function renderVirtualGraph(container,unitId){
  section.append(table);container.append(section);
 }
 
+async function recordAuthoredPractice(item,answer){
+ const first=!state.attempts.some(a=>a.id===item.id);
+ const result=gradeItem(item,answer,{firstAttempt:first,hintsUsed:0,solutionShown:false});
+ const at=new Date().toISOString();
+ state.attempts.push({id:item.id,at,answer:String(answer).slice(0,300),
+    first,correct:result.correct,independent:result.independent,hintsUsed:0});
+ updatePracticeReview(item.id,result.correct,first,at);
+ const saved=await save();
+ renderStats();
+ return {correct:result.correct,first,saved};
+}
 function renderAuthored(){
  readAloud.stop();
+ quickSession?.dispose();
+ quickSession=null;
  authoredRoot.replaceChildren();
  const current=authoredUnits.get(selected);if(!current)return;
  const label=document.createElement("h3");
@@ -156,6 +171,15 @@ function renderAuthored(){
   sources.append(details);
  }
  authoredRoot.append(sources);
+ quickSession=mountQuickPractice(authoredRoot,{
+  unit:current,
+  getAttempts:()=>state.attempts,
+  getReviews:()=>state.reviews||{},
+  onAnswer:recordAuthoredPractice
+ });
+ const entireHeading=document.createElement("h3");
+ entireHeading.textContent="Complete practice library";
+ authoredRoot.append(entireHeading);
  let lastSkill="",practiceGroup=null;
  for(const item of [...current.items].sort((a,b)=>a.skill.localeCompare(b.skill))){
   if(item.skill!==lastSkill){
@@ -197,17 +221,17 @@ function renderAuthored(){
    e.preventDefault();
    const answer=item.type==="short_answer"?input.value:(form.querySelector("input:checked")?.value||"");
    if(!answer)return;
-   const first=!state.attempts.some(a=>a.id===item.id);
-   const result=gradeItem(item,answer,{firstAttempt:first,hintsUsed:0,solutionShown:false});
-   const at=new Date().toISOString();
-   state.attempts.push({id:item.id,at,answer:String(answer).slice(0,300),
-      first,correct:result.correct,independent:result.independent,hintsUsed:0});
-   updatePracticeReview(item.id,result.correct,first,at);
-   await save();
-   feedback.textContent=(result.correct?"Correct. ":"Not yet. ")+item.feedback+
-      " Practice feedback only; no CEFR mastery is awarded.";
-   feedback.className="feedback "+(result.correct?"good":"bad");
-   renderStats();
+   button.disabled=true;
+   try{
+    const outcome=await recordAuthoredPractice(item,answer);
+    feedback.textContent=(outcome.correct?"Correct. ":"Not accepted. ")+item.feedback+
+      " Practice feedback only; no CEFR mastery is awarded."+
+      (outcome.saved===false?" Local saving failed; please export your progress.":"");
+    feedback.className="feedback "+(outcome.correct?"good":"bad");
+   }catch(_){
+    feedback.textContent="Could not check your answer. Please try again.";
+    feedback.className="feedback bad";
+   }finally{button.disabled=false;}
   };
   practiceGroup.append(form);
  }
@@ -469,6 +493,7 @@ function renderStats(){
  $("first-correct").textContent=String(state.attempts.filter(a=>a.first&&a.correct).length);
  renderAdaptivePanels();
  renderFocusedPractice();
+ quickSession?.refreshCounts();
 }
 function render(){
  const [title,description]=UNITS[selected];
