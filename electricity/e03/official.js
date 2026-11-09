@@ -438,6 +438,7 @@ function axes(ctx,w,h,maxI,maxV){
 function plotSeries(ctx,pts,X,Y,color,line=true,shape='circle'){
   const s=[...pts].sort((a,b)=>a.im-b.im);
   if(line&&s.length){ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();s.forEach((d,i)=>i?ctx.lineTo(X(d.im),Y(d.vm)):ctx.moveTo(X(d.im),Y(d.vm)));ctx.stroke();}
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=1;s.forEach(d=>{const x=X(d.im),y=Y(d.vm);if(Number.isFinite(d.uIm)&&d.uIm>0){const xa=X(Math.max(0,d.im-d.uIm)),xb=X(d.im+d.uIm);ctx.beginPath();ctx.moveTo(xa,y);ctx.lineTo(xb,y);ctx.moveTo(xa,y-4);ctx.lineTo(xa,y+4);ctx.moveTo(xb,y-4);ctx.lineTo(xb,y+4);ctx.stroke()}if(Number.isFinite(d.uV)&&d.uV>0){const ya=Y(d.vm-d.uV),yb=Y(d.vm+d.uV);ctx.beginPath();ctx.moveTo(x,ya);ctx.lineTo(x,yb);ctx.moveTo(x-4,ya);ctx.lineTo(x+4,ya);ctx.moveTo(x-4,yb);ctx.lineTo(x+4,yb);ctx.stroke()}});ctx.restore();
   ctx.fillStyle=color;ctx.strokeStyle=color;s.forEach(d=>{const x=X(d.im),y=Y(d.vm);if(shape==='square'){ctx.fillRect(x-4,y-4,8,8);}else if(shape==='open'){ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.stroke();}else{ctx.beginPath();ctx.arc(x,y,4.5,0,Math.PI*2);ctx.fill();}});
 }
 function drawCore(){
