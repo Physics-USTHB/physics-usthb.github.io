@@ -1,0 +1,26 @@
+name: Export A2 Moodle H5P packages (separate artifact)
+on:
+  push:
+    branches: [export/moodle-h5p-a2-12]
+    paths: ['.github/workflows/h5p-export.yml', 'tools/h5p-export/**']
+  workflow_dispatch:
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Archive source content (transport test)
+        run: |
+          mkdir -p dist
+          cp english/data/a2-01.json dist/source-a2-01.json
+          python - <<'PY'
+          import zipfile
+          with zipfile.ZipFile('dist/check.zip','w') as z:z.write('dist/source-a2-01.json','source-a2-01.json')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: a2-export-test
+          path: dist/check.zip
+          retention-days: 1
