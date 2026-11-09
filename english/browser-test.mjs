@@ -10,10 +10,10 @@ page.on("pageerror",err=>{throw err;});
 
 try{
  await page.goto("http://127.0.0.1:8080/english/",{waitUntil:"domcontentloaded",timeout:30_000});
- await page.waitForFunction(()=>document.querySelector("#unit-status")?.textContent.includes("34 text questions"),null,{timeout:25_000});
+ await page.waitForFunction(()=>document.querySelector("#unit-status")?.textContent.includes("40 text questions"),null,{timeout:25_000});
  assert.equal(await page.locator("#units button").count(),12,"All twelve units must be navigable");
- assert.equal(await page.locator("#authored-lesson form").count(),34,"First unit practice missing");
- assert.equal(await page.locator("#authored-lesson button").filter({hasText:"Hear reading"}).count(),4,"Four optional synthetic reading aids should be available");
+ assert.equal(await page.locator("#authored-lesson form").count(),40,"First unit practice missing");
+ assert.equal(await page.locator("#authored-lesson button").filter({hasText:"Hear reading"}).count(),5,"Five reading sources including original contextual mini-source should be available");
  assert.equal(await page.locator("#writing-task option").count(),2,"Each unit should offer two writing assignments");
  assert.match(await page.locator("body").innerText(),/A2 beta — formative learning only/);
  const first=page.locator("#practice-A2\\.01\\.BE\\.001");
@@ -40,6 +40,16 @@ try{
  await second.getByRole("button",{name:"Check answer"}).click();
  await page.waitForFunction(()=>document.querySelector("#total-attempts")?.textContent==="3");
  assert.match(await page.locator("#focused-practice").innerText(),/1 of 2 first attempts/);
+ // Original new contextual practice in R5 appears beside the original A2.01 bank.
+ const contextual=page.locator('[id="practice-A2.01.CTX.001"]');
+ await contextual.evaluate(el=>{el.closest("details").open=true;});
+ await contextual.locator('input[value="Room 12"]').check();
+ await contextual.getByRole("button",{name:"Check answer"}).click();
+ await page.waitForFunction(()=>document.querySelector("#total-attempts")?.textContent==="4");
+ assert.match(await contextual.locator(".feedback").innerText(),/Correct/);
+ const newSource=page.locator('[id="reading-A2.01-R5"]');
+ await newSource.locator("summary").click();
+ assert.match(await newSource.innerText(),/fictional physics orientation timetable/i);
 
  const draft="My name is Nora. I study physics and I work with my classmates. I usually read notes at home. Is our class on Tuesday?";
  await page.locator("#writing-text").fill(draft);
@@ -53,7 +63,7 @@ try{
  try{
   const other=await otherContext.newPage();
   await other.goto("http://127.0.0.1:8080/english/",{waitUntil:"domcontentloaded"});
-  await other.waitForFunction(()=>document.querySelector("#unit-status")?.textContent.includes("34 text questions"));
+  await other.waitForFunction(()=>document.querySelector("#unit-status")?.textContent.includes("40 text questions"));
   assert.equal(await other.locator("#total-attempts").innerText(),"0","Progress leaked into another browser profile");
   assert.equal(await other.locator("#writing-text").inputValue(),"","Writing draft leaked into another browser profile");
  }finally{await otherContext.close();}
@@ -104,7 +114,7 @@ try{
   });
   const audioPage=await audioContext.newPage();
   await audioPage.goto("http://127.0.0.1:8080/english/",{waitUntil:"domcontentloaded"});
-  await audioPage.waitForFunction(()=>document.querySelector("#unit-status")?.textContent.includes("34 text questions"));
+  await audioPage.waitForFunction(()=>document.querySelector("#unit-status")?.textContent.includes("40 text questions"));
   await audioPage.getByRole("button",{name:"Start recording"}).click();
   await audioPage.getByRole("button",{name:"Discard recording"}).click();
   await audioPage.waitForTimeout(80);
@@ -131,7 +141,7 @@ try{
   const listeningOutbound=[];
   listenPage.on("request",req=>{if(!req.url().startsWith("http://127.0.0.1:8080/"))listeningOutbound.push(req.url());});
   await listenPage.goto("http://127.0.0.1:8080/english/",{waitUntil:"domcontentloaded"});
-  await listenPage.waitForFunction(()=>document.querySelector("#unit-status")?.textContent.includes("34 text questions"));
+  await listenPage.waitForFunction(()=>document.querySelector("#unit-status")?.textContent.includes("40 text questions"));
   assert.equal(await listenPage.locator(".listening-scene").count(),2,"Two dialogues should appear per A2 module");
   assert.equal(await listenPage.locator(".listening-scene form").count(),4,"Each module needs four dialogue questions");
   assert.equal(await listenPage.locator(".pronunciation-focus blockquote").count(),2,"Two pronunciation lines should appear per unit");

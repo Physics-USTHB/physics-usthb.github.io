@@ -27,6 +27,22 @@
           "Answer only with information stated in the source. Reopen the reading if necessary."
         ],
         "example": "If the notice says 2:00 p.m., do not replace it with 12:00 p.m."
+      },
+      "scientific-discourse": {
+        "title": "Evidence in an orientation schedule",
+        "steps": [
+          "The orientation notice lists a fictional online demonstration, not an actual instrument measurement.",
+          "Use the notice to describe what will be observed; do not invent a physical experiment."
+        ],
+        "example": "A virtual cart demonstration is not a recorded physical measurement."
+      },
+      "mathematical-english": {
+        "title": "Time and the 24-hour clock",
+        "steps": [
+          "Distinguish morning and afternoon before converting a time into 24-hour notation.",
+          "Add 12 to the hour for ordinary times after noon, except 12 p.m. itself."
+        ],
+        "example": "2:00 p.m. is 14:00 in 24-hour notation."
       }
     },
     "A2.02": {
@@ -61,6 +77,14 @@
           "Distinguish thirteen (13) and thirty (30), and compare decimals by place value."
         ],
         "example": "0.6 is greater than 0.06."
+      },
+      "scientific-discourse": {
+        "title": "Digital examples versus real measurements",
+        "steps": [
+          "Look for the text that identifies a number as a computer-model readout.",
+          "Do not infer calibration or instrument accuracy from a displayed fictional value."
+        ],
+        "example": "0.50 kg in the model is not a verified balance reading."
       }
     },
     "A2.03": {
@@ -87,6 +111,22 @@
           "Do not invent a location that is not shown or described."
         ],
         "example": "Describe the source's arrangement, not an assumed real laboratory."
+      },
+      "scientific-discourse": {
+        "title": "Descriptions based on a diagram",
+        "steps": [
+          "State where a drawn object is located relative to the diagram's stated viewing direction.",
+          "Avoid claiming that a drawing proves the same layout exists in a real room."
+        ],
+        "example": "The timer is left of the notebook in the front-view diagram."
+      },
+      "mathematical-english": {
+        "title": "Counting items in a labelled scene",
+        "steps": [
+          "Identify exactly which categories of objects a question asks you to count.",
+          "Add only the objects in the requested categories, not everything shown in the diagram."
+        ],
+        "example": "Two boxes and one timer give three objects."
       }
     },
     "A2.04": {
@@ -113,6 +153,22 @@
           "Identify what the source explicitly describes and then select the tense."
         ],
         "example": "“Every Thursday” is a routine; “right now” is current."
+      },
+      "scientific-discourse": {
+        "title": "Observed model motion versus physical motion",
+        "steps": [
+          "Use the model's displayed times and positions as the evidence for a motion description.",
+          "Avoid claiming an actual cart was tested without a real experiment and appropriate evidence."
+        ],
+        "example": "The model shows 2 m at 2 s; no physical cart was measured."
+      },
+      "mathematical-english": {
+        "title": "Position change with units",
+        "steps": [
+          "Read the positions at the specified start and end times from the source.",
+          "Subtract the initial position from the final position, keeping the unit in meters."
+        ],
+        "example": "From 0 m to 2 m is a position change of 2 m."
       }
     },
     "A2.05": {
@@ -139,6 +195,22 @@
           "Do not combine unrelated quantities or invent missing measurements."
         ],
         "example": "A difference of 20 cm is not 20 m."
+      },
+      "scientific-discourse": {
+        "title": "Comparison versus measurement accuracy",
+        "steps": [
+          "Compare like quantities using the same units and the supplied values.",
+          "A larger displayed extension does not establish that a reading is more accurate."
+        ],
+        "example": "Spring B shows 5 cm, but accuracy cannot be assessed from this alone."
+      },
+      "mathematical-english": {
+        "title": "Differences between measured quantities",
+        "steps": [
+          "Check that both extensions use the same unit before subtracting.",
+          "Subtract the smaller displayed extension from the larger one."
+        ],
+        "example": "5 cm minus 3 cm equals 2 cm."
       }
     },
     "A2.06": {
@@ -165,6 +237,22 @@
           "Apply only the fictional scenario in the exercise; it cannot substitute for real lab safety rules."
         ],
         "example": "Must not is prohibition, not optional advice."
+      },
+      "scientific-discourse": {
+        "title": "Fictional notices versus actual lab safety",
+        "steps": [
+          "Identify exactly what a fictional notice requires and what it does not establish.",
+          "Follow the real lab's instructor and safety documentation rather than treating the language task as certification."
+        ],
+        "example": "A teaching-room notice cannot replace actual laboratory safety rules."
+      },
+      "mathematical-english": {
+        "title": "Sequence and count words",
+        "steps": [
+          "Read first, next and finally as separate steps in a procedure.",
+          "Count the distinct actions the prompt asks about; do not add new ones."
+        ],
+        "example": "First, next, finally describes three listed steps."
       }
     },
     "A2.07": {
@@ -191,6 +279,22 @@
           "Locate past actions from the source without inventing results."
         ],
         "example": "A source saying “checked” does not necessarily say “replaced”."
+      },
+      "scientific-discourse": {
+        "title": "Model outcomes versus real observations",
+        "steps": [
+          "Report the values shown in the virtual pendulum source as model readouts.",
+          "Do not call those values experimental measurements made with real apparatus."
+        ],
+        "example": "The animation displays ten oscillations over 15.0 s."
+      },
+      "mathematical-english": {
+        "title": "Average time per oscillation",
+        "steps": [
+          "Identify the total simulated time and number of complete oscillations.",
+          "Divide total time by oscillation count to obtain mean period in seconds."
+        ],
+        "example": "15.0 s divided by ten oscillations gives 1.5 s."
       }
     },
     "A2.08": {
@@ -217,6 +321,22 @@
           "Read the when/while details before answering."
         ],
         "example": "“While she was watching” describes an ongoing action."
+      },
+      "scientific-discourse": {
+        "title": "Report facts without guessing a cause",
+        "steps": [
+          "State what was happening when the virtual display stopped refreshing.",
+          "Describe only displayed values and avoid assigning an unsupported hardware failure."
+        ],
+        "example": "The chart stopped updating at 14:10; its cause is unknown."
+      },
+      "mathematical-english": {
+        "title": "Changes in displayed temperature",
+        "steps": [
+          "Read both numerical temperatures from the model source.",
+          "Subtract the earlier value from the later one; report temperature differences consistently."
+        ],
+        "example": "21.5 °C minus 21.0 °C is a 0.5 °C increase."
       }
     },
     "A2.09": {
@@ -243,6 +363,22 @@
           "Do not call a planned action a completed result."
         ],
         "example": "Not yet finished is different from already finished."
+      },
+      "scientific-discourse": {
+        "title": "Completed versus unfinished project work",
+        "steps": [
+          "Identify which tables or graphs are already completed and which are still pending.",
+          "A claimed progress update must not treat a planned task as a completed result."
+        ],
+        "example": "Table A is complete, but Table B and the conclusion are pending."
+      },
+      "mathematical-english": {
+        "title": "Differences on a position table",
+        "steps": [
+          "Locate positions at the two requested times before calculating.",
+          "Subtract the earlier position from the later position and include meters."
+        ],
+        "example": "From 1.0 m to 2.0 m is a 1.0 m change."
       }
     },
     "A2.10": {
@@ -269,6 +405,22 @@
           "Avoid presenting model predictions as measurements."
         ],
         "example": "A predicted value is not an observed data point."
+      },
+      "scientific-discourse": {
+        "title": "Assumptions, predictions and observation",
+        "steps": [
+          "State the mathematical model's assumptions before calculating a later position.",
+          "Clearly mark extrapolated values as predictions, not measured or displayed observations."
+        ],
+        "example": "The model predicts 8 m at 4 s if speed stays 2 m/s."
+      },
+      "mathematical-english": {
+        "title": "Constant-speed model predictions",
+        "steps": [
+          "Identify the modeled speed and elapsed time plus starting position.",
+          "Multiply speed by time and add starting position where appropriate."
+        ],
+        "example": "At 2 m/s for 4 s from 0 m, the prediction is 8 m."
       }
     },
     "A2.11": {
@@ -303,6 +455,14 @@
           "Check units before comparing and keep predictions separate from observed values."
         ],
         "example": "The value increased from 2 m to 5 m, a change of 3 m."
+      },
+      "scientific-discourse": {
+        "title": "Displayed graph interval versus prediction",
+        "steps": [
+          "List axes and the data interval before making a statement about the trend.",
+          "Do not label the next unshown value as a measurement or assume a uniform trend without evidence."
+        ],
+        "example": "The simulated chart rises over 0–3 min, but not uniformly."
       }
     },
     "A2.12": {
@@ -337,6 +497,14 @@
           "Describe the trend only across the displayed interval."
         ],
         "example": "Position increases from 0 m at 0 s to 4.5 m at 3 s."
+      },
+      "scientific-discourse": {
+        "title": "Evidence-based virtual-lab reporting",
+        "steps": [
+          "Write the shown model values and their units as observations from a simulation.",
+          "Keep source data, model assumptions and predictions in separate sentences."
+        ],
+        "example": "The virtual cart shows 3.0 m at 2 s; this is simulated evidence."
       }
     }
   }

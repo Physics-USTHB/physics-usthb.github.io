@@ -1,12 +1,12 @@
 # English for Physicists — A2 learning beta
 
-**Version:** A2 beta 0.5 — original synthetic-dialogue practice and pronunciation self-review. Earlier releases 0.2–0.4 were merged via PRs #3–#5.
+**Version:** A2 beta 0.6 — contextual physics-English practice and source-linked numeracy. Earlier releases 0.2–0.5 were merged via PRs #3–#6.
 
 ## Working in the beta
 
 - Standalone English development entry point; physics practicums and LaTeX Studio untouched.
 - Navigation for all 12 A2 units.
-- **A2.01–A2.12: 483 unreviewed, formative text-practice items** with four original reading sources per unit (48 total).
+- **A2.01–A2.12: 555 unreviewed, formative text-practice items** with five original reading sources per unit (60 total).
 - All twelve units contain original explanatory teaching notes, objectives and pronunciation guidance; original audio recordings are pending.
 - The A2.11 and A2.12 virtual-cart graphs include accompanying accessible numeric data tables.
 - Optional private microphone recording supports speaking self-review without automatic proficiency grading; discarding an active recording also clears its buffers.
@@ -16,14 +16,14 @@
 - Shared versioned JSON schema for active draft units, validated in-browser before activation.
 - First-attempt and retry tracking, with draft items explicitly excluded from verified proficiency evidence.
 - Deterministic constrained-response grading, conservative weakness hypotheses (not active for drafts), evidence summaries and local practice scheduling.
-- **39 original skill-scoped study guides** across the 12 units, selected from the learner's incorrect *first attempts*; each suggests a short explanation and a related question. Retries do not count as independent diagnostic evidence.
+- **60 original skill-scoped study guides** across the 12 units, selected from the learner's incorrect *first attempts*; each suggests a short explanation and a related question. Retries do not count as independent diagnostic evidence.
 - Initial review intervals of 1, 3, 7, 14, 30 and 60 days, subject to future calibration.
 - Browser-local IndexedDB progress with localStorage fallback and backup export/import/clear.
 - Node regression tests and dedicated English GitHub Actions workflow.
 
 ## Audit scope
 
-The authoring packages contain **2,555 draft A2 candidates**. This beta integrates **483 draft text items** from those packages and **48 additional original synthetic-dialogue comprehension checks** (531 formative objective checks total), plus 48 short reading sources. These new dialogues are newly authored and are not counted as imported authoring-bank candidates. Original narrated listening/pronunciation audio, expert-reviewed productive-skill scoring rubrics and comprehensive summative testing are still pending. No CEFR A2 level-completion claim is made.
+The authoring packages contain **2,555 draft A2 candidates**. This beta integrates the previous **483 draft text items** from the source authoring packages, **72 newly authored contextual physics-English checks** (six per unit), and **48 separate original synthetic-dialogue comprehension checks**: **603 formative objective questions total**. Each unit now has five original reading sources (60 total). The new contextual questions and dialogues are not counted as imported authoring-bank candidates. Original narrated listening/pronunciation audio, expert-reviewed productive-skill scoring rubrics and comprehensive summative testing are still pending. No CEFR A2 level-completion claim is made.
 
 The adaptive engine does **not** assign CEFR proficiency, speaking or writing grades, or verified mastery using draft content. It tracks formative first attempts and review intervals. A separate on-device speaking recorder holds audio in memory for local replay/download only. Exercise responses and recordings are not intentionally sent to an application server.
 
@@ -64,3 +64,11 @@ The beta is linked from the main site. Existing practicums and LaTeX Studio are 
 The new dialogues are original fictional examples, not official USTHB laboratory transcripts. The learner can play them with the browser's speech synthesis, adjust pace, read the transcript (including when the voice service is unavailable), and self-check two concrete questions per dialogue. Each unit includes two phrases with pronunciation guidance and an optional local speaking recorder. The interface never grades an accent or declares CEFR listening ability. The browser may use a remotely hosted voice depending on device/provider; only public fictional dialogue text is passed to that speech facility.
 
 The 48 comprehension answers are stored as ordinary local formative attempts. They are deliberately marked `independent:false`, excluded from weakness detection, and must not be used for listening or CEFR mastery claims. Opening the transcript records a hint flag. Audio is not stored or generated as reviewed recordings, and original narrated course audio remains a release blocker.
+
+## A2 beta 0.6 — contextual source-based practice
+
+Every A2 unit now has a new short fictional physics source (R5) with six original multiple-choice exercises: two grounded reading questions, one grammar question, one vocabulary question, one mathematical-English question, and one scientific discourse/evidence-awareness question. The numerical examples include units and explicitly distinguish simulations from real physical measurements. The source and answer keys are checked with reproducible, deterministic tests and the base unit schema.
+
+The new content is stored separately in `english/data/contextual-practice.json` and merged at load time; this preserves all older item IDs and saved practice histories. An independent validation module rejects duplicate IDs, repeated prompts, missing sources, invalid choices, and accidental promotion of draft work to reviewed assessments. There are now 60 skill-scoped formative remediation guides, including evidence-awareness and numeracy for every A2 unit.
+
+**Review status:** this is an author-level structural and internal scientific-consistency review only, not a claim of professional educational/linguistic/psychometric sign-off. No CEFR certification, independently verified weakness diagnosis, original recorded audio, or secure high-stakes examinations are provided by this update.
