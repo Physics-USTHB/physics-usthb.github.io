@@ -1,6 +1,6 @@
 # English for Physicists — A2 learning beta
 
-**Version:** A2 beta 0.7 — guided question-at-a-time practice, shared first-attempt history and scheduled reviews. Earlier releases 0.2–0.6 were merged via PRs #3–#7.
+**Version:** A2 beta 0.8 — selectable natural browser voices and smoother narration. Earlier releases 0.2–0.7 were merged through PRs #3–#8.
 
 ## Working in the beta
 
@@ -81,3 +81,14 @@ The **Quick practice** section is shown after each unit's source readings and be
 Modes are defined precisely: **New questions** have no prior attempt; **Scheduled reviews due** require a saved review due at or before the device clock; **Revisit first-attempt errors** shows items answered incorrectly first and not subsequently answered correctly; **All questions** offers the full draft text set. Those selections are study conveniences, not validated learner diagnostics, and the review interval algorithm remains an uncalibrated baseline.
 
 This release adds no new CEFR scoring, verified speaking/listening results, school authentication, network tracking, or high-stakes exam security. Source exercises remain expert-review drafts. CI checks pure queue logic plus browser behavior, due-date persistence, independent first attempts, source navigation and browser-profile isolation.
+
+
+## A2 beta 0.8 — improved synthetic voices
+
+Earlier versions used the first available English voice and slowed much of the audio unnaturally. This release makes the browser's available voice list visible, suggests natural, premium or enhanced American-English voices when the system offers them, and allows students to choose, preview and reset a voice. The preference persists only in the local browser profile. A separate control resets it, and Clear local progress also resets the stored voice identifier.
+
+Readings and dialogues default to a more natural 1.0 speaking rate, while slower and faster options remain available. Dialogue speakers now speak their own lines rather than hearing the artificial phrase "Maya says" before each turn. In Automatic voice mode, two distinct voices can be used when available; manual voice choices always take priority. Long readings are played in complete, sentence-bounded segments rather than being silently cut at a fixed character limit.
+
+**Limits:** These improvements depend on the device, browser, installed voices and possibly the browser's speech provider. They are not original neural audio recordings, do not guarantee that a natural-sounding voice exists, and never assess pronunciation or CEFR proficiency. The selected browser voice may run on-device or use the browser's remote provider; only public fictional course text is played. Neither exercise answers nor private microphone recordings are passed to any newly introduced service.
+
+Tests cover voice preference selection and reload, enhanced-voice suggestions, unavailable voices, privacy labels, automatic turn-switching, natural speed, and complete reading text. The A2 educational content remains unreviewed draft material pending independent language and physics evaluation.

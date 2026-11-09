@@ -34,6 +34,8 @@ jobs:
           node --check english/listening.mjs
           node --check english/contextual.mjs
           node --check english/quick-practice.mjs
+          node --check english/voice-preferences.mjs
+          node --check english/speech-chunks.mjs
       - name: Run privacy, schema and evidence-model tests
         run: node --test english/test/*.test.mjs
 
@@ -56,3 +58,4 @@ jobs:
         run: |
           node english/browser-test.mjs
           node english/quick-browser-test.mjs
+          node english/voice-browser-test.mjs

@@ -148,7 +148,8 @@ try{
   await listenPage.getByRole("button",{name:"Hear dialogue"}).first().click();
   const playback=await listenPage.evaluate(()=>window.__syntheticSpeech.played);
   assert.equal(playback.length,1);
-  assert.ok(playback[0].includes("Maya says:"));
+  assert.ok(playback[0].startsWith("Hello, I'm Maya"),"Dialogue should speak the first character directly");
+  assert.ok(!playback[0].includes("Maya says:"),"Role labels should not be read aloud");
   const q1=listenPage.locator('[id="listen-A2.01.L01.Q01"]');
   await q1.locator('input[value="Physics"]').check();
   await q1.getByRole("button",{name:"Check comprehension"}).click();
