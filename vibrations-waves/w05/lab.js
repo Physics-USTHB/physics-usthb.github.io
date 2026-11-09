@@ -5,7 +5,11 @@ function makeRun(){return{id:'W05-'+Math.random().toString(36).slice(2,7).toUppe
 let s=U.load(K,null);
 if(!s||s.version!==3)s={version:3,run:makeRun(),free:[],markers:[],loaded:null,analysis:{free:null,sound:null}};
 s.free=Array.isArray(s.free)?s.free:[];s.markers=Array.isArray(s.markers)?s.markers:[];s.analysis=s.analysis||{free:null,sound:null};
+s.montage=s.montage||{drive:'',scope:'',source:'',receiver:'',verifiedFor:null};
 function save(){U.save(K,s)}
+function montageOK(mode=E('mode').value){const m=s.montage,free=mode==='free';return m.drive==='series'&&m.scope==='correct'&&m.source===(free?'free':'tube')&&m.receiver===(free?'none':'tube')&&m.verifiedFor===mode}
+function renderMontage(){E('setupDrive').value=s.montage.drive||'';E('setupScope').value=s.montage.scope||'';E('setupSource').value=s.montage.source||'';E('setupReceiver').value=s.montage.receiver||'';const mode=E('mode').value,ok=montageOK(mode);E('montageMsg').className=ok?'notice ok':'notice';E('montageMsg').textContent=ok?(mode==='free'?'Free-field electrical montage verified.':'Tube source/receiver montage verified.'):'Wire the free-field arrangement first; after f₀ is found, rebuild it as the source/receiver tube arrangement.'}
+function verifyMontage(){const mode=E('mode').value,free=mode==='free';s.montage={drive:E('setupDrive').value,scope:E('setupScope').value,source:E('setupSource').value,receiver:E('setupReceiver').value,verifiedFor:null};if(s.montage.drive!=='series'||s.montage.scope!=='correct'||s.montage.source!==(free?'free':'tube')||s.montage.receiver!==(free?'none':'tube')){E('montageMsg').className='notice warn';E('montageMsg').textContent=free?'Free field: GBF → 50 Ω → loudspeaker; CH1 total, CH2 loudspeaker; source on table, no receiver required.':'Tube: keep the electrical drive/scope wiring, place the source at one tube end and the receiver on the small tube from the opposite end.';save();return}s.montage.verifiedFor=mode;renderMontage();save()}
 function cadd(a,b){return{re:a.re+b.re,im:a.im+b.im}}
 function speakerZ(f,loaded=false,dcm=+E('dist').value){
   const x=f/s.run.f0,q=s.run.Qm*(x-1/x),den=1+q*q,zm={re:s.run.Rm/den,im:-s.run.Rm*q/den};
@@ -60,6 +64,7 @@ function validateElectrical(){
 }
 function record(){
   const loaded=E('mode').value==='tube';
+  if(!montageOK(E('mode').value)){E('msg').className='notice warn';E('msg').textContent='Verify the loudspeaker montage for the current mode before measuring impedance.';return}
   if(loaded){
     if(!s.analysis.sound){E('msg').className='notice warn';E('msg').textContent='Complete the acoustic wavelength/sound-speed analysis before the loaded-impedance measurement.';return}
     const f0=s.analysis.free?.f0;if(!f0||Math.abs(+E('freq').value-f0)>25){E('msg').className='notice warn';E('msg').textContent='Keep the tube experiment at the accepted free-field resonance frequency f₀.';return}
@@ -85,9 +90,10 @@ function checkFreeAnalysis(){
 }
 function lockRes(){
   if(!s.analysis.free){E('msg').className='notice warn';E('msg').textContent='Validate the free-field resonance first.';return}
-  E('mode').value='tube';E('freq').value=Math.round(s.analysis.free.f0/20)*20;E('math').value='raw';clearElectrical();E('msg').className='notice ok';E('msg').textContent='Tube mode set to f₀. Move the receiver and classify the acoustic phase relation.';renderAll();
+  E('mode').value='tube';s.montage.verifiedFor=null;renderMontage();E('freq').value=Math.round(s.analysis.free.f0/20)*20;E('math').value='raw';clearElectrical();E('msg').className='notice ok';E('msg').textContent='Tube mode set to f₀. Move the receiver and classify the acoustic phase relation.';renderAll();
 }
 function markPhase(){
+  if(!montageOK('tube')){E('msg').className='notice warn';E('msg').textContent='Verify the source/receiver tube montage before marking acoustic phase positions.';return}
   if(E('mode').value!=='tube'||E('math').value!=='raw'){E('msg').className='notice warn';E('msg').textContent='Use tube mode with raw acoustic traces to mark phase positions.';return}
   if(!s.analysis.free){E('msg').className='notice warn';E('msg').textContent='Validate f₀ first.';return}
   const f0=s.analysis.free.f0;if(Math.abs(+E('freq').value-f0)>25){E('msg').className='notice warn';E('msg').textContent='Keep the generator at f₀ while locating acoustic phase positions.';return}
@@ -125,11 +131,11 @@ function table(){
 }
 function renderAll(){draw();table();chart()}
 function buildReport(){
-  const a=s.analysis.free,b=s.analysis.sound,summary='<p><b>Free field:</b> '+(a?'f₀='+a.f0.toFixed(0)+' Hz, low-frequency R≈'+a.Rlow.toFixed(1)+' Ω':'analysis incomplete')+'.</p><p><b>Tube propagation:</b> '+(b?'λ='+b.lambda.toFixed(3)+' m, v='+b.v.toFixed(1)+' m/s':'analysis incomplete')+'; acoustic markers='+s.markers.length+'.</p><p><b>Loaded loudspeaker:</b> '+(s.loaded?'|Z|='+s.loaded.Z.toFixed(1)+' Ω, electrical phase='+s.loaded.phi.toFixed(1)+'° at d='+s.loaded.d.toFixed(1)+' cm':'not measured')+'.</p>';
+  const a=s.analysis.free,b=s.analysis.sound,summary='<p><b>Last verified montage:</b> '+U.esc(s.montage.verifiedFor||'none')+'.</p>'+'<p><b>Free field:</b> '+(a?'f₀='+a.f0.toFixed(0)+' Hz, low-frequency R≈'+a.Rlow.toFixed(1)+' Ω':'analysis incomplete')+'.</p><p><b>Tube propagation:</b> '+(b?'λ='+b.lambda.toFixed(3)+' m, v='+b.v.toFixed(1)+' m/s':'analysis incomplete')+'; acoustic markers='+s.markers.length+'.</p><p><b>Loaded loudspeaker:</b> '+(s.loaded?'|Z|='+s.loaded.Z.toFixed(1)+' Ω, electrical phase='+s.loaded.phi.toFixed(1)+'° at d='+s.loaded.d.toFixed(1)+' cm':'not measured')+'.</p>';
   return U.report('Wave Laboratory Practical V — Loudspeaker & Sound Propagation in Air',summary);
 }
-U.tabs();
-['freq','dist','tdiv','vdiv'].forEach(id=>E(id).addEventListener('input',()=>{clearElectrical();draw()}));['mode','math'].forEach(id=>E(id).addEventListener('change',()=>{clearElectrical();draw()}));
+U.tabs();renderMontage();E('verifyMontage').onclick=verifyMontage;['setupDrive','setupScope','setupSource','setupReceiver'].forEach(id=>E(id).addEventListener('change',e=>{const map={setupDrive:'drive',setupScope:'scope',setupSource:'source',setupReceiver:'receiver'};s.montage[map[id]]=e.target.value;s.montage.verifiedFor=null;renderMontage();save()}));
+['freq','dist','tdiv','vdiv'].forEach(id=>E(id).addEventListener('input',()=>{clearElectrical();draw()}));['mode','math'].forEach(id=>E(id).addEventListener('change',()=>{if(id==='mode'){s.montage.verifiedFor=null;renderMontage();save()}clearElectrical();draw()}));
 E('record').onclick=record;E('markPhase').onclick=markPhase;E('lockRes').onclick=lockRes;E('checkFreeAnalysis').onclick=checkFreeAnalysis;E('checkSound').onclick=checkSound;
 E('buildReport').onclick=buildReport;E('printReport').onclick=()=>{if(buildReport())window.print()};
 if(s.analysis.free){E('studentF0').value=s.analysis.free.f0;E('studentRlow').value=s.analysis.free.Rlow}if(s.analysis.sound){E('studentLambda').value=s.analysis.sound.lambda;E('studentSoundV').value=s.analysis.sound.v}
