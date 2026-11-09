@@ -12,7 +12,7 @@ try{
  await page.goto("http://127.0.0.1:8080/english/",{waitUntil:"domcontentloaded",timeout:30_000});
  await page.waitForFunction(()=>document.querySelector("#unit-status")?.textContent.includes("40 text questions"),null,{timeout:25_000});
  assert.equal(await page.locator("#units button").count(),12,"All twelve units must be navigable");
- assert.equal(await page.locator("#authored-lesson form").count(),40,"First unit practice missing");
+ assert.equal(await page.locator('#authored-lesson form[id^="practice-"]').count(),40,"First unit library practice missing");
  assert.equal(await page.locator("#authored-lesson button").filter({hasText:"Hear reading"}).count(),5,"Five reading sources including original contextual mini-source should be available");
  assert.equal(await page.locator("#writing-task option").count(),2,"Each unit should offer two writing assignments");
  assert.match(await page.locator("body").innerText(),/A2 beta — formative learning only/);
