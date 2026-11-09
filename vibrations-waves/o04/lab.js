@@ -1,14 +1,14 @@
 (()=>{
 'use strict';
-const U=VOMUI,E=id=>document.getElementById(id),K='VOM_O04_v3',C=68e-9,L=8.4e-3,E0=.40,QMODE=11,TAU=Math.PI*2,C0S=[33,47,68,100,150,220];
+const U=VOMUI,E=id=>document.getElementById(id),K='VOM_O04_v4',C=68e-9,L=8.4e-3,E0=.40,QMODE=11,TAU=Math.PI*2,C0S=[33,47,68,100,150,220];
 function blankRecords(){return Object.fromEntries(C0S.map(c=>[String(c),[]]))}
 let s=U.load(K,null);
-if(!s||s.version!==3)s={version:3,records:blankRecords(),analyses:{},conclusion:''};
+if(!s||s.version!==4)s={version:4,records:blankRecords(),analyses:{},conclusion:''};
 for(const c of C0S)s.records[String(c)]=Array.isArray(s.records[String(c)])?s.records[String(c)]:[];
 s.analyses=s.analyses||{};s.conclusion=s.conclusion||'';
 function save(){U.save(K,s)}
 function modes(c0n){
-  const k=C/(C+c0n*1e-9),w=1/Math.sqrt(L*C),w1=w*Math.sqrt(1-k),w2=w*Math.sqrt(1+k);
+  const k=C/(C+c0n*1e-9),w=1/Math.sqrt(L*C),w1=w,w2=w*Math.sqrt(1+2*C/(c0n*1e-9));
   return{k,w,w1,w2,f0:w/TAU,f1:w1/TAU,f2:w2/TAU};
 }
 function cinv(re,im){const d=re*re+im*im;return{re:re/d,im:-im/d}}
@@ -41,7 +41,7 @@ function recordPoint(){
 }
 function density(arr,f){return arr.filter(q=>Math.abs(q.f-f)<=250).length}
 function extremaFromData(c0){
-  const a=s.records[String(c0)];if(a.length<18||a[0]?.f>1500||a.at(-1)?.f<14000)return null;
+  const a=s.records[String(c0)];if(a.length<18||a[0]?.f>1500||a.at(-1)?.f<17000)return null;
   const fbase=modes(c0).f0,lo=a.filter(q=>q.f<fbase),hi=a.filter(q=>q.f>fbase);if(lo.length<3||hi.length<3)return null;
   const p1=lo.reduce((m,q)=>q.V1>m.V1?q:m,lo[0]),p2=hi.reduce((m,q)=>q.V1>m.V1?q:m,hi[0]);
   if(p1.f>=p2.f)return null;
@@ -57,7 +57,7 @@ function loadAnalysis(){
 }
 function checkExtrema(){
   const c0=+E('analysisC0').value,m=extremaFromData(c0);
-  if(!m){E('extremaMsg').className='notice warn';E('extremaMsg').textContent='The selected scan needs at least 18 points, broad 1–15 kHz coverage, and several close points around each peak and the intervening V₁ minimum.';return}
+  if(!m){E('extremaMsg').className='notice warn';E('extremaMsg').textContent='The selected scan needs at least 18 points, broad 1–18 kHz coverage, and several close points around each peak and the intervening V₁ minimum.';return}
   const f1=+E('studentF1').value,fm=+E('studentFmin').value,f2=+E('studentF2').value,Kv=+E('studentK').value;
   if([f1,fm,f2,Kv].some(v=>!Number.isFinite(v))||f1<=0||fm<=0||f2<=0||Kv<=0){E('extremaMsg').className='notice warn';E('extremaMsg').textContent='Enter f₁, fmin, f₂ and K.';return}
   if(Math.abs(f1-m.f1)>60||Math.abs(fm-m.fmin)>60||Math.abs(f2-m.f2)>60){E('extremaMsg').className='notice warn';E('extremaMsg').textContent='Re-read both V₁ resonance peaks and the antiresonance minimum from your measured curve.';return}
