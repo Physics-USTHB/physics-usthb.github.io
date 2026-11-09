@@ -4,8 +4,15 @@ let s=U.load(K,null);if(!s||s.version!==2)s={version:2,rings:{},tableChecked:fal
 function save(){U.save(K,s)}
 function radius(m){return Math.sqrt(m*LAM*R)*1000}
 function draw(){
- const q=U.canvas(E('ringsCanvas')),x=q.x,w=q.w,h=q.h,blur=Math.abs(+E('focus').value),scale=Math.min(w,h)/18;x.fillStyle='#050a12';x.fillRect(0,0,w,h);
- for(let m=1;m<=12;m++){const rr=radius(m)*scale,I=Math.max(.12,1-blur*.14);x.strokeStyle='rgba(255,210,70,'+I+')';x.lineWidth=2+Math.min(6,blur);x.beginPath();x.arc(w/2,h/2,rr,0,Math.PI*2);x.stroke()}
+ const q=U.canvas(E('ringsCanvas')),x=q.x,w=q.w,h=q.h,blur=Math.abs(+E('focus').value),scale=Math.min(w,h)/8;
+ x.fillStyle='#050a12';x.fillRect(0,0,w,h);
+ // In reflected light the additional π phase shift makes the contact centre and r_m²=m λ R dark.
+ const contrast=Math.exp(-Math.pow(blur/1.6,2)),outer=Math.ceil(Math.min(w,h)*.48);
+ for(let px=outer;px>=0;px--){
+  const rm=(px/scale)*1e-3,phase=2*Math.PI*rm*rm/(LAM*R),I=.5*(1-Math.cos(phase));
+  const brightness=.08+.92*contrast*I,rr=Math.round(255*brightness),gg=Math.round(200*brightness),bb=Math.round(75*brightness);
+  x.fillStyle='rgb('+rr+','+gg+','+bb+')';x.beginPath();x.arc(w/2,h/2,px+1,0,Math.PI*2);x.fill();
+ }
  const cx=w/2+(+E('cross').value)*scale;x.strokeStyle='#ff6a78';x.lineWidth=1;x.beginPath();x.moveTo(cx,20);x.lineTo(cx,h-20);x.stroke();x.beginPath();x.moveTo(cx-10,h/2);x.lineTo(cx+10,h/2);x.stroke();
 }
 function target(side){const m=+E('order').value,r=radius(m);return side==='L'?-r:r}
