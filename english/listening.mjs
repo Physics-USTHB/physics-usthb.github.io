@@ -1,6 +1,7 @@
 // Optional synthetic dialogue practice and pronunciation self-review.
 // Never represents recorded American-English audio, a listening diagnosis or CEFR mastery.
 import {normalizeAnswer,shuffledOptions} from "./assessment.mjs";
+import {prepareCourseSpeech} from "./science-speech.mjs";
 
 export function validateListeningCatalog(catalog){
  const errors=[];
@@ -78,10 +79,10 @@ export function mountListeningPractice(container,{catalog,getAttempts,onAttempt,
   stop();
   onStartAudio();
   const turns=Array.isArray(content)?content.map((t,i)=>({
-   text:String(t.text||"").trim(),
+   text:prepareCourseSpeech(String(t.text||"").trim()),
    speaker:String(t.speaker||""),
    voice:getDialogueVoice(i)||getVoice()
-  })): [{text:String(content||"").trim(),speaker:"",voice:getVoice()}];
+  })): [{text:prepareCourseSpeech(String(content||"").trim()),speaker:"",voice:getVoice()}];
   if(!turns.some(t=>t.text)){status.textContent="No text available for speech playback.";return;}
   // Each character speaks their own complete turn; no robotic "Maya says" narration.
   // Chosen voices come from the student's own browser/device speech service.
