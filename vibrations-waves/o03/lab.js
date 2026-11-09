@@ -1,21 +1,22 @@
 (()=>{
 'use strict';
-const U=VOMUI,E=id=>document.getElementById(id),K='VOM_O03_v2',OLD='VOM_O03_v1';
+const U=VOMUI,E=id=>document.getElementById(id),K='VOM_O03_v3',OLD='VOM_O03_v2';
 const C=68e-9,L=8.4e-3,C0S=[33,47,68,100,150,220];
 
 const current=U.load(K,null),old=U.load(OLD,null),loaded=current||{};
 let s={
-  version:2,
+  version:3,
   records:{...(loaded.records||{})},
   analyses:{...(loaded.analyses||{})},
   conclusion:loaded.conclusion||''
 };
-if(!current&&old){s={version:2,records:{},analyses:{},conclusion:''};}
+if(!current&&old){s={version:3,records:{},analyses:{},conclusion:''};}
 function save(){U.save(K,s)}
 
 function model(c0n){
   const c0=c0n*1e-9,k=C/(C+c0),w=1/Math.sqrt(L*C);
-  const w1=w*Math.sqrt(1-k),w2=w*Math.sqrt(1+k);
+  // Symmetric capacitive coupling: Ω1²=1/(LC), Ω2²=(1+2C/C0)/(LC).
+  const w1=w,w2=w*Math.sqrt(1+2*C/c0);
   const f1=w1/(2*Math.PI),f2=w2/(2*Math.PI);
   return{k,w1,w2,f1,f2,T1:1/f1,T2:1/f2,Tosc:2/(f1+f2),Tbeat:2/Math.abs(f2-f1)};
 }
