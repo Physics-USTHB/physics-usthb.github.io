@@ -11,7 +11,20 @@ let s={
   conclusion:loaded.conclusion||''
 };
 if(!current&&old){s={version:3,records:{},analyses:{},conclusion:''};}
+s.montage=s.montage||{feed:'',coupler:'',ch2:'',ch1:'',verified:false};
 function save(){U.save(K,s)}
+function baseMontageOK(){return s.montage.feed==='am'&&s.montage.coupler==='pb'&&s.montage.ch2==='bm'}
+function requiredCh1(mode=E('mode').value){return mode==='m2'?'pm':'dm'}
+function renderMontage(){
+  E('setupFeed').value=s.montage.feed||'';E('setupCoupler').value=s.montage.coupler||'';E('setupCh2').value=s.montage.ch2||'';E('setupCh1').value=s.montage.ch1||'';
+  const ok=s.montage.verified&&baseMontageOK();E('montageMsg').className=ok?'notice ok':'notice';
+  E('montageMsg').textContent=ok?'Base montage verified. Rewire CH1 to D–M for beats/mode 1 and P–M for mode 2.':'Connect the GBF/divider, C₀ and CH2 correctly; use D–M on CH1 for beats/mode 1 and P–M on CH1 for mode 2.';
+}
+function verifyMontage(){
+  s.montage.feed=E('setupFeed').value;s.montage.coupler=E('setupCoupler').value;s.montage.ch2=E('setupCh2').value;s.montage.ch1=E('setupCh1').value;
+  if(!baseMontageOK()){s.montage.verified=false;E('montageMsg').className='notice warn';E('montageMsg').textContent='Incorrect base montage. Feed A–M from the GBF/divider, connect C₀ between P and B, and keep CH2 on B–M (V₁).';save();return}
+  s.montage.verified=true;E('montageMsg').className='notice ok';E('montageMsg').textContent='Base montage verified. Select the correct CH1 tap for each observation.';save();
+}
 
 function model(c0n){
   const c0=c0n*1e-9,k=C/(C+c0),w=1/Math.sqrt(L*C);
@@ -73,6 +86,9 @@ function requiredView(mode){
 }
 function validateTiming(){
   const c0=+E('c0').value,mode=E('mode').value,target=E('timingTarget').value,m=model(c0),dtUs=Math.abs(+E('cursor2').value-(+E('cursor1').value)),dt=dtUs*1e-6;
+  if(!s.montage.verified||!baseMontageOK()){E('msg').className='notice warn';E('msg').textContent='Verify the coupled-circuit base montage before measuring.';return}
+  s.montage.ch1=E('setupCh1').value;
+  if(s.montage.ch1!==requiredCh1(mode)){E('msg').className='notice warn';E('msg').textContent=mode==='m2'?'For mode 2, move CH1 to P–M while CH2 remains on B–M.':'For beats and mode 1, connect CH1 to D–M while CH2 remains on B–M.';save();return}
   if(dtUs<1){E('msg').className='notice warn';E('msg').textContent='Separate the two time cursors before measuring.';return;}
   const needView=requiredView(mode);
   if(E('view').value!==needView){E('msg').className='notice warn';E('msg').textContent=mode==='m1'?'Use V₁+V₂ to isolate the symmetric normal mode.':mode==='m2'?'Use V₁−V₂ to isolate the antisymmetric normal mode.':'Use the V₁/V₂ display to observe beats directly.';return;}
@@ -187,11 +203,13 @@ function buildReport(){
     const r=s.records[String(c0)],a=s.analyses[String(c0)],K=(a.coupling.Kc+a.coupling.Kt)/2;
     return'C₀='+c0+' nF: K='+K.toFixed(3)+', T₁='+r.m1.T.toFixed(1)+' µs, T₂='+r.m2.T.toFixed(1)+' µs, Tosc='+r.beats.fast.T.toFixed(1)+' µs, Tbeat='+r.beats.beat.T.toFixed(1)+' µs';
   }).join(' · ');
-  const summary='<p><b>Validated coupling sets:</b> '+(rows||'none yet')+'.</p><p><b>Interpretation:</b> '+U.esc(s.conclusion||'Not completed.')+'</p>';
+  const summary='<p><b>Montage:</b> '+(s.montage.verified&&baseMontageOK()?'base circuit verified':'not verified')+'. Latest CH1 tap: '+U.esc(s.montage.ch1||'—')+'.</p>'+'<p><b>Validated coupling sets:</b> '+(rows||'none yet')+'.</p><p><b>Interpretation:</b> '+U.esc(s.conclusion||'Not completed.')+'</p>';
   return U.report('Laboratory Practical 3 — Free Oscillations, Two Degrees of Freedom',summary);
 }
 
-U.tabs();
+U.tabs();renderMontage();E('verifyMontage').onclick=verifyMontage;
+['setupFeed','setupCoupler','setupCh2'].forEach(id=>E(id).addEventListener('change',e=>{const k=id==='setupFeed'?'feed':id==='setupCoupler'?'coupler':'ch2';s.montage[k]=e.target.value;s.montage.verified=false;renderMontage();save()}));
+E('setupCh1').addEventListener('change',e=>{s.montage.ch1=e.target.value;renderMontage();save()});
 E('modeConclusion').value=s.conclusion;
 ['c0','mode','tdiv','view','timingTarget','cursor1','cursor2'].forEach(id=>E(id).addEventListener('input',()=>{draw();}));
 E('mode').addEventListener('change',()=>{if(E('mode').value!=='beats')E('timingTarget').value='fast';clearTiming();draw();});
