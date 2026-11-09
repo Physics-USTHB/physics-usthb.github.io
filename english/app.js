@@ -6,6 +6,7 @@ import {validateRemediationCatalog,buildFocusedPractice} from "./remediation.mjs
 import {validateListeningCatalog,mountListeningPractice} from "./listening.mjs";
 import {validateContextualPack,extendUnitWithContext} from "./contextual.mjs";
 import {mountQuickPractice} from "./quick-practice.mjs";
+import {mountVoicePreferences} from "./voice-preferences.mjs";
 // English for Physicists — local-first development preview.
 // All sample exercises are formative and NOT eligible for CEFR/mastery claims.
 const UNITS=[
@@ -42,8 +43,18 @@ authoredRoot.hidden=true;
 $("lesson").after(focusedRoot,authoredRoot);
 const recorderMount=document.createElement("div");
 $("lesson").closest(".card").after(recorderMount);
-const speaking=mountSpeaking(recorderMount,{onStartRecording:()=>{readAloud.stop();listeningWorkshop?.stop();}});
-const readAloud=createReadingAloud({onStart:()=>listeningWorkshop?.stop()});
+const speaking=mountSpeaking(recorderMount,{onStartRecording:()=>{
+ readAloud.stop();listeningWorkshop?.stop();voicePrefs.stopPreview();
+}});
+const readAloud=createReadingAloud({
+ onStart:()=>{listeningWorkshop?.stop();voicePrefs.stopPreview();},
+ getVoice:()=>voicePrefs.getVoice()
+});
+const voiceMount=document.createElement("div");
+recorderMount.before(voiceMount);
+const voicePrefs=mountVoicePreferences(voiceMount,{
+ onBeforePreview:()=>{readAloud.stop();listeningWorkshop?.stop();}
+});
 const writingMount=document.createElement("div");
 recorderMount.before(writingMount);
 let writingWorkshop=null;
@@ -534,7 +545,7 @@ $("import-file").onchange=async e=>{
 };
 $("clear").onclick=async()=>{
  if(!confirm("Clear all English preview progress stored in this browser profile?"))return;
- state={schema:1,attempts:[],reviews:{},writing:{}};await save();render();writingWorkshop?.refresh();
+ state={schema:1,attempts:[],reviews:{},writing:{}};voicePrefs.reset();await save();render();writingWorkshop?.refresh();
  $("notice").textContent="Local preview progress cleared.";
 };
 async function boot(){
@@ -592,7 +603,9 @@ async function boot(){
     renderStats();
     return saved;
    },
-   onStartAudio:()=>readAloud.stop()
+   onStartAudio:()=>{readAloud.stop();voicePrefs.stopPreview();},
+   getVoice:()=>voicePrefs.getVoice(),
+   getDialogueVoice:i=>voicePrefs.getDialogueVoice(i)
   });
  }catch(error){
   $("notice").textContent=($("notice").textContent+" Optional listening workshop unavailable: "+error.message).trim();
