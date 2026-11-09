@@ -78,6 +78,7 @@ try{
  assert.ok(played.at(-1).text.includes("I'm Jordan"));
 
  // Manual selection takes priority; both characters use the learner's preferred voice.
+ await page.getByRole("button",{name:"Stop playback"}).first().click();
  await page.locator("#voice-choice").selectOption(localKey);
  await page.getByRole("button",{name:"Hear dialogue"}).first().click();
  played=await page.evaluate(()=>window.__testSpeech.spoken);
