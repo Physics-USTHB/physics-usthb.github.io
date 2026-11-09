@@ -17,7 +17,7 @@ const voices=[
 test("English voice picker prioritizes enhanced US voices, not generic old defaults",()=>{
  const list=englishVoices(voices);
  assert.equal(list.length,4);
- assert.equal(list[0].name,"Enhanced US"/* quality + US + local */===list[0].name?"Enhanced US":list[0].name);
+ assert.equal(list[0].name,"Enhanced US");
  assert.ok(["Natural Neural US","Enhanced US"].includes(pickVoice(voices).name));
  assert.ok(scoreVoice(voices[1])>scoreVoice(voices[0]));
  assert.ok(list.every(v=>v.lang.startsWith("en")));
