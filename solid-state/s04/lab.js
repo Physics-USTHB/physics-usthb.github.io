@@ -1,7 +1,7 @@
 (()=>{'use strict';
-const U=SolidUI,E=id=>document.getElementById(id),K='SOLID_S04_v2',EPS0=8.8541878128e-12,Q=1.602176634e-19,ME=9.1093837e-31,KB_EV=8.617333262e-5,AREA=2e-6,GAP=.005,AR=1.2e6;
+const U=SolidUI,E=id=>document.getElementById(id),K='SOLID_S04_v3',EPS0=8.8541878128e-12,Q=1.602176634e-19,ME=9.1093837e-31,KB_EV=8.617333262e-5,AREA=2e-6,GAP=.0015,AR=1.2e6;
 function makeRun(){return{id:'S04-'+Math.random().toString(36).slice(2,7).toUpperCase(),phi:4.25+Math.random()*.45,scale:.97+Math.random()*.06,phase:Math.random()*9}}
-let s=U.load(K,null);if(!s||s.version!==2)s={version:2,run:makeRun(),iv:[],sat:[],child:null,rich:null,interpretation:''};s.iv=Array.isArray(s.iv)?s.iv:[];s.sat=Array.isArray(s.sat)?s.sat:[];s.interpretation=s.interpretation||'';
+let s=U.load(K,null);if(!s||s.version!==3)s={version:3,run:makeRun(),iv:[],sat:[],child:null,rich:null,interpretation:''};s.iv=Array.isArray(s.iv)?s.iv:[];s.sat=Array.isArray(s.sat)?s.sat:[];s.interpretation=s.interpretation||'';
 function save(){U.save(K,s)}
 function currents(T=+E('temp').value,V=+E('voltage').value){
  const Jr=AR*T*T*Math.exp(-s.run.phi/(KB_EV*T)),Is=Jr*AREA*s.run.scale,cl=(4/9)*EPS0*Math.sqrt(2*Q/ME)*AREA*Math.pow(Math.max(V,0),1.5)/(GAP*GAP),I=Math.min(Is,cl),noise=I*.004*Math.sin(V*.27+T*.011+s.run.phase);
