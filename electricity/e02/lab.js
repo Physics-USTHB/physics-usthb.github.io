@@ -329,6 +329,7 @@ function drawAxisChart(){
   ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.strokeStyle='#dce5ee';for(let k=0;k<=5;k++){const xx=p.l+(w-p.l-p.r)*k/5,yy=p.t+(h-p.t-p.b)*k/5;ctx.beginPath();ctx.moveTo(xx,p.t);ctx.lineTo(xx,h-p.b);ctx.stroke();ctx.beginPath();ctx.moveTo(p.l,yy);ctx.lineTo(w-p.r,yy);ctx.stroke();}ctx.strokeStyle='#173b63';ctx.beginPath();ctx.moveTo(p.l,p.t);ctx.lineTo(p.l,h-p.b);ctx.lineTo(w-p.r,h-p.b);ctx.stroke();
   ctx.fillStyle='#52657f';ctx.font='12px system-ui';ctx.textAlign='center';AXIS_X.filter((_,i)=>i%2===0).forEach(x=>ctx.fillText(x,X(x),h-20));ctx.fillText('x (cm)',(p.l+w-p.r)/2,h-5);ctx.save();ctx.translate(15,h/2);ctx.rotate(-Math.PI/2);ctx.fillText('Potential (V)',0,0);ctx.restore();
   const pts=AXIS_X.map(x=>state.axisA.records?.[x]).filter(Boolean);if(pts.length){ctx.strokeStyle='#1f6fb8';ctx.lineWidth=2;ctx.beginPath();pts.forEach((q,i)=>i?ctx.lineTo(X(q.x),Y(q.v)):ctx.moveTo(X(q.x),Y(q.v)));ctx.stroke();ctx.fillStyle='#1f6fb8';pts.forEach(q=>{ctx.beginPath();ctx.arc(X(q.x),Y(q.v),4,0,Math.PI*2);ctx.fill();});}
+  const series=[{pts:pts.map(q=>({x:q.x,y:q.v}))}],g={ctx,X,Y};c.__physicsPlotMeta={g,series,opt:{xlabel:'x (cm)',ylabel:'Potential (V)'}};c.__physicsRedrawPlot=drawAxisChart;if(window.PracticalUncertainty)window.PracticalUncertainty.registerPlot(c,g,series,c.__physicsPlotMeta.opt);
 }
 
 function interiorFieldEstimate(){
@@ -395,6 +396,7 @@ function drawCompare(){
   ctx.fillStyle='#52657f';ctx.font='12px system-ui';ctx.textAlign='center';AXIS_X.filter((_,i)=>i%2===0).forEach(x=>ctx.fillText(x,X(x),h-20));ctx.fillText('x (cm)',(p.l+w-p.r)/2,h-5);
   const draw=(axis,color)=>{const pts=AXIS_X.map(x=>axis.records?.[x]).filter(Boolean);if(!pts.length)return;ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();pts.forEach((q,i)=>i?ctx.lineTo(X(q.x),Y(q.v)):ctx.moveTo(X(q.x),Y(q.v)));ctx.stroke();ctx.fillStyle=color;pts.forEach(q=>{ctx.beginPath();ctx.arc(X(q.x),Y(q.v),4,0,Math.PI*2);ctx.fill();});};
   draw(state.axisA,'#1f6fb8');draw(state.axisB,'#a34472');ctx.textAlign='left';ctx.fillStyle='#1f6fb8';ctx.fillText('● V₁(x)',w-150,24);ctx.fillStyle='#a34472';ctx.fillText('● V₂(x)',w-80,24);
+  const aPts=AXIS_X.map(x=>state.axisA.records?.[x]).filter(Boolean).map(q=>({x:q.x,y:q.v})),bPts=AXIS_X.map(x=>state.axisB.records?.[x]).filter(Boolean).map(q=>({x:q.x,y:q.v})),series=[{pts:aPts},{pts:bPts}],g={ctx,X,Y};c.__physicsPlotMeta={g,series,opt:{xlabel:'x (cm)',ylabel:'Potential (V)'}};c.__physicsRedrawPlot=drawCompare;if(window.PracticalUncertainty)window.PracticalUncertainty.registerPlot(c,g,series,c.__physicsPlotMeta.opt);
 }
 
 function renderAxisAll(){renderAxisProgress('A');renderAxisProgress('B');drawAxisChart();drawCompare();}

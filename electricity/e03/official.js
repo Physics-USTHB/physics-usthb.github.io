@@ -438,6 +438,7 @@ function axes(ctx,w,h,maxI,maxV){
 function plotSeries(ctx,pts,X,Y,color,line=true,shape='circle'){
   const s=[...pts].sort((a,b)=>a.im-b.im);
   if(line&&s.length){ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();s.forEach((d,i)=>i?ctx.lineTo(X(d.im),Y(d.vm)):ctx.moveTo(X(d.im),Y(d.vm)));ctx.stroke();}
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=1;s.forEach(d=>{const x=X(d.im),y=Y(d.vm);if(Number.isFinite(d.uIm)&&d.uIm>0){const xa=X(Math.max(0,d.im-d.uIm)),xb=X(d.im+d.uIm);ctx.beginPath();ctx.moveTo(xa,y);ctx.lineTo(xb,y);ctx.moveTo(xa,y-4);ctx.lineTo(xa,y+4);ctx.moveTo(xb,y-4);ctx.lineTo(xb,y+4);ctx.stroke()}if(Number.isFinite(d.uV)&&d.uV>0){const ya=Y(d.vm-d.uV),yb=Y(d.vm+d.uV);ctx.beginPath();ctx.moveTo(x,ya);ctx.lineTo(x,yb);ctx.moveTo(x-4,ya);ctx.lineTo(x+4,ya);ctx.moveTo(x-4,yb);ctx.lineTo(x+4,yb);ctx.stroke()}});ctx.restore();
   ctx.fillStyle=color;ctx.strokeStyle=color;s.forEach(d=>{const x=X(d.im),y=Y(d.vm);if(shape==='square'){ctx.fillRect(x-4,y-4,8,8);}else if(shape==='open'){ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.stroke();}else{ctx.beginPath();ctx.arc(x,y,4.5,0,Math.PI*2);ctx.fill();}});
 }
 function drawCore(){
@@ -445,6 +446,7 @@ function drawCore(){
   const all=[...rows('resistor'),...rows('lamp')];const maxI=Math.max(.12,...all.map(d=>d.im))*1.08,maxV=Math.max(10,...all.map(d=>d.vm))*1.05;const{X,Y}=axes(ctx,w,h,maxI,maxV);
   plotSeries(ctx,rows('resistor'),X,Y,'#1f6fb8');plotSeries(ctx,rows('lamp'),X,Y,'#b26b16');
   ctx.font='12px system-ui';ctx.textAlign='left';ctx.fillStyle='#1f6fb8';ctx.fillText('● Resistor',w-185,25);ctx.fillStyle='#b26b16';ctx.fillText('● Lamp',w-95,25);
+  const puSeries=[{pointUncertainty:true,noErrorBars:true,pts:rows('resistor').map(d=>({x:d.im,y:d.vm,ux:d.uIm,uy:d.uV}))},{pointUncertainty:true,noErrorBars:true,pts:rows('lamp').map(d=>({x:d.im,y:d.vm,ux:d.uIm,uy:d.uV}))}],g={ctx,X,Y};c.__physicsPlotMeta={g,series:puSeries,opt:{xlabel:'measured current I_m / A',ylabel:'voltage / V'}};c.__physicsRedrawPlot=drawCore;if(window.PracticalUncertainty)window.PracticalUncertainty.registerPlot(c,g,puSeries,c.__physicsPlotMeta.opt);
 }
 
 function componentVoltageAtCurrent(task,im){
@@ -514,6 +516,7 @@ function drawSum(){
   if(parallel.length){ctx.strokeStyle='#168b78';ctx.lineWidth=2.3;ctx.beginPath();parallel.forEach((d,i)=>i?ctx.lineTo(X(d.im),Y(d.vm)):ctx.moveTo(X(d.im),Y(d.vm)));ctx.stroke();}
   plotSeries(ctx,rows('series'),X,Y,'#7a3db8',false,'open');plotSeries(ctx,rows('parallel'),X,Y,'#168b78',false,'square');
   ctx.font='12px system-ui';ctx.textAlign='left';ctx.fillStyle='#7a3db8';ctx.fillText('Series sum + ○ verification',w-265,23);ctx.fillStyle='#168b78';ctx.fillText('Parallel sum + ■ verification',w-265,41);
+  const puSeries=[{pointUncertainty:true,noErrorBars:true,pts:rows('series').map(d=>({x:d.im,y:d.vm,ux:d.uIm,uy:d.uV}))},{pointUncertainty:true,noErrorBars:true,pts:rows('parallel').map(d=>({x:d.im,y:d.vm,ux:d.uIm,uy:d.uV}))}],g={ctx,X,Y};c.__physicsPlotMeta={g,series:puSeries,opt:{xlabel:'measured current I_m / A',ylabel:'voltage / V'}};c.__physicsRedrawPlot=drawSum;if(window.PracticalUncertainty)window.PracticalUncertainty.registerPlot(c,g,puSeries,c.__physicsPlotMeta.opt);
 }
 
 function renderAdvancedTable(){
