@@ -57,6 +57,12 @@ jobs:
           git clone -q --depth 1 https://github.com/h5p/h5p-font-icons.git dist/h5p-libraries/H5P.FontIcons
           git clone -q --depth 1 https://github.com/otacke/h5p-text-utilities.git dist/h5p-libraries/H5P.TextUtilities
           git clone -q --depth 1 https://github.com/h5p/jquery-ui.git dist/h5p-libraries/jQuery.ui
+          (
+            cd dist/h5p-libraries/H5P.Components
+            npm install --no-fund --no-audit --silent
+            npm run build
+            rm -rf node_modules
+          )
           find dist/h5p-libraries -name .git -type d -prune -exec rm -rf {} +
           python - <<'PY'
           import os,json,zipfile
