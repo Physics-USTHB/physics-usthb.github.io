@@ -1,3 +1,4 @@
+import {shuffledOptions} from "./assessment.mjs";
 // English A2 beta — accessible, browser-local question-at-a-time practice.
 // No diagnosis or CEFR certification. Does not create new answers or assessment keys.
 export const PRACTICE_MODES=Object.freeze(["new","due","revisit","all"]);
@@ -93,32 +94,33 @@ export function mountQuickPractice(container,{unit,getAttempts,getReviews,onAnsw
    }
    return;
   }
+  const item=current;
   const form=document.createElement("form");
-  form.id="quick-"+current.id;
+  form.id="quick-"+item.id;
   const fieldset=document.createElement("fieldset"),legend=document.createElement("legend");
-  legend.textContent=current.prompt;fieldset.append(legend);
-  if(current.sourceId){
+  legend.textContent=item.prompt;fieldset.append(legend);
+  if(item.sourceId){
    const p=document.createElement("p");p.className="muted minor";
-   p.textContent="Source: "+current.sourceId+" in the reading library above.";
+   p.textContent="Source: "+item.sourceId+" in the reading library above.";
    fieldset.append(p);
-   const ref=document.getElementById("reading-"+unit.id+"-"+current.sourceId);
+   const ref=document.getElementById("reading-"+unit.id+"-"+item.sourceId);
    if(ref){
     const openSource=document.createElement("button");openSource.type="button";
-    openSource.className="btn light";openSource.textContent="Open source "+current.sourceId;
+    openSource.className="btn light";openSource.textContent="Open source "+item.sourceId;
     openSource.onclick=()=>{ref.open=true;ref.scrollIntoView({behavior:"smooth",block:"start"});ref.querySelector("summary")?.focus();};
     fieldset.append(openSource);
    }
   }
   let input=null;
-  if(current.type==="short_answer"){
+  if(item.type==="short_answer"){
    input=document.createElement("input");input.type="text";input.required=true;input.maxLength=300;
-   input.setAttribute("aria-label",current.prompt);fieldset.append(input);
+   input.setAttribute("aria-label",item.prompt);fieldset.append(input);
   }else{
    // Stable order inside a question; do not reshuffle on feedback or count refresh.
-   for(const choice of current.options){
+   for(const choice of shuffledOptions(item.options)){
     const label=document.createElement("label");label.className="option";
     const radio=document.createElement("input");radio.type="radio";
-    radio.name="quick-"+current.id;radio.value=choice;radio.required=true;
+    radio.name="quick-"+item.id;radio.value=choice;radio.required=true;
     label.append(radio,document.createTextNode(" "+choice));fieldset.append(label);
    }
   }
@@ -129,13 +131,14 @@ export function mountQuickPractice(container,{unit,getAttempts,getReviews,onAnsw
   if(answerShown){result.textContent=feedbackMessage;result.className="feedback "+(feedbackCorrect?"good":"bad");}
   form.onsubmit=async event=>{
    event.preventDefault();
-   const answer=current.type==="short_answer"?input.value:(form.querySelector("input:checked")?.value||"");
+   const answer=item.type==="short_answer"?input.value:(form.querySelector("input:checked")?.value||"");
    if(!answer)return;
    check.disabled=true;
+   next.disabled=true;
    try{
-    const outcome=await onAnswer(current,answer);
+    const outcome=await onAnswer(item,answer);
     feedbackCorrect=Boolean(outcome.correct);
-    feedbackMessage=(outcome.correct?"Correct. ":"Not accepted. ")+current.feedback+
+    feedbackMessage=(outcome.correct?"Correct. ":"Not accepted. ")+item.feedback+
       " This is formative practice, not verified proficiency."+
       (outcome.saved===false?" Local saving failed: please export your progress.":"");
     answerShown=true;
@@ -144,7 +147,7 @@ export function mountQuickPractice(container,{unit,getAttempts,getReviews,onAnsw
    }catch(_){
     result.className="feedback bad";
     result.textContent="Could not check this answer. Your response was not recorded.";
-   }finally{check.disabled=false;}
+   }finally{check.disabled=false;next.disabled=false;}
   };
   next.onclick=()=>{visited.add(current.id);pickNext();};
   form.append(fieldset,check,next,result);stage.append(form);
