@@ -12,7 +12,23 @@ function makeRun(){
 }
 let s=U.load(K,null);
 if(!s||s.version!==3)s={version:3,run:makeRun(),critical:null,known:null,knownAnalysis:null,unknown:null,unknownAnalysis:null,criticalAnalysis:null};
+s.montage=s.montage||{divider:'',output:'',rlc:'',scope:'',rgp:null,verified:false};
 function save(){U.save(K,s)}
+const RG=50,RAC=100,RAB=10,RGP=((RG+RAC)*RAB)/(RG+RAC+RAB);
+function montageChoicesOK(){const m=s.montage;return m.divider==='ac'&&m.output==='ab'&&m.rlc==='series'&&m.scope==='e-vc'}
+function renderMontage(){
+  E('setupDivider').value=s.montage.divider||'';E('setupOutput').value=s.montage.output||'';E('setupRlc').value=s.montage.rlc||'';E('setupScope').value=s.montage.scope||'';
+  if(s.montage.rgp!=null)E('setupRg').value=s.montage.rgp;
+  const ok=s.montage.verified&&montageChoicesOK()&&Number.isFinite(+s.montage.rgp)&&Math.abs(+s.montage.rgp-RGP)<.08;
+  E('montageMsg').className=ok?'notice ok':'notice';E('montageMsg').textContent=ok?'Montage verified: low-r source, series RLC and oscilloscope connections are ready.':'Build the low-resistance source and the series RLC measurement circuit before energising it.';
+}
+function verifyMontage(){
+  s.montage={divider:E('setupDivider').value,output:E('setupOutput').value,rlc:E('setupRlc').value,scope:E('setupScope').value,rgp:+E('setupRg').value,verified:false};
+  if(!montageChoicesOK()){E('montageMsg').className='notice warn';E('montageMsg').textContent='Recheck the topology: the GBF feeds A–C, the low-resistance output is A–B, the RLC branch is series, and CH2 measures VC(t).';save();return}
+  if(!Number.isFinite(s.montage.rgp)||Math.abs(s.montage.rgp-RGP)>.08){E('montageMsg').className='notice warn';E('montageMsg').textContent='Recalculate r′g from the GBF internal resistance and the A–C/A–B divider.';save();return}
+  s.montage.verified=true;E('montageMsg').className='notice ok';E('montageMsg').textContent='Montage verified. You may energise the RLC circuit and begin the damping measurements.';save();
+}
+function requireMontage(){if(s.montage.verified&&montageChoicesOK())return true;E('msg').className='notice warn';E('msg').textContent='Verify the low-resistance source and RLC montage before taking measurements.';return false}
 function criticalExternal(){return 2*Math.sqrt(s.run.L/C_KNOWN)-s.run.Rr}
 function circuit(spec=E('spec').value){
   const adjustable=spec==='known'?+E('R').value:0,C=spec==='known'?C_KNOWN:s.run.Cx,Rt=spec==='known'?s.run.Rr+adjustable:s.run.Rr+s.run.Rx;
@@ -76,6 +92,7 @@ function validateStudentMeasurement(spec){
   return{ok:true,N,a1,a2,Ta:TaUs*1e-6,D,t1:m.t1,t2:m.t2,timeDiv:+E('tdiv').value,vdiv:+E('vdiv').value};
 }
 function recordCritical(){
+  if(!requireMontage())return;
   if(E('spec').value!=='known'){E('msg').className='notice warn';E('msg').textContent='Use the known-C circuit for the critical-regime measurement.';return}
   const R=+E('R').value,target=criticalExternal(),err=R-target;
   if(Math.abs(err)>8){
@@ -88,6 +105,7 @@ function recordCritical(){
   renderResults();save();
 }
 function measureKnown(){
+  if(!requireMontage())return;
   if(!s.critical){E('msg').className='notice warn';E('msg').textContent='Record the critical resistance first.';return}
   if(E('spec').value!=='known'||+E('R').value!==0){E('msg').className='notice warn';E('msg').textContent='For the free damped measurement, use the known circuit with adjustable R returned to zero.';return}
   const m=validateStudentMeasurement('known');if(!m.ok){E('msg').className='notice warn';E('msg').textContent=m.reason;return}
@@ -110,6 +128,7 @@ function checkKnownAnalysis(){
   renderResults();save();
 }
 function measureUnknown(){
+  if(!requireMontage())return;
   if(!s.knownAnalysis){E('msg').className='notice warn';E('msg').textContent='Complete the known-circuit analysis before measuring the unknown specimen.';return}
   if(E('spec').value!=='unknown'){E('msg').className='notice warn';E('msg').textContent='Select the unknown Rₓ/Cₓ specimen first.';return}
   const m=validateStudentMeasurement('unknown');if(!m.ok){E('msg').className='notice warn';E('msg').textContent=m.reason;return}
@@ -160,7 +179,7 @@ function newRun(){
   syncSpec();renderResults();save();
 }
 function buildReport(){
-  const summary='<p><b>Run:</b> '+U.esc(s.run.id)+'. <b>Critical R:</b> '+(s.critical?s.critical.R.toFixed(0)+' Ω':'not recorded')+'.</p>'+
+  const summary='<p><b>Montage:</b> '+(s.montage.verified?'verified':'not verified')+'; r′g='+(s.montage.rgp==null?'—':Number(s.montage.rgp).toFixed(2)+' Ω')+'.</p>'+'<p><b>Run:</b> '+U.esc(s.run.id)+'. <b>Critical R:</b> '+(s.critical?s.critical.R.toFixed(0)+' Ω':'not recorded')+'.</p>'+
     '<p><b>Known circuit:</b> '+(s.known?'Tₐ='+(s.known.Ta*1e6).toFixed(1)+' µs, D='+s.known.D.toFixed(3):'measurement incomplete')+
     (s.knownAnalysis?'; δ='+s.knownAnalysis.delta.toFixed(0)+' s⁻¹, Q='+s.knownAnalysis.Q.toFixed(2)+', L='+(s.knownAnalysis.L*1e3).toFixed(2)+' mH, Rᵣ='+s.knownAnalysis.Rr.toFixed(1)+' Ω.':'.')+'</p>'+
     '<p><b>Critical cross-check:</b> '+(s.criticalAnalysis?'Lcritical='+s.criticalAnalysis.Lcrit.toFixed(2)+' mH, difference='+s.criticalAnalysis.diff.toFixed(1)+'%.':'not validated.')+'</p>'+
@@ -168,7 +187,9 @@ function buildReport(){
     (s.unknownAnalysis?'; Rₓ='+s.unknownAnalysis.Rx.toFixed(1)+' Ω, Cₓ='+s.unknownAnalysis.Cx.toFixed(3)+' µF.':'.')+'</p>';
   return U.report('Laboratory Practical 1 — Free Oscillations — 1 Degree of Freedom',summary);
 }
-U.tabs();
+U.tabs();renderMontage();E('verifyMontage').onclick=verifyMontage;
+['setupDivider','setupOutput','setupRlc','setupScope'].forEach(id=>E(id).addEventListener('change',e=>{const k=id==='setupDivider'?'divider':id==='setupOutput'?'output':id==='setupRlc'?'rlc':'scope';s.montage[k]=e.target.value;s.montage.verified=false;renderMontage();save()}));
+E('setupRg').addEventListener('input',e=>{s.montage.rgp=e.target.value===''?null:+e.target.value;s.montage.verified=false;renderMontage();save()});
 ['R','freq','tdiv','vdiv','cursor1','cursor2'].forEach(id=>E(id).addEventListener('input',draw));
 E('spec').addEventListener('change',syncSpec);
 E('recordCritical').onclick=recordCritical;E('measureDamped').onclick=measureKnown;E('measureUnknown').onclick=measureUnknown;
