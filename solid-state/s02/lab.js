@@ -1,7 +1,7 @@
 (()=>{'use strict';
-const U=SolidUI,E=id=>document.getElementById(id),K='SOLID_S02_v2',TAU=Math.PI*2,INERTIA={A:.0028,B:.0046,AB:.0068};
+const U=SolidUI,E=id=>document.getElementById(id),K='SOLID_S02_v3',TAU=Math.PI*2,INERTIA={A:.0028,B:.0046,AB:.0068};
 function makeRun(){return{id:'S02-'+Math.random().toString(36).slice(2,7).toUpperCase(),G:(72+Math.random()*13)*1e9,phase:Math.random()*8}}
-let s=U.load(K,null);if(!s||s.version!==2)s={version:2,run:makeRun(),geometry:null,st:[],dy:[],pending:null,analysis:null,gResult:null,interpretation:''};s.st=Array.isArray(s.st)?s.st:[];s.dy=Array.isArray(s.dy)?s.dy:[];s.interpretation=s.interpretation||'';
+let s=U.load(K,null);if(!s||s.version!==3)s={version:3,run:makeRun(),geometry:null,st:[],dy:[],pending:null,analysis:null,gResult:null,interpretation:''};s.st=Array.isArray(s.st)?s.st:[];s.dy=Array.isArray(s.dy)?s.dy:[];s.interpretation=s.interpretation||'';
 function save(){U.save(K,s)}
 function geom(){return{L:+E('wireL').value,r:+E('wireR').value}}
 function sameGeom(a,b){return a&&Math.abs(a.L-b.L)<1e-9&&Math.abs(a.r-b.r)<1e-9}
@@ -9,7 +9,7 @@ function ensureGeometry(){
  const g=geom();if(!s.geometry){s.geometry=g;return true}if(!sameGeom(s.geometry,g)){return false}return true
 }
 function Ctrue(){const g=geom(),r=g.r*1e-3;return Math.PI*s.run.G*r**4/(2*g.L)}
-function phiTrue(){return(+E('torque').value*1e-3)/Ctrue()}
+function phiTrue(){return(+E('torque').value*1e-6)/Ctrue()}
 function noisyPhi(){return phiTrue()*(1+.0025*Math.sin((+E('torque').value)*.71+s.run.phase))}
 function drawT(){
  const q=U.canvas(E('torsionCanvas')),x=q.x,w=q.w,h=q.h,ang=Math.min(.75,noisyPhi());x.fillStyle='#06120f';x.fillRect(0,0,w,h);x.strokeStyle='#8bb0bd';x.lineWidth=5;x.beginPath();x.moveTo(w/2,30);x.lineTo(w/2,h*.58);x.stroke();
@@ -22,7 +22,7 @@ function recordStatic(){
  if(!Number.isFinite(phi)||!Number.isFinite(stau)||phi<0||stau<0){E('staticMsg').className='notice warn';E('staticMsg').textContent='Read and enter both the angular displacement and applied torque.';return}
  if(Math.abs(stau-tau)>.11){E('staticMsg').className='notice warn';E('staticMsg').textContent='Use the applied-torque setting shown on the apparatus.';return}
  if(Math.abs(phi-truth)>Math.max(.00025,.01*Math.max(truth,.001))){E('staticMsg').className='notice warn';E('staticMsg').textContent='Re-read the angular scale at equilibrium.';return}
- const rec={tau:stau*1e-3,phi},k=s.st.findIndex(q=>Math.abs(q.tau-rec.tau)<1e-12);if(k>=0)s.st[k]=rec;else s.st.push(rec);s.st.sort((a,b)=>a.tau-b.tau);s.analysis=null;s.gResult=null;
+ const rec={tau:stau*1e-6,phi},k=s.st.findIndex(q=>Math.abs(q.tau-rec.tau)<1e-12);if(k>=0)s.st[k]=rec;else s.st.push(rec);s.st.sort((a,b)=>a.tau-b.tau);s.analysis=null;s.gResult=null;
  E('studentPhi').value='';E('studentTorque').value='';E('staticMsg').className='notice ok';E('staticMsg').textContent='Static equilibrium reading accepted. Apply another torque within the elastic range.';render();save();
 }
 function period(I){return TAU*Math.sqrt(I/Ctrue())}
@@ -45,7 +45,7 @@ function recordDynamic(){
  const rec={disk:p.disk,I,N:p.N,t,T,C},k=s.dy.findIndex(q=>q.disk===p.disk);if(k>=0)s.dy[k]=rec;else s.dy.push(rec);s.pending=null;s.analysis=null;s.gResult=null;E('timeOut').value='';['studentTime','studentPeriod','studentI','studentC'].forEach(id=>E(id).value='');E('dynMsg').className='notice ok';E('dynMsg').textContent='Dynamic result accepted. Repeat with the remaining disk configurations.';render();save();
 }
 function staticFit(){
- if(s.st.length<6||s.st[0].tau>0.004||s.st.at(-1).tau<0.03)return null;const pts=s.st.map(q=>({x:q.phi,y:q.tau})),f=U.fit(pts);return{pts,C:f.b,intercept:f.a}
+ if(s.st.length<6||s.st[0].tau>0.00004||s.st.at(-1).tau<0.0003)return null;const pts=s.st.map(q=>({x:q.phi,y:q.tau})),f=U.fit(pts);return{pts,C:f.b,intercept:f.a}
 }
 function dynamicStats(){if(new Set(s.dy.map(q=>q.disk)).size<3)return null;const vals=s.dy.map(q=>q.C),mean=vals.reduce((a,b)=>a+b,0)/vals.length;return{mean}}
 function checkC(){
@@ -64,7 +64,7 @@ function checkG(){
  s.gResult={G,source};E('gMsg').className='notice ok';E('gMsg').textContent='Shear modulus accepted.';render();save();
 }
 function render(){
- drawT();E('staticBody').innerHTML=s.st.length?s.st.map(q=>'<tr><td>'+(q.tau*1000).toFixed(1)+'</td><td>'+q.phi.toFixed(4)+'</td></tr>').join(''):'<tr><td colspan="2">No static readings yet.</td></tr>';E('staticCount').textContent=s.st.length+' / 6';
+ drawT();E('staticBody').innerHTML=s.st.length?s.st.map(q=>'<tr><td>'+(q.tau*1e6).toFixed(1)+'</td><td>'+q.phi.toFixed(4)+'</td></tr>').join(''):'<tr><td colspan="2">No static readings yet.</td></tr>';E('staticCount').textContent=s.st.length+' / 6';
  E('dynBody').innerHTML=s.dy.length?s.dy.map(q=>'<tr><td>'+q.disk+'</td><td>'+q.I.toFixed(4)+'</td><td>'+q.N+'</td><td>'+q.t.toFixed(3)+'</td><td>'+q.T.toFixed(4)+'</td><td>'+q.C.toFixed(4)+'</td></tr>').join(''):'<tr><td colspan="6">No validated dynamic timings yet.</td></tr>';E('dynCount').textContent=new Set(s.dy.map(q=>q.disk)).size+' / 3';
  const sf=staticFit();if(sf)U.plot(E('staticChart'),[{pts:sf.pts}],{xlabel:'φ / rad',ylabel:'τ / N·m',xmin:0,ymin:0});else{const q=U.canvas(E('staticChart'));q.x.fillStyle='#fff';q.x.fillRect(0,0,q.w,q.h);q.x.fillStyle='#687d90';q.x.font='600 13px system-ui';q.x.textAlign='center';q.x.fillText('Record a broad static torque–angle dataset.',q.w/2,q.h/2)}
  E('cStatic').textContent=s.analysis?s.analysis.Cstatic.toFixed(4)+' N·m/rad':'—';E('cDyn').textContent=s.analysis?s.analysis.Cdynamic.toFixed(4)+' N·m/rad':'—';E('gOut').textContent=s.gResult?s.gResult.G.toFixed(1)+' GPa':'—';
