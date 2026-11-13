@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#0d2037">
-  <meta name="description" content="USTHB-aligned L2/S3 Geometrical Optics interactive tutorials and self-study problem classes.">
+  <meta name="description" content="USTHB L2/S3 Geometrical Optics interactive tutorials with theory reminders, complete question-family coverage and worked solutions.">
   <title>Geometrical Optics Tutorials | Physics USTHB</title>
   <link rel="stylesheet" href="../../geometrical-optics/styles.css">
   <link rel="stylesheet" href="td.css">
@@ -12,31 +12,35 @@
 <a class="skip" href="#questionView">Skip to exercise</a>
 <header class="top"><div class="shell nav">
   <a class="brand" href="../../"><span class="phi">Φ</span>Physics USTHB</a>
-  <nav class="navlinks"><a href="../">Tutorials</a><a href="../../geometrical-optics/">Optics Lab</a><a href="../../practicums/">Laboratory</a><a href="../../">Home</a></nav>
+  <nav class="navlinks"><a href="../">Tutorials</a><a href="../../geometrical-optics/">Optics Lab</a><a href="../../practicums/">Lab Practicals</a><a href="../../">Home</a></nav>
 </div></header>
+
 <section class="study-mast"><div class="shell">
   <div class="crumb">TUTORIALS / L2 · S3 / GEOMETRICAL OPTICS</div>
   <div class="mast-grid">
-    <div><h1>Geometrical Optics</h1><p>A guided problem-class experience for self-study. Work through the full topic map, ask for hints progressively, verify results, and reveal worked reasoning only after attempting the problem.</p></div>
+    <div>
+      <h1>Geometrical Optics</h1>
+      <p>A complete self-study problem-class path built on the six USTHB S3 chapters. Every exercise begins with the exact theory needed to solve it, followed by working space, answer checking where appropriate and a full worked solution.</p>
+    </div>
     <div class="mastery-card"><span>Course mastery</span><strong id="masteryPercent">0%</strong><div class="progress-track"><i id="masteryBar"></i></div><small id="masteryText">0 of 0 exercises mastered</small></div>
   </div>
-  <div class="badges"><span class="badge">USTHB L2/S3 aligned</span><span class="badge">5 series</span><span class="badge" id="questionCountBadge">loading…</span><span class="badge">local progress</span></div>
+  <div class="badges"><span class="badge">6 USTHB chapters</span><span class="badge" id="questionCountBadge">loading…</span><span class="badge">theory before every exercise</span><span class="badge">local progress</span></div>
 </div></section>
 
 <main class="study-layout shell">
   <aside class="study-sidebar" aria-label="Tutorial navigator">
-    <div class="side-head"><div><span class="micro">YOUR ROUTE</span><h2>Series</h2></div><button class="icon-btn" id="resetProgress" title="Reset local progress">↺</button></div>
+    <div class="side-head"><div><span class="micro">YOUR ROUTE</span><h2>Chapters</h2></div><button class="icon-btn" id="resetProgress" title="Reset local progress">↺</button></div>
     <nav id="seriesNav" class="series-nav"></nav>
     <div class="side-tools">
       <button class="outline-btn" id="coverageButton">Coverage map</button>
       <button class="outline-btn" id="exportButton">Export progress</button>
     </div>
-    <p class="privacy-note">Progress is stored only in this browser. No account or server submission is required.</p>
+    <p class="privacy-note">Progress and written working are stored only in this browser. No account or server submission is required.</p>
   </aside>
 
   <section class="study-stage">
     <div class="stage-toolbar">
-      <button class="mobile-series" id="mobileSeries">☰ Series</button>
+      <button class="mobile-series" id="mobileSeries">☰ Chapters</button>
       <div class="crumbline" id="crumbline">Choose an exercise</div>
       <div class="stage-actions"><button class="text-btn" id="prevQuestion">← Previous</button><button class="text-btn" id="nextQuestion">Next →</button></div>
     </div>
@@ -46,12 +50,13 @@
 
 <div class="modal-backdrop" id="coverageModal" hidden>
   <section class="modal" role="dialog" aria-modal="true" aria-labelledby="coverageTitle">
-    <div class="modal-head"><div><span class="micro">VERIFIED COURSE MAP</span><h2 id="coverageTitle">Geometrical Optics coverage</h2></div><button class="icon-btn" data-close-modal>×</button></div>
+    <div class="modal-head"><div><span class="micro">USTHB COURSE MAP</span><h2 id="coverageTitle">Geometrical Optics coverage</h2></div><button class="icon-btn" data-close-modal aria-label="Close">×</button></div>
     <div id="coverageBody"></div>
   </section>
 </div>
 
 <footer class="footer"><div class="shell"><span>Geometrical Optics Tutorials · Physics USTHB</span><span><a href="../">All tutorials</a> · <a href="../../privacy.html">Privacy</a></span></div></footer>
-<script src="td-data.js"></script>\n<script src="td.js"></script>
+<script src="td-data.js"></script>
+<script src="td.js"></script>
 </body>
 </html>
