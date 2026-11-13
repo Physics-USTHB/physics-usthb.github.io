@@ -6,6 +6,13 @@ const visuals=window.OPTICS_VISUALS||null;
 const series=data.series||[], questions=data.questions||[], theories=data.theories||{}, KEY="physics-usthb.optics-tutorials.v3";
 const $=s=>document.querySelector(s);
 let state=load(), currentId=(location.hash||"").slice(1), assessmentTimer=null;
+for(const q of questions){
+  if(q.kind==="manual"&&state[q.id]?.status==="mastered"){
+    const r=Array.isArray(state[q.id].rubric)?state[q.id].rubric:[];
+    if(!q.solution.every((_,i)=>r[i]===true)) state[q.id].status="attempted";
+  }
+}
+localStorage.setItem(KEY,JSON.stringify(state));
 if(!questions.some(q=>q.id===currentId)) currentId=questions.length?questions[0].id:"";
 
 const fallbackFigures={
