@@ -185,6 +185,12 @@ function staticSvg(key){
   else if(key==="focal-plane"){line(s,520,45,520,295,"focalplane");circle(s,520,170,4,"focus");line(s,40,75,350,75,"ray incident");line(s,40,105,350,105,"ray incident");line(s,350,75,520,120,"ray refracted");line(s,350,105,520,120,"ray refracted");T(530,55,"image focal plane");T(530,120,"secondary focus")}
   else if(key==="spherical-aberration"){s.appendChild(E("path",{d:"M390 35 Q300 170 390 305",class:"diopter"}));[70,110,145].forEach((y,j)=>{line(s,35,y,340,y,"ray incident");line(s,340,y,520+j*35,170,"ray refracted")});T(470,300,"marginal/paraxial rays cross at different points")}
   else if(key==="glass-sphere"){circle(s,360,170,115,"sphere");line(s,35,110,245,110,"ray incident");line(s,245,110,420,145,"ray refracted");line(s,420,145,610,170,"ray emergent");T(250,35,"two successive spherical diopters")}
+  else if(key==="goniometer"){
+    circle(s,360,165,115,"goniometer-ring");circle(s,360,165,6,"point");
+    line(s,360,165,190,70,"ray incident");line(s,360,165,555,75,"ray reflected");line(s,360,165,515,270,"ray reflected");
+    T(115,55,"collimator / incident direction");T(520,62,"telescope position 1");T(505,292,"telescope position 2");
+    T(315,160,"prism");T(250,25,"angular readings on circular scale");
+  }
   else if(key==="prism"||key==="dispersion-prism"){s.appendChild(E("path",{d:"M360 35 L155 275 L565 275 Z",class:"prism"}));line(s,25,170,235,170,"ray incident");if(key==="dispersion-prism"){line(s,235,170,455,205,"ray red");line(s,235,170,455,220,"ray violet");line(s,455,205,690,150,"ray red");line(s,455,220,690,185,"ray violet");T(590,140,"red");T(590,205,"violet")}else{line(s,235,170,455,215,"ray refracted");line(s,455,215,690,150,"ray emergent")}T(345,65,"A")}
   else if(key==="lens-shapes"){["biconvex","plano-convex","biconcave","meniscus"].forEach((t,i)=>{const x=105+i*165;T(x-45,285,t);s.appendChild(E("ellipse",{cx:x,cy:160,rx:i===2?28:18,ry:90,class:"lens"}))})}
   else if(key==="autocollimation"){s.appendChild(E("path",{d:"M360 45 Q320 170 360 295 Q400 170 360 45",class:"lens"}));line(s,560,45,560,295,"mirrorline");line(s,175,100,175,170,"object");line(s,175,100,360,100,"ray incident");line(s,360,100,560,140,"ray refracted");line(s,560,140,360,100,"ray reflected");T(135,80,"object at F");T(530,35,"plane mirror")}
