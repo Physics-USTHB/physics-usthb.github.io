@@ -20,7 +20,7 @@
   <div class="mast-grid">
     <div>
       <h1>Geometrical Optics</h1>
-      <p>A complete self-study problem-class path built on the six USTHB S3 chapters. Every exercise begins with the exact theory needed to solve it, followed by working space, answer checking where appropriate and a full worked solution.</p>
+      <p>A source-audited self-study path across the six USTHB S3 chapters. Each exercise begins with the required theory and sign convention, then gives working space, purpose-built visuals where useful, evaluation and a worked solution after an attempt. The source-sheet ledger explicitly shows what has and has not been recovered.</p>
     </div>
     <div class="mastery-card"><span>Course mastery</span><strong id="masteryPercent">0%</strong><div class="progress-track"><i id="masteryBar"></i></div><small id="masteryText">0 of 0 exercises mastered</small></div>
   </div>
@@ -34,6 +34,7 @@
     <div class="side-tools">
       <button class="outline-btn" id="coverageButton">Coverage map</button>
       <button class="outline-btn" id="sourcesButton">USTHB sources</button>
+      <button class="outline-btn" id="sourceSheetsButton">Source sheets</button>
       <button class="outline-btn assessment-launch" id="assessmentButton">Assessment</button>
       <button class="outline-btn" id="exportButton">Export progress</button>
     </div>
@@ -61,6 +62,13 @@
   <section class="modal" role="dialog" aria-modal="true" aria-labelledby="sourcesTitle">
     <div class="modal-head"><div><span class="micro">SOURCE AUDIT</span><h2 id="sourcesTitle">USTHB TD &amp; exam provenance</h2></div><button class="icon-btn" data-close-modal="sourcesModal" aria-label="Close">×</button></div>
     <div id="sourcesBody"></div>
+  </section>
+</div>
+
+<div class="modal-backdrop" id="sourceSheetsModal" hidden>
+  <section class="modal sheets-modal" role="dialog" aria-modal="true" aria-labelledby="sourceSheetsTitle">
+    <div class="modal-head"><div><span class="micro">EXERCISE-BY-EXERCISE AUDIT</span><h2 id="sourceSheetsTitle">USTHB source-sheet coverage</h2></div><button class="icon-btn" data-close-modal="sourceSheetsModal" aria-label="Close">×</button></div>
+    <div id="sourceSheetsBody"></div>
   </section>
 </div>
 
