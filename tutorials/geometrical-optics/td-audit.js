@@ -40,6 +40,15 @@ window.OPTICS_TUTORIAL_AUDIT = {
       localHref:"../../geometrical-optics/"
     },
     {
+      id:"exam-schedule-2022-23",
+      label:"USTHB Faculty of Physics — final-exam schedule",
+      year:"2022–2023",
+      kind:"exam-index",
+      status:"schedule-only",
+      url:"https://www.scribd.com/document/641847771/Untitled",
+      note:"Verifies that a final Geometrical Optics exam was scheduled for 23 January 2023 and a Geometrical Optics practical exam for 30 January 2023. The theory paper itself was not recovered, so its questions are not invented."
+    },
+    {
       id:"emd-index-2023-24",
       label:"USTHB Physique optique — “EMD Physique” index entry",
       year:"2023–2024",
@@ -134,6 +143,10 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s6:["usthb-course","touat-2021-22"]
   },
   unresolved: [
+    {
+      label:"2022–2023 final Geometrical Optics theory exam",
+      reason:"The USTHB Faculty schedule verifies the exam date (23 January 2023), but the actual theory paper was not recovered in the public audit."
+    },
     {
       label:"2023–2024 EMD Physique",
       reason:"An index entry is verifiable, but the actual examination pages are inaccessible from the public index. The course does not fabricate its questions."
