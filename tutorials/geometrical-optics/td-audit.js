@@ -63,6 +63,10 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s1q2:[["td1-2024-25","Ex. 2"]],
     s1q6:[["td1-2024-25","Ex. 3 family"]],
     s1q7:[["td1-2024-25","Ex. 3 family"]],
+    s1q27:[["td1-2024-25","Ex. 3.1"]],
+    s1q28:[["td1-2024-25","Ex. 3.2"]],
+    s1q29:[["td1-2024-25","Ex. 3.3 · Fermat/refraction derivation"]],
+    s1q15:[["td1-2024-25","Ex. 4"]],
     s1q16:[["td1-2024-25","Ex. 5"]],
     s1q24:[["td1-2024-25","Ex. 6"]],
     s1q17:[["td1-2024-25","Ex. 7.1"]],
@@ -72,9 +76,15 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s1q14:[["td1-2024-25","Ex. 8"],["touat-2021-22","Series 1, Ex. 1 family"]],
     s1q19:[["td1-2024-25","Ex. 8"]],
     s1q26:[["touat-2021-22","Series 1, Ex. 1"]],
-    s1q20:[["td1-2024-25","Ex. 9"]],
-    s1q21:[["td1-2024-25","Ex. 10"]],
-    s1q22:[["td1-2024-25","Ex. 10 family"]],
+    s1q20:[["td1-2024-25","Ex. 9 family"]],
+    s1q30:[["td1-2024-25","Ex. 9.1"]],
+    s1q31:[["td1-2024-25","Ex. 9.2"]],
+    s1q21:[["td1-2024-25","Ex. 10 family"]],
+    s1q22:[["td1-2024-25","Ex. 10.4(d)"]],
+    s1q32:[["td1-2024-25","Ex. 10.4(a)"]],
+    s1q33:[["td1-2024-25","Ex. 10.4(b)"]],
+    s1q34:[["td1-2024-25","Ex. 10.3"]],
+    s1q23:[["td1-2024-25","Ex. 11 family"]],
     s2q15:[["touat-2021-22","Mirror series: finite circular mirror field family"]],
     s2q16:[["touat-2021-22","Mirror series: two spherical mirrors family"]],
     s2q17:[["touat-2021-22","Mirror series: source-screen family"]],
@@ -96,10 +106,6 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s6:["usthb-course","touat-2021-22"]
   },
   unresolved: [
-    {
-      label:"2024–2025 TD Series 1, Exercise 4",
-      reason:"The indexed public preview does not expose the complete statement reliably. The course already covers the surrounding propagation/refraction methods, but this exact statement is not claimed as recovered."
-    },
     {
       label:"2023–2024 EMD Physique",
       reason:"An index entry is verifiable, but the actual examination pages are inaccessible from the public index. The course does not fabricate its questions."
@@ -125,6 +131,12 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s1q23:"fibre-live",
     s1q24:"refraction-choice",
     s1q26:"plate-live",
+    s1q29:"wavefront",
+    s1q30:"layers-live",
+    s1q31:"layers-live",
+    s1q32:"fibre-live",
+    s1q33:"fibre-live",
+    s1q34:"fibre-live",
     s2q1:"plane-mirror",
     s2q2:"plane-mirror",
     s2q4:"plane-mirror",
