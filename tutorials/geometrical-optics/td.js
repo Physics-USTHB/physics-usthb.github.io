@@ -132,7 +132,18 @@ function renderQuestion(id){
     select.addEventListener("change",()=>{x.choice=select.value;if(x.status==="new")x.status="attempted";persist()});
     $("#checkAnswer").addEventListener("click",()=>checkChoice(q));
   }
-  $("#solutionButton").addEventListener("click",()=>{x.solution=!x.solution;if(x.status==="new")x.status="attempted";persist();renderQuestion(id)});
+  $("#solutionButton").addEventListener("click",()=>{
+    if(!x.solution){
+      const attempted=(x.notes||"").trim().length>=12 ||
+        (q.kind==="numeric"&&String(x.final||"").trim()!=="") ||
+        (q.kind==="mcq"&&String(x.choice??"")!=="");
+      if(!attempted){
+        alert("Make a genuine attempt first: write at least one step in Your working, enter a numerical result, or choose an answer. Then the worked solution can be revealed.");
+        return;
+      }
+    }
+    x.solution=!x.solution;if(x.status==="new")x.status="attempted";persist();renderQuestion(id);
+  });
   if($("#practiceAgain"))$("#practiceAgain").addEventListener("click",()=>{x.status="attempted";x.final="";x.choice="";x.solution=false;persist();renderQuestion(id)});
   document.querySelectorAll("[data-rubric]").forEach(cb=>cb.addEventListener("change",()=>{
     const n=Number(cb.dataset.rubric);x.rubric[n]=cb.checked;
