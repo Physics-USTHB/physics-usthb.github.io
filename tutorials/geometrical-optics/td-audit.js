@@ -111,7 +111,19 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s5q28:[["touat-2021-22","Series 4 Lentilles · Ex. 9"]],
     s5q29:[["touat-2021-22","Series 4 Lentilles · Ex. 10"]],
     s6q16:[["touat-2021-22","Instrument series, microscope objective/eyepiece family"]],
-    s6q25:[["touat-2021-22","Instrument series, magnifier family"]]
+    s6q25:[["touat-2021-22","Instrument series · Ex. 4 magnifier"]],
+    s6q26:[["touat-2021-22","Instrument series · telescope exercise · focal lengths"]],
+    s6q27:[["touat-2021-22","Instrument series · telescope exercise · length"]],
+    s6q28:[["touat-2021-22","Instrument series · telescope exercise · magnification"]],
+    s6q29:[["touat-2021-22","Instrument series · telescope exercise · exit pupil"]],
+    s6q30:[["touat-2021-22","Instrument series · Ex. 6.1 Moon"]],
+    s6q31:[["touat-2021-22","Instrument series · Ex. 6.2 Moon"]],
+    s6q32:[["touat-2021-22","Instrument series · Ex. 6.3 Moon"]],
+    s6q33:[["touat-2021-22","Instrument series · Ex. 6.4 Moon"]],
+    s6q34:[["touat-2021-22","Instrument series · Ex. 6.5 Moon"]],
+    s6q35:[["touat-2021-22","Instrument series · Ex. 7.1 Newton telescope"]],
+    s6q36:[["touat-2021-22","Instrument series · Ex. 7.2 Newton telescope"]],
+    s6q37:[["touat-2021-22","Instrument series · Ex. 7.3 Newton telescope"]]
   },
   chapterSources: {
     s1:["usthb-course","td1-2024-25","touat-2021-22"],
@@ -217,6 +229,18 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s6q22:"newtonian",
     s6q23:"newtonian",
     s6q24:"microscope",
-    s6q25:"lens-live"
+    s6q25:"lens-live",
+    s6q26:"telescope-live",
+    s6q27:"telescope-live",
+    s6q28:"telescope-live",
+    s6q29:"exit-pupil",
+    s6q30:"telescope-live",
+    s6q31:"telescope-live",
+    s6q32:"telescope-live",
+    s6q33:"telescope-live",
+    s6q34:"telescope-live",
+    s6q35:"newtonian",
+    s6q36:"newtonian",
+    s6q37:"newtonian"
   }
 };
