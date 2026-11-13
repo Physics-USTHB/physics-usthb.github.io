@@ -33,6 +33,8 @@
     <nav id="seriesNav" class="series-nav"></nav>
     <div class="side-tools">
       <button class="outline-btn" id="coverageButton">Coverage map</button>
+      <button class="outline-btn" id="sourcesButton">USTHB sources</button>
+      <button class="outline-btn assessment-launch" id="assessmentButton">Assessment</button>
       <button class="outline-btn" id="exportButton">Export progress</button>
     </div>
     <p class="privacy-note">Progress and written working are stored only in this browser. No account or server submission is required.</p>
@@ -55,8 +57,24 @@
   </section>
 </div>
 
+<div class="modal-backdrop" id="sourcesModal" hidden>
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="sourcesTitle">
+    <div class="modal-head"><div><span class="micro">SOURCE AUDIT</span><h2 id="sourcesTitle">USTHB TD &amp; exam provenance</h2></div><button class="icon-btn" data-close-modal="sourcesModal" aria-label="Close">×</button></div>
+    <div id="sourcesBody"></div>
+  </section>
+</div>
+
+<div class="modal-backdrop" id="assessmentModal" hidden>
+  <section class="modal assessment-modal" role="dialog" aria-modal="true" aria-labelledby="assessmentTitle">
+    <div class="modal-head"><div><span class="micro">CLOSED-BOOK CHECK</span><h2 id="assessmentTitle">Geometrical Optics assessment</h2></div><button class="icon-btn" data-close-modal="assessmentModal" aria-label="Close">×</button></div>
+    <div id="assessmentBody"></div>
+  </section>
+</div>
+
 <footer class="footer"><div class="shell"><span>Geometrical Optics Tutorials · Physics USTHB</span><span><a href="../">All tutorials</a> · <a href="../../privacy.html">Privacy</a></span></div></footer>
 <script src="td-data.js"></script>
+<script src="td-audit.js"></script>
+<script src="td-visuals.js"></script>
 <script src="td.js"></script>
 </body>
 </html>
