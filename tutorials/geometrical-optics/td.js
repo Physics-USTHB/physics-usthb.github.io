@@ -3,7 +3,7 @@
 const data=window.OPTICS_TUTORIAL_DATA||{series:[],questions:[],theories:{}};
 const audit=window.OPTICS_TUTORIAL_AUDIT||{sources:[],exactQuestionSources:{},chapterSources:{},unresolved:[],visuals:{}};
 const visuals=window.OPTICS_VISUALS||null;
-const series=data.series||[], questions=data.questions||[], theories=data.theories||{}, KEY="physics-usthb.optics-tutorials.v3";
+const series=data.series||[], questions=data.questions||[], theories=data.theories||{}, conventions=data.conventions||{}, KEY="physics-usthb.optics-tutorials.v4";
 const $=s=>document.querySelector(s);
 let state=load(), currentId=(location.hash||"").slice(1), assessmentTimer=null;
 for(const q of questions){
@@ -34,8 +34,9 @@ function load(){
 }
 function persist(){localStorage.setItem(KEY,JSON.stringify(state));updateProgress()}
 function st(id){
-  if(!state[id])state[id]={notes:"",final:"",choice:"",solution:false,status:"new",rubric:[]};
+  if(!state[id])state[id]={notes:"",final:"",choice:"",multi:[],solution:false,status:"new",rubric:[]};
   if(!Array.isArray(state[id].rubric))state[id].rubric=[];
+  if(!Array.isArray(state[id].multi))state[id].multi=[];
   return state[id];
 }
 function mastered(list){return list.filter(q=>st(q.id).status==="mastered").length}
@@ -72,21 +73,24 @@ function renderSeries(id){
   if(list.length)currentId=list[0].id;renderNav();
   $("#crumbline").textContent=s.code.toUpperCase()+" / OVERVIEW";
   const rows=list.map((q,i)=>{
-    const x=st(q.id),type=q.kind==="manual"?"derivation / reasoning":q.kind==="mcq"?"concept check":"calculation";
+    const x=st(q.id),type=q.kind==="manual"?"derivation / reasoning":q.kind==="mcq"?"single-choice concept check":q.kind==="multi"?"multiple-selection concept check":"calculation";
     const tags=(exactSources(q.id).length?'<span class="row-tag source">source</span>':'')+((audit.visuals||{})[q.id]?'<span class="row-tag visual">visual</span>':'');
     return '<button class="question-row" data-q="'+q.id+'"><span class="qnum">'+String(i+1).padStart(2,"0")+'</span><span><strong>'+esc(q.title)+'</strong><span>Level '+q.level+' · '+type+' '+tags+'</span></span><i class="state-dot '+x.status+'"></i></button>';
   }).join("");
-  $("#questionView").innerHTML='<article class="welcome-card"><div class="welcome-body"><span class="micro">'+esc(s.code.toUpperCase())+'</span><h2>'+esc(s.title)+'</h2><p>'+esc(s.summary)+'</p><div class="objective-list">'+s.topics.map(t=>'<span class="objective">'+esc(t)+'</span>').join("")+'</div><div class="chapter-study-note"><strong>Study route:</strong> read the theory reminder → solve without the solution → use the visual only when needed → check/self-assess → repeat until mastered.</div><h3 style="margin-top:24px">Exercises</h3><div class="series-overview">'+rows+'</div></div></article>';
+  $("#questionView").innerHTML='<article class="welcome-card"><div class="welcome-body"><span class="micro">'+esc(s.code.toUpperCase())+'</span><h2>'+esc(s.title)+'</h2><p>'+esc(s.summary)+'</p><div class="objective-list">'+s.topics.map(t=>'<span class="objective">'+esc(t)+'</span>').join("")+'</div>'+(conventions[s.id]?'<section class="convention-box"><div class="theory-label">USTHB SIGN / ANGLE CONVENTION</div><p>'+esc(conventions[s.id])+'</p></section>':'')+'<div class="chapter-study-note"><strong>Study route:</strong> read the convention and theory → solve without the solution → use the visual only when needed → check/self-assess → repeat until mastered.</div><h3 style="margin-top:24px">Exercises</h3><div class="series-overview">'+rows+'</div></div></article>';
   document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.q)));
   closeSidebar();$("#questionView").focus();
 }
 function theoryMarkup(q){
   const t=theories[q.theory];if(!t)return "";
-  return '<section class="theory-box"><div class="theory-label">THEORY BUILD-UP</div><h3>'+esc(t.title)+'</h3><ol>'+t.points.map(p=>'<li>'+esc(p)+'</li>').join("")+'</ol></section>';
+  const convention=conventions[q.series]?'<section class="convention-box"><div class="theory-label">USTHB SIGN / ANGLE CONVENTION</div><p>'+esc(conventions[q.series])+'</p></section>':'';
+  return convention+'<section class="theory-box"><div class="theory-label">THEORY BUILD-UP</div><h3>'+esc(t.title)+'</h3><ol>'+t.points.map(p=>'<li>'+esc(p)+'</li>').join("")+'</ol></section>';
 }
 function sourceMarkup(q){
-  const refs=exactSources(q.id);if(!refs.length)return "";
-  return '<div class="question-source-note"><strong>Recovered-source mapping:</strong> '+refs.map(([sid,label])=>{const s=sourceById(sid);return '<a href="'+esc(s?.url||"#")+'" target="_blank" rel="noopener">'+esc(s?.label||sid)+(label?" — "+esc(label):"")+'</a>'}).join(" · ")+'</div>';
+  const refs=exactSources(q.id);
+  const mapped=refs.length?'<div class="question-source-note"><strong>Recovered-source mapping:</strong> '+refs.map(([sid,label])=>{const s=sourceById(sid);return '<a href="'+esc(s?.url||"#")+'" target="_blank" rel="noopener">'+esc(s?.label||sid)+(label?" — "+esc(label):"")+'</a>'}).join(" · ")+'</div>':'';
+  const warning=q.sourceWarning?'<div class="source-warning"><strong>Source audit note:</strong> '+esc(q.sourceWarning)+'</div>':'';
+  return mapped+warning;
 }
 function visualMarkup(q){
   const key=(audit.visuals||{})[q.id];
@@ -111,6 +115,7 @@ function renderQuestion(id){
   let checker="";
   if(q.kind==="numeric")checker='<div class="answer-check"><input id="finalAnswer" inputmode="decimal" placeholder="Final numerical value" aria-label="Final numerical answer"><button class="primary-btn" id="checkAnswer">Check result</button></div><div id="feedback"></div>';
   if(q.kind==="mcq")checker='<div class="answer-check"><select id="choiceAnswer" aria-label="Choose an answer"><option value="">Choose…</option>'+q.options.map((o,i)=>'<option value="'+i+'">'+esc(o)+'</option>').join("")+'</select><button class="primary-btn" id="checkAnswer">Check choice</button></div><div id="feedback"></div>';
+  if(q.kind==="multi")checker='<div class="multi-check"><p>Select every answer that applies.</p>'+q.options.map((o,i)=>'<label><input type="checkbox" data-multi="'+i+'"> <span>'+esc(o)+'</span></label>').join("")+'<button class="primary-btn" id="checkAnswer">Check selections</button></div><div id="feedback"></div>';
   if(q.kind==="manual")checker='<div class="feedback">Write the derivation/reasoning in your own words first. After revealing the solution, a required-step rubric will evaluate your work.</div>';
 
   const solution=x.solution?'<section class="solution-box"><h3>Worked solution</h3><div class="solution-steps">'+q.solution.map((z,i)=>'<div class="solution-step"><strong>'+(i+1)+'.</strong> '+esc(z)+'</div>').join("")+'</div></section>':"";
@@ -132,11 +137,23 @@ function renderQuestion(id){
     select.addEventListener("change",()=>{x.choice=select.value;if(x.status==="new")x.status="attempted";persist()});
     $("#checkAnswer").addEventListener("click",()=>checkChoice(q));
   }
+  if(q.kind==="multi"){
+    document.querySelectorAll("[data-multi]").forEach(cb=>{
+      cb.checked=x.multi.includes(Number(cb.dataset.multi));
+      cb.addEventListener("change",()=>{
+        const n=Number(cb.dataset.multi);
+        x.multi=cb.checked?[...new Set([...x.multi,n])]:x.multi.filter(v=>v!==n);
+        if(x.status==="new")x.status="attempted";persist();
+      });
+    });
+    $("#checkAnswer").addEventListener("click",()=>checkMulti(q));
+  }
   $("#solutionButton").addEventListener("click",()=>{
     if(!x.solution){
       const attempted=(x.notes||"").trim().length>=12 ||
         (q.kind==="numeric"&&String(x.final||"").trim()!=="") ||
-        (q.kind==="mcq"&&String(x.choice??"")!=="");
+        (q.kind==="mcq"&&String(x.choice??"")!=="") ||
+        (q.kind==="multi"&&x.multi.length>0);
       if(!attempted){
         alert("Make a genuine attempt first: write at least one step in Your working, enter a numerical result, or choose an answer. Then the worked solution can be revealed.");
         return;
@@ -144,7 +161,7 @@ function renderQuestion(id){
     }
     x.solution=!x.solution;if(x.status==="new")x.status="attempted";persist();renderQuestion(id);
   });
-  if($("#practiceAgain"))$("#practiceAgain").addEventListener("click",()=>{x.status="attempted";x.final="";x.choice="";x.solution=false;persist();renderQuestion(id)});
+  if($("#practiceAgain"))$("#practiceAgain").addEventListener("click",()=>{x.status="attempted";x.final="";x.choice="";x.multi=[];x.solution=false;persist();renderQuestion(id)});
   document.querySelectorAll("[data-rubric]").forEach(cb=>cb.addEventListener("change",()=>{
     const n=Number(cb.dataset.rubric);x.rubric[n]=cb.checked;
     x.status=q.solution.every((_,i)=>x.rubric[i])?"mastered":"attempted";
@@ -175,10 +192,18 @@ function checkChoice(q){
   else{box.className="feedback warn";box.textContent="Not correct yet. Re-use the theory and physical constraints before revealing the solution."}
   persist();renderNav();updateProgress();
 }
+function checkMulti(q){
+  const box=$("#feedback"),x=st(q.id),got=[...x.multi].sort((a,b)=>a-b),expected=[...q.correct].sort((a,b)=>a-b);
+  x.status="attempted";
+  const ok=got.length===expected.length&&got.every((v,i)=>v===expected[i]);
+  if(ok){x.status="mastered";box.className="feedback ok";box.textContent="All required selections are correct. Marked mastered."}
+  else{box.className="feedback warn";box.textContent="Not correct yet. Check both the selected and unselected cases against the physical criterion."}
+  persist();renderNav();updateProgress();
+}
 function go(id){currentId=id;renderQuestion(id)}
 function coverage(){
   const cards=series.map(s=>'<div class="coverage-item"><strong>'+esc(s.code)+' · '+esc(s.title)+'</strong><span>'+s.topics.map(esc).join(" · ")+'</span><small>'+questions.filter(q=>q.series===s.id).length+' exercises</small></div>').join("");
-  $("#coverageBody").innerHTML='<p><strong>Audited coverage:</strong> '+questions.length+' student-facing exercises across the six USTHB L2/S3 Geometrical Optics blocks. Repeated numerical variants are not counted as new methods; source-specific variants are retained when they test a distinct construction, setup or interpretation.</p><div class="coverage-grid">'+cards+'</div><div class="source-box"><strong>Important:</strong> “complete” means complete against the publicly audited USTHB syllabus/course/TD material and every distinct question family recovered from it. Papers whose contents cannot be verified are listed in the Sources panel instead of being invented.</div>';
+  $("#coverageBody").innerHTML='<p><strong>Current audited bank:</strong> '+questions.length+' student-facing exercises across the six USTHB L2/S3 Geometrical Optics blocks. A question count is not used as a completeness claim: the Source sheets panel tracks the original sheets exercise-by-exercise.</p><div class="coverage-grid">'+cards+'</div><div class="source-box"><strong>Status rule:</strong> a sheet is only marked covered when every recoverable exercise is explicitly mapped. Missing or ambiguous statements remain visible as unresolved.</div>';
   openModal("coverageModal");
 }
 function sourcesPanel(){
@@ -186,6 +211,24 @@ function sourcesPanel(){
   const unresolved=(audit.unresolved||[]).map(x=>'<li><strong>'+esc(x.label)+':</strong> '+esc(x.reason)+'</li>').join("");
   $("#sourcesBody").innerHTML='<p>This audit separates verified USTHB material from supplementary or inaccessible material. Exact source badges appear on mapped exercises.</p><div class="source-list">'+src+'</div><section class="unresolved-box"><h3>Not claimed as recovered</h3><ul>'+unresolved+'</ul></section>';
   openModal("sourcesModal");
+}
+function sourceSheetsPanel(){
+  const statusLabel=s=>String(s||"").replaceAll("-"," ");
+  const html=(audit.sheets||[]).map(sheet=>{
+    const src=sourceById(sheet.sourceId);
+    const rows=(sheet.exercises||[]).map(ex=>{
+      const qlinks=(ex.q||[]).map(id=>{
+        const q=questions.find(x=>x.id===id);
+        return q?'<a href="#'+esc(id)+'" data-sheet-q="'+esc(id)+'">'+esc(id)+' · '+esc(q.title)+'</a>':'<span class="missing-map">'+esc(id)+'</span>';
+      }).join("");
+      const local=ex.localHref?'<a href="'+esc(ex.localHref)+'">Open laboratory coverage →</a>':'';
+      return '<div class="sheet-exercise '+esc(ex.status)+'"><div class="sheet-ex-number">Ex. '+esc(ex.n)+'</div><div><span class="sheet-status">'+esc(statusLabel(ex.status))+'</span>'+(qlinks?'<div class="sheet-links">'+qlinks+'</div>':'')+(local?'<div class="sheet-links">'+local+'</div>':'')+(ex.note?'<p>'+esc(ex.note)+'</p>':'')+'</div></div>';
+    }).join("");
+    return '<section class="sheet-card"><header><div><span class="source-kind">'+esc(src?.year||"")+'</span><h3>'+esc(sheet.label)+'</h3></div><span class="sheet-overall '+esc(sheet.status)+'">'+esc(statusLabel(sheet.status))+'</span></header><div class="sheet-exercises">'+rows+'</div></section>';
+  }).join("");
+  $("#sourceSheetsBody").innerHTML='<p>This is the completeness ledger. It follows the recovered USTHB sheets themselves, not only the syllabus topics.</p>'+html;
+  document.querySelectorAll("[data-sheet-q]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();closeModal("sourceSheetsModal");go(a.dataset.sheetQ)}));
+  openModal("sourceSheetsModal");
 }
 function shuffled(a){const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
 function chooseAssessment(sourceOnly=false){
@@ -245,6 +288,7 @@ function closeModal(id){$("#"+id).hidden=true}
 function closeSidebar(){$(".study-sidebar").classList.remove("open")}
 $("#coverageButton").addEventListener("click",coverage);
 $("#sourcesButton").addEventListener("click",sourcesPanel);
+$("#sourceSheetsButton").addEventListener("click",sourceSheetsPanel);
 $("#assessmentButton").addEventListener("click",assessmentPanel);
 $("#exportButton").addEventListener("click",exportProgress);
 $("#resetProgress").addEventListener("click",()=>{if(confirm("Reset all locally saved Geometrical Optics progress and assessment history on this browser?")){state={};persist();renderQuestion(questions[0].id)}});
