@@ -188,33 +188,33 @@ function sourcesPanel(){
   openModal("sourcesModal");
 }
 function shuffled(a){const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
-function chooseAssessment(){
-  const chosen=[];
+function chooseAssessment(sourceOnly=false){
+  const exact=new Set(Object.keys(audit.exactQuestionSources||{})),chosen=[];
   series.forEach(s=>{
-    const pool=questions.filter(q=>q.series===s.id&&(q.kind==="numeric"||q.kind==="mcq")&&!hasLiveVisual(q.id));
+    const pool=questions.filter(q=>q.series===s.id&&(q.kind==="numeric"||q.kind==="mcq")&&(sourceOnly?exact.has(q.id):!hasLiveVisual(q.id)));
     chosen.push(...shuffled(pool).slice(0,2));
   });
   return shuffled(chosen);
 }
-function startAssessment(){
+function startAssessment(sourceOnly=false){
   clearInterval(assessmentTimer);
-  const chosen=chooseAssessment(),start=Date.now();
-  state.__activeAssessment={ids:chosen.map(q=>q.id),start,answers:{}};persist();
-  renderAssessment(chosen,start);
+  const chosen=chooseAssessment(sourceOnly),start=Date.now(),mode=sourceOnly?"USTHB source-only":"balanced mastery";
+  state.__activeAssessment={ids:chosen.map(q=>q.id),start,answers:{},mode};persist();
+  renderAssessment(chosen,start,mode);
 }
 function assessmentInput(q){
   if(q.kind==="numeric")return '<input class="assessment-input" data-assess="'+q.id+'" inputmode="decimal" placeholder="Numerical answer">';
   return '<select class="assessment-input" data-assess="'+q.id+'"><option value="">Choose…</option>'+q.options.map((o,i)=>'<option value="'+i+'">'+esc(o)+'</option>').join("")+'</select>';
 }
-function renderAssessment(chosen,start){
-  $("#assessmentBody").innerHTML='<div class="assessment-intro"><div><strong>12 questions · 2 per chapter · closed book</strong><p>Theory reminders, interactives and worked solutions are hidden here. Numerical units are stated in each question. Submit once when finished.</p></div><div class="assessment-clock"><span>Elapsed</span><strong id="assessmentClock">00:00</strong></div></div><div class="assessment-questions">'+chosen.map((q,i)=>'<section class="assessment-q"><span class="qnum">'+(i+1)+'</span><div><span class="micro">'+esc(series.find(s=>s.id===q.series)?.title||"")+'</span><h3>'+esc(q.title)+'</h3><p>'+esc(q.prompt)+'</p>'+assessmentInput(q)+'</div></section>').join("")+'</div><div class="assessment-submit"><button class="primary-btn" id="submitAssessment">Submit assessment</button><button class="secondary-btn" id="cancelAssessment">Cancel</button></div>';
+function renderAssessment(chosen,start,mode="balanced mastery"){
+  $("#assessmentBody").innerHTML='<div class="assessment-intro"><div><strong>12 questions · 2 per chapter · closed book · '+esc(mode)+'</strong><p>Theory reminders, interactives and worked solutions are hidden here. Numerical units are stated in each question. Submit once when finished.</p></div><div class="assessment-clock"><span>Elapsed</span><strong id="assessmentClock">00:00</strong></div></div><div class="assessment-questions">'+chosen.map((q,i)=>'<section class="assessment-q"><span class="qnum">'+(i+1)+'</span><div><span class="micro">'+esc(series.find(s=>s.id===q.series)?.title||"")+'</span><h3>'+esc(q.title)+'</h3><p>'+esc(q.prompt)+'</p>'+assessmentInput(q)+'</div></section>').join("")+'</div><div class="assessment-submit"><button class="primary-btn" id="submitAssessment">Submit assessment</button><button class="secondary-btn" id="cancelAssessment">Cancel</button></div>';
   const tick=()=>{const sec=Math.floor((Date.now()-start)/1000),m=String(Math.floor(sec/60)).padStart(2,"0"),s=String(sec%60).padStart(2,"0");if($("#assessmentClock"))$("#assessmentClock").textContent=m+":"+s};
   tick();assessmentTimer=setInterval(tick,1000);
   document.querySelectorAll("[data-assess]").forEach(el=>el.addEventListener("change",()=>{state.__activeAssessment.answers[el.dataset.assess]=el.value;persist()}));
-  $("#submitAssessment").onclick=()=>gradeAssessment(chosen,start);
+  $("#submitAssessment").onclick=()=>gradeAssessment(chosen,start,mode);
   $("#cancelAssessment").onclick=()=>{clearInterval(assessmentTimer);delete state.__activeAssessment;persist();closeModal("assessmentModal")};
 }
-function gradeAssessment(chosen,start){
+function gradeAssessment(chosen,start,mode="balanced mastery"){
   clearInterval(assessmentTimer);
   const answers=state.__activeAssessment?.answers||{},results=[],by={};
   chosen.forEach(q=>{
@@ -223,17 +223,17 @@ function gradeAssessment(chosen,start){
     results.push({q,ok,raw});by[q.series]??={correct:0,total:0};by[q.series].total++;if(ok)by[q.series].correct++;
   });
   const correct=results.filter(r=>r.ok).length,total=results.length,score=20*correct/total,elapsed=Math.round((Date.now()-start)/1000);
-  state.__assessments??=[];state.__assessments.unshift({date:new Date().toISOString(),correct,total,score:Number(score.toFixed(2)),elapsed,ids:chosen.map(q=>q.id),by});state.__assessments=state.__assessments.slice(0,20);delete state.__activeAssessment;persist();
+  state.__assessments??=[];state.__assessments.unshift({date:new Date().toISOString(),mode,correct,total,score:Number(score.toFixed(2)),elapsed,ids:chosen.map(q=>q.id),by});state.__assessments=state.__assessments.slice(0,20);delete state.__activeAssessment;persist();
   const bands=series.map(s=>{const b=by[s.id]||{correct:0,total:0};return '<div class="assessment-band"><span>'+esc(s.title)+'</span><strong>'+b.correct+'/'+b.total+'</strong></div>'}).join("");
   const review=results.filter(r=>!r.ok).map(r=>'<li><a href="#'+r.q.id+'" data-review="'+r.q.id+'">'+esc(r.q.title)+'</a> — expected '+esc(r.q.kind==="numeric"?r.q.answer+" "+(r.q.unit||""):r.q.options[r.q.correct])+'</li>').join("");
   $("#assessmentBody").innerHTML='<section class="assessment-result"><span class="micro">RESULT</span><strong class="big-score">'+score.toFixed(1)+'/20</strong><p>'+correct+' of '+total+' correct · '+Math.floor(elapsed/60)+'m '+(elapsed%60)+'s</p><div class="assessment-bands">'+bands+'</div>'+(review?'<div class="review-box"><h3>Review these exercises</h3><ul>'+review+'</ul></div>':'<div class="feedback ok">Excellent: every assessed answer was correct.</div>')+'<button class="primary-btn" id="newAssessment">New assessment</button></section>';
   document.querySelectorAll("[data-review]").forEach(a=>a.addEventListener("click",()=>{closeModal("assessmentModal");go(a.dataset.review)}));
-  $("#newAssessment").onclick=startAssessment;
+  $("#newAssessment").onclick=()=>startAssessment(mode==="USTHB source-only");
 }
 function assessmentPanel(){
   const history=(state.__assessments||[]).slice(0,5);
-  $("#assessmentBody").innerHTML='<div class="assessment-start"><h3>Closed-book mastery check</h3><p>Each attempt draws two automatically gradable questions from every chapter. No theory reminder, worked solution or interactive is shown during the test.</p><button class="primary-btn" id="startAssessment">Start 12-question assessment</button></div>'+(history.length?'<h3>Recent attempts</h3><div class="assessment-history">'+history.map(a=>'<div><span>'+new Date(a.date).toLocaleString()+'</span><strong>'+Number(a.score).toFixed(1)+'/20</strong></div>').join("")+'</div>':"");
-  $("#startAssessment").onclick=startAssessment;openModal("assessmentModal");
+  $("#assessmentBody").innerHTML='<div class="assessment-start"><h3>Closed-book mastery checks</h3><p>Both modes draw two automatically gradable questions from every chapter and hide theory, visuals and solutions.</p><div class="assessment-mode-grid"><button class="primary-btn" id="startAssessment">Balanced mastery test</button><button class="secondary-btn" id="startSourceAssessment">Recovered USTHB source-only test</button></div></div>'+(history.length?'<h3>Recent attempts</h3><div class="assessment-history">'+history.map(a=>'<div><span>'+esc(a.mode||"balanced mastery")+' · '+new Date(a.date).toLocaleString()+'</span><strong>'+Number(a.score).toFixed(1)+'/20</strong></div>').join("")+'</div>':"");
+  $("#startAssessment").onclick=()=>startAssessment(false);$("#startSourceAssessment").onclick=()=>startAssessment(true);openModal("assessmentModal");
 }
 function exportProgress(){
   const payload={course:"Geometrical Optics L2/S3",auditDate:audit.auditedAt||null,exportedAt:new Date().toISOString(),mastered:mastered(questions),total:questions.length,assessmentHistory:state.__assessments||[],progress:Object.fromEntries(Object.entries(state).filter(([k])=>!k.startsWith("__")))};
