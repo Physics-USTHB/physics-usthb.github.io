@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0d2037">
+  <meta name="description" content="Interactive USTHB-aligned physics tutorials for guided problem solving and self-study.">
+  <title>Physics Tutorials | Physics USTHB</title>
+  <link rel="stylesheet" href="../geometrical-optics/styles.css">
+  <style>
+    .tutorial-hero{background:radial-gradient(circle at 88% 12%,rgba(38,177,187,.35),transparent 30%),linear-gradient(135deg,#0d2037,#123550);color:#fff;padding:58px 0}
+    .tutorial-hero h1{font-size:clamp(2.5rem,5vw,4.7rem);letter-spacing:-.05em;margin:12px 0}
+    .tutorial-hero p{max-width:760px;color:#bed1e2;line-height:1.7}
+    .course-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .course-card{background:#fff;border:1px solid #dce5ee;border-radius:18px;padding:24px;text-decoration:none;min-height:250px;display:flex;flex-direction:column;box-shadow:0 12px 35px rgba(10,35,60,.04)}
+    .course-card:hover{border-color:#66c7d6;transform:translateY(-1px)}
+    .course-card h2{margin:26px 0 8px}.course-card p{color:#63798d;line-height:1.65;font-size:13px}
+    .course-card .go{margin-top:auto;color:#14748d;font-weight:850}.status{font:800 10px ui-monospace,monospace;color:#14748d;letter-spacing:.05em}
+    .principles{margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.principle{background:#fff;border:1px solid #dce5ee;border-radius:14px;padding:16px}.principle strong{display:block;margin-bottom:5px}.principle span{font-size:12px;color:#687f92;line-height:1.55}
+    @media(max-width:760px){.course-grid,.principles{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="top"><div class="shell nav"><a class="brand" href="../"><span class="phi">Φ</span>Physics USTHB</a><nav class="navlinks"><a href="../practicums/">Laboratory</a><a href="../english/">English</a><a href="../latex/">LaTeX Studio</a><a href="../">Home</a></nav></div></header>
+<section class="tutorial-hero"><div class="shell">
+  <div class="crumb">GUIDED PROBLEM SOLVING / SELF-STUDY</div>
+  <h1>Physics Tutorials</h1>
+  <p>Interactive tutorial classes built for independent study: solve first, request progressive hints only when needed, check numerical or conceptual work, inspect a complete derivation, and track mastery locally on your own device.</p>
+  <div class="badges"><span class="badge">USTHB-aligned coverage</span><span class="badge">progressive hints</span><span class="badge">worked solutions</span><span class="badge">private local progress</span></div>
+</div></section>
+<main class="section"><div class="shell">
+  <div class="course-grid">
+    <a class="course-card" href="geometrical-optics/"><span class="status">L2 · S3 · AVAILABLE</span><h2>Geometrical Optics</h2><p>Reflection and refraction, plane systems, total internal reflection, prisms, mirrors, diopters, thin lenses and optical instruments. Includes a USTHB coverage map and a mastery path from fundamentals to exam-style synthesis.</p><span class="go">Start the tutorial course →</span></a>
+  </div>
+  <div class="principles">
+    <div class="principle"><strong>Attempt before reveal</strong><span>Solutions stay behind an explicit reveal so the course behaves like a real tutorial session rather than an answer sheet.</span></div>
+    <div class="principle"><strong>Every topic mapped</strong><span>Each exercise is tagged to a syllabus objective and the dashboard shows what has and has not been mastered.</span></div>
+    <div class="principle"><strong>No account required</strong><span>Answers and progress stay in local browser storage unless the student explicitly exports them.</span></div>
+  </div>
+</div></main>
+<footer class="footer"><div class="shell"><span>Physics Tutorials · Physics USTHB</span><span><a href="../privacy.html">Privacy</a> · <a href="../">Home</a></span></div></footer>
+</body></html>
