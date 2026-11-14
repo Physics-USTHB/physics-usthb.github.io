@@ -32,6 +32,39 @@ function addSelect(parent,label,opts,value){
   wrap.append(span,sel);parent.appendChild(wrap);return sel;
 }
 function setReadout(el,items){el.innerHTML=items.map(([k,v])=>'<div><span>'+k+'</span><strong>'+v+'</strong></div>').join("")}
+function findControl(host,label){
+  const box=host.querySelector(".visual-controls");if(!box)return null;
+  for(const wrap of Array.from(box.children||[])){
+    const children=Array.from(wrap.children||[]);
+    if(children[0]?.textContent===label)return children.find(x=>x.tagName==="INPUT"||x.tagName==="SELECT"||x.tagName==="input"||x.tagName==="select")||null;
+  }
+  return null;
+}
+function emitControl(ctl){
+  if(typeof ctl.dispatchEvent==="function"&&typeof Event==="function"){
+    ctl.dispatchEvent(new Event("input",{bubbles:true}));ctl.dispatchEvent(new Event("change",{bubbles:true}));
+  }else if(typeof ctl.fire==="function"){ctl.fire("input");ctl.fire("change")}
+}
+function applyPreset(host,preset){
+  if(!preset?.controls)return;
+  const apply=()=>{
+    Object.entries(preset.controls).forEach(([label,value])=>{
+      const ctl=findControl(host,label);if(!ctl)return;
+      if(ctl.tagName==="INPUT"||ctl.tagName==="input"){
+        const n=Number(value),lo=Number(ctl.min),hi=Number(ctl.max);
+        ctl.value=Number.isFinite(n)&&Number.isFinite(lo)&&Number.isFinite(hi)?String(clamp(n,lo,hi)):String(value);
+        if(ctl._valueOutput)ctl._valueOutput.textContent=ctl.value+(ctl._unit||"");
+      }else ctl.value=String(value);
+      emitControl(ctl);
+    });
+  };
+  apply();
+  const box=host.querySelector(".visual-controls");
+  if(box){
+    const reset=E("button",{type:"button",class:"visual-reset"});reset.textContent="Reset to exercise values";
+    reset.addEventListener("click",apply);box.appendChild(reset);
+  }
+}
 
 function mountRefraction(host){
   const ui=hostShell(host,"Refraction / total internal reflection");
@@ -89,7 +122,7 @@ function mountLayers(host){
 }
 function mountFibre(host){
   const ui=hostShell(host,"Step-index optical fibre");
-  const nc=addRange(ui.controls,"core nᶜ",1.3,1.7,0.005,1.48),ng=addRange(ui.controls,"cladding nᵍ",1.2,1.65,0.005,1.46),inc=addRange(ui.controls,"launch angle",0,89.9,0.1,10,"°");
+  const nc=addRange(ui.controls,"core nᶜ",1.3,1.7,0.005,1.48),ng=addRange(ui.controls,"cladding nᵍ",1.0,1.65,0.005,1.46),inc=addRange(ui.controls,"launch angle",0,89.9,0.1,10,"°");
   const s=svgBase("Interactive step-index fibre acceptance diagram");ui.canvas.appendChild(s);
   const redraw=()=>{
     let cc=+nc.value,g=Math.min(+ng.value,cc-0.005);if(+ng.value>=cc){ng.value=(cc-0.005).toFixed(3);if(ng._valueOutput)ng._valueOutput.textContent=ng.value+(ng._unit||"");g=+ng.value}
@@ -175,28 +208,42 @@ function mountPrism(host){
 }
 function mountLens(host){
   const ui=hostShell(host,"Thin-lens ray model");
-  const kind=addSelect(ui.controls,"lens",[["conv","converging"],["div","diverging"]],"conv"),fmag=addRange(ui.controls,"|f|",5,30,1,10," cm"),obj=addRange(ui.controls,"object distance",4,60,1,30," cm");
+  const kind=addSelect(ui.controls,"lens",[["conv","converging"],["div","diverging"]],"conv"),
+    objectNature=addSelect(ui.controls,"object",[["real","real object"],["virtual","virtual object"]],"real"),
+    fmag=addRange(ui.controls,"|f|",5,30,1,10," cm"),obj=addRange(ui.controls,"object distance",3,60,1,30," cm");
   const s=svgBase("Interactive thin lens image formation");ui.canvas.appendChild(s);
   const redraw=()=>{
     s.innerHTML="";
-    const f=(kind.value==="conv"?1:-1)*(+fmag.value),doo=+obj.value,inv=1/f-1/doo,di=Math.abs(inv)<1e-7?Infinity:1/inv,m=Number.isFinite(di)?-di/doo:Infinity;
-    const lx=360,axis=170,maxD=Math.max(doo,Math.abs(Number.isFinite(di)?di:0),2*Math.abs(f),15),scale=Math.min(6,285/maxD),ox=lx-doo*scale,oh=60;
+    const f=(kind.value==="conv"?1:-1)*(+fmag.value),dmag=+obj.value,doo=(objectNature.value==="virtual"?-1:1)*dmag,
+      inv=1/f-1/doo,di=Math.abs(inv)<1e-7?Infinity:1/inv,m=Number.isFinite(di)?-di/doo:Infinity;
+    const lx=360,axis=170,maxD=Math.max(Math.abs(doo),Math.abs(Number.isFinite(di)?di:0),2*Math.abs(f),15),
+      scale=Math.min(6,285/maxD),ox=lx-doo*scale,oh=60,top=axis-oh;
     line(s,20,axis,700,axis,"axis");
     s.appendChild(E("path",{d:kind.value==="conv"?"M360 45 Q320 170 360 295 Q400 170 360 45":"M335 45 Q380 170 335 295 M385 45 Q340 170 385 295",class:"lens"}));
-    line(s,ox,axis,ox,axis-oh,"object");
+    line(s,ox,axis,ox,top,objectNature.value==="virtual"?"virtual":"object");text(s,ox-28,top-8,objectNature.value==="virtual"?"virtual object":"object");
     const F=lx-f*scale,Fp=lx+f*scale;circle(s,F,axis,4,"focus");circle(s,Fp,axis,4,"focus");text(s,F-8,axis+22,"F");text(s,Fp-8,axis+22,"F′");
-    if(Number.isFinite(di)&&Math.abs(di)<2.1*maxD){const ix=lx+di*scale,ih=oh*m;line(s,ix,axis,ix,axis-ih,di<0?"virtual":"image")}
-    const top=axis-oh;line(s,ox,top,lx,top,"ray incident");
-    if(kind.value==="conv"){
-      line(s,lx,top,Fp,axis,"ray refracted");
+    let ix=null,iy=null;
+    if(Number.isFinite(di)&&Math.abs(di)<2.1*maxD){ix=lx+di*scale;const ih=oh*m;iy=axis-ih;line(s,ix,axis,ix,iy,di<0?"virtual":"image");text(s,ix-22,iy+(iy>axis?22:-8),di<0?"virtual image":"image")}
+    if(objectNature.value==="real"){
+      line(s,ox,top,lx,top,"ray incident");
+      if(kind.value==="conv")line(s,lx,top,Fp,axis,"ray refracted");
+      else{const ex=lx+210,ey=top+(top-axis)*210/Math.max(20,lx-Fp);line(s,lx,top,ex,ey,"ray refracted");line(s,lx,top,Fp,axis,"construction")}
+      line(s,ox,top,lx,axis,"ray incident");const ex2=lx+230,ey2=axis+(axis-top)*230/Math.max(20,lx-ox);line(s,lx,axis,ex2,ey2,"ray refracted");
+      if(di<0&&Number.isFinite(di)){const vx=lx+di*scale,vy=axis-oh*m;line(s,lx,top,vx,vy,"construction");line(s,lx,axis,vx,vy,"construction")}
     }else{
-      const ex=lx+210,ey=top+(top-axis)*210/Math.max(20,lx-Fp);line(s,lx,top,ex,ey,"ray refracted");line(s,lx,top,Fp,axis,"construction");
+      const vTop=top,hitYs=[110,220];
+      hitYs.forEach(yh=>{
+        const slopeIn=(vTop-yh)/(ox-lx),yLeft=yh+slopeIn*(40-lx);
+        line(s,40,yLeft,lx,yh,"ray incident");line(s,lx,yh,ox,vTop,"construction");
+        if(Number.isFinite(di)&&ix!==null&&iy!==null){
+          if(di>0)line(s,lx,yh,ix,iy,"ray refracted");
+          else{const xEnd=680,yEnd=yh+(yh-iy)*(xEnd-lx)/Math.max(1,lx-ix);line(s,lx,yh,xEnd,yEnd,"ray refracted");line(s,lx,yh,ix,iy,"construction")}
+        }
+      });
     }
-    line(s,ox,top,lx,axis,"ray incident");const ex2=lx+230,ey2=axis+(axis-top)*230/Math.max(20,lx-ox);line(s,lx,axis,ex2,ey2,"ray refracted");
-    if(di<0&&Number.isFinite(di)){const ix=lx+di*scale,iy=axis-oh*m;line(s,lx,top,ix,iy,"construction");line(s,lx,axis,ix,iy,"construction")}
-    setReadout(ui.readout,[["image distance",Number.isFinite(di)?fmt(di,2)+" cm":"∞"],["magnification",Number.isFinite(m)?fmt(m,2):"∞"],["image",di>0?"real":di<0?"virtual":"at infinity"],["orientation",m<0?"inverted":"upright"]]);
+    setReadout(ui.readout,[["object",objectNature.value],["image distance",Number.isFinite(di)?fmt(di,2)+" cm":"∞"],["magnification",Number.isFinite(m)?fmt(m,2):"∞"],["image",di>0?"real":di<0?"virtual":"at infinity"],["orientation",m<0?"inverted":"upright"]]);
   };
-  [kind,fmag,obj].forEach(x=>x.addEventListener("input",redraw));redraw();
+  [kind,objectNature,fmag,obj].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
 }
 function mountEye(host){
   const ui=hostShell(host,"Reduced eye focus");
@@ -463,6 +510,6 @@ const live={
   "mirror-live":mountMirror,"prism-live":mountPrism,"lens-live":mountLens,"eye-live":mountEye,"telescope-live":mountTelescope
 };
 window.OPTICS_VISUALS={
-  mount(key,host){if(!host||!key)return;if(live[key])live[key](host);else mountStatic(key,host)}
+  mount(key,host,preset){if(!host||!key)return;if(live[key]){live[key](host);applyPreset(host,preset)}else mountStatic(key,host)}
 };
 })();
