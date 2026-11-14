@@ -28,6 +28,7 @@ function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,m=>({"&":"&amp;",
 function load(){
   try{
     const current=JSON.parse(localStorage.getItem(KEY)); if(current)return current;
+    const v3=JSON.parse(localStorage.getItem("physics-usthb.optics-tutorials.v3")); if(v3)return v3;
     const v2=JSON.parse(localStorage.getItem("physics-usthb.optics-tutorials.v2")); if(v2)return v2;
     const v1=JSON.parse(localStorage.getItem("physics-usthb.optics-tutorials.v1")); return v1||{};
   }catch(e){return {}}
