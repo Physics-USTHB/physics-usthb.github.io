@@ -12,7 +12,7 @@ function svgBase(label){
   const s=E("svg",{viewBox:"0 0 720 320",role:"img","aria-label":label});
   s.classList.add("interactive-svg");
   const title=E("title");title.textContent=label;s.appendChild(title);
-  const defs=E("defs"),base="ray-arrow-"+(++markerSerial),colors={blue:"#238da3",green:"#249a70",orange:"#d28d25",red:"#c35a65"};
+  const defs=E("defs"),base="ray-arrow-"+(++markerSerial),colors={blue:"#238da3",green:"#249a70",orange:"#d28d25",red:"#c35a65",spectralRed:"#a85d5d",violet:"#655da8"};
   s._rayMarkers={};
   Object.entries(colors).forEach(([k,color])=>{
     const id=base+"-"+k,m=E("marker",{id,viewBox:"0 0 8 7",refX:7,refY:3.5,markerWidth:7,markerHeight:7,orient:"auto",markerUnits:"strokeWidth"}),
@@ -25,6 +25,8 @@ function line(s,x1,y1,x2,y2,cls="ray"){
   const l=E("line",{x1,y1,x2,y2,class:cls}),tokens=String(cls).split(/\s+/);
   let marker=null;
   if(tokens.includes("reflected"))marker="orange";
+  else if(tokens.includes("violet"))marker="violet";
+  else if(tokens.includes("red"))marker="spectralRed";
   else if(tokens.some(x=>["refracted","emergent","guided"].includes(x)))marker="green";
   else if(tokens.some(x=>["rejected","wrong"].includes(x)))marker="red";
   else if(tokens.some(x=>["ray","incident"].includes(x)))marker="blue";
