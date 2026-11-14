@@ -25,6 +25,12 @@ function addRange(parent,label,min,max,step,value,unit=""){
   input.addEventListener("input",()=>out.textContent=input.value+unit);
   wrap.append(span,input,out);parent.appendChild(wrap);return input;
 }
+function addNumber(parent,label,min,max,step,value,unit=""){
+  const wrap=E("label",{class:"visual-control"}),span=E("span");span.textContent=label;
+  const input=E("input",{type:"number",min,max,step,value}),out=E("strong");out.textContent=value+unit;input._valueOutput=out;input._unit=unit;
+  input.addEventListener("input",()=>out.textContent=input.value+unit);
+  wrap.append(span,input,out);parent.appendChild(wrap);return input;
+}
 function addSelect(parent,label,opts,value){
   const wrap=E("label",{class:"visual-control"}), span=E("span");span.textContent=label;
   const sel=E("select");
@@ -324,6 +330,93 @@ function mountEye(host){
   };
   [power,obj].forEach(x=>x.addEventListener("input",redraw));redraw();
 }
+function mountMagnifier(host){
+  const ui=hostShell(host,"Magnifier and angular vision");
+  const mode=addSelect(ui.controls,"viewing",[["naked","naked eye"],["relaxed","magnifier · final image at ∞"],["near","magnifier · final image at near point"],["finite","finite object / image"]],"relaxed"),
+    f=addNumber(ui.controls,"f′",1,50,0.1,5," cm"),
+    obj=addNumber(ui.controls,"object distance",0.5,100,0.1,5," cm"),
+    D=addNumber(ui.controls,"reference D",10,100,0.5,25," cm"),
+    h=addNumber(ui.controls,"object height",0.001,20,0.001,2," mm"),
+    eye=addNumber(ui.controls,"eye threshold ×10⁻⁴",0.1,20,0.1,4,"");
+  const s=svgBase("Interactive magnifier angular-magnification and resolution model");ui.canvas.appendChild(s);
+  const redraw=()=>{
+    s.innerHTML="";
+    const ff=+f.value,dd=+D.value,hmm=+h.value,hcm=hmm/10,threshold=+eye.value*1e-4,view=mode.value;
+    let u=+obj.value,di=null,gamma=null,G=1,alpha=hcm/dd,alphaP=alpha;
+    if(view==="relaxed"){u=ff;di=Infinity;G=dd/ff;alphaP=hcm/ff}
+    else if(view==="near"){u=ff*dd/(ff+dd);di=-dd;G=1+dd/ff;alphaP=G*alpha}
+    else if(view==="finite"){di=1/(1/ff-1/u);gamma=-di/u;G=Math.abs(gamma);alphaP=Math.abs(gamma)*hcm/dd}
+    const lx=365,axis=170,eyeX=655;
+    line(s,20,axis,700,axis,"axis");circle(s,eyeX,axis,12,"eye");text(s,eyeX-18,axis+32,"eye");
+    if(view==="naked"){
+      const ox=115,ht=62;line(s,ox,axis,ox,axis-ht,"object");text(s,70,axis-ht-10,"AB at D");
+      line(s,ox,axis-ht,eyeX,axis,"ray incident");line(s,ox,axis,eyeX,axis,"construction");
+      text(s,470,75,"α ≈ AB / D");
+    }else{
+      s.appendChild(E("path",{d:"M365 45 Q330 170 365 295 Q400 170 365 45",class:"lens"}));text(s,335,35,"loupe");
+      const scale=Math.min(45,210/Math.max(u,ff,1)),ox=lx-u*scale,ht=55;
+      line(s,ox,axis,ox,axis-ht,"object");text(s,ox-18,axis-ht-9,"AB");
+      const Fx=lx-ff*scale;circle(s,Fx,axis,4,"focus");text(s,Fx-8,axis+22,"F");
+      if(view==="relaxed"){
+        line(s,ox,axis-ht,lx,110,"ray incident");line(s,lx,110,eyeX,110,"ray emergent");
+        line(s,ox,axis-ht,lx,210,"ray incident");line(s,lx,210,eyeX,210,"ray emergent");
+        text(s,430,75,"object at F → parallel output");
+      }else{
+        const iX=Number.isFinite(di)?lx+di*scale:null,iH=Number.isFinite(gamma)?Math.max(18,Math.min(95,Math.abs(gamma)*ht)):55,iTop=axis-(gamma>=0?iH:-iH);
+        [120,210].forEach(yh=>{
+          line(s,ox,axis-ht,lx,yh,"ray incident");
+          if(Number.isFinite(di)&&di>0)line(s,lx,yh,iX,iTop,"ray refracted");
+          else if(Number.isFinite(di)){
+            const slope=(yh-iTop)/(lx-iX),yEnd=yh+slope*(eyeX-lx);line(s,lx,yh,eyeX,yEnd,"ray refracted");line(s,lx,yh,iX,iTop,"construction");
+          }
+        });
+        if(Number.isFinite(di)){line(s,iX,axis,iX,iTop,di<0?"virtual":"image");text(s,iX-20,iTop+(iTop>axis?22:-8),"A′B′")}
+        if(view==="near")text(s,410,75,"virtual image placed at the near point");
+      }
+    }
+    const minMM=(view==="naked"?dd*threshold:view==="near"?dd*threshold/Math.max(G,1e-12):view==="finite"?dd*threshold/Math.max(G,1e-12):ff*threshold)*10;
+    setReadout(ui.readout,[
+      ["viewing",view==="naked"?"naked eye":view],
+      ["G",fmt(G,2)+"×"],["α naked",fmt(alpha,6)+" rad"],["α′",fmt(alphaP,6)+" rad"],
+      ["intrinsic power Π",fmt(100/ff,2)+" m⁻¹"],
+      ["minimum AB at eye threshold",fmt(minMM,3)+" mm"],
+      ["OA",view==="naked"?"—":fmt(-u,2)+" cm"],
+      ["OA′",view==="finite"||view==="near"?(Number.isFinite(di)?fmt(di,2)+" cm":"∞"):view==="relaxed"?"∞":"—"]
+    ]);
+  };
+  [mode,f,obj,D,h,eye].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
+}
+function mountAngularResolution(host){
+  const ui=hostShell(host,"Angular size and telescope resolution");
+  const dist=addNumber(ui.controls,"distance",1,1000000,1,384000," km"),
+    size=addNumber(ui.controls,"object size",0.001,10000,0.001,3480," km"),
+    G=addNumber(ui.controls,"magnification G",1,1000,1,100,"×"),
+    eye=addNumber(ui.controls,"eye threshold ×10⁻⁴",0.1,20,0.1,3,""),
+    detail=addNumber(ui.controls,"test detail",0.001,10000,0.001,0.2," km");
+  const s=svgBase("Interactive angular-size and telescope-resolution model");ui.canvas.appendChild(s);
+  const redraw=()=>{
+    s.innerHTML="";
+    const L=+dist.value,S=+size.value,g=+G.value,threshold=+eye.value*1e-4,test=+detail.value,
+      alpha=S/L,alphaP=g*alpha,limitAlpha=threshold/g,limitSize=L*limitAlpha,resolved=test+1e-9>=limitSize;
+    const ex=95,axis=155,mx=590,r=clamp(24+Math.sqrt(Math.min(Math.abs(alpha),1))*480,28,90);
+    circle(s,ex,axis,13,"eye");text(s,55,axis+36,"observer");
+    circle(s,mx,axis,r,"sphere");text(s,mx-26,axis+5,"object");
+    line(s,ex,axis,mx,axis-r,"ray incident");line(s,ex,axis,mx,axis+r,"ray incident");line(s,ex,axis,mx,axis,"construction");
+    s.appendChild(E("path",{d:"M250 70 Q225 155 250 240 Q275 155 250 70",class:"lens"}));
+    s.appendChild(E("path",{d:"M325 90 Q305 155 325 220 Q345 155 325 90",class:"lens"}));
+    text(s,225,55,"telescope");text(s,125,95,"α");text(s,365,75,"α′ = Gα");
+    line(s,390,260,650,260,"construction");line(s,390,245,390,275,"construction");line(s,650,245,650,275,"construction");
+    text(s,400,240,"resolution test detail");text(s,400,295,resolved?"detail ≥ limit → resolved":"detail < limit → not resolved");
+    setReadout(ui.readout,[
+      ["α = size/distance",fmt(alpha,8)+" rad"],["α′ = Gα",fmt(alphaP,6)+" rad"],
+      ["eye threshold α′lim",fmt(threshold,6)+" rad"],["object-angle limit",fmt(limitAlpha,8)+" rad"],
+      ["minimum linear detail",fmt(limitSize,3)+" km"],["test detail",fmt(test,3)+" km"],
+      ["resolution",resolved?"resolved":"not resolved"],
+      ["model note",alphaP>0.2?"Gα is outside the strict small-angle/paraxial regime":"small-angle model is reasonable"]
+    ]);
+  };
+  [dist,size,G,eye,detail].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
+}
 function mountTelescope(host){
   const ui=hostShell(host,"Afocal astronomical telescope");
   const fo=addRange(ui.controls,"objective f",200,1500,10,1000," mm"),fe=addRange(ui.controls,"eyepiece f",10,80,1,20," mm");
@@ -574,7 +667,7 @@ function mountStatic(key,host){
 }
 const live={
   "refraction-live":mountRefraction,"plate-live":mountPlate,"layers-live":mountLayers,"fibre-live":mountFibre,
-  "mirror-live":mountMirror,"diopter-live":mountDiopter,"prism-live":mountPrism,"lens-live":mountLens,"eye-live":mountEye,"telescope-live":mountTelescope
+  "mirror-live":mountMirror,"diopter-live":mountDiopter,"prism-live":mountPrism,"lens-live":mountLens,"eye-live":mountEye,"magnifier-live":mountMagnifier,"angular-resolution-live":mountAngularResolution,"telescope-live":mountTelescope
 };
 window.OPTICS_VISUALS={
   mount(key,host,preset){if(!host||!key)return;if(live[key]){live[key](host);applyPreset(host,preset)}else mountStatic(key,host)}
