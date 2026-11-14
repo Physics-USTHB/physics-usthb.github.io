@@ -248,6 +248,36 @@ function staticSvg(key){
   else if(key==="eye-range"){line(s,115,70,115,270,"focalplane");line(s,600,70,600,270,"focalplane");s.appendChild(E("ellipse",{cx:360,cy:170,rx:70,ry:55,class:"eye"}));T(65,55,"PP near point");T(555,55,"PR far point");T(245,295,"clear-vision interval / accommodation")}
   else if(key==="eye-anatomy"){s.appendChild(E("ellipse",{cx:400,cy:170,rx:170,ry:125,class:"eye"}));s.appendChild(E("path",{d:"M285 70 Q245 170 285 270",class:"diopter"}));s.appendChild(E("path",{d:"M350 100 Q320 170 350 240 Q385 170 350 100",class:"lens"}));line(s,535,70,535,270,"retina");line(s,300,95,300,245,"aperture");T(205,55,"cornea");T(270,295,"iris / pupil");T(330,85,"crystalline lens");T(545,65,"retina")}
   else if(key==="astigmatism"){s.appendChild(E("path",{d:"M350 60 Q305 170 350 280 Q395 170 350 60",class:"lens"}));line(s,40,110,350,110,"ray incident");line(s,40,230,350,230,"ray incident");line(s,350,110,500,170,"ray refracted");line(s,350,230,565,170,"ray refracted");T(405,300,"different meridians → different focal planes")}
+  else if(key==="prism45"){
+    s.appendChild(E("path",{d:"M180 275 L180 65 L520 275 Z",class:"prism"}));
+    line(s,25,155,180,145,"ray incident");
+    line(s,180,145,350,245,"ray refracted");
+    line(s,350,245,465,110,"ray reflected");
+    line(s,465,110,650,100,"ray emergent");
+    line(s,180,145,180,55,"normal");
+    T(195,85,"i = 5°");T(315,300,"45° geometry");T(380,225,"TIR on AB");T(515,85,"D = 100°");
+  }
+  else if(key==="fish-visibility"){
+    line(s,0,155,720,155,"interface");line(s,360,30,360,300,"normal");
+    circle(s,360,265,7,"source");T(375,280,"fish");
+    circle(s,535,60,7,"source");T(550,60,"fisherman");
+    const lim=48.75, L=210;
+    line(s,360,265,360-L*Math.sin(deg(lim)),265-L*Math.cos(deg(lim)),"ray refracted");
+    line(s,360,265,360+L*Math.sin(deg(lim)),265-L*Math.cos(deg(lim)),"ray refracted");
+    T(55,140,"air");T(55,185,"water n=1.33");T(385,205,"Snell window ±48.75°");T(505,245,"outside window: no transmitted fisherman ray");
+  }
+  else if(key==="dove-prism"){
+    s.appendChild(E("path",{d:"M145 105 L260 55 L570 55 L660 105 L570 255 L260 255 Z",class:"prism"}));
+    line(s,25,130,175,130,"ray incident");line(s,175,130,360,215,"ray refracted");line(s,360,215,555,130,"ray reflected");line(s,555,130,700,130,"ray emergent");
+    T(270,45,"AB");T(305,280,"CD (TIR mirror)");T(150,95,"45°");T(600,95,"45°");T(265,190,"incidence on CD ≈ 71.2°");
+  }
+  else if(key==="cauchy-data"){
+    line(s,100,265,650,265,"axis");line(s,100,45,100,265,"axis");
+    const pts=[[2.64,1.6914],[2.98,1.6967],[3.09,1.6984],[3.35,1.7023],[4.06,1.7130],[5.26,1.7307],[6.11,1.7435]];
+    const xmin=2.4,xmax=6.3,ymin=1.685,ymax=1.75;
+    pts.forEach(([x,y])=>{const px=100+(x-xmin)/(xmax-xmin)*550,py=265-(y-ymin)/(ymax-ymin)*210;circle(s,px,py,5,"point")});
+    line(s,120,245,630,70,"construction");T(480,55,"n ≈ n₀ + a/λ²");T(310,300,"1/λ² (µm⁻²)");T(30,80,"n");T(150,35,"seven measured spectral lines");
+  }
   else if(key==="lens-shapes"){
     s.appendChild(E("path",{d:"M90 75 Q55 160 90 245 Q130 160 90 75",class:"lens"}));
     s.appendChild(E("path",{d:"M250 75 L250 245 Q305 160 250 75",class:"lens"}));
