@@ -52,7 +52,7 @@ for(const sheet of audit.sheets||[]){
 }
 
 class El{
-  constructor(tag="div"){this.tagName=tag;this.children=[];this.attrs={};this.listeners={};this.classList={add:(...xs)=>{this.classes=(this.classes||[]).concat(xs)}};this._html="";this.value="";this.checked=false;this.selected=false;this.textContent=""}
+  constructor(tag="div",namespaceURI="http://www.w3.org/1999/xhtml"){this.tagName=tag;this.namespaceURI=namespaceURI;this.children=[];this.attrs={};this.listeners={};this.classList={add:(...xs)=>{this.classes=(this.classes||[]).concat(xs)}};this._html="";this.value="";this.checked=false;this.selected=false;this.textContent=""}
   setAttribute(k,v){this.attrs[k]=String(v);if(["value","min","max","step","type"].includes(k))this[k]=v;if(k==="class")this.className=String(v)}
   appendChild(x){this.children.push(x);if(this.tagName==="select"&&x&&(x.selected||this.value===""))this.value=x.value??this.value;return x}
   append(...xs){xs.forEach(x=>this.appendChild(x))}
@@ -69,7 +69,8 @@ class Host extends El{
   set innerHTML(v){this._html=String(v);this.reset()}
   get innerHTML(){return this._html}
 }
-const visualSandbox={window:{},document:{createElement:t=>new El(t)},console};
+const SVG_NS="http://www.w3.org/2000/svg";
+const visualSandbox={window:{},document:{createElement:t=>new El(t),createElementNS:(ns,t)=>new El(t,ns)},console};
 vm.createContext(visualSandbox);
 new vm.Script(visualCode,{filename:"td-visuals.js"}).runInContext(visualSandbox);
 const visualKeys=[...new Set(Object.values(audit.visuals||{}))];
@@ -79,6 +80,10 @@ for(const key of visualKeys){
   const host=new Host();
   visualSandbox.window.OPTICS_VISUALS.mount(key,host);
   assert(host.parts[".visual-canvas"].children.length>0,"Visual "+key+" rendered no SVG");
+  const svgRoot=host.parts[".visual-canvas"].children[0];
+  assert(svgRoot.tagName==="svg"&&svgRoot.namespaceURI===SVG_NS,"Visual "+key+" root is not in the SVG namespace");
+  const assertSvgTree=el=>{assert(el.namespaceURI===SVG_NS,"Visual "+key+" contains non-SVG element <"+el.tagName+">");for(const child of el.children||[])assertSvgTree(child)};
+  assertSvgTree(svgRoot);
   if(key.endsWith("-live")){
     const before=snap(host.parts[".visual-canvas"]);
     const wrap=host.parts[".visual-controls"].children[0];
