@@ -235,7 +235,7 @@ function shuffled(a){const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.f
 function chooseAssessment(sourceOnly=false){
   const exact=new Set(Object.keys(audit.exactQuestionSources||{})),chosen=[];
   series.forEach(s=>{
-    const pool=questions.filter(q=>q.series===s.id&&(q.kind==="numeric"||q.kind==="mcq")&&(sourceOnly?exact.has(q.id):!hasLiveVisual(q.id)));
+    const pool=questions.filter(q=>q.series===s.id&&(q.kind==="numeric"||q.kind==="mcq")&&!q.sourceWarning&&(sourceOnly?exact.has(q.id):!hasLiveVisual(q.id)));
     chosen.push(...shuffled(pool).slice(0,2));
   });
   return shuffled(chosen);
