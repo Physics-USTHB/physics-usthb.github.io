@@ -404,7 +404,7 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s6q28:{controls:{"objective f":500,"eyepiece f":50}},
     s6q44:{controls:{"lens":"conv","object":"real","|f|":5,"object distance":5}},
     s6q45:{controls:{"lens":"conv","object":"real","|f|":5,"object distance":5}},
-    s6q53:{controls:{"lens":"conv","object":"real","|f|":5,"object distance":25}}
+    s6q53:{controls:{"lens":"conv","object":"real","|f|":5,"object distance":25}},
     s3q3:{controls:{"incident n":1.00,"emergent n′":1.50,"surface":"R+","|R|":20,"object":"real","|SA|":100}},
     s3q18:{controls:{"incident n":1.60,"emergent n′":1.10,"surface":"R-","|R|":40,"object":"infinity","|SA|":55}},
     s3q19:{controls:{"incident n":1.60,"emergent n′":1.10,"surface":"R-","|R|":40,"object":"real","|SA|":55}},
