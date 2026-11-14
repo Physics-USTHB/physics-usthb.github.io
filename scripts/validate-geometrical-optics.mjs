@@ -102,7 +102,8 @@ for(const key of visualKeys){
   }
 }
 
-const mountForTest=key=>{const host=new Host();visualSandbox.window.OPTICS_VISUALS.mount(key,host);return host.parts[".visual-canvas"].children[0]};
+const hostForTest=key=>{const host=new Host();visualSandbox.window.OPTICS_VISUALS.mount(key,host);return host};
+const mountForTest=key=>hostForTest(key).parts[".visual-canvas"].children[0];
 const classEls=(el,token,out=[])=>{if(String(el.attrs?.class||"").split(/\s+/).includes(token))out.push(el);for(const child of el.children||[])classEls(child,token,out);return out};
 const telescopeSvg=mountForTest("telescope-live");
 const telescopeOut=classEls(telescopeSvg,"emergent");
@@ -115,6 +116,11 @@ assert(audit.visuals.s1q23==="curved-fibre","Curved-fibre exercise must not use 
 assert(audit.visuals.s1q26==="optical-wedge","Optical-wedge exercise must not use the parallel-plate visual");
 assert(audit.visuals.s2q16==="two-mirrors","Two-plane-mirror exercise mapped to the wrong mirror family");
 assert(audit.visuals.s6q4==="myopia-correction"&&audit.visuals.s6q5==="near-correction","Spectacle-correction exercises need correction-lens schematics");
+const controlByLabel=(key,label)=>{const h=hostForTest(key);const wrap=h.parts[".visual-controls"].children.find(w=>w.children?.[0]?.textContent===label);return wrap?.children?.find(x=>x.tagName==="input"||x.tagName==="select")};
+assert(Number(controlByLabel("prism-live","incidence i")?.min)===0,"Prism visual must support normal incidence");
+assert(Number(controlByLabel("refraction-live","incidence i")?.max)>=89,"Refraction visual must support the grazing-incidence limit");
+assert(Number(controlByLabel("fibre-live","launch angle")?.max)>=89,"Fibre visual must support the all-launch-angle limiting case");
+assert(Number(controlByLabel("mirror-live","|f|")?.max)>=150&&Number(controlByLabel("mirror-live","object distance")?.max)>=500,"Mirror visual ranges do not cover mapped metre-scale USTHB exercises");
 
 const exact=new Set(Object.keys(audit.exactQuestionSources||{}));
 for(const s of data.series){
