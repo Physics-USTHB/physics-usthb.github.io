@@ -35,7 +35,7 @@ function setReadout(el,items){el.innerHTML=items.map(([k,v])=>'<div><span>'+k+'<
 
 function mountRefraction(host){
   const ui=hostShell(host,"Refraction / total internal reflection");
-  const n1=addRange(ui.controls,"n₁",1,2,0.01,1.00),n2=addRange(ui.controls,"n₂",1,2,0.01,1.50),inc=addRange(ui.controls,"incidence i",0,80,1,30,"°");
+  const n1=addRange(ui.controls,"n₁",1,2,0.01,1.00),n2=addRange(ui.controls,"n₂",1,2,0.01,1.50),inc=addRange(ui.controls,"incidence i",0,89.9,0.1,30,"°");
   const s=svgBase("Interactive Snell-Descartes refraction diagram");ui.canvas.appendChild(s);
   const redraw=()=>{
     s.innerHTML="";const a=Number(n1.value),b=Number(n2.value),i=Number(inc.value),cx=360,cy=160;
@@ -89,13 +89,13 @@ function mountLayers(host){
 }
 function mountFibre(host){
   const ui=hostShell(host,"Step-index optical fibre");
-  const nc=addRange(ui.controls,"core nᶜ",1.3,1.7,0.005,1.48),ng=addRange(ui.controls,"cladding nᵍ",1.2,1.65,0.005,1.46),inc=addRange(ui.controls,"launch angle",0,35,0.5,10,"°");
+  const nc=addRange(ui.controls,"core nᶜ",1.3,1.7,0.005,1.48),ng=addRange(ui.controls,"cladding nᵍ",1.2,1.65,0.005,1.46),inc=addRange(ui.controls,"launch angle",0,89.9,0.1,10,"°");
   const s=svgBase("Interactive step-index fibre acceptance diagram");ui.canvas.appendChild(s);
   const redraw=()=>{
     let cc=+nc.value,g=Math.min(+ng.value,cc-0.005);if(+ng.value>=cc){ng.value=(cc-0.005).toFixed(3);if(ng._valueOutput)ng._valueOutput.textContent=ng.value+(ng._unit||"");g=+ng.value}
     const i=+inc.value,NA=Math.sqrt(Math.max(0,cc*cc-g*g)),imax=rad(Math.asin(clamp(NA,0,1))),theta=rad(Math.asin(clamp(Math.sin(deg(i))/cc,-1,1))),ok=i<=imax+1e-9;
     s.innerHTML="";s.appendChild(E("rect",{x:170,y:95,width:510,height:130,class:"cladding"}));s.appendChild(E("rect",{x:170,y:120,width:510,height:80,class:"core"}));line(s,35,160,170,160,"axis");
-    line(s,35,160,170,160-(170-35)*Math.tan(deg(i)),"ray incident");
+    const launchL=135;line(s,170-launchL*Math.cos(deg(i)),160-launchL*Math.sin(deg(i)),170,160,"ray incident");
     let x=170,y=160,dir=1;const slope=Math.tan(deg(theta));
     for(let k=0;k<8&&x<680;k++){
       let nx=Math.min(680,x+100),ny=y+dir*(nx-x)*slope;
@@ -115,7 +115,7 @@ function mountFibre(host){
 }
 function mountMirror(host){
   const ui=hostShell(host,"Spherical mirror image formation");
-  const kind=addSelect(ui.controls,"mirror",[["concave","concave"],["convex","convex"]],"concave"),fmag=addRange(ui.controls,"|f|",8,45,1,20," cm"),obj=addRange(ui.controls,"object distance",10,100,1,60," cm");
+  const kind=addSelect(ui.controls,"mirror",[["concave","concave"],["convex","convex"]],"concave"),fmag=addRange(ui.controls,"|f|",8,200,1,20," cm"),obj=addRange(ui.controls,"object distance",10,600,1,60," cm");
   const s=svgBase("Interactive spherical mirror ray diagram");ui.canvas.appendChild(s);
   const redraw=()=>{
     s.innerHTML="";
@@ -145,7 +145,7 @@ function mountMirror(host){
 }
 function mountPrism(host){
   const ui=hostShell(host,"Prism deviation");
-  const A=addRange(ui.controls,"apex A",30,75,1,60,"°"),n=addRange(ui.controls,"index n",1.2,1.8,0.01,1.52),inc=addRange(ui.controls,"incidence i",5,75,1,30,"°");
+  const A=addRange(ui.controls,"apex A",30,75,1,60,"°"),n=addRange(ui.controls,"index n",1.2,1.8,0.01,1.52),inc=addRange(ui.controls,"incidence i",0,75,1,30,"°");
   const s=svgBase("Interactive prism with moving second-face intersection");ui.canvas.appendChild(s);
   const cross=(a,b)=>a.x*b.y-a.y*b.x;
   const redraw=()=>{
