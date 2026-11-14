@@ -159,11 +159,21 @@ function mountLayers(host){
 }
 function mountFibre(host){
   const ui=hostShell(host,"Step-index optical fibre");
-  const nc=addRange(ui.controls,"core nᶜ",1.3,1.7,0.005,1.48),ng=addRange(ui.controls,"cladding nᵍ",1.0,1.65,0.005,1.46),inc=addRange(ui.controls,"launch angle",0,89.9,0.1,10,"°");
-  const s=svgBase("Interactive step-index fibre acceptance diagram");ui.canvas.appendChild(s);
+  const nc=addRange(ui.controls,"core nᶜ",1.3,1.7,0.005,1.48),
+    ng=addRange(ui.controls,"cladding nᵍ",1.0,1.65,0.005,1.46),
+    inc=addRange(ui.controls,"launch angle",0,89.9,0.1,10,"°"),
+    length=addNumber(ui.controls,"length L",0.001,100,0.001,1," km");
+  const s=svgBase("Interactive step-index fibre acceptance and modal-delay diagram");ui.canvas.appendChild(s);
   const redraw=()=>{
-    let cc=+nc.value,g=Math.min(+ng.value,cc-0.005);if(+ng.value>=cc){ng.value=(cc-0.005).toFixed(3);if(ng._valueOutput)ng._valueOutput.textContent=ng.value+(ng._unit||"");g=+ng.value}
-    const i=+inc.value,NA=Math.sqrt(Math.max(0,cc*cc-g*g)),imax=rad(Math.asin(clamp(NA,0,1))),theta=rad(Math.asin(clamp(Math.sin(deg(i))/cc,-1,1))),ok=i<=imax+1e-9;
+    let cc=+nc.value,g=Math.min(+ng.value,cc-0.005);
+    if(+ng.value>=cc){ng.value=(cc-0.005).toFixed(3);if(ng._valueOutput)ng._valueOutput.textContent=ng.value+(ng._unit||"");g=+ng.value}
+    const i=+inc.value,Lkm=Math.max(0.001,+length.value),Lm=Lkm*1000,c0=3e8,
+      NA=Math.sqrt(Math.max(0,cc*cc-g*g)),imax=rad(Math.asin(clamp(NA,0,1))),
+      theta=rad(Math.asin(clamp(Math.sin(deg(i))/cc,-1,1))),
+      critical=rad(Math.asin(clamp(g/cc,0,1))),iwall=90-theta,ok=iwall+1e-9>=critical,
+      thetaLim=90-critical,coreSpeed=c0/cc,
+      tAxial=cc*Lm/c0,tCurrent=ok?cc*Lm/(c0*Math.cos(deg(theta))):NaN,
+      tLim=cc*Lm/(c0*Math.cos(deg(thetaLim))),delay=tLim-tAxial;
     clearSvg(s);s.appendChild(E("rect",{x:170,y:95,width:510,height:130,class:"cladding"}));s.appendChild(E("rect",{x:170,y:120,width:510,height:80,class:"core"}));line(s,35,160,170,160,"axis");
     const launchL=135;line(s,170-launchL*Math.cos(deg(i)),160-launchL*Math.sin(deg(i)),170,160,"ray incident");
     let x=170,y=160,dir=1;const slope=Math.tan(deg(theta));
@@ -172,16 +182,26 @@ function mountFibre(host){
       if(ny>198||ny<122){
         const bound=dir>0?198:122;nx=x+(bound-y)/(dir*slope||1e-6);ny=bound;line(s,x,y,nx,ny,ok?"ray guided":"ray rejected");
         if(!ok){
-          const iwall=90-theta,tnorm=rad(Math.asin(clamp(cc*Math.sin(deg(iwall))/g,-1,1))),thetaClad=90-tnorm,run=Math.min(120,680-nx);
+          const tnorm=rad(Math.asin(clamp(cc*Math.sin(deg(iwall))/g,-1,1))),thetaClad=90-tnorm,run=Math.min(120,680-nx);
           line(s,nx,ny,nx+run,ny+dir*run*Math.tan(deg(thetaClad)),"ray rejected");break;
         }
         dir*=-1;x=nx;y=ny;
       }else{line(s,x,y,nx,ny,ok?"ray guided":"ray rejected");x=nx;y=ny}
     }
     text(s,185,115,"cladding");text(s,185,155,"core");text(s,185,220,"cladding");
-    setReadout(ui.readout,[["NA",fmt(NA,4)],["max launch angle",fmt(imax,2)+"°"],["current ray",ok?"guided by TIR":"refracts into cladding"]]);
+    text(s,430,288,"wall incidence i′ = 90° − θ; TIR requires i′ ≥ i_c");
+    setReadout(ui.readout,[
+      ["NA",fmt(NA,4)],["max launch angle",fmt(imax,2)+"°"],
+      ["internal angle θ",fmt(theta,2)+"°"],["wall incidence i′",fmt(iwall,2)+"°"],
+      ["critical angle i_c",fmt(critical,2)+"°"],["current ray",ok?"guided by TIR":"refracts into cladding"],
+      ["core speed",fmt(coreSpeed/1e8,3)+"×10⁸ m/s"],
+      ["axial time t₁",fmt(tAxial*1e6,3)+" µs"],
+      ["current transit",ok?fmt(tCurrent*1e6,3)+" µs":"not guided"],
+      ["limiting time t₂",fmt(tLim*1e6,3)+" µs"],
+      ["modal delay Δt",fmt(delay*1e9,2)+" ns"]
+    ]);
   };
-  [nc,ng,inc].forEach(x=>x.addEventListener("input",redraw));redraw();
+  [nc,ng,inc,length].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
 }
 function mountMirror(host){
   const ui=hostShell(host,"Spherical mirror image formation");
@@ -546,23 +566,34 @@ function mountAngularResolution(host){
 }
 function mountTelescope(host){
   const ui=hostShell(host,"Afocal astronomical telescope");
-  const fo=addRange(ui.controls,"objective f",200,1500,10,1000," mm"),fe=addRange(ui.controls,"eyepiece f",10,80,1,20," mm");
-  const s=svgBase("Interactive astronomical telescope ray diagram");ui.canvas.appendChild(s);
+  const fo=addRange(ui.controls,"objective f",200,1500,10,1000," mm"),
+    fe=addRange(ui.controls,"eyepiece f",10,80,1,20," mm"),
+    field=addRange(ui.controls,"field angle α",-1,1,0.05,0,"°");
+  const s=svgBase("Interactive afocal astronomical telescope with off-axis angular magnification");ui.canvas.appendChild(s);
   const redraw=()=>{
     clearSvg(s);
-    const a=+fo.value,b=+fe.value,G=a/b,total=a+b,scale=420/total,x1=120,x2=x1+total*scale,xf=x1+a*scale,axis=170;
+    const a=+fo.value,b=+fe.value,alpha=+field.value,G=a/b,total=a+b,scale=420/total,
+      x1=120,x2=x1+total*scale,xf=x1+a*scale,axis=170,fopx=a*scale,fepx=b*scale,u=Math.tan(deg(alpha));
     line(s,20,axis,700,axis,"axis");
     s.appendChild(E("path",{d:"M"+x1+" 45 Q"+(x1-35)+" 170 "+x1+" 295 Q"+(x1+35)+" 170 "+x1+" 45",class:"lens"}));
     s.appendChild(E("path",{d:"M"+x2+" 70 Q"+(x2-28)+" 170 "+x2+" 270 Q"+(x2+28)+" 170 "+x2+" 70",class:"lens"}));
-    [95,130].forEach(y=>{
-      line(s,25,y,x1,y,"ray incident");line(s,x1,y,xf,axis,"ray refracted");
-      const y2=axis+(axis-y)*(x2-xf)/Math.max(1,xf-x1);
-      line(s,xf,axis,x2,y2,"ray refracted");line(s,x2,y2,690,y2,"ray emergent");
+    [95,130].forEach(y1=>{
+      const Y1=axis-y1,u1=u-Y1/fopx,Yf=Y1+fopx*u1,Y2=Yf+fepx*u1,u2=u1-Y2/fepx,
+        yF=axis-Yf,y2=axis-Y2,x0=25,Y0=Y1-u*(x1-x0),y0=axis-Y0,yEnd=y2-u2*(690-x2);
+      line(s,x0,y0,x1,y1,"ray incident");line(s,x1,y1,xf,yF,"ray refracted");
+      line(s,xf,yF,x2,y2,"ray refracted");line(s,x2,y2,690,yEnd,"ray emergent");
     });
-    line(s,xf,55,xf,285,"construction");text(s,xf-25,300,"F₁′ = F₂");text(s,x1-35,35,"objective");text(s,x2-30,55,"eyepiece");
-    setReadout(ui.readout,[["normal length",fmt(total,0)+" mm"],["|G|",fmt(G,1)+"x"],["shared focal plane",fmt(a,0)+" mm after objective"],["output","parallel / afocal"]]);
+    const beta=-G*alpha;
+    line(s,xf,55,xf,285,"construction");circle(s,xf,axis-fopx*u,4,"focus");
+    text(s,xf-25,300,"F₁′ = F₂");text(s,x1-35,35,"objective");text(s,x2-30,55,"eyepiece");
+    if(Math.abs(alpha)>1e-9){text(s,30,55,"incoming field angle α="+fmt(alpha,2)+"°");text(s,485,300,"output β≈−(f₁′/f₂′)α="+fmt(beta,2)+"°")}
+    setReadout(ui.readout,[
+      ["normal length",fmt(total,0)+" mm"],["|G|",fmt(G,1)+"×"],["signed G",fmt(-G,1)],
+      ["input angle α",fmt(alpha,2)+"°"],["output angle β",fmt(beta,2)+"°"],
+      ["shared focal plane",fmt(a,0)+" mm after objective"],["output","parallel / afocal"]
+    ]);
   };
-  [fo,fe].forEach(x=>x.addEventListener("input",redraw));redraw();
+  [fo,fe,field].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
 }
 function staticSvg(key){
   const s=svgBase(key.replaceAll("-"," "));

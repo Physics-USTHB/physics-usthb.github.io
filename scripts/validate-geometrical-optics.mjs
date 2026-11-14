@@ -167,6 +167,18 @@ const afocalPair=presetHost("s5q14").parts[".visual-readout"].innerHTML;
 assert(afocalPair.includes(">afocal<")&&afocalPair.includes(">∞<"),"Afocal two-lens regression");
 const accommodation=presetHost("s6q2").parts[".visual-readout"].innerHTML;
 assert(accommodation.includes("4.00 D"),"Eye accommodation regression");
+const fibreDelay=presetHost("s1q39").parts[".visual-readout"].innerHTML;
+assert(fibreDelay.includes("4.933 µs")&&fibreDelay.includes("5.001 µs")&&fibreDelay.includes("67.58 ns"),"Fibre axial/limiting transit-time regression");
+const fibreLimit=presetHost("s1q38").parts[".visual-readout"].innerHTML;
+assert(fibreLimit.includes("80.57°")&&fibreLimit.includes("9.43°"),"Fibre critical/wall-angle regression");
+const offAxisHost=new Host();
+visualSandbox.window.OPTICS_VISUALS.mount("telescope-live",offAxisHost,{controls:{"objective f":1000,"eyepiece f":20,"field angle α":0.2}});
+const offAxisReadout=offAxisHost.parts[".visual-readout"].innerHTML;
+assert(offAxisReadout.includes("-50.0")&&offAxisReadout.includes("-10.00°"),"Off-axis telescope angular-magnification regression");
+const offAxisSvg=offAxisHost.parts[".visual-canvas"].children[0],offAxisOut=classEls(offAxisSvg,"emergent");
+const outSlopes=offAxisOut.map(l=>(Number(l.attrs.y2)-Number(l.attrs.y1))/(Number(l.attrs.x2)-Number(l.attrs.x1)));
+assert(outSlopes.length>=2&&Math.max(...outSlopes)-Math.min(...outSlopes)<1e-9&&Math.abs(outSlopes[0])>1e-4,"Off-axis afocal telescope must produce parallel but tilted output rays");
+
 
 
 
