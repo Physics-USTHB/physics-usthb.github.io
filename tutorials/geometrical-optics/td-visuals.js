@@ -131,25 +131,29 @@ function mountMirror(host){
 function mountPrism(host){
   const ui=hostShell(host,"Prism deviation");
   const A=addRange(ui.controls,"apex A",30,75,1,60,"°"),n=addRange(ui.controls,"index n",1.2,1.8,0.01,1.52),inc=addRange(ui.controls,"incidence i",5,75,1,30,"°");
-  const s=svgBase("Interactive prism geometry and deviation");ui.canvas.appendChild(s);
+  const s=svgBase("Interactive prism with moving second-face intersection");ui.canvas.appendChild(s);
+  const cross=(a,b)=>a.x*b.y-a.y*b.x;
   const redraw=()=>{
     s.innerHTML="";
     const aa=+A.value,nn=+n.value,i=+inc.value,r1=rad(Math.asin(clamp(Math.sin(deg(i))/nn,-1,1))),r2=aa-r1,crit=rad(Math.asin(1/nn));
-    const h=220,half=clamp(h*Math.tan(deg(aa/2)),95,270),ax=360,top=38,base=top+h,left=ax-half,right=ax+half;
-    s.appendChild(E("path",{d:"M"+ax+" "+top+" L"+left+" "+base+" L"+right+" "+base+" Z",class:"prism"}));
-    const entry={x:(ax+left)/2,y:(top+base)/2},exit={x:(ax+right)/2,y:(top+base)/2};
-    const face1=Math.atan2(base-top,left-ax),normal1=face1-Math.PI/2,dirIn=normal1+deg(i);
-    line(s,entry.x-160*Math.cos(dirIn),entry.y-160*Math.sin(dirIn),entry.x,entry.y,"ray incident");
-    line(s,entry.x,entry.y,exit.x,exit.y,"ray refracted");
+    const h=220,half=h*Math.tan(deg(aa/2)),ap={x:0,y:h},L={x:-half,y:0},Rt={x:half,y:0},map=p=>({x:360+p.x,y:285-p.y});
+    const aps=map(ap),ls=map(L),rs=map(Rt);s.appendChild(E("path",{d:"M"+aps.x+" "+aps.y+" L"+ls.x+" "+ls.y+" L"+rs.x+" "+rs.y+" Z",class:"prism"}));
+    const tEntry=.58,P={x:ap.x+tEntry*(L.x-ap.x),y:ap.y+tEntry*(L.y-ap.y)};
+    const vL={x:L.x-ap.x,y:L.y-ap.y},lenL=Math.hypot(vL.x,vL.y),nIn={x:-vL.y/lenL,y:vL.x/lenL};
+    const normal1=Math.atan2(nIn.y,nIn.x),dirInc=normal1+deg(i),dirInside=normal1+deg(r1),dIn={x:Math.cos(dirInside),y:Math.sin(dirInside)};
+    const vR={x:Rt.x-ap.x,y:Rt.y-ap.y},den=cross(dIn,vR),w={x:ap.x-P.x,y:ap.y-P.y},t=cross(w,vR)/den,u=cross(w,dIn)/den;
+    const Q={x:P.x+t*dIn.x,y:P.y+t*dIn.y},Ps=map(P),Qs=map(Q);
+    const incomingStart={x:P.x-170*Math.cos(dirInc),y:P.y-170*Math.sin(dirInc)},Is=map(incomingStart);
+    line(s,Is.x,Is.y,Ps.x,Ps.y,"ray incident");line(s,Ps.x,Ps.y,Qs.x,Qs.y,"ray refracted");
+    const lenR=Math.hypot(vR.x,vR.y),nOut={x:-vR.y/lenR,y:vR.x/lenR},normal2=Math.atan2(nOut.y,nOut.x);
+    if(!Number.isFinite(t)||t<=0||u<0||u>1){text(s,410,80,"ray misses second face");setReadout(ui.readout,[["r₁",fmt(r1,2)+"°"],["r₂",fmt(r2,2)+"°"],["geometry","no second-face hit"],["D","—"]]);return}
     if(r2>crit){
-      const face2=Math.atan2(base-top,right-ax),normal2=face2+Math.PI/2,inside=Math.atan2(exit.y-entry.y,exit.x-entry.x),ref=2*normal2-inside;
-      line(s,exit.x,exit.y,exit.x+150*Math.cos(ref),exit.y+150*Math.sin(ref),"ray reflected");
-      text(s,450,80,"TIR");setReadout(ui.readout,[["r₁",fmt(r1,2)+"°"],["r₂=A-r₁",fmt(r2,2)+"°"],["critical",fmt(crit,2)+"°"],["result","TIR at face 2"]]);return;
+      const ref=2*normal2-dirInside,End=map({x:Q.x+160*Math.cos(ref),y:Q.y+160*Math.sin(ref)});
+      line(s,Qs.x,Qs.y,End.x,End.y,"ray reflected");text(s,430,75,"TIR at face 2");
+      setReadout(ui.readout,[["r₁",fmt(r1,2)+"°"],["r₂",fmt(r2,2)+"°"],["critical",fmt(crit,2)+"°"],["result","TIR"]]);return
     }
-    const e=rad(Math.asin(nn*Math.sin(deg(r2)))),Dtot=i+e-aa;
-    const face2=Math.atan2(base-top,right-ax),normalOut=face2-Math.PI/2,out=normalOut+deg(e);
-    line(s,exit.x,exit.y,exit.x+170*Math.cos(out),exit.y+170*Math.sin(out),"ray emergent");
-    text(s,345,65,"A="+fmt(aa,0)+"°");
+    const e=rad(Math.asin(nn*Math.sin(deg(r2)))),outAngle=normal2-deg(e),End=map({x:Q.x+175*Math.cos(outAngle),y:Q.y+175*Math.sin(outAngle)}),Dtot=i+e-aa;
+    line(s,Qs.x,Qs.y,End.x,End.y,"ray emergent");text(s,345,58,"A="+fmt(aa,0)+"°");
     setReadout(ui.readout,[["r₁",fmt(r1,2)+"°"],["r₂",fmt(r2,2)+"°"],["emergence",fmt(e,2)+"°"],["deviation D",fmt(Dtot,2)+"°"]]);
   };
   [A,n,inc].forEach(x=>x.addEventListener("input",redraw));redraw();
