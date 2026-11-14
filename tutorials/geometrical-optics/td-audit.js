@@ -83,7 +83,8 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s1q7:[["td1-2024-25","Ex. 3 family"]],
     s1q27:[["td1-2024-25","Ex. 3.1"]],
     s1q28:[["td1-2024-25","Ex. 3.2"]],
-    s1q29:[["td1-2024-25","Ex. 3.3 · Fermat/refraction derivation"]],
+    s1q8:[["touat-2021-22","Series 1 · Ex. 10 · Fermat/reflection"]],
+    s1q29:[["td1-2024-25","Ex. 3.3 · Fermat/refraction derivation"],["touat-2021-22","Series 1 · Ex. 10 · Fermat/refraction"]],
     s1q15:[["td1-2024-25","Ex. 4"]],
     s1q16:[["td1-2024-25","Ex. 5"]],
     s1q24:[["td1-2024-25","Ex. 6"]],
@@ -97,13 +98,23 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s1q20:[["td1-2024-25","Ex. 9 family"]],
     s1q30:[["td1-2024-25","Ex. 9.1"]],
     s1q31:[["td1-2024-25","Ex. 9.2"]],
-    s1q21:[["td1-2024-25","Ex. 10 family"]],
-    s1q22:[["td1-2024-25","Ex. 10.4(d)"]],
-    s1q32:[["td1-2024-25","Ex. 10.4(a)"]],
-    s1q33:[["td1-2024-25","Ex. 10.4(b)"]],
+    s1q21:[["td1-2024-25","Ex. 10 family"],["touat-2021-22","Series 1 · Ex. 8 / Ex. 9 numerical aperture"]],
+    s1q22:[["td1-2024-25","Ex. 10.4(d)"],["touat-2021-22","Series 1 · Ex. 9 transit-time spread"]],
+    s1q32:[["td1-2024-25","Ex. 10.4(a)"],["touat-2021-22","Series 1 · Ex. 9 acceptance angle"]],
+    s1q33:[["td1-2024-25","Ex. 10.4(b)"],["touat-2021-22","Series 1 · Ex. 9 speed"]],
     s1q34:[["td1-2024-25","Ex. 10.3"]],
     s1q23:[["td1-2024-25","Ex. 11 family"]],
 
+    s1q35:[["touat-2021-22","Series 1 · Ex. 8 · ON derivation/numeric"]],
+    s1q36:[["touat-2021-22","Series 1 · Ex. 9 · TIR/angle conditions"]],
+    s1q37:[["touat-2021-22","Series 1 · Ex. 9 · 5.1 axial time"]],
+    s1q38:[["touat-2021-22","Series 1 · Ex. 9 · 5.2 limiting-ray time"]],
+    s1q39:[["touat-2021-22","Series 1 · Ex. 9 · 5.3 delay derivation"]],
+    s1q40:[["touat-2021-22","Series 1 · Ex. 9 · 5.4 information transmission"]],
+    s1q41:[["touat-2021-22","Series 1 · Ex. 10 · seawater illuminated/dark zone"]],
+    s4q18:[["touat-2021-22","Series 1 · Ex. 11 · Q1 minimum-deviation relation"]],
+    s4q19:[["touat-2021-22","Series 1 · Ex. 11 · Q2 dispersion table"]],
+    s4q20:[["touat-2021-22","Series 1 · Ex. 11 · Q3 graph"]],
     s2q21:[["touat-2021-22","Series 2 · Ex. 3 · α=45°"]],
     s2q22:[["touat-2021-22","Series 2 · Ex. 3 · α=90°"]],
     s2q23:[["touat-2021-22","Series 2 · Ex. 7 · concave→convex"]],
@@ -211,14 +222,19 @@ window.OPTICS_TUTORIAL_AUDIT = {
       ]
     },
     {
-      id:"touat-s1",sourceId:"touat-2021-22",label:"Touat Series 1 — Reflection / Refraction / Prism",status:"partial",
+      id:"touat-s1",sourceId:"touat-2021-22",label:"Touat Series 1 — Reflection / Refraction / Prism / Fibre / Fermat / Dispersion",status:"partial",
       exercises:[
         {n:"1",status:"covered",q:["s1q14","s1q26"]},
         {n:"2",status:"covered",q:["s4q11","s4q12","s4q13","s4q14"]},
         {n:"3",status:"covered",q:["s4q15"]},
-        {n:"4",status:"statement-not-recovered",q:[],note:"The public indexed text available in this audit did not expose the exercise statement reliably."},
-        {n:"5",status:"statement-not-recovered",q:[],note:"The public indexed text available in this audit did not expose the exercise statement reliably."},
-        {n:"6",status:"covered",q:["s4q16","s4q17"]}
+        {n:"4",status:"statement-not-recovered",q:[],note:"The public indexed source still does not expose this statement reliably."},
+        {n:"5",status:"statement-not-recovered",q:[],note:"The public indexed source still does not expose this statement reliably."},
+        {n:"6",status:"covered",q:["s4q16","s4q17"]},
+        {n:"7",status:"statement-not-recovered",q:[],note:"The public indexed source still does not expose this statement reliably."},
+        {n:"8",status:"covered",q:["s1q35","s1q21"]},
+        {n:"9",status:"covered",q:["s1q33","s1q36","s1q32","s1q21","s1q35","s1q37","s1q38","s1q39","s1q22","s1q40"]},
+        {n:"10",status:"covered",q:["s1q8","s1q29","s1q41"]},
+        {n:"11",status:"covered",q:["s4q18","s4q19","s4q20"]}
       ]
     },
     {
@@ -296,8 +312,8 @@ window.OPTICS_TUTORIAL_AUDIT = {
   },
   unresolved: [
     {
-      label:"Touat Series 1 Exercises 4–5",
-      reason:"Their original statements are not exposed reliably by the indexed public source text used in this audit."
+      label:"Touat Series 1 Exercises 4, 5 and 7",
+      reason:"The recovered source clearly exposes Exercises 1–3, 6 and 8–11, but the indexed public text still does not expose the original statements for Exercises 4, 5 and 7 reliably."
     },
     {
       label:"2022–2023 final Geometrical Optics theory exam",
@@ -339,6 +355,13 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s1q32:"fibre-live",
     s1q33:"fibre-live",
     s1q34:"fibre-live",
+    s1q35:"fibre-live",
+    s1q36:"fibre-live",
+    s1q37:"fibre-live",
+    s1q38:"fibre-live",
+    s1q39:"fibre-live",
+    s1q40:"fibre-live",
+    s1q41:"refraction-live",
     s2q1:"plane-mirror",
     s2q11:"mirror-derivation",
     s2q12:"plane-mirror",
@@ -402,6 +425,9 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s4q15:"right-angle-prism",
     s4q16:"immersed-prism",
     s4q17:"immersed-prism",
+    s4q18:"prism-live",
+    s4q19:"cauchy-data",
+    s4q20:"cauchy-data",
     s5q1:"lens-shapes",
     s5q11:"newton-lens",
     s5q22:"bessel",
