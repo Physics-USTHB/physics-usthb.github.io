@@ -235,17 +235,63 @@ function staticSvg(key){
   line(s,20,170,700,170,"axis");
   const T=(x,y,t)=>text(s,x,y,t);
   if(key==="object-image"){line(s,190,75,190,170,"object");line(s,530,80,530,170,"image");line(s,360,35,360,295,"system");T(120,65,"real object: rays diverge");T(465,65,"real image: rays converge");line(s,190,75,360,120,"ray incident");line(s,360,120,530,80,"ray refracted");line(s,190,75,360,200,"ray incident");line(s,360,200,530,80,"ray refracted")}
-  else if(key==="wavefront"){for(let x=80;x<330;x+=45)line(s,x,40,x,145,"wavefront");for(let x=430;x<690;x+=45)line(s,x,175,x-50,290,"wavefront");line(s,0,155,720,155,"interface");line(s,170,30,360,155,"ray incident");line(s,360,155,500,300,"ray refracted");T(60,25,"incident wavefronts");T(480,305,"refracted wavefronts")}
+  else if(key==="wavefront"){
+    line(s,0,160,720,160,"interface");line(s,360,25,360,295,"normal");
+    const A={x:120,y:40},I={x:360,y:160},B={x:520,y:300};
+    line(s,A.x,A.y,I.x,I.y,"ray incident");line(s,I.x,I.y,B.x,B.y,"ray refracted");
+    const wf=(cx,cy,dx,dy)=>{const L=Math.hypot(dx,dy),px=-dy/L*42,py=dx/L*42;line(s,cx-px,cy-py,cx+px,cy+py,"wavefront")};
+    [[175,67],[235,97],[295,127]].forEach(p=>wf(p[0],p[1],I.x-A.x,I.y-A.y));
+    [[402,197],[447,237],[490,275]].forEach(p=>wf(p[0],p[1],B.x-I.x,B.y-I.y));
+    T(55,30,"incident wavefronts ⟂ ray");T(470,310,"refracted wavefronts ⟂ ray");T(390,145,"slower medium: ray bends toward normal");
+  }
   else if(key==="index-order"){line(s,0,105,720,105,"interface");line(s,0,225,720,225,"interface");line(s,145,25,300,105,"ray incident");line(s,300,105,390,225,"ray refracted");line(s,390,225,520,300,"ray emergent");T(35,85,"compare angles to normal");T(35,155,"toward normal ⇒ higher n");T(35,265,"away ⇒ lower n")}
   else if(key==="refraction-choice"){line(s,0,160,720,160,"interface");line(s,360,25,360,295,"normal");line(s,155,55,360,160,"ray incident");line(s,360,160,470,290,"ray refracted");line(s,360,160,650,225,"wrong");T(470,275,"possible");T(595,210,"too far from normal")}
-  else if(key==="plane-mirror"){line(s,360,30,360,295,"mirrorline");line(s,180,95,180,170,"object");line(s,540,95,540,170,"virtual");line(s,180,95,360,105,"ray incident");line(s,360,105,90,40,"ray reflected");line(s,360,105,540,95,"construction");T(160,75,"object");T(515,75,"image")}
-  else if(key==="two-mirrors"){line(s,360,160,100,300,"mirrorline");line(s,360,160,620,300,"mirrorline");line(s,360,65,360,160,"ray incident");line(s,360,160,200,245,"ray reflected");line(s,200,245,420,300,"ray reflected");T(325,45,"two reflections")}
-  else if(key==="mirror-field"){line(s,360,80,360,260,"mirrorline");circle(s,160,170,6,"eye");circle(s,560,170,6,"virtual");line(s,560,170,360,90,"construction");line(s,560,170,360,250,"construction");line(s,360,90,40,10,"ray reflected");line(s,360,250,40,320,"ray reflected");T(90,160,"eye");T(500,160,"virtual eye");T(40,300,"visible field bounded by rim rays")}
+  else if(key==="plane-mirror"){
+    line(s,360,30,360,295,"mirrorline");line(s,180,95,180,170,"object");line(s,540,95,540,170,"virtual");
+    const I={x:360,y:140};line(s,180,95,I.x,I.y,"ray incident");line(s,I.x,I.y,90,207.5,"ray reflected");line(s,I.x,I.y,540,95,"construction");
+    line(s,I.x-28,I.y,I.x+28,I.y,"normal");
+    T(160,75,"object");T(515,75,"virtual image");T(245,132,"i = r");
+  }
+  else if(key==="two-mirrors"){
+    const M1a={x:85,y:265},M1b={x:350,y:125},M2a={x:350,y:125},M2b={x:635,y:265};
+    line(s,M1a.x,M1a.y,M1b.x,M1b.y,"mirrorline");line(s,M2a.x,M2a.y,M2b.x,M2b.y,"mirrorline");
+    const P0={x:85,y:70},P1={x:250,y:178},P2={x:465,y:182},P3={x:640,y:70};
+    line(s,P0.x,P0.y,P1.x,P1.y,"ray incident");line(s,P1.x,P1.y,P2.x,P2.y,"ray reflected");line(s,P2.x,P2.y,P3.x,P3.y,"ray reflected");
+    T(85,292,"M₁");T(610,292,"M₂");T(260,45,"two successive specular reflections");
+  }
+  else if(key==="mirror-field"){
+    line(s,360,80,360,260,"mirrorline");circle(s,160,170,6,"eye");circle(s,560,170,6,"virtual");
+    [[90,-38],[250,298]].forEach(([ym,yl])=>{
+      line(s,160,170,360,ym,"ray reflected");line(s,360,ym,560,170,"construction");line(s,360,ym,40,yl,"construction");
+    });
+    T(90,160,"eye");T(500,160,"virtual eye");T(42,310,"field limits = edge lines toward virtual eye");
+  }
   else if(key==="two-spherical-mirrors"){s.appendChild(E("path",{d:"M120 55 Q200 170 120 285",class:"mirror"}));s.appendChild(E("path",{d:"M600 55 Q520 170 600 285",class:"mirror"}));line(s,360,95,360,170,"object");T(95,40,"mirror 1");T(555,40,"mirror 2");T(290,300,"image from first becomes object for second")}
-  else if(key==="diopter"){s.appendChild(E("path",{d:"M390 35 Q300 170 390 305",class:"diopter"}));line(s,120,95,120,170,"object");line(s,120,95,390,115,"ray incident");line(s,390,115,560,155,"ray refracted");line(s,120,95,390,170,"ray incident");line(s,390,170,560,155,"ray refracted");T(350,25,"spherical diopter")}
-  else if(key==="focal-plane"){line(s,520,45,520,295,"focalplane");circle(s,520,170,4,"focus");line(s,40,75,350,75,"ray incident");line(s,40,105,350,105,"ray incident");line(s,350,75,520,120,"ray refracted");line(s,350,105,520,120,"ray refracted");T(530,55,"image focal plane");T(530,120,"secondary focus")}
-  else if(key==="spherical-aberration"){s.appendChild(E("path",{d:"M390 35 Q300 170 390 305",class:"diopter"}));[70,110,145].forEach((y,j)=>{line(s,35,y,340,y,"ray incident");line(s,340,y,520+j*35,170,"ray refracted")});T(470,300,"marginal/paraxial rays cross at different points")}
-  else if(key==="glass-sphere"){circle(s,360,170,115,"sphere");line(s,35,110,245,110,"ray incident");line(s,245,110,420,145,"ray refracted");line(s,420,145,610,170,"ray emergent");T(250,35,"two successive spherical diopters")}
+  else if(key==="diopter"){
+    s.appendChild(E("path",{d:"M390 35 Q300 170 390 305",class:"diopter"}));circle(s,520,170,4,"point");circle(s,390,170,4,"point");
+    line(s,390,170,520,170,"construction");T(375,195,"S");T(510,195,"C");T(95,95,"incident medium n");T(545,95,"emergent medium n′");
+    T(175,300,"sign convention: R = SC; image position must be calculated from the exercise data");
+  }
+  else if(key==="focal-plane"){
+    line(s,520,45,520,295,"focalplane");line(s,360,35,360,295,"system");circle(s,520,210,4,"focus");
+    [[40,80,360,144],[40,120,360,184]].forEach(v=>line(s,v[0],v[1],v[2],v[3],"ray incident"));
+    line(s,360,144,520,210,"ray refracted");line(s,360,184,520,210,"ray refracted");
+    T(530,55,"image focal plane");T(530,210,"secondary focus F′θ");T(40,55,"inclined parallel bundle");
+  }
+  else if(key==="spherical-aberration"){
+    const cx=275,cy=170,R=120;s.appendChild(E("path",{d:"M"+cx+" 50 A"+R+" "+R+" 0 0 1 "+cx+" 290",class:"diopter"}));
+    [20,60].forEach((h,j)=>{
+      const yy=cy-h,xh=cx+Math.sqrt(R*R-h*h),ii=Math.asin(h/R),rrr=Math.asin(1.5*Math.sin(ii)),alpha=rrr-ii,xf=xh+h/Math.tan(alpha);
+      line(s,35,yy,xh,yy,"ray incident");line(s,xh,yy,xf,cy,"ray refracted");circle(s,xf,cy,4,j?"bad":"good");
+    });
+    T(35,35,"glass n=1.50 → air");T(475,145,"marginal focus");T(560,195,"paraxial focus farther away");T(430,300,"outside Gauss conditions: focal position depends on ray height");
+  }
+  else if(key==="glass-sphere"){
+    circle(s,360,170,115,"sphere");circle(s,245,170,4,"point");circle(s,475,170,4,"point");
+    T(205,150,"surface 1");T(475,150,"surface 2");T(305,45,"glass sphere");
+    line(s,90,170,245,170,"ray incident");line(s,245,170,475,170,"ray refracted");line(s,475,170,630,170,"ray emergent");
+    T(170,300,"treat successively: air → glass, transfer across sphere, glass → air");
+  }
   else if(key==="goniometer"){
     circle(s,360,165,115,"goniometer-ring");circle(s,360,165,6,"point");
     line(s,360,165,190,70,"ray incident");line(s,360,165,555,75,"ray reflected");line(s,360,165,515,270,"ray reflected");
