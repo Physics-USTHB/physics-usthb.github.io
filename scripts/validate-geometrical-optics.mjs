@@ -192,6 +192,17 @@ const micro320=presetHost("s6q38").parts[".visual-readout"].innerHTML;
 assert(micro320.includes("-0.5156 cm")&&micro320.includes("-320.00×")&&micro320.includes("-0.0781 cm"),"Touat optical-interval microscope regression");
 const microAngle=presetHost("s6q43").parts[".visual-readout"].innerHTML;
 assert(microAngle.includes("0.000200 rad")&&microAngle.includes("0.005000 rad"),"Microscope naked/image angular-size regression");
+assert(["s6q22","s6q23","s6q35","s6q36","s6q37","s6q46","s6q47","s6q48","s6q49","s6q50","s6q51","s6q52"].every(id=>audit.visuals[id]==="newtonian-live"),"Newtonian telescope family should use the live model");
+const newton60=presetHost("s6q23").parts[".visual-readout"].innerHTML;
+assert(newton60.includes("60.00×"),"Newtonian 1200/20 mm magnification regression");
+const newtonTube=presetHost("s6q36").parts[".visual-readout"].innerHTML;
+assert(newtonTube.includes("45.00 cm")&&newtonTube.includes("50.00 cm")&&newtonTube.includes("10.00 cm"),"Newtonian amateur-tube geometry regression");
+const newtonTouat=presetHost("s6q46").parts[".visual-readout"].innerHTML;
+assert(newtonTouat.includes("5.00×")&&newtonTouat.includes("0.0800 rad")&&newtonTouat.includes("0.4000 rad")&&newtonTouat.includes("0.800 cm"),"Touat Newtonian 1:1 layout regression");
+const clipHost=new Host();
+visualSandbox.window.OPTICS_VISUALS.mount("newtonian-live",clipHost,{controls:{"primary f₁′":10,"primary diameter":4,"secondary before F₁":2,"eyepiece f₂′":2,"A₁B₁":8,"secondary projected aperture":0.5}});
+assert(clipHost.parts[".visual-readout"].innerHTML.includes(">clipped<"),"Newtonian secondary-aperture clipping regression");
+
 
 
 
