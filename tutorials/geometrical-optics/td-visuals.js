@@ -564,6 +564,87 @@ function mountAngularResolution(host){
   };
   [dist,size,G,eye,detail].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
 }
+function mountGoniometer(host){
+  const ui=hostShell(host,"Prism goniometer — reflection and minimum deviation");
+  const view=addSelect(ui.controls,"measurement",[["reflection","reflection: determine A"],["minimum","minimum deviation: determine Dₘ"]],"reflection"),
+    L1=addNumber(ui.controls,"L₁",0,360,0.001,198.2333,"°"),
+    L2=addNumber(ui.controls,"L₂",0,360,0.001,318.1333,"°"),
+    N1=addNumber(ui.controls,"N₁",0,360,0.001,303.5,"°"),
+    N2=addNumber(ui.controls,"N₂",0,360,0.001,205.8333,"°"),
+    unc=addNumber(ui.controls,"reading uncertainty",0,60,0.1,2," arcmin");
+  const s=svgBase("Interactive prism goniometer readings for apex angle, minimum deviation, refractive index and uncertainty");ui.canvas.appendChild(s);
+  const smallDiff=(a,b)=>{const d=Math.abs(a-b)%360;return Math.min(d,360-d)};
+  const degMin=x=>{let d=Math.floor(Math.abs(x)+1e-10),m=(Math.abs(x)-d)*60;if(m>=59.995){d+=1;m=0}return d+"°"+String(Math.round(m)).padStart(2,"0")+"′"};
+  const redraw=()=>{
+    clearSvg(s);
+    const l1=+L1.value,l2=+L2.value,n1=+N1.value,n2=+N2.value,du=+unc.value,
+      sepL=smallDiff(l1,l2),A=sepL/2,sepN=smallDiff(n1,n2),Dm=(180-sepN)/2,
+      nn=Math.sin(deg((A+Dm)/2))/Math.sin(deg(A/2)),
+      dRad=du*Math.PI/(180*60),cot=x=>1/Math.tan(x),
+      dn=(nn/2)*(Math.abs(cot(deg((A+Dm)/2)))*dRad+Math.abs(cot(deg((A+Dm)/2))-cot(deg(A/2)))*dRad),
+      cx=360,cy=160,R=118,active=view.value==="reflection"?[[l1,"L₁"],[l2,"L₂"]]:[[n1,"N₁"],[n2,"N₂"]];
+    circle(s,cx,cy,R,"goniometer-ring");circle(s,cx,cy,5,"point");
+    for(let a=0;a<360;a+=30){
+      const x1=cx+(R-7)*Math.cos(deg(a)),y1=cy-(R-7)*Math.sin(deg(a)),x2=cx+R*Math.cos(deg(a)),y2=cy-R*Math.sin(deg(a));
+      line(s,x1,y1,x2,y2,"construction");
+    }
+    s.appendChild(E("path",{d:"M360 105 L315 195 L405 195 Z",class:"prism"}));text(s,345,155,"prism");
+    active.forEach(([ang,label],idx)=>{
+      const x=cx+R*Math.cos(deg(ang)),y=cy-R*Math.sin(deg(ang));
+      line(s,cx,cy,x,y,idx===0?"ray incident":"ray reflected");circle(s,x,y,6,"point");text(s,x+(x>=cx?8:-38),y+(y>=cy?18:-8),label+" "+degMin(ang));
+    });
+    text(s,35,35,view.value==="reflection"?"reflected telescope directions are separated by 2A":"minimum-deviation two-position method gives 2Dₘ = 180° − |N₁−N₂|");
+    setReadout(ui.readout,[
+      ["|L₂−L₁|",degMin(sepL)],["A",degMin(A)+" = "+fmt(A,4)+"°"],
+      ["|N₁−N₂|",degMin(sepN)],["Dₘ",degMin(Dm)+" = "+fmt(Dm,4)+"°"],
+      ["n",fmt(nn,4)],["Δn worst case",fmt(dn,6)],["relative Δn/n",fmt(100*dn/nn,3)+"%"]
+    ]);
+  };
+  [view,L1,L2,N1,N2,unc].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
+}
+function mountMicroscope(host){
+  const ui=hostShell(host,"Compound microscope — relaxed-eye adjustment");
+  const geometry=addSelect(ui.controls,"geometry",[["interval","optical interval Δ"],["separation","lens separation O₁O₂"]],"interval"),
+    f1=addNumber(ui.controls,"objective f₁′",0.1,20,0.01,0.5," cm"),
+    f2=addNumber(ui.controls,"eyepiece f₂′",0.2,20,0.01,2.5," cm"),
+    span=addNumber(ui.controls,"Δ or O₁O₂",0.1,100,0.1,16," cm"),
+    D=addNumber(ui.controls,"reference dₘ",10,100,0.5,25," cm"),
+    h=addNumber(ui.controls,"object AB",1,5000,1,50," µm"),
+    eye=addNumber(ui.controls,"eye threshold ×10⁻⁴",0.1,20,0.1,4,"");
+  const s=svgBase("Interactive compound microscope with objective, intermediate image, eyepiece and relaxed parallel output");ui.canvas.appendChild(s);
+  const redraw=()=>{
+    clearSvg(s);
+    const a=+f1.value,b=+f2.value,val=+span.value,dm=+D.value,hUm=+h.value,threshold=+eye.value*1e-4,
+      Delta=geometry.value==="interval"?val:val-a-b,L=a+Delta+b,A1=a+Delta,
+      doo=Math.abs(Delta)>1e-10?a*A1/Delta:Infinity,mObj=Math.abs(Delta)>1e-10?-Delta/a:0,
+      Geye=dm/b,G=mObj*Geye,f0=Math.abs(Delta)>1e-10?-(a*b)/Delta:Infinity,
+      Pi=Math.abs(Delta)>1e-10?100*Delta/(a*b):0,
+      hCm=hUm/10000,alpha=hCm/dm,alphaP=Math.abs(mObj)*hCm/b,
+      nakedResolved=alpha>=threshold,withResolved=alphaP>=threshold,
+      x1=150,scale=Math.min(28,430/Math.max(L,1)),x2=x1+L*scale,xA=x1+A1*scale,
+      ox=x1-Math.max(35,Number.isFinite(doo)?doo*scale:60),axis=170,objTop=axis-42,
+      imageHeight=Math.min(92,Math.max(18,Math.abs(mObj)*10)),imgTop=axis+(mObj<0?imageHeight:-imageHeight);
+    line(s,20,axis,700,axis,"axis");
+    s.appendChild(E("path",{d:"M"+x1+" 45 Q"+(x1-30)+" 170 "+x1+" 295 Q"+(x1+30)+" 170 "+x1+" 45",class:"lens"}));
+    s.appendChild(E("path",{d:"M"+x2+" 70 Q"+(x2-25)+" 170 "+x2+" 270 Q"+(x2+25)+" 170 "+x2+" 70",class:"lens"}));
+    line(s,ox,axis,ox,objTop,"object");text(s,ox-25,objTop-9,"AB");
+    line(s,xA,axis,xA,imgTop,"image");text(s,xA-30,imgTop+(imgTop>axis?22:-8),"A₁B₁ at F₂");
+    [110,225].forEach(yh=>{line(s,ox,objTop,x1,yh,"ray incident");line(s,x1,yh,xA,imgTop,"ray refracted")});
+    const outSlope=(imgTop-axis)/Math.max(1,b*scale);
+    [115,220].forEach(yE=>{line(s,xA,imgTop,x2,yE,"ray incident");line(s,x2,yE,690,yE+outSlope*(690-x2),"ray emergent")});
+    const F1p=x1+a*scale,F2=x2-b*scale;circle(s,F1p,axis,4,"focus");circle(s,F2,axis,4,"focus");text(s,F1p-12,axis+23,"F₁′");text(s,F2-8,axis+23,"F₂");
+    text(s,x1-38,35,"objective");text(s,x2-32,55,"eyepiece");
+    if(Delta>0){line(s,F1p,300,F2,300,"construction");text(s,(F1p+F2)/2-35,292,"Δ="+fmt(Delta,2)+" cm")}
+    setReadout(ui.readout,[
+      ["O₁O₂",fmt(L,2)+" cm"],["Δ",fmt(Delta,2)+" cm"],["O₁A",Number.isFinite(doo)?fmt(-doo,4)+" cm":"∞"],
+      ["O₁A₁",fmt(A1,2)+" cm"],["γ objective",fmt(mObj,2)],["G eyepiece",fmt(Geye,2)+"×"],
+      ["G total",fmt(G,2)+"×"],["equivalent f₀′",Number.isFinite(f0)?fmt(f0,4)+" cm":"∞"],
+      ["intrinsic power Π",fmt(Pi,2)+" m⁻¹"],["α naked",fmt(alpha,6)+" rad"],
+      ["α′ microscope",fmt(alphaP,6)+" rad"],["resolution",(!nakedResolved&&withResolved)?"unresolved naked → resolved with microscope":withResolved?"resolved with microscope":"below stated threshold"]
+    ]);
+  };
+  [geometry,f1,f2,span,D,h,eye].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
+}
 function mountTelescope(host){
   const ui=hostShell(host,"Afocal astronomical telescope");
   const fo=addRange(ui.controls,"objective f",200,1500,10,1000," mm"),
@@ -825,7 +906,7 @@ function mountStatic(key,host){
 }
 const live={
   "refraction-live":mountRefraction,"plate-live":mountPlate,"layers-live":mountLayers,"fibre-live":mountFibre,
-  "mirror-live":mountMirror,"mirror-translation-live":mountMirrorTranslation,"diopter-live":mountDiopter,"plane-diopter-live":mountPlaneDiopter,"prism-live":mountPrism,"lens-live":mountLens,"lens-combination-live":mountLensCombination,"eye-live":mountEye,"accommodation-live":mountAccommodation,"magnifier-live":mountMagnifier,"angular-resolution-live":mountAngularResolution,"telescope-live":mountTelescope
+  "mirror-live":mountMirror,"mirror-translation-live":mountMirrorTranslation,"diopter-live":mountDiopter,"plane-diopter-live":mountPlaneDiopter,"prism-live":mountPrism,"goniometer-live":mountGoniometer,"lens-live":mountLens,"lens-combination-live":mountLensCombination,"eye-live":mountEye,"accommodation-live":mountAccommodation,"magnifier-live":mountMagnifier,"microscope-live":mountMicroscope,"angular-resolution-live":mountAngularResolution,"telescope-live":mountTelescope
 };
 window.OPTICS_VISUALS={
   mount(key,host,preset){if(!host||!key)return;if(live[key]){live[key](host);applyPreset(host,preset)}else mountStatic(key,host);installViewControl(host)}
