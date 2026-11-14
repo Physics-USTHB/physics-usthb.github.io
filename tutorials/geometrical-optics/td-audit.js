@@ -121,7 +121,7 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s1q32:[["td1-2024-25","Ex. 10.4(a)"],["touat-2021-22","Series 1 · Ex. 9 acceptance angle"]],
     s1q33:[["td1-2024-25","Ex. 10.4(b)"],["touat-2021-22","Series 1 · Ex. 9 speed"]],
     s1q34:[["td1-2024-25","Ex. 10.3"]],
-    s1q23:[["td1-2024-25","Ex. 11 family"]],
+
 
     s4q21:[["touat-2021-22","Series 1 · Ex. 4"]],
     s1q42:[["touat-2021-22","Series 1 · Ex. 5"]],
@@ -239,7 +239,7 @@ window.OPTICS_TUTORIAL_AUDIT = {
         {n:"8",status:"covered",q:["s1q14","s1q19"]},
         {n:"9",status:"covered",q:["s1q30","s1q31"]},
         {n:"10",status:"covered",q:["s1q21","s1q32","s1q33","s1q34","s1q22"]},
-        {n:"11",status:"covered",q:["s1q23"]}
+        {n:"11",status:"statement-figure-not-fully-recovered",q:["s1q23"],note:"The curved-guide/fibre family is known, but the full current statement/figure is not retrievable from the indexed public preview; the mapped exercise is a transparent method reconstruction, not claimed as exact."}
       ]
     },
     {
@@ -332,6 +332,10 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s6:["usthb-course","touat-2021-22"]
   },
   unresolved: [
+    {
+      label:"2024–2025 TD Series 1, Exercise 11 full statement/figure",
+      reason:"The curved-guide/fibre question family is identifiable, but the complete public statement/figure is not retrievable in the indexed source used by this audit. A method reconstruction is provided and labelled accordingly."
+    },
     {
       label:"2022–2023 final Geometrical Optics theory exam",
       reason:"The USTHB Faculty schedule verifies the exam date (23 January 2023), but the actual theory paper was not recovered in the public audit."
