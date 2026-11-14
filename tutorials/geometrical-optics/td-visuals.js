@@ -398,7 +398,7 @@ function mountAngularResolution(host){
     s.innerHTML="";
     const L=+dist.value,S=+size.value,g=+G.value,threshold=+eye.value*1e-4,test=+detail.value,
       alpha=S/L,alphaP=g*alpha,limitAlpha=threshold/g,limitSize=L*limitAlpha,resolved=test+1e-9>=limitSize;
-    const ex=95,axis=155,mx=590,r=70;
+    const ex=95,axis=155,mx=590,r=clamp(24+Math.sqrt(Math.min(Math.abs(alpha),1))*480,28,90);
     circle(s,ex,axis,13,"eye");text(s,55,axis+36,"observer");
     circle(s,mx,axis,r,"sphere");text(s,mx-26,axis+5,"object");
     line(s,ex,axis,mx,axis-r,"ray incident");line(s,ex,axis,mx,axis+r,"ray incident");line(s,ex,axis,mx,axis,"construction");
