@@ -116,6 +116,15 @@ assert(audit.visuals.s1q23==="curved-fibre","Curved-fibre exercise must not use 
 assert(audit.visuals.s1q26==="optical-wedge","Optical-wedge exercise must not use the parallel-plate visual");
 assert(audit.visuals.s2q16==="two-mirrors","Two-plane-mirror exercise mapped to the wrong mirror family");
 assert(audit.visuals.s6q4==="myopia-correction"&&audit.visuals.s6q5==="near-correction","Spectacle-correction exercises need correction-lens schematics");
+assert(appCode.includes("visuals.mount(visualKey,host,(audit.visualPresets||{})[q.id])"),"Question-specific visual presets are not passed to the visual engine");
+assert(Object.keys(audit.visualPresets||{}).length>=50,"Too few question-specific visual presets");
+const presetHost=(qid)=>{const host=new Host();visualSandbox.window.OPTICS_VISUALS.mount(audit.visuals[qid],host,audit.visualPresets[qid]);return host};
+const presetValue=(qid,label)=>{const h=presetHost(qid),wrap=h.parts[".visual-controls"].children.find(w=>w.children?.[0]?.textContent===label);return wrap?.children?.find(x=>x.tagName==="input"||x.tagName==="select")?.value};
+assert(String(presetValue("s4q7","incidence i"))==="0","Normal-incidence prism preset not applied");
+assert(String(presetValue("s2q18","object distance"))==="500","Metre-scale mirror preset not applied");
+assert(String(presetValue("s5q25","object"))==="virtual","Virtual-object lens preset not applied");
+assert(String(presetValue("s1q34","cladding nᵍ"))==="1.08","Fibre limiting-condition preset not applied");
+
 const controlByLabel=(key,label)=>{const h=hostForTest(key);const wrap=h.parts[".visual-controls"].children.find(w=>w.children?.[0]?.textContent===label);return wrap?.children?.find(x=>x.tagName==="input"||x.tagName==="select")};
 assert(Number(controlByLabel("prism-live","incidence i")?.min)===0,"Prism visual must support normal incidence");
 assert(Number(controlByLabel("refraction-live","incidence i")?.max)>=89,"Refraction visual must support the grazing-incidence limit");
