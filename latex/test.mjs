@@ -58,7 +58,7 @@ assert.ok(existsSync(new URL('../practicums/index.html', import.meta.url)), 'Phy
 assert.ok(home.includes('href="english/"'), 'Homepage must link English for Physicists');
 assert.ok(home.includes('A2 beta preview'), 'English beta status must be transparent');
 assert.ok(home.includes('Not an official USTHB website'), 'Homepage must identify independent status');
-assert.equal((home.match(/class="path-card"/g) || []).length, 3, 'Homepage must retain three pathways');
+assert.equal((home.match(/class="path-card"/g) || []).length, 4, 'Homepage must retain exactly four primary pathways');
 assert.ok(home.includes('href="assets/home.css"'), 'Homepage must use isolated stylesheet');
 assert.ok(home.includes('href="privacy.html"'), 'Homepage must link privacy page');
 assert.ok(privacy.includes('Many students can therefore use'), 'Privacy page must explain simultaneous independent use');
