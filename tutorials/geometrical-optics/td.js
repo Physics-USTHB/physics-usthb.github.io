@@ -170,7 +170,7 @@ function renderQuestion(id){
   }));
 
   const visualKey=(audit.visuals||{})[q.id],host=$("#questionVisual");
-  if(visualKey&&host&&visuals?.mount)visuals.mount(visualKey,host);
+  if(visualKey&&host&&visuals?.mount)visuals.mount(visualKey,host,(audit.visualPresets||{})[q.id]);
 
   $("#prevQuestion").disabled=idx===0;$("#nextQuestion").disabled=idx===questions.length-1;
   $("#prevQuestion").onclick=()=>idx>0&&go(questions[idx-1].id);
