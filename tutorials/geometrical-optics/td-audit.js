@@ -227,7 +227,7 @@ window.OPTICS_TUTORIAL_AUDIT = {
   },
   sheets: [
     {
-      id:"td1-2024-25-sheet",sourceId:"td1-2024-25",label:"2024–2025 L2 TD Series 1 — Reflection / Refraction",status:"covered",
+      id:"td1-2024-25-sheet",sourceId:"td1-2024-25",label:"2024–2025 L2 TD Series 1 — Reflection / Refraction",status:"partial",
       exercises:[
         {n:"1",status:"covered",q:["s1q1"]},
         {n:"2",status:"covered",q:["s1q2"]},
