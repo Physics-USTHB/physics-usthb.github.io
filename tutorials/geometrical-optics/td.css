@@ -42,3 +42,6 @@
 .interactive-svg .aperture{stroke:#3d5665;stroke-width:5}.interactive-svg .focalplane{stroke:#83a1b1;stroke-width:2;stroke-dasharray:7 5}.interactive-svg .source{fill:#227b92}.interactive-svg .system{stroke:#547589;stroke-width:3}.interactive-svg .virtual{stroke:#b45260;stroke-width:4;stroke-dasharray:5 4}.interactive-svg .wrong{fill:#d7dde1;stroke:#9caab3}.interactive-svg .retina{stroke:#b44f5d;stroke-width:5}.interactive-svg .eye{fill:#f7fbfd;stroke:#7395a7;stroke-width:3}
 .side-tools{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:620px){.sheet-card>header{flex-direction:column}.sheet-exercise{grid-template-columns:1fr}.side-tools{grid-template-columns:1fr}}
+
+.sheet-status.statement-figure-not-fully-recovered{background:#fff2dc;color:#805b16}
+.sheet-status.covered-with-authored-q7-derivation{background:#eef3fb;color:#355f91}
