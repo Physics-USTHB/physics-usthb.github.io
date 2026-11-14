@@ -19,8 +19,9 @@ function svgBase(label){
       p=E("path",{d:"M0 0 L8 3.5 L0 7 Z",fill:color});
     m.appendChild(p);defs.appendChild(m);s._rayMarkers[k]=id;
   });
-  s.appendChild(defs);return s;
+  s.appendChild(defs);s._svgHeader=[title,defs];return s;
 }
+function clearSvg(s){const keep=s._svgHeader||[];clearSvg(s);keep.forEach(x=>s.appendChild(x))}
 function line(s,x1,y1,x2,y2,cls="ray"){
   const l=E("line",{x1,y1,x2,y2,class:cls}),tokens=String(cls).split(/\s+/);
   let marker=null;
@@ -107,7 +108,7 @@ function mountRefraction(host){
   const n1=addRange(ui.controls,"n₁",1,2,0.01,1.00),n2=addRange(ui.controls,"n₂",1,2,0.01,1.50),inc=addRange(ui.controls,"incidence i",0,89.9,0.1,30,"°");
   const s=svgBase("Interactive Snell-Descartes refraction diagram");ui.canvas.appendChild(s);
   const redraw=()=>{
-    s.innerHTML="";const a=Number(n1.value),b=Number(n2.value),i=Number(inc.value),cx=360,cy=160;
+    clearSvg(s);const a=Number(n1.value),b=Number(n2.value),i=Number(inc.value),cx=360,cy=160;
     line(s,40,cy,680,cy,"interface");line(s,cx,25,cx,295,"normal");
     const L=210,ix=cx-L*Math.sin(deg(i)),iy=cy-L*Math.cos(deg(i));line(s,ix,iy,cx,cy,"ray incident");
     const sinr=a*Math.sin(deg(i))/b;
@@ -124,7 +125,7 @@ function mountPlate(host){
   const n=addRange(ui.controls,"glass n",1.1,2,0.01,1.50),th=addRange(ui.controls,"thickness",1,8,0.1,4," cm"),inc=addRange(ui.controls,"incidence",0,75,1,45,"°");
   const s=svgBase("Interactive plane parallel plate ray diagram");ui.canvas.appendChild(s);
   const redraw=()=>{
-    s.innerHTML="";const nn=+n.value,t=+th.value,i=+inc.value,r=rad(Math.asin(Math.sin(deg(i))/nn)),d=t*Math.sin(deg(i-r))/Math.cos(deg(r));
+    clearSvg(s);const nn=+n.value,t=+th.value,i=+inc.value,r=rad(Math.asin(Math.sin(deg(i))/nn)),d=t*Math.sin(deg(i-r))/Math.cos(deg(r));
     const px=18,y1=85,y2=y1+t*px,cx=300;
     s.appendChild(E("rect",{x:0,y:y1,width:720,height:y2-y1,class:"glass"}));line(s,0,y1,720,y1,"interface");line(s,0,y2,720,y2,"interface");
     const L=120,x0=cx-L*Math.sin(deg(i)),yy0=y1-L*Math.cos(deg(i));line(s,x0,yy0,cx,y1,"ray incident");
@@ -142,7 +143,7 @@ function mountLayers(host){
   const n1=addRange(ui.controls,"lower n₁",1.1,2.2,0.01,2.00),n2=addRange(ui.controls,"upper n₂",1.05,1.8,0.01,1.25),h1=addRange(ui.controls,"lower depth",2,20,0.5,10," cm"),h2=addRange(ui.controls,"upper depth",0,25,0.5,18," cm");
   const s=svgBase("Interactive two-layer escape cone");ui.canvas.appendChild(s);
   const redraw=()=>{
-    s.innerHTML="";const a=+n1.value,b=+n2.value,H1=+h1.value,H2=+h2.value;
+    clearSvg(s);const a=+n1.value,b=+n2.value,H1=+h1.value,H2=+h2.value;
     const i2=Math.asin(1/b),i1=Math.asin(clamp(1/a,-1,1)),R=H1*Math.tan(i1)+H2*Math.tan(i2);
     const scale=Math.min(195/Math.max(H1+H2,1),250/Math.max(R,1)),yBot=285,yMid=yBot-H1*scale,yTop=yMid-H2*scale,cx=360;
     s.appendChild(E("rect",{x:0,y:yTop,width:720,height:yMid-yTop,class:"liquid upper"}));s.appendChild(E("rect",{x:0,y:yMid,width:720,height:yBot-yMid,class:"liquid lower"}));
@@ -163,7 +164,7 @@ function mountFibre(host){
   const redraw=()=>{
     let cc=+nc.value,g=Math.min(+ng.value,cc-0.005);if(+ng.value>=cc){ng.value=(cc-0.005).toFixed(3);if(ng._valueOutput)ng._valueOutput.textContent=ng.value+(ng._unit||"");g=+ng.value}
     const i=+inc.value,NA=Math.sqrt(Math.max(0,cc*cc-g*g)),imax=rad(Math.asin(clamp(NA,0,1))),theta=rad(Math.asin(clamp(Math.sin(deg(i))/cc,-1,1))),ok=i<=imax+1e-9;
-    s.innerHTML="";s.appendChild(E("rect",{x:170,y:95,width:510,height:130,class:"cladding"}));s.appendChild(E("rect",{x:170,y:120,width:510,height:80,class:"core"}));line(s,35,160,170,160,"axis");
+    clearSvg(s);s.appendChild(E("rect",{x:170,y:95,width:510,height:130,class:"cladding"}));s.appendChild(E("rect",{x:170,y:120,width:510,height:80,class:"core"}));line(s,35,160,170,160,"axis");
     const launchL=135;line(s,170-launchL*Math.cos(deg(i)),160-launchL*Math.sin(deg(i)),170,160,"ray incident");
     let x=170,y=160,dir=1;const slope=Math.tan(deg(theta));
     for(let k=0;k<8&&x<680;k++){
@@ -187,7 +188,7 @@ function mountMirror(host){
   const kind=addSelect(ui.controls,"mirror",[["concave","concave"],["convex","convex"]],"concave"),fmag=addRange(ui.controls,"|f|",8,200,1,20," cm"),obj=addRange(ui.controls,"object distance",10,600,1,60," cm");
   const s=svgBase("Interactive spherical mirror ray diagram");ui.canvas.appendChild(s);
   const redraw=()=>{
-    s.innerHTML="";
+    clearSvg(s);
     const f=(kind.value==="concave"?1:-1)*(+fmag.value),doo=+obj.value,inv=1/f-1/doo,di=Math.abs(inv)<1e-7?Infinity:1/inv,m=Number.isFinite(di)?-di/doo:Infinity;
     const mx=575,axis=170,maxD=Math.max(doo,Math.abs(Number.isFinite(di)?di:0),2*Math.abs(f),20),scale=Math.min(4.2,390/maxD),ox=mx-doo*scale,oh=62;
     line(s,20,axis,700,axis,"axis");
@@ -222,7 +223,7 @@ function mountDiopter(host){
     obj=addRange(ui.controls,"|SA|",2,400,1,100," cm");
   const s=svgBase("Interactive spherical diopter in the USTHB oriented-distance convention");ui.canvas.appendChild(s);
   const redraw=()=>{
-    s.innerHTML="";
+    clearSvg(s);
     const a=+n1.value,b=+n2.value,R=(surface.value==="R+"?1:-1)*(+rmag.value),
       SA=objectNature.value==="infinity"?-Infinity:(objectNature.value==="real"?-1:1)*(+obj.value),
       power=(b-a)/(R/100),rhs=(b-a)/R+(Number.isFinite(SA)?a/SA:0),
@@ -285,7 +286,7 @@ function mountPrism(host){
   const s=svgBase("Interactive prism with moving second-face intersection");ui.canvas.appendChild(s);
   const cross=(a,b)=>a.x*b.y-a.y*b.x;
   const redraw=()=>{
-    s.innerHTML="";
+    clearSvg(s);
     const aa=+A.value,nn=+n.value,i=+inc.value,r1=rad(Math.asin(clamp(Math.sin(deg(i))/nn,-1,1))),r2=aa-r1,crit=rad(Math.asin(1/nn));
     const h=220,half=h*Math.tan(deg(aa/2)),ap={x:0,y:h},L={x:-half,y:0},Rt={x:half,y:0},map=p=>({x:360+p.x,y:285-p.y});
     const aps=map(ap),ls=map(L),rs=map(Rt);s.appendChild(E("path",{d:"M"+aps.x+" "+aps.y+" L"+ls.x+" "+ls.y+" L"+rs.x+" "+rs.y+" Z",class:"prism"}));
@@ -316,7 +317,7 @@ function mountLens(host){
     fmag=addRange(ui.controls,"|f|",5,30,1,10," cm"),obj=addRange(ui.controls,"object distance",3,60,1,30," cm");
   const s=svgBase("Interactive thin lens image formation");ui.canvas.appendChild(s);
   const redraw=()=>{
-    s.innerHTML="";
+    clearSvg(s);
     const f=(kind.value==="conv"?1:-1)*(+fmag.value),dmag=+obj.value,doo=(objectNature.value==="virtual"?-1:1)*dmag,
       inv=1/f-1/doo,di=Math.abs(inv)<1e-7?Infinity:1/inv,m=Number.isFinite(di)?-di/doo:Infinity;
     const lx=360,axis=170,maxD=Math.max(Math.abs(doo),Math.abs(Number.isFinite(di)?di:0),2*Math.abs(f),15),
@@ -353,7 +354,7 @@ function mountEye(host){
   const power=addRange(ui.controls,"eye power",55,70,0.1,60.6," D"),obj=addRange(ui.controls,"object distance",0.2,10,0.1,10," m");
   const s=svgBase("Interactive reduced-eye focusing diagram");ui.canvas.appendChild(s);
   const redraw=()=>{
-    s.innerHTML="";const P=+power.value,doo=+obj.value,di=1/(P-1/doo),retina=0.0165,err=(di-retina)*1000;
+    clearSvg(s);const P=+power.value,doo=+obj.value,di=1/(P-1/doo),retina=0.0165,err=(di-retina)*1000;
     line(s,25,170,700,170,"axis");s.appendChild(E("ellipse",{cx:455,cy:170,rx:115,ry:125,class:"eye"}));s.appendChild(E("path",{d:"M405 75 Q365 170 405 265 Q445 170 405 75",class:"lens"}));line(s,545,65,545,275,"retina");
     const fx=405+di*5000;line(s,40,115,405,115,"ray incident");line(s,405,115,clamp(fx,405,670),170,"ray refracted");line(s,40,225,405,225,"ray incident");line(s,405,225,clamp(fx,405,670),170,"ray refracted");circle(s,fx,170,5,Math.abs(err)<0.3?"focus good":"focus bad");text(s,555,85,"retina");
     setReadout(ui.readout,[["image distance",fmt(di*1000,2)+" mm"],["retina",fmt(retina*1000,1)+" mm"],["focus error",fmt(err,2)+" mm"],["status",Math.abs(err)<0.3?"focused on retina":err<0?"focus in front of retina":"focus behind retina"]]);
@@ -367,7 +368,7 @@ function mountPlaneDiopter(host){
     depth=addNumber(ui.controls,"|SA|",0.1,1000,0.1,30," cm");
   const s=svgBase("Interactive plane-diopter apparent-depth model");ui.canvas.appendChild(s);
   const redraw=()=>{
-    s.innerHTML="";
+    clearSvg(s);
     const a=+n1.value,b=+n2.value,d=Math.max(0.001,+depth.value),SA=-d,SAp=SA*b/a,app=Math.abs(SAp);
     const yS=82,x0=360,yObj=yS+105,yImg=yS+105*(b/a);
     line(s,30,yS,690,yS,"interface");text(s,35,yS-14,"emergent medium n′="+fmt(b));text(s,35,yS+24,"incident medium n="+fmt(a));
@@ -390,7 +391,7 @@ function mountMirrorTranslation(host){
     shift=addNumber(ui.controls,"mirror shift toward object",0,50,0.5,3," cm");
   const s=svgBase("Interactive plane-mirror translation model");ui.canvas.appendChild(s);
   const redraw=()=>{
-    s.innerHTML="";
+    clearSvg(s);
     const d=Math.max(1,+dist.value),raw=Math.max(0,+shift.value),dx=Math.min(raw,d-1),scale=1.3,ox=85,axis=200,
       m0=ox+d*scale,m1=ox+(d-dx)*scale,i0=ox+2*d*scale,i1=ox+2*(d-dx)*scale;
     line(s,20,axis,700,axis,"axis");line(s,ox,axis,ox,axis-75,"object");text(s,55,axis-88,"fixed object");
@@ -415,7 +416,7 @@ function mountLensCombination(host){
     s.appendChild(E("path",{d:path,class:"lens"}));text(s,x-16,35,label);
   };
   const redraw=()=>{
-    s.innerHTML="";
+    clearSvg(s);
     const a=+f1.value,b=+f2.value,d=Math.max(0,+sep.value),valid=Math.abs(a)>1e-9&&Math.abs(b)>1e-9,
       P1=valid?100/a:NaN,P2=valid?100/b:NaN,Peq=valid?P1+P2-(d/100)*P1*P2:NaN,
       feq=Number.isFinite(Peq)&&Math.abs(Peq)>1e-9?100/Peq:Infinity,afocal=valid&&Math.abs(Peq)<1e-6;
@@ -440,7 +441,7 @@ function mountAccommodation(host){
     pr=addNumber(ui.controls,"far distance",0.1,100,0.1,5," m");
   const s=svgBase("Interactive eye accommodation interval model");ui.canvas.appendChild(s);
   const redraw=()=>{
-    s.innerHTML="";
+    clearSvg(s);
     const near=Math.max(0.1,+pp.value),finite=farMode.value==="finite",far=Math.max(0.01,+pr.value),
       A=100/near-(finite?1/far:0),eyeX=625,axis=170,nearX=eyeX-clamp(near*5,70,350);
     line(s,30,axis,700,axis,"axis");s.appendChild(E("ellipse",{cx:eyeX,cy:axis,rx:55,ry:43,class:"eye"}));text(s,eyeX-25,axis+65,"eye");
@@ -466,7 +467,7 @@ function mountMagnifier(host){
     eye=addNumber(ui.controls,"eye threshold ×10⁻⁴",0.1,20,0.1,4,"");
   const s=svgBase("Interactive magnifier angular-magnification and resolution model");ui.canvas.appendChild(s);
   const redraw=()=>{
-    s.innerHTML="";
+    clearSvg(s);
     const ff=+f.value,dd=+D.value,hmm=+h.value,hcm=hmm/10,threshold=+eye.value*1e-4,view=mode.value;
     let u=+obj.value,di=null,gamma=null,G=1,alpha=hcm/dd,alphaP=alpha;
     if(view==="relaxed"){u=ff;di=Infinity;G=dd/ff;alphaP=hcm/ff}
@@ -521,7 +522,7 @@ function mountAngularResolution(host){
     detail=addNumber(ui.controls,"test detail",0.001,10000,0.001,0.2," km");
   const s=svgBase("Interactive angular-size and telescope-resolution model");ui.canvas.appendChild(s);
   const redraw=()=>{
-    s.innerHTML="";
+    clearSvg(s);
     const L=+dist.value,S=+size.value,g=+G.value,threshold=+eye.value*1e-4,test=+detail.value,
       alpha=S/L,alphaP=g*alpha,limitAlpha=threshold/g,limitSize=L*limitAlpha,resolved=test+1e-9>=limitSize;
     const ex=95,axis=155,mx=590,r=clamp(24+Math.sqrt(Math.min(Math.abs(alpha),1))*480,28,90);
@@ -548,7 +549,7 @@ function mountTelescope(host){
   const fo=addRange(ui.controls,"objective f",200,1500,10,1000," mm"),fe=addRange(ui.controls,"eyepiece f",10,80,1,20," mm");
   const s=svgBase("Interactive astronomical telescope ray diagram");ui.canvas.appendChild(s);
   const redraw=()=>{
-    s.innerHTML="";
+    clearSvg(s);
     const a=+fo.value,b=+fe.value,G=a/b,total=a+b,scale=420/total,x1=120,x2=x1+total*scale,xf=x1+a*scale,axis=170;
     line(s,20,axis,700,axis,"axis");
     s.appendChild(E("path",{d:"M"+x1+" 45 Q"+(x1-35)+" 170 "+x1+" 295 Q"+(x1+35)+" 170 "+x1+" 45",class:"lens"}));
