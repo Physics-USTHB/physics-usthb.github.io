@@ -250,7 +250,7 @@ function mountDiopter(host){
       SA=objectNature.value==="infinity"?-Infinity:(objectNature.value==="real"?-1:1)*(+obj.value),
       power=(b-a)/(R/100),rhs=(b-a)/R+(Number.isFinite(SA)?a/SA:0),
       SAp=Math.abs(rhs)<1e-10?Infinity:b/rhs,
-      gamma=Number.isFinite(SA)&&Number.isFinite(SAp)?a*SAp/(b*SA):0,
+      gamma=Number.isFinite(SA)&&Number.isFinite(SAp)?a*SAp/(b*SA):NaN,
       SF=Math.abs(b-a)<1e-10?Infinity:-a*R/(b-a),
       SFp=Math.abs(b-a)<1e-10?Infinity:b*R/(b-a);
     const sx=360,axis=170,finite=[R,SA,SAp,SF,SFp].filter(Number.isFinite).map(Math.abs),
@@ -269,7 +269,7 @@ function mountDiopter(host){
     let ix=null,iTop=null;
     if(Number.isFinite(SAp)){
       ix=sx+SAp*scale;
-      const signedH=(gamma===0?1:Math.sign(gamma))*Math.min(90,Math.max(18,Math.abs(gamma)*oh));
+      const signedH=Number.isFinite(gamma)?Math.sign(gamma||1)*Math.min(90,Math.max(18,Math.abs(gamma)*oh)):40;
       iTop=axis-signedH;line(s,ix,axis,ix,iTop,SAp<0?"virtual":"image");text(s,ix-22,iTop+(iTop>axis?22:-8),SAp<0?"virtual A′":"A′");
     }
     const hits=[128,145];
