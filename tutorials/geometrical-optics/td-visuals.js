@@ -645,6 +645,63 @@ function mountMicroscope(host){
   };
   [geometry,f1,f2,span,D,h,eye].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
 }
+function mountNewtonian(host){
+  const ui=hostShell(host,"Newtonian telescope — primary, 45° secondary and eyepiece");
+  const f1=addNumber(ui.controls,"primary f₁′",5,150,0.5,50," cm"),
+    Dp=addNumber(ui.controls,"primary diameter",1,40,0.5,10," cm"),
+    offset=addNumber(ui.controls,"secondary before F₁",0.2,30,0.1,5," cm"),
+    f2=addNumber(ui.controls,"eyepiece f₂′",0.5,20,0.1,2.5," cm"),
+    h=addNumber(ui.controls,"A₁B₁",0,30,0.1,0," mm"),
+    dproj=addNumber(ui.controls,"secondary projected aperture",0.1,20,0.1,1," cm");
+  const s=svgBase("Interactive Newtonian telescope with converging primary cone, 45-degree secondary, redirected focal plane and afocal eyepiece");ui.canvas.appendChild(s);
+  const cross=(a,b)=>a.x*b.y-a.y*b.x;
+  const redraw=()=>{
+    clearSvg(s);
+    const F=+f1.value,D=+Dp.value,x=Math.min(+offset.value,F*0.95),fe=+f2.value,hmm=+h.value,dp=+dproj.value,
+      hcm=hmm/10,G=F/fe,theta=F>0?hcm/F:0,thetaP=fe>0?hcm/fe:0,
+      secFromPrimary=F-x,beamAtSec=D*x/F,maxOffset=F*dp/D,full=dp+1e-9>=beamAtSec,
+      scale=Math.min(30,390/Math.max(F+fe+x,10)),mx=645,axis=185,Fx=mx-F*scale,sx=mx-secFromPrimary*scale,
+      mirrorR=clamp(D*scale/2,28,92),imgDy=clamp(hcm*scale,-65,65),B1={x:Fx,y:axis+imgDy},
+      B2={x:sx+imgDy,y:axis-x*scale},eyeY=B2.y-fe*scale;
+    line(s,25,axis,700,axis,"axis");
+    s.appendChild(E("rect",{x:Fx-25,y:axis-mirrorR-12,width:mx-Fx+45,height:2*(mirrorR+12),class:"tube"}));
+    s.appendChild(E("path",{d:"M"+mx+" "+(axis-mirrorR)+" Q"+(mx-35)+" "+axis+" "+mx+" "+(axis+mirrorR),class:"mirror"}));
+    text(s,mx-70,axis-mirrorR-14,"primary");
+    circle(s,Fx,axis,4,"focus");text(s,Fx-12,axis+24,"F₁");
+    const secHalf=clamp(Math.max(18,beamAtSec*scale*.85),20,55);
+    line(s,sx-secHalf,axis-secHalf,sx+secHalf,axis+secHalf,"mirrorline");text(s,sx-65,axis+secHalf+20,"45° secondary");
+    const primaryHits=[axis-mirrorR*.72,axis+mirrorR*.72],incomingSlope=-theta;
+    primaryHits.forEach(py=>{
+      const x0=30,y0=py-incomingSlope*(mx-x0);line(s,x0,y0,mx,py,"ray incident");
+      const P={x:mx,y:py},d1={x:B1.x-P.x,y:B1.y-P.y},S0={x:sx,y:axis},sd={x:1,y:1},den=cross(d1,sd),
+        t=Math.abs(den)>1e-9?cross({x:S0.x-P.x,y:S0.y-P.y},sd)/den:0.5,Q={x:P.x+t*d1.x,y:P.y+t*d1.y};
+      line(s,P.x,P.y,Q.x,Q.y,"ray reflected");line(s,Q.x,Q.y,B2.x,B2.y,"ray reflected");
+    });
+    line(s,B2.x,axis-2,B2.x,B2.y,"image");text(s,B2.x+10,B2.y+5,"A₂B₂");
+    line(s,sx,axis,B2.x,B2.y,"construction");text(s,sx+8,(axis+B2.y)/2,"x");
+    const eyeX=sx,eyeHalf=38;
+    if(eyeY>25){
+      s.appendChild(E("path",{d:"M"+eyeX+" "+(eyeY-eyeHalf)+" Q"+(eyeX-20)+" "+eyeY+" "+eyeX+" "+(eyeY+eyeHalf)+" Q"+(eyeX+20)+" "+eyeY+" "+eyeX+" "+(eyeY-eyeHalf),class:"lens"}));
+      text(s,eyeX+12,eyeY-20,"eyepiece");
+      const outSlope=fe>0?-(B2.x-eyeX)/(fe*scale):0;
+      [-20,20].forEach(dx=>{
+        const hit={x:eyeX+dx,y:eyeY};line(s,B2.x,B2.y,hit.x,hit.y,"ray incident");
+        const topY=20,topX=hit.x+outSlope*(eyeY-topY);line(s,hit.x,hit.y,topX,topY,"ray emergent");
+      });
+    }
+    line(s,mx,axis+mirrorR+28,Fx,axis+mirrorR+28,"construction");text(s,(mx+Fx)/2-38,axis+mirrorR+45,"f₁′="+fmt(F,1)+" cm");
+    text(s,35,35,"incoming rays from infinity → primary focus → 45° fold → eyepiece");
+    setReadout(ui.readout,[
+      ["|G|=f₁′/f₂′",fmt(G,2)+"×"],["θ≈A₁B₁/f₁′",fmt(theta,4)+" rad"],["|θ′|≈A₂B₂/f₂′",fmt(thetaP,4)+" rad"],
+      ["primary → secondary",fmt(secFromPrimary,2)+" cm"],["secondary → focus",fmt(x,2)+" cm"],["secondary → eyepiece",fmt(x+fe,2)+" cm"],
+      ["minimum tube diameter",fmt(D,2)+" cm"],["basic tube length",fmt(F,2)+" cm"],
+      ["beam diameter at secondary",fmt(beamAtSec,3)+" cm"],["projected secondary aperture",fmt(dp,3)+" cm"],
+      ["full primary cone",full?"intercepted":"clipped"],["largest x for this aperture",fmt(maxOffset,2)+" cm"],
+      ["focus vs tube-wall radius",fmt(x-D/2,2)+" cm"]
+    ]);
+  };
+  [f1,Dp,offset,f2,h,dproj].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
+}
 function mountTelescope(host){
   const ui=hostShell(host,"Afocal astronomical telescope");
   const fo=addRange(ui.controls,"objective f",200,1500,10,1000," mm"),
@@ -906,7 +963,7 @@ function mountStatic(key,host){
 }
 const live={
   "refraction-live":mountRefraction,"plate-live":mountPlate,"layers-live":mountLayers,"fibre-live":mountFibre,
-  "mirror-live":mountMirror,"mirror-translation-live":mountMirrorTranslation,"diopter-live":mountDiopter,"plane-diopter-live":mountPlaneDiopter,"prism-live":mountPrism,"goniometer-live":mountGoniometer,"lens-live":mountLens,"lens-combination-live":mountLensCombination,"eye-live":mountEye,"accommodation-live":mountAccommodation,"magnifier-live":mountMagnifier,"microscope-live":mountMicroscope,"angular-resolution-live":mountAngularResolution,"telescope-live":mountTelescope
+  "mirror-live":mountMirror,"mirror-translation-live":mountMirrorTranslation,"diopter-live":mountDiopter,"plane-diopter-live":mountPlaneDiopter,"prism-live":mountPrism,"goniometer-live":mountGoniometer,"lens-live":mountLens,"lens-combination-live":mountLensCombination,"eye-live":mountEye,"accommodation-live":mountAccommodation,"magnifier-live":mountMagnifier,"microscope-live":mountMicroscope,"newtonian-live":mountNewtonian,"angular-resolution-live":mountAngularResolution,"telescope-live":mountTelescope
 };
 window.OPTICS_VISUALS={
   mount(key,host,preset){if(!host||!key)return;if(live[key]){live[key](host);applyPreset(host,preset)}else mountStatic(key,host);installViewControl(host)}
