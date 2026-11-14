@@ -1,0 +1,30 @@
+name: Validate Geometrical Optics Tutorials
+
+on:
+  pull_request:
+    paths:
+      - "tutorials/geometrical-optics/**"
+      - "geometrical-optics/index.html"
+      - "tutorials/index.html"
+      - "index.html"
+      - "scripts/validate-geometrical-optics.mjs"
+      - ".github/workflows/validate-geometrical-optics.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tutorials/geometrical-optics/**"
+      - "geometrical-optics/index.html"
+      - "tutorials/index.html"
+      - "index.html"
+      - "scripts/validate-geometrical-optics.mjs"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate source audit, exercise bank, visuals and assessments
+        run: node scripts/validate-geometrical-optics.mjs

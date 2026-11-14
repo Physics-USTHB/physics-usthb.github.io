@@ -20,3 +20,28 @@
 @media(max-width:520px){.visual-controls,.visual-readout{grid-template-columns:1fr}.visual-head,.assessment-intro{flex-direction:column;align-items:flex-start}.visual-note{text-align:left}.assessment-clock{text-align:left}.assessment-q{grid-template-columns:1fr}.assessment-submit{flex-direction:column}}
 
 .assessment-mode-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}@media(max-width:520px){.assessment-mode-grid{display:grid;grid-template-columns:1fr}}
+
+/* v2 source-audit/student-ready additions */
+.convention-box{margin:0 0 14px;padding:13px 14px;border:1px solid #bcd8e3;border-left:4px solid #287f98;border-radius:10px;background:#f3f9fb}
+.convention-box p{margin:5px 0 0!important;color:#385d72!important;font-size:12px!important;line-height:1.65!important}
+.source-warning{margin:10px 0;padding:10px 12px;border:1px solid #e7c98d;border-left:4px solid #bd8124;border-radius:9px;background:#fff8e9;color:#6e531f;font-size:11px;line-height:1.55}
+.multi-check{display:grid;gap:7px;margin-top:12px;padding:12px;border:1px solid #d7e4ea;border-radius:10px;background:#f9fcfd}
+.multi-check>p{margin:0 0 2px!important;font-size:11px!important;font-weight:800;color:#45687b!important}
+.multi-check label{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start;padding:8px 9px;border:1px solid #e0e9ee;border-radius:8px;background:#fff;cursor:pointer}
+.multi-check label span{font-size:11px;line-height:1.45;color:#465f70}.multi-check input{margin-top:2px;accent-color:#238ea2}.multi-check .primary-btn{justify-self:start;margin-top:4px}
+.sheets-modal{width:min(1040px,100%)}
+.sheet-card{margin:13px 0;border:1px solid #d9e5eb;border-radius:13px;background:#fff;overflow:hidden}
+.sheet-card>header{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding:13px 14px;background:#f6fafc;border-bottom:1px solid #e0e8ed}
+.sheet-card h3{margin:3px 0 0;font-size:14px}.sheet-overall,.sheet-status{display:inline-block;font:800 8px ui-monospace,monospace;text-transform:uppercase;letter-spacing:.04em;border-radius:99px;padding:5px 7px;background:#edf3f6;color:#5d7585}
+.sheet-overall.covered,.sheet-overall.covered-in-labs,.sheet-overall.covered-with-audit-notes,.sheet-status.covered,.sheet-status.covered-in-lab,.sheet-status.covered-method,.sheet-status.covered-with-definition-note{background:#e8f7ef;color:#226e50}
+.sheet-overall.partial,.sheet-status.partial,.sheet-status.statement-not-recovered{background:#fff2dc;color:#805b16}
+.sheet-status.source-inconsistency-audited{background:#fff1e7;color:#944f20}
+.sheet-exercises{display:grid}.sheet-exercise{display:grid;grid-template-columns:95px 1fr;gap:12px;padding:11px 14px;border-top:1px solid #edf1f4}.sheet-exercise:first-child{border-top:0}
+.sheet-ex-number{font:800 10px ui-monospace,monospace;color:#426276;padding-top:4px}.sheet-links{display:flex;gap:7px;flex-wrap:wrap;margin-top:6px}.sheet-links a{font-size:10px;font-weight:800;color:#14748d;text-decoration:none;background:#edf7f9;border-radius:7px;padding:5px 7px}.sheet-links a:hover{text-decoration:underline}
+.sheet-exercise p{margin:7px 0 0;font-size:10px;color:#687e8e;line-height:1.5}.missing-map{font-size:10px;color:#9a5555}
+.interactive-svg .aperture{stroke:#3d5665;stroke-width:5}.interactive-svg .focalplane{stroke:#83a1b1;stroke-width:2;stroke-dasharray:7 5}.interactive-svg .source{fill:#227b92}.interactive-svg .system{stroke:#547589;stroke-width:3}.interactive-svg .virtual{stroke:#b45260;stroke-width:4;stroke-dasharray:5 4}.interactive-svg .wrong{fill:#d7dde1;stroke:#9caab3}.interactive-svg .retina{stroke:#b44f5d;stroke-width:5}.interactive-svg .eye{fill:#f7fbfd;stroke:#7395a7;stroke-width:3}
+.side-tools{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:620px){.sheet-card>header{flex-direction:column}.sheet-exercise{grid-template-columns:1fr}.side-tools{grid-template-columns:1fr}}
+
+.sheet-status.statement-figure-not-fully-recovered{background:#fff2dc;color:#805b16}
+.sheet-status.covered-with-authored-q7-derivation{background:#eef3fb;color:#355f91}
