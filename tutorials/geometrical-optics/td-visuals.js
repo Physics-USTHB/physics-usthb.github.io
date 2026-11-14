@@ -21,7 +21,7 @@ function hostShell(host,title){
 function addRange(parent,label,min,max,step,value,unit=""){
   const wrap=E("label",{class:"visual-control"}), span=E("span");span.textContent=label;
   const input=E("input",{type:"range",min,max,step,value});
-  const out=E("strong");out.textContent=value+unit;
+  const out=E("strong");out.textContent=value+unit;input._valueOutput=out;input._unit=unit;
   input.addEventListener("input",()=>out.textContent=input.value+unit);
   wrap.append(span,input,out);parent.appendChild(wrap);return input;
 }
@@ -92,7 +92,7 @@ function mountFibre(host){
   const nc=addRange(ui.controls,"core nᶜ",1.3,1.7,0.005,1.48),ng=addRange(ui.controls,"cladding nᵍ",1.2,1.65,0.005,1.46),inc=addRange(ui.controls,"launch angle",0,35,0.5,10,"°");
   const s=svgBase("Interactive step-index fibre acceptance diagram");ui.canvas.appendChild(s);
   const redraw=()=>{
-    let cc=+nc.value,g=Math.min(+ng.value,cc-0.005);if(+ng.value>=cc){ng.value=(cc-0.005).toFixed(3);g=+ng.value}
+    let cc=+nc.value,g=Math.min(+ng.value,cc-0.005);if(+ng.value>=cc){ng.value=(cc-0.005).toFixed(3);if(ng._valueOutput)ng._valueOutput.textContent=ng.value+(ng._unit||"");g=+ng.value}
     const i=+inc.value,NA=Math.sqrt(Math.max(0,cc*cc-g*g)),imax=rad(Math.asin(clamp(NA,0,1))),theta=rad(Math.asin(clamp(Math.sin(deg(i))/cc,-1,1))),ok=i<=imax+1e-9;
     s.innerHTML="";s.appendChild(E("rect",{x:170,y:95,width:510,height:130,class:"cladding"}));s.appendChild(E("rect",{x:170,y:120,width:510,height:80,class:"core"}));line(s,35,160,170,160,"axis");
     line(s,35,160,170,160-(170-35)*Math.tan(deg(i)),"ray incident");
@@ -311,16 +311,16 @@ function staticSvg(key){
   }
   else if(key==="scale-comparison"){const rows=[["atom",2,"not ray-scale"],["λ = 600 nm",8,"reference"],["10 µm slit",45,"diffraction relevant"],["1 cm aperture",260,"ray optics safe"]];rows.forEach((r,i)=>{const y=45+i*62;s.appendChild(E("rect",{x:180,y,width:r[1],height:18,class:i<2?"wrong":"glass"}));T(35,y+14,r[0]);T(470,y+14,r[2])})}
   else if(key==="stigmatisme"){circle(s,135,110,5,"source");circle(s,565,110,5,"focus");line(s,360,30,360,300,"system");[65,105,150,205,245].forEach(y=>{line(s,135,110,360,y,"ray incident");line(s,360,y,565,110,"ray refracted")});T(65,90,"A");T(575,100,"A′");T(425,290,"stigmatic: all rays meet at A′")}
-  else if(key==="fermat-reflection"){line(s,0,220,720,220,"mirrorline");circle(s,125,75,5,"source");circle(s,585,80,5,"eye");circle(s,585,360,5,"virtual");line(s,125,75,355,220,"ray incident");line(s,355,220,585,80,"ray reflected");line(s,355,220,585,360,"construction");T(105,60,"A");T(595,70,"B");T(590,300,"B*");T(260,290,"stationary path ↔ straight line to mirror image")}
+  else if(key==="fermat-reflection"){line(s,0,175,720,175,"mirrorline");circle(s,125,60,5,"source");circle(s,585,65,5,"eye");circle(s,585,285,5,"virtual");line(s,125,60,355,175,"ray incident");line(s,355,175,585,65,"ray reflected");line(s,355,175,585,285,"construction");T(105,45,"A");T(595,55,"B");T(595,300,"B*");T(230,315,"stationary reflected path ↔ straight line to the mirror image B*")}
   else if(key==="reversibility"){line(s,0,160,720,160,"interface");line(s,360,25,360,295,"normal");line(s,120,55,360,160,"ray incident");line(s,360,160,525,285,"ray refracted");T(55,45,"reverse ray arrows");T(440,300,"same geometrical path")}
   else if(key==="mirror-derivation"){
     s.appendChild(E("path",{d:"M600 45 Q545 170 600 295",class:"mirror"}));const S=600,C=460,F=530;
     circle(s,S,170,4,"point");circle(s,C,170,4,"point");circle(s,F,170,4,"focus");
-    const I={x:570,y:95};line(s,120,95,I.x,I.y,"ray incident");line(s,I.x,I.y,F,170,"ray reflected");line(s,I.x,I.y,C,170,"construction");
+    const I={x:582.4,y:95};line(s,120,95,I.x,I.y,"ray incident");line(s,I.x,I.y,F,170,"ray reflected");line(s,I.x,I.y,C,170,"construction");
     T(S-8,195,"S");T(C-8,195,"C");T(F-8,195,"F");T(415,35,"F is midway between S and C; normal at I passes through C");
   }
   else if(key==="mirror-centre"){
-    s.appendChild(E("path",{d:"M600 45 Q545 170 600 295",class:"mirror"}));const C={x:400,y:170},I={x:594,y:121.5},A={x:140,y:235};
+    s.appendChild(E("path",{d:"M600 45 Q545 170 600 295",class:"mirror"}));const C={x:400,y:170},I={x:576.64,y:121.5},A={x:140,y:235};
     circle(s,C.x,C.y,4,"point");circle(s,I.x,I.y,4,"point");line(s,A.x,A.y,I.x,I.y,"ray incident");line(s,I.x,I.y,A.x,A.y,"ray reflected");
     line(s,C.x,C.y,I.x,I.y,"construction");T(C.x-8,C.y+24,"C");T(520,92,"I");T(160,260,"a ray directed through C strikes normally and retraces its path");
   }
