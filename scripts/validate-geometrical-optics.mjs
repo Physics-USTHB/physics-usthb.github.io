@@ -210,6 +210,25 @@ assert(touatPair.includes("-12.00 cm")&&touatPair.includes("18.00 cm")&&touatPai
 assert(["s6q18","s6q21","s6q29"].every(id=>audit.visuals[id]==="exit-pupil-live"),"Exit-pupil exercises should use the live aperture-image model");
 const pupil=presetHost("s6q29").parts[".visual-readout"].innerHTML;
 assert(pupil.includes("5.50 cm")&&pupil.includes("1.000 cm")&&pupil.includes("-0.1000"),"Astronomical telescope exit-pupil regression");
+const radiusMirror=presetHost("s2q8").parts[".visual-readout"].innerHTML;
+assert(radiusMirror.includes("40.00 cm")&&radiusMirror.includes("-1.50 cm"),"Mirror radius/image-height coverage regression");
+const diopterFocal=presetHost("s3q6").parts[".visual-readout"].innerHTML;
+assert(diopterFocal.includes("60.00 cm")&&diopterFocal.includes(">—<"),"Diopter focal-distance/infinite-object regression");
+const cauchy=presetHost("s4q9").parts[".visual-readout"].innerHTML;
+assert(cauchy.includes("4.0000 µm⁻²")&&cauchy.includes("1.5160"),"Cauchy-law regression");
+const lensMakerSym=presetHost("s5q2").parts[".visual-readout"].innerHTML;
+assert(lensMakerSym.includes("5.000 D")&&lensMakerSym.includes("20.00 cm"),"Symmetric biconvex lens-maker regression");
+const lensMakerPlano=presetHost("s5q3").parts[".visual-readout"].innerHTML;
+assert(lensMakerPlano.includes("2.000 D")&&lensMakerPlano.includes("50.00 cm"),"Plano-convex lens-maker regression");
+const lensHeight=presetHost("s5q9").parts[".visual-readout"].innerHTML;
+assert(lensHeight.includes("10.00 D")&&lensHeight.includes("-1.00 cm"),"Thin-lens image-height regression");
+const equalSize=presetHost("s5q16").parts[".visual-readout"].innerHTML;
+assert(equalSize.includes("40.00 cm")&&equalSize.includes("-1.00")&&equalSize.includes("-2.00 cm"),"Equal-size lens-image regression");
+const intentionalNoVisual=new Set(["s1q4","s1q5","s1q6","s1q7","s1q25","s1q27"]);
+const noVisual=data.questions.filter(q=>!audit.visuals[q.id]).map(q=>q.id);
+assert(noVisual.length===intentionalNoVisual.size&&noVisual.every(id=>intentionalNoVisual.has(id)),"Unexpected Geometrical Optics visual-coverage gap: "+noVisual.join(", "));
+assert(Object.keys(audit.visuals).length===204,"Expected 204 meaningful visual mappings");
+
 
 
 
