@@ -16,6 +16,7 @@ const data=loadWindow("tutorials/geometrical-optics/td-data.js","OPTICS_TUTORIAL
 const audit=loadWindow("tutorials/geometrical-optics/td-audit.js","OPTICS_TUTORIAL_AUDIT");
 const visualCode=read("tutorials/geometrical-optics/td-visuals.js");
 const appCode=read("tutorials/geometrical-optics/td.js");
+const cssCode=read("tutorials/geometrical-optics/td.css");
 new vm.Script(visualCode,{filename:"td-visuals.js"});
 new vm.Script(appCode,{filename:"td.js"});
 
@@ -85,6 +86,12 @@ for(const key of visualKeys){
   assert(svgRoot.tagName==="svg"&&svgRoot.namespaceURI===SVG_NS,"Visual "+key+" root is not in the SVG namespace");
   const assertSvgTree=el=>{assert(el.namespaceURI===SVG_NS,"Visual "+key+" contains non-SVG element <"+el.tagName+">");for(const child of el.children||[])assertSvgTree(child)};
   assertSvgTree(svgRoot);
+  assert((svgRoot.children||[]).some(x=>x.tagName==="title"&&String(x.textContent||"").trim()),"Visual "+key+" has no accessible SVG title");
+  const rayTokens=new Set(["ray","incident","refracted","emergent","reflected","guided","rejected"]);
+  const physical=[];
+  const collectPhysical=el=>{if(el.tagName==="line"&&String(el.attrs?.class||"").split(/\s+/).some(t=>rayTokens.has(t)))physical.push(el);for(const child of el.children||[])collectPhysical(child)};
+  collectPhysical(svgRoot);
+  assert(physical.every(x=>String(x.attrs?.["marker-end"]||"").startsWith("url(#ray-arrow-")),"Visual "+key+" contains a physical ray without a direction marker");
   if(key.endsWith("-live")){
     const before=snap(host.parts[".visual-canvas"]);
     const wrap=host.parts[".visual-controls"].children[0];
@@ -178,6 +185,10 @@ for(const s of data.series){
 assert(appCode.includes("optics-tutorials.v4"),"Missing v4 progress key");
 assert(appCode.includes("optics-tutorials.v3"),"Missing v3 progress migration");
 assert(appCode.includes("function checkMulti"),"Missing multi-select grader");
+assert(visualCode.includes("installViewControl"),"Missing enlarged-view control for diagrams");
+assert(cssCode.includes(".visual-expanded")&&cssCode.includes("min-width:620px"),"Missing enlarged/mobile visual readability styles");
+assert(visualCode.includes("solid arrow = real light path")&&visualCode.includes("construction / backward extension"),"Missing ray/construction legend");
+
 assert(appCode.includes("Make a genuine attempt first"),"Missing attempt-before-solution gate");
 assert(appCode.includes("function sourceSheetsPanel"),"Missing source-sheet ledger");
 assert(appCode.includes("!q.sourceWarning"),"Assessment does not exclude source-warning questions");
