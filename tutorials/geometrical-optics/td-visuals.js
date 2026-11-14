@@ -374,7 +374,7 @@ function mountMagnifier(host){
         if(view==="near")text(s,410,75,"virtual image placed at the near point");
       }
     }
-    const minMM=ff*threshold*10;
+    const minMM=(view==="naked"?dd*threshold:view==="near"?dd*threshold/Math.max(G,1e-12):view==="finite"?dd*threshold/Math.max(G,1e-12):ff*threshold)*10;
     setReadout(ui.readout,[
       ["viewing",view==="naked"?"naked eye":view],
       ["G",fmt(G,2)+"×"],["α naked",fmt(alpha,6)+" rad"],["α′",fmt(alphaP,6)+" rad"],
@@ -397,7 +397,7 @@ function mountAngularResolution(host){
   const redraw=()=>{
     s.innerHTML="";
     const L=+dist.value,S=+size.value,g=+G.value,threshold=+eye.value*1e-4,test=+detail.value,
-      alpha=S/L,alphaP=g*alpha,limitAlpha=threshold/g,limitSize=L*limitAlpha,resolved=test>=limitSize;
+      alpha=S/L,alphaP=g*alpha,limitAlpha=threshold/g,limitSize=L*limitAlpha,resolved=test+1e-9>=limitSize;
     const ex=95,axis=155,mx=590,r=70;
     circle(s,ex,axis,13,"eye");text(s,55,axis+36,"observer");
     circle(s,mx,axis,r,"sphere");text(s,mx-26,axis+5,"object");
