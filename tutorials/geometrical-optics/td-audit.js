@@ -21,6 +21,24 @@ window.OPTICS_TUTORIAL_AUDIT = {
       note:"Current Faculty/L2 sheet. Public preview exposes exercises on ray validity, object/image nature, optical propagation, index ordering, ray choice, water-air refraction, plane plate, layered liquids and optical fibre."
     },
     {
+      id:"laidoudi-diopter-2023-24",
+      label:"Mme L. Laidoudi — USTHB Geometrical Optics: Spherical Diopter",
+      year:"2023–2024",
+      kind:"official-course",
+      status:"verified-public-preview",
+      url:"https://fr.scribd.com/document/946344579/Cours-math-et-physique",
+      note:"USTHB Semester 1 course slides. Used to verify exact/approximate stigmatisme, centre/vertex conjugation, focal points, Newton form, magnification and the midpoint M of F and F'."
+    },
+    {
+      id:"laidoudi-lens-2023-24",
+      label:"Mme L. Laidoudi — USTHB Geometrical Optics: Thin Lenses",
+      year:"2023–2024",
+      kind:"official-course",
+      status:"verified-public-preview",
+      url:"https://fr.scribd.com/document/946344578/OG-Cours06-Lentilles",
+      note:"USTHB Semester 1 course slides. Used to verify lens shapes/signs, two-diopter derivation, principal/secondary focal constructions, vergence notation, Newton form and lens combinations."
+    },
+    {
       id:"touat-2021-22",
       label:"A. Touat — L2/S3 course + corrected series",
       year:"2021–2022",
@@ -308,9 +326,9 @@ window.OPTICS_TUTORIAL_AUDIT = {
   chapterSources: {
     s1:["usthb-course","td1-2024-25","touat-2021-22"],
     s2:["usthb-course","touat-2021-22"],
-    s3:["usthb-course","touat-2021-22"],
+    s3:["usthb-course","laidoudi-diopter-2023-24","touat-2021-22"],
     s4:["usthb-course","touat-2021-22"],
-    s5:["usthb-course","touat-2021-22"],
+    s5:["usthb-course","laidoudi-lens-2023-24","touat-2021-22"],
     s6:["usthb-course","touat-2021-22"]
   },
   unresolved: [
@@ -409,6 +427,9 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s3q28:"diopter",
     s3q29:"diopter",
     s3q30:"diopter",
+    s3q31:"stigmatisme",
+    s3q32:"focal-plane",
+    s3q33:"focal-plane",
     s4q1:"prism",
     s4q2:"prism",
     s4q3:"prism-live",
@@ -438,6 +459,7 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s5q32:"bessel",
     s5q33:"bessel",
     s5q34:"diaphragm-lens",
+    s5q35:"newton-lens",
     s5q5:"lens-live",
     s5q6:"lens-live",
     s5q7:"lens-live",
