@@ -80,6 +80,7 @@ for(const key of visualKeys){
   const host=new Host();
   visualSandbox.window.OPTICS_VISUALS.mount(key,host);
   assert(host.parts[".visual-canvas"].children.length>0,"Visual "+key+" rendered no SVG");
+  assert(!snap(host.parts[".visual-canvas"]).includes("Diagram for "+key),"Mapped visual "+key+" fell through to the generic placeholder");
   const svgRoot=host.parts[".visual-canvas"].children[0];
   assert(svgRoot.tagName==="svg"&&svgRoot.namespaceURI===SVG_NS,"Visual "+key+" root is not in the SVG namespace");
   const assertSvgTree=el=>{assert(el.namespaceURI===SVG_NS,"Visual "+key+" contains non-SVG element <"+el.tagName+">");for(const child of el.children||[])assertSvgTree(child)};
@@ -100,6 +101,20 @@ for(const key of visualKeys){
     assert(before!==snap(host.parts[".visual-canvas"]),"Live visual "+key+" did not change SVG geometry");
   }
 }
+
+const mountForTest=key=>{const host=new Host();visualSandbox.window.OPTICS_VISUALS.mount(key,host);return host.parts[".visual-canvas"].children[0]};
+const classEls=(el,token,out=[])=>{if(String(el.attrs?.class||"").split(/\s+/).includes(token))out.push(el);for(const child of el.children||[])classEls(child,token,out);return out};
+const telescopeSvg=mountForTest("telescope-live");
+const telescopeOut=classEls(telescopeSvg,"emergent");
+assert(telescopeOut.length>=2&&telescopeOut.every(l=>Number(l.attrs.y1)===Number(l.attrs.y2)),"Afocal telescope output rays must be parallel to the optical axis for the on-axis bundle");
+const planeMirrorSvg=mountForTest("plane-mirror");
+const pmInc=classEls(planeMirrorSvg,"incident")[0],pmRef=classEls(planeMirrorSvg,"reflected")[0];
+const slopeToNormal=l=>Math.abs((Number(l.attrs.y2)-Number(l.attrs.y1))/(Number(l.attrs.x2)-Number(l.attrs.x1)));
+assert(pmInc&&pmRef&&Math.abs(slopeToNormal(pmInc)-slopeToNormal(pmRef))<1e-9,"Plane-mirror schematic violates i=r");
+assert(audit.visuals.s1q23==="curved-fibre","Curved-fibre exercise must not use the straight-fibre visual");
+assert(audit.visuals.s1q26==="optical-wedge","Optical-wedge exercise must not use the parallel-plate visual");
+assert(audit.visuals.s2q16==="two-mirrors","Two-plane-mirror exercise mapped to the wrong mirror family");
+assert(audit.visuals.s6q4==="myopia-correction"&&audit.visuals.s6q5==="near-correction","Spectacle-correction exercises need correction-lens schematics");
 
 const exact=new Set(Object.keys(audit.exactQuestionSources||{}));
 for(const s of data.series){
