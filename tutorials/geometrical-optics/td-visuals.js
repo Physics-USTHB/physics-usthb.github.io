@@ -21,7 +21,7 @@ function svgBase(label){
   });
   s.appendChild(defs);s._svgHeader=[title,defs];return s;
 }
-function clearSvg(s){const keep=s._svgHeader||[];clearSvg(s);keep.forEach(x=>s.appendChild(x))}
+function clearSvg(s){const keep=s._svgHeader||[];s.innerHTML="";keep.forEach(x=>s.appendChild(x))}
 function line(s,x1,y1,x2,y2,cls="ray"){
   const l=E("line",{x1,y1,x2,y2,class:cls}),tokens=String(cls).split(/\s+/);
   let marker=null;
