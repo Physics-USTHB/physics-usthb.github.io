@@ -202,6 +202,15 @@ assert(newtonTouat.includes("5.00×")&&newtonTouat.includes("0.0800 rad")&&newto
 const clipHost=new Host();
 visualSandbox.window.OPTICS_VISUALS.mount("newtonian-live",clipHost,{controls:{"primary f₁′":10,"primary diameter":4,"secondary before F₁":2,"eyepiece f₂′":2,"A₁B₁":8,"secondary projected aperture":0.5}});
 assert(clipHost.parts[".visual-readout"].innerHTML.includes(">clipped<"),"Newtonian secondary-aperture clipping regression");
+assert(audit.visuals.s5q20==="two-lens-live"&&audit.visuals.s5q28==="two-lens-live","Separated-lens construction exercises should use the live model");
+const parallelPair=presetHost("s5q20").parts[".visual-readout"].innerHTML;
+assert(parallelPair.includes("15.00 cm")&&parallelPair.includes("parallel / image at ∞")&&parallelPair.includes("20.00 cm")&&parallelPair.includes(">—<"),"Parallel-output second-lens regression");
+const touatPair=presetHost("s5q28").parts[".visual-readout"].innerHTML;
+assert(touatPair.includes("-12.00 cm")&&touatPair.includes("18.00 cm")&&touatPair.includes("0.600")&&touatPair.includes("10.91 cm")&&touatPair.includes("-18.18 cm")&&touatPair.includes("6.55 cm"),"Touat separated-doublet regression");
+assert(["s6q18","s6q21","s6q29"].every(id=>audit.visuals[id]==="exit-pupil-live"),"Exit-pupil exercises should use the live aperture-image model");
+const pupil=presetHost("s6q29").parts[".visual-readout"].innerHTML;
+assert(pupil.includes("5.50 cm")&&pupil.includes("1.000 cm")&&pupil.includes("-0.1000"),"Astronomical telescope exit-pupil regression");
+
 
 
 

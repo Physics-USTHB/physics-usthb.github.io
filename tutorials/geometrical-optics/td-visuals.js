@@ -645,6 +645,96 @@ function mountMicroscope(host){
   };
   [geometry,f1,f2,span,D,h,eye].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
 }
+function mountTwoLensImaging(host){
+  const ui=hostShell(host,"Two separated lenses — intermediate and final image");
+  const f1=addNumber(ui.controls,"f₁′",-200,200,0.5,10," cm"),
+    f2=addNumber(ui.controls,"f₂′",-200,200,0.5,5," cm"),
+    d=addNumber(ui.controls,"separation d",0,200,0.5,20," cm"),
+    obj=addNumber(ui.controls,"object distance",1,300,0.5,30," cm");
+  const s=svgBase("Interactive two-lens imaging model with intermediate image, afocal condition and equivalent focal points");ui.canvas.appendChild(s);
+  const redraw=()=>{
+    clearSvg(s);
+    const a=+f1.value,b=+f2.value,sep=+d.value,do1=+obj.value,eps=1e-8,
+      inv1=1/a-1/do1,di1=Math.abs(inv1)<eps?Infinity:1/inv1,
+      do2=Number.isFinite(di1)?sep-di1:-Infinity,
+      inv2=1/b-(Number.isFinite(do2)?1/do2:0),di2=Math.abs(inv2)<eps?Infinity:1/inv2,
+      xFinal=Number.isFinite(di2)?sep+di2:Infinity,
+      m1=Number.isFinite(di1)?-di1/do1:Infinity,
+      m2=Number.isFinite(di2)&&Number.isFinite(do2)?-di2/do2:0,
+      gamma=Number.isFinite(di2)&&Number.isFinite(m1)&&Number.isFinite(m2)?m1*m2:(Math.abs(do1-a)<1e-7&&Number.isFinite(di2)?-b/a:NaN),
+      power=1/a+1/b-sep/(a*b),feq=Math.abs(power)<eps?Infinity:1/power,
+      A=1-sep/a,C=-power,Dm=1-sep/b,
+      O1F=Math.abs(C)>eps?Dm/C:Infinity,O2Fp=Math.abs(C)>eps?-A/C:Infinity,
+      F1F=Number.isFinite(O1F)?O1F+a:Infinity,F2pFp=Number.isFinite(O2Fp)?O2Fp-b:Infinity,
+      dParallel=Number.isFinite(di1)?di1+b:Infinity,parallel=!Number.isFinite(di2),
+      maxX=Math.max(do1,sep,Math.abs(Number.isFinite(di1)?di1:0),Math.abs(Number.isFinite(xFinal)?xFinal:0),40),
+      scale=Math.min(8,430/maxX),x1=260,x2=x1+sep*scale,axis=170,h0=5,ys=8,ox=x1-do1*scale,objY=axis-h0*ys;
+    line(s,20,axis,700,axis,"axis");
+    const lensPath=(x,f)=>f>0?"M"+x+" 45 Q"+(x-30)+" 170 "+x+" 295 Q"+(x+30)+" 170 "+x+" 45":"M"+(x-20)+" 45 Q"+(x+22)+" 170 "+(x-20)+" 295 M"+(x+20)+" 45 Q"+(x-22)+" 170 "+(x+20)+" 295";
+    s.appendChild(E("path",{d:lensPath(x1,a),class:"lens"}));s.appendChild(E("path",{d:lensPath(x2,b),class:"lens"}));text(s,x1-20,35,"L₁");text(s,x2-20,35,"L₂");
+    line(s,ox,axis,ox,objY,"object");text(s,ox-18,objY-8,"AB");
+    const rays=[{y:h0,u:0},{y:0,u:-h0/do1}];
+    rays.forEach(r=>{
+      const yObj=h0,y1=r.y,u1=r.u-y1/a,y2=y1+sep*u1,u2=u1-y2/b,
+        sy1=axis-y1*ys,sy2=axis-y2*ys,x0=ox,syObj=axis-yObj*ys,xe=690,yEnd=sy2-u2*(xe-x2)/scale*ys;
+      line(s,x0,syObj,x1,sy1,"ray incident");line(s,x1,sy1,x2,sy2,"ray refracted");line(s,x2,sy2,xe,yEnd,"ray emergent");
+    });
+    if(Number.isFinite(di1)){
+      const xi=x1+di1*scale,hi=h0*m1,yi=axis-hi*ys;line(s,xi,axis,xi,yi,di1<0?"virtual":"image");text(s,xi-22,yi+(yi>axis?20:-8),"A₁B₁");
+    }else text(s,(x1+x2)/2-45,75,"L₁ output is parallel");
+    if(Number.isFinite(xFinal)&&Number.isFinite(gamma)){
+      const xf=x1+xFinal*scale,yf=axis-h0*gamma*ys;line(s,xf,axis,xf,yf,di2<0?"virtual":"image");text(s,xf-22,yf+(yf>axis?20:-8),"A′B′");
+      if(di2<0){
+        const bundle=[...s.children].filter(x=>x.tagName==="line"&&String(x.getAttribute?.("class")||x.attrs?.class||"").includes("emergent"));
+        bundle.slice(-2).forEach(l=>line(s,+l.getAttribute?.("x1")||+l.attrs.x1,+l.getAttribute?.("y1")||+l.attrs.y1,xf,yf,"construction"));
+      }
+    }
+    const f1x=x1-a*scale,f1px=x1+a*scale,f2x=x2-b*scale,f2px=x2+b*scale;
+    [[f1x,"F₁"],[f1px,"F₁′"],[f2x,"F₂"],[f2px,"F₂′"]].forEach(([x,l])=>{if(x>20&&x<700){circle(s,x,axis,4,"focus");text(s,x-10,axis+22,l)}});
+    setReadout(ui.readout,[
+      ["L₁ image distance",Number.isFinite(di1)?fmt(di1,2)+" cm":"∞"],
+      ["object for L₂",Number.isFinite(do2)?fmt(do2,2)+" cm":"at ∞"],
+      ["final O₂A′",Number.isFinite(di2)?fmt(di2,2)+" cm":"∞"],
+      ["final position from O₁",Number.isFinite(xFinal)?fmt(xFinal,2)+" cm":"∞"],
+      ["total γ",Number.isFinite(gamma)?fmt(gamma,3):"—"],["output",parallel?"parallel / image at ∞":di2>0?"converges to a real image":"diverges from a virtual image"],
+      ["parallel-output separation",Number.isFinite(dParallel)?fmt(dParallel,2)+" cm":"not finite"],
+      ["f′eq",Number.isFinite(feq)?fmt(feq,2)+" cm":"∞"],["O₁F",Number.isFinite(O1F)?fmt(O1F,2)+" cm":"∞"],["O₂F′",Number.isFinite(O2Fp)?fmt(O2Fp,2)+" cm":"∞"],
+      ["F₁F",Number.isFinite(F1F)?fmt(F1F,2)+" cm":"∞"],["F₂′F′",Number.isFinite(F2pFp)?fmt(F2pFp,2)+" cm":"∞"]
+    ]);
+  };
+  [f1,f2,d,obj].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
+}
+function mountExitPupil(host){
+  const ui=hostShell(host,"Exit pupil / cercle oculaire");
+  const aperture=addNumber(ui.controls,"entrance aperture D",0.1,50,0.1,10," cm"),
+    separation=addNumber(ui.controls,"aperture → eyepiece",0.5,200,0.5,55," cm"),
+    fe=addNumber(ui.controls,"eyepiece f′",0.2,50,0.1,5," cm");
+  const s=svgBase("Interactive exit-pupil construction as the image of the entrance aperture through the eyepiece");ui.canvas.appendChild(s);
+  const redraw=()=>{
+    clearSvg(s);
+    const D=+aperture.value,dist=+separation.value,f=+fe.value,inv=1/f-1/dist,
+      sp=Math.abs(inv)<1e-9?Infinity:1/inv,m=Number.isFinite(sp)?-sp/dist:Infinity,dExit=Number.isFinite(m)?Math.abs(m)*D:Infinity,
+      scale=Math.min(7,300/Math.max(dist,1)),xA=115,xE=xA+dist*scale,axis=170,
+      hA=clamp(D*scale/2,20,78),xP=Number.isFinite(sp)?xE+sp*scale:690,hP=Number.isFinite(dExit)?clamp(dExit*scale/2,8,55):20;
+    line(s,20,axis,700,axis,"axis");line(s,xA,axis-hA,xA,axis+hA,"aperture");text(s,xA-55,axis-hA-12,"entrance aperture");
+    s.appendChild(E("path",{d:"M"+xE+" 65 Q"+(xE-25)+" 170 "+xE+" 275 Q"+(xE+25)+" 170 "+xE+" 65",class:"lens"}));text(s,xE-28,50,"eyepiece");
+    if(Number.isFinite(sp)&&xP<700){
+      line(s,xP,axis-hP,xP,axis+hP,"pupil");text(s,xP-32,axis-hP-10,"exit pupil");
+      [axis-hA,axis+hA].forEach((yA,j)=>{
+        const yP=j===0?axis+hP:axis-hP;line(s,xA,yA,xE,axis,"construction");line(s,xE,axis,xP,yP,"construction");
+        line(s,xA,yA,xE,j===0?axis-35:axis+35,"ray incident");line(s,xE,j===0?axis-35:axis+35,xP,yP,"ray emergent");
+      });
+      circle(s,xP,axis,5,"eye");text(s,xP+12,axis+5,"place eye here");
+    }else{
+      [axis-hA,axis+hA].forEach(yA=>{line(s,xA,yA,xE,yA,"ray incident");line(s,xE,yA,690,yA,"ray emergent")});text(s,500,75,"exit pupil at infinity");
+    }
+    setReadout(ui.readout,[
+      ["pupil distance after eyepiece",Number.isFinite(sp)?fmt(sp,2)+" cm":"∞"],["aperture magnification",Number.isFinite(m)?fmt(m,4):"∞"],
+      ["exit-pupil diameter",Number.isFinite(dExit)?fmt(dExit,3)+" cm":"∞"],["eye placement","near the exit pupil for full light and field"]
+    ]);
+  };
+  [aperture,separation,fe].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
+}
 function mountNewtonian(host){
   const ui=hostShell(host,"Newtonian telescope — primary, 45° secondary and eyepiece");
   const f1=addNumber(ui.controls,"primary f₁′",5,150,0.5,50," cm"),
@@ -963,7 +1053,7 @@ function mountStatic(key,host){
 }
 const live={
   "refraction-live":mountRefraction,"plate-live":mountPlate,"layers-live":mountLayers,"fibre-live":mountFibre,
-  "mirror-live":mountMirror,"mirror-translation-live":mountMirrorTranslation,"diopter-live":mountDiopter,"plane-diopter-live":mountPlaneDiopter,"prism-live":mountPrism,"goniometer-live":mountGoniometer,"lens-live":mountLens,"lens-combination-live":mountLensCombination,"eye-live":mountEye,"accommodation-live":mountAccommodation,"magnifier-live":mountMagnifier,"microscope-live":mountMicroscope,"newtonian-live":mountNewtonian,"angular-resolution-live":mountAngularResolution,"telescope-live":mountTelescope
+  "mirror-live":mountMirror,"mirror-translation-live":mountMirrorTranslation,"diopter-live":mountDiopter,"plane-diopter-live":mountPlaneDiopter,"prism-live":mountPrism,"goniometer-live":mountGoniometer,"lens-live":mountLens,"lens-combination-live":mountLensCombination,"two-lens-live":mountTwoLensImaging,"exit-pupil-live":mountExitPupil,"eye-live":mountEye,"accommodation-live":mountAccommodation,"magnifier-live":mountMagnifier,"microscope-live":mountMicroscope,"newtonian-live":mountNewtonian,"angular-resolution-live":mountAngularResolution,"telescope-live":mountTelescope
 };
 window.OPTICS_VISUALS={
   mount(key,host,preset){if(!host||!key)return;if(live[key]){live[key](host);applyPreset(host,preset)}else mountStatic(key,host);installViewControl(host)}
