@@ -142,6 +142,25 @@ const moonLimit=presetHost("s6q32").parts[".visual-readout"].innerHTML;
 assert(moonLimit.includes("1.152 km")&&moonLimit.includes(">resolved<"),"Moon resolution-limit boundary regression");
 const station=presetHost("s6q34").parts[".visual-readout"].innerHTML;
 assert(station.includes("1.152 km")&&station.includes("not resolved"),"Moon station-resolution regression");
+assert(audit.visuals.s1q13==="plane-diopter-live"&&audit.visuals.s3q8==="plane-diopter-live"&&audit.visuals.s3q9==="plane-diopter-live","Apparent-depth/plane-diopter exercises should use the plane-diopter model");
+assert(audit.visuals.s2q3==="mirror-translation-live","Moving-plane-mirror exercise needs its dedicated model");
+assert(["s5q12","s5q13","s5q14","s5q17"].every(id=>audit.visuals[id]==="lens-combination-live"),"Lens-combination exercises should use the equivalent-power model");
+assert(audit.visuals.s6q2==="accommodation-live","Accommodation exercise needs the accommodation model");
+const apparent=presetHost("s1q13").parts[".visual-readout"].innerHTML;
+assert(apparent.includes("-225.06 cm"),"Water apparent-depth regression");
+const planeDiopter=presetHost("s3q8").parts[".visual-readout"].innerHTML;
+assert(planeDiopter.includes("-66.67 cm"),"Plane-diopter conjugation regression");
+const movingMirror=presetHost("s2q3").parts[".visual-readout"].innerHTML;
+assert(movingMirror.includes("6.00 cm"),"Plane-mirror translation regression");
+const contactPair=presetHost("s5q12").parts[".visual-readout"].innerHTML;
+assert(contactPair.includes("33.33 cm"),"Contact-lens equivalent focal length regression");
+const separatedPair=presetHost("s5q13").parts[".visual-readout"].innerHTML;
+assert(separatedPair.includes("15.00 cm"),"Separated-lens equivalent focal length regression");
+const afocalPair=presetHost("s5q14").parts[".visual-readout"].innerHTML;
+assert(afocalPair.includes(">afocal<")&&afocalPair.includes(">∞<"),"Afocal two-lens regression");
+const accommodation=presetHost("s6q2").parts[".visual-readout"].innerHTML;
+assert(accommodation.includes("4.00 D"),"Eye accommodation regression");
+
 
 
 
