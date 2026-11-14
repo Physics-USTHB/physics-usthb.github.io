@@ -205,33 +205,35 @@ function mountFibre(host){
 }
 function mountMirror(host){
   const ui=hostShell(host,"Spherical mirror image formation");
-  const kind=addSelect(ui.controls,"mirror",[["concave","concave"],["convex","convex"]],"concave"),fmag=addRange(ui.controls,"|f|",8,200,1,20," cm"),obj=addRange(ui.controls,"object distance",10,600,1,60," cm");
+  const kind=addSelect(ui.controls,"mirror",[["concave","concave"],["convex","convex"]],"concave"),
+    fmag=addRange(ui.controls,"|f|",8,200,1,20," cm"),
+    obj=addRange(ui.controls,"object distance",10,600,1,60," cm"),
+    height=addNumber(ui.controls,"object height",0.1,20,0.1,3," cm");
   const s=svgBase("Interactive spherical mirror ray diagram");ui.canvas.appendChild(s);
   const redraw=()=>{
     clearSvg(s);
-    const f=(kind.value==="concave"?1:-1)*(+fmag.value),doo=+obj.value,inv=1/f-1/doo,di=Math.abs(inv)<1e-7?Infinity:1/inv,m=Number.isFinite(di)?-di/doo:Infinity;
-    const mx=575,axis=170,maxD=Math.max(doo,Math.abs(Number.isFinite(di)?di:0),2*Math.abs(f),20),scale=Math.min(4.2,390/maxD),ox=mx-doo*scale,oh=62;
+    const f=(kind.value==="concave"?1:-1)*(+fmag.value),doo=+obj.value,hObj=+height.value,
+      inv=1/f-1/doo,di=Math.abs(inv)<1e-7?Infinity:1/inv,m=Number.isFinite(di)?-di/doo:Infinity,hImg=Number.isFinite(m)?m*hObj:Infinity;
+    const mx=575,axis=170,maxD=Math.max(doo,Math.abs(Number.isFinite(di)?di:0),2*Math.abs(f),20),scale=Math.min(4.2,390/maxD),
+      ox=mx-doo*scale,oh=clamp(hObj*18,32,78);
     line(s,20,axis,700,axis,"axis");
     s.appendChild(E("path",{d:kind.value==="concave"?"M575 45 Q520 170 575 295":"M575 45 Q630 170 575 295",class:"mirror"}));
-    line(s,ox,axis,ox,axis-oh,"object");text(s,ox-20,axis-oh-9,"object");
+    line(s,ox,axis,ox,axis-oh,"object");text(s,ox-20,axis-oh-9,"object "+fmt(hObj,1)+" cm");
     const fx=mx-f*scale,cx=mx-2*f*scale;circle(s,fx,axis,4,"focus");circle(s,cx,axis,4,"point");text(s,fx-7,axis+22,"F");text(s,cx-7,axis+22,"C");
     if(Number.isFinite(di)&&Math.abs(di)<2.2*maxD){const ix=mx-di*scale,ih=oh*m;line(s,ix,axis,ix,axis-ih,di<0?"virtual":"image");text(s,ix-18,axis-ih+(ih<0?22:-8),"image")}
-    const top=axis-oh;
-    line(s,ox,top,mx,top,"ray incident");
+    const top=axis-oh;line(s,ox,top,mx,top,"ray incident");
     if(kind.value==="concave"){
-      line(s,mx,top,fx,axis,"ray reflected");
-      line(s,ox,top,mx,axis,"ray incident");
-      if(Number.isFinite(di)) line(s,mx,axis,mx-di*scale,axis-oh*m,"ray reflected");
+      line(s,mx,top,fx,axis,"ray reflected");line(s,ox,top,mx,axis,"ray incident");
+      if(Number.isFinite(di))line(s,mx,axis,mx-di*scale,axis-oh*m,"ray reflected");
       if(di<0){line(s,mx,top,mx-di*scale,axis-oh*m,"construction");line(s,mx,axis,mx-di*scale,axis-oh*m,"construction")}
     }else{
       const end1x=mx-170,end1y=top-(axis-top)*170/Math.max(20,fx-mx);
-      line(s,mx,top,end1x,end1y,"ray reflected");line(s,mx,top,fx,axis,"construction");
-      line(s,ox,top,mx,axis,"ray incident");
-      if(Number.isFinite(di)){const ix=mx-di*scale,iy=axis-oh*m;const ex=mx-170,ey=axis+(axis-iy)*170/Math.max(20,ix-mx);line(s,mx,axis,ex,ey,"ray reflected");line(s,mx,axis,ix,iy,"construction")}
+      line(s,mx,top,end1x,end1y,"ray reflected");line(s,mx,top,fx,axis,"construction");line(s,ox,top,mx,axis,"ray incident");
+      if(Number.isFinite(di)){const ix=mx-di*scale,iy=axis-oh*m,ex=mx-170,ey=axis+(axis-iy)*170/Math.max(20,ix-mx);line(s,mx,axis,ex,ey,"ray reflected");line(s,mx,axis,ix,iy,"construction")}
     }
-    setReadout(ui.readout,[["image distance",Number.isFinite(di)?fmt(di,2)+" cm":"∞"],["magnification",Number.isFinite(m)?fmt(m,2):"∞"],["image",di>0?"real":di<0?"virtual":"at infinity"],["orientation",m<0?"inverted":"upright"]]);
+    setReadout(ui.readout,[["|R|=2|f|",fmt(2*Math.abs(f),2)+" cm"],["image distance",Number.isFinite(di)?fmt(di,2)+" cm":"∞"],["magnification",Number.isFinite(m)?fmt(m,2):"∞"],["image height",Number.isFinite(hImg)?fmt(hImg,2)+" cm":"∞"],["image",di>0?"real":di<0?"virtual":"at infinity"],["orientation",m<0?"inverted":"upright"]]);
   };
-  [kind,fmag,obj].forEach(x=>x.addEventListener("input",redraw));redraw();
+  [kind,fmag,obj,height].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
 }
 function mountDiopter(host){
   const ui=hostShell(host,"Spherical diopter — USTHB algebraic convention");
@@ -334,17 +336,19 @@ function mountLens(host){
   const ui=hostShell(host,"Thin-lens ray model");
   const kind=addSelect(ui.controls,"lens",[["conv","converging"],["div","diverging"]],"conv"),
     objectNature=addSelect(ui.controls,"object",[["real","real object"],["virtual","virtual object"]],"real"),
-    fmag=addRange(ui.controls,"|f|",5,30,1,10," cm"),obj=addRange(ui.controls,"object distance",3,60,1,30," cm");
+    fmag=addRange(ui.controls,"|f|",5,60,1,10," cm"),
+    obj=addRange(ui.controls,"object distance",3,100,1,30," cm"),
+    height=addNumber(ui.controls,"object height",0.1,20,0.1,2," cm");
   const s=svgBase("Interactive thin lens image formation");ui.canvas.appendChild(s);
   const redraw=()=>{
     clearSvg(s);
-    const f=(kind.value==="conv"?1:-1)*(+fmag.value),dmag=+obj.value,doo=(objectNature.value==="virtual"?-1:1)*dmag,
-      inv=1/f-1/doo,di=Math.abs(inv)<1e-7?Infinity:1/inv,m=Number.isFinite(di)?-di/doo:Infinity;
+    const f=(kind.value==="conv"?1:-1)*(+fmag.value),dmag=+obj.value,doo=(objectNature.value==="virtual"?-1:1)*dmag,hObj=+height.value,
+      inv=1/f-1/doo,di=Math.abs(inv)<1e-7?Infinity:1/inv,m=Number.isFinite(di)?-di/doo:Infinity,hImg=Number.isFinite(m)?m*hObj:Infinity;
     const lx=360,axis=170,maxD=Math.max(Math.abs(doo),Math.abs(Number.isFinite(di)?di:0),2*Math.abs(f),15),
-      scale=Math.min(6,285/maxD),ox=lx-doo*scale,oh=60,top=axis-oh;
+      scale=Math.min(6,285/maxD),ox=lx-doo*scale,oh=clamp(hObj*25,32,78),top=axis-oh;
     line(s,20,axis,700,axis,"axis");
     s.appendChild(E("path",{d:kind.value==="conv"?"M360 45 Q320 170 360 295 Q400 170 360 45":"M335 45 Q380 170 335 295 M385 45 Q340 170 385 295",class:"lens"}));
-    line(s,ox,axis,ox,top,objectNature.value==="virtual"?"virtual":"object");text(s,ox-28,top-8,objectNature.value==="virtual"?"virtual object":"object");
+    line(s,ox,axis,ox,top,objectNature.value==="virtual"?"virtual":"object");text(s,ox-28,top-8,(objectNature.value==="virtual"?"virtual object ":"object ")+fmt(hObj,1)+" cm");
     const F=lx-f*scale,Fp=lx+f*scale;circle(s,F,axis,4,"focus");circle(s,Fp,axis,4,"focus");text(s,F-8,axis+22,"F");text(s,Fp-8,axis+22,"F′");
     let ix=null,iy=null;
     if(Number.isFinite(di)&&Math.abs(di)<2.1*maxD){ix=lx+di*scale;const ih=oh*m;iy=axis-ih;line(s,ix,axis,ix,iy,di<0?"virtual":"image");text(s,ix-22,iy+(iy>axis?22:-8),di<0?"virtual image":"image")}
@@ -357,17 +361,16 @@ function mountLens(host){
     }else{
       const vTop=top,hitYs=[110,220];
       hitYs.forEach(yh=>{
-        const slopeIn=(vTop-yh)/(ox-lx),yLeft=yh+slopeIn*(40-lx);
-        line(s,40,yLeft,lx,yh,"ray incident");line(s,lx,yh,ox,vTop,"construction");
+        const slopeIn=(vTop-yh)/(ox-lx),yLeft=yh+slopeIn*(40-lx);line(s,40,yLeft,lx,yh,"ray incident");line(s,lx,yh,ox,vTop,"construction");
         if(Number.isFinite(di)&&ix!==null&&iy!==null){
           if(di>0)line(s,lx,yh,ix,iy,"ray refracted");
           else{const xEnd=680,yEnd=yh+(yh-iy)*(xEnd-lx)/Math.max(1,lx-ix);line(s,lx,yh,xEnd,yEnd,"ray refracted");line(s,lx,yh,ix,iy,"construction")}
         }
       });
     }
-    setReadout(ui.readout,[["object",objectNature.value],["image distance",Number.isFinite(di)?fmt(di,2)+" cm":"∞"],["magnification",Number.isFinite(m)?fmt(m,2):"∞"],["image",di>0?"real":di<0?"virtual":"at infinity"],["orientation",m<0?"inverted":"upright"]]);
+    setReadout(ui.readout,[["object",objectNature.value],["power",fmt(100/f,2)+" D"],["image distance",Number.isFinite(di)?fmt(di,2)+" cm":"∞"],["magnification",Number.isFinite(m)?fmt(m,2):"∞"],["image height",Number.isFinite(hImg)?fmt(hImg,2)+" cm":"∞"],["image",di>0?"real":di<0?"virtual":"at infinity"],["orientation",m<0?"inverted":"upright"]]);
   };
-  [kind,objectNature,fmag,obj].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
+  [kind,objectNature,fmag,obj,height].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
 }
 function mountEye(host){
   const ui=hostShell(host,"Reduced eye focus");
@@ -563,6 +566,53 @@ function mountAngularResolution(host){
     ]);
   };
   [dist,size,G,eye,detail].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
+}
+function mountLensMaker(host){
+  const ui=hostShell(host,"Thin-lens maker relation");
+  const nl=addNumber(ui.controls,"lens n",1.01,3,0.01,1.50),
+    nm=addNumber(ui.controls,"medium nₘ",1,2.5,0.01,1.00),
+    R1=addNumber(ui.controls,"R₁", -500,500,0.5,20," cm"),
+    R2=addNumber(ui.controls,"R₂", -500,500,0.5,-20," cm");
+  const s=svgBase("Interactive thin-lens maker relation with signed surface radii and surrounding-medium index");ui.canvas.appendChild(s);
+  const redraw=()=>{
+    clearSvg(s);
+    const n=+nl.value,m=+nm.value,r1=+R1.value,r2=+R2.value,
+      t1=Math.abs(r1)<1e-10?0:1/r1,t2=Math.abs(r2)<1e-10?0:1/r2,
+      shape=t1-t2,C=100*(n-m)*shape,invf=(n/m-1)*shape,f=Math.abs(invf)<1e-12?Infinity:1/invf;
+    line(s,20,170,700,170,"axis");
+    if(m>1.001)s.appendChild(E("rect",{x:0,y:0,width:720,height:320,class:"liquid upper"}));
+    const drawSurface=(which,R,x)=>{
+      if(Math.abs(R)<1e-10){line(s,x,65,x,275,"lens");text(s,x-18,50,which+" plane");return}
+      const bulge=R>0?-45:45;
+      s.appendChild(E("path",{d:"M"+x+" 65 Q"+(x+bulge)+" 170 "+x+" 275",class:"lens"}));
+      text(s,x-30,50,which+"="+fmt(R,1)+" cm");
+    };
+    drawSurface("R₁",r1,330);drawSurface("R₂",r2,390);
+    text(s,285,302,"lens n="+fmt(n,2)+" · surrounding nₘ="+fmt(m,2));
+    text(s,35,38,"positive radius: centre of curvature lies to the right of the surface");
+    setReadout(ui.readout,[["1/R₁−1/R₂",fmt(shape,5)+" cm⁻¹"],["USTHB vergence C",fmt(C,3)+" D"],["f′",Number.isFinite(f)?fmt(f,2)+" cm":"∞"],["system",Math.abs(C)<1e-10?"afocal/zero power":C>0?"converging":"diverging"],["relation","C=(n_lens−nₘ)(1/R₁−1/R₂),  C=nₘ/f′"]]);
+  };
+  [nl,nm,R1,R2].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
+}
+function mountCauchy(host){
+  const ui=hostShell(host,"Cauchy dispersion law");
+  const A=addNumber(ui.controls,"Cauchy A",1,2.5,0.001,1.500,""),
+    B=addNumber(ui.controls,"Cauchy B",0,0.2,0.0001,0.0040," µm²"),
+    lambda=addNumber(ui.controls,"λ",0.35,1.5,0.001,0.500," µm");
+  const s=svgBase("Interactive Cauchy-law graph of refractive index versus inverse wavelength squared");ui.canvas.appendChild(s);
+  const redraw=()=>{
+    clearSvg(s);
+    const aa=+A.value,bb=+B.value,lam=+lambda.value,x=1/(lam*lam),nn=aa+bb*x,
+      x0=90,y0=275,w=550,h=210,xmax=9,ymin=Math.min(aa-.01,nn-.01),ymax=Math.max(aa+bb*xmax+.01,nn+.01),
+      X=q=>x0+q/xmax*w,Y=q=>y0-(q-ymin)/(ymax-ymin)*h;
+    line(s,x0,y0,x0+w,y0,"axis");line(s,x0,55,x0,y0,"axis");
+    line(s,X(0),Y(aa),X(xmax),Y(aa+bb*xmax),"construction");
+    circle(s,X(x),Y(nn),7,"point");line(s,X(x),Y(nn),X(x),y0,"construction");line(s,x0,Y(nn),X(x),Y(nn),"construction");
+    text(s,470,50,"n = A + B/λ²");text(s,290,305,"1/λ² (µm⁻²)");text(s,35,75,"n");
+    text(s,X(x)+10,Y(nn)-10,"λ="+fmt(lam,3)+" µm");
+    setReadout(ui.readout,[["1/λ²",fmt(x,4)+" µm⁻²"],["n(λ)",fmt(nn,4)],["intercept A",fmt(aa,4)],["slope B",fmt(bb,5)+" µm²"]]);
+  };
+  [A,B,lambda].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
 }
 function mountGoniometer(host){
   const ui=hostShell(host,"Prism goniometer — reflection and minimum deviation");
@@ -837,6 +887,11 @@ function staticSvg(key){
     [[402,197],[447,237],[490,275]].forEach(p=>wf(p[0],p[1],B.x-I.x,B.y-I.y));
     T(55,30,"incident wavefronts ⟂ ray");T(470,310,"refracted wavefronts ⟂ ray");T(390,145,"slower medium: ray bends toward normal");
   }
+  else if(key==="uniform-propagation"){
+    s.appendChild(E("rect",{x:30,y:45,width:660,height:230,class:"glass"}));line(s,75,220,645,90,"ray incident");
+    [170,280,390,500].forEach(x=>line(s,x,75,x+35,250,"wavefront"));
+    T(50,35,"uniform transparent medium: n is constant");T(390,285,"Fermat/eikonal result: rays are straight in a homogeneous medium");
+  }
   else if(key==="index-order"){line(s,0,105,720,105,"interface");line(s,0,225,720,225,"interface");line(s,145,25,300,105,"ray incident");line(s,300,105,390,225,"ray refracted");line(s,390,225,520,300,"ray emergent");T(35,85,"compare angles to normal");T(35,155,"toward normal ⇒ higher n");T(35,265,"away ⇒ lower n")}
   else if(key==="refraction-choice"){line(s,0,160,720,160,"interface");line(s,360,25,360,295,"normal");line(s,155,55,360,160,"ray incident");line(s,360,160,470,290,"ray refracted");line(s,360,160,650,225,"wrong");T(470,275,"possible");T(595,210,"too far from normal")}
   else if(key==="plane-mirror"){
@@ -1053,7 +1108,7 @@ function mountStatic(key,host){
 }
 const live={
   "refraction-live":mountRefraction,"plate-live":mountPlate,"layers-live":mountLayers,"fibre-live":mountFibre,
-  "mirror-live":mountMirror,"mirror-translation-live":mountMirrorTranslation,"diopter-live":mountDiopter,"plane-diopter-live":mountPlaneDiopter,"prism-live":mountPrism,"goniometer-live":mountGoniometer,"lens-live":mountLens,"lens-combination-live":mountLensCombination,"two-lens-live":mountTwoLensImaging,"exit-pupil-live":mountExitPupil,"eye-live":mountEye,"accommodation-live":mountAccommodation,"magnifier-live":mountMagnifier,"microscope-live":mountMicroscope,"newtonian-live":mountNewtonian,"angular-resolution-live":mountAngularResolution,"telescope-live":mountTelescope
+  "mirror-live":mountMirror,"mirror-translation-live":mountMirrorTranslation,"diopter-live":mountDiopter,"plane-diopter-live":mountPlaneDiopter,"prism-live":mountPrism,"goniometer-live":mountGoniometer,"cauchy-live":mountCauchy,"lens-live":mountLens,"lens-maker-live":mountLensMaker,"lens-combination-live":mountLensCombination,"two-lens-live":mountTwoLensImaging,"exit-pupil-live":mountExitPupil,"eye-live":mountEye,"accommodation-live":mountAccommodation,"magnifier-live":mountMagnifier,"microscope-live":mountMicroscope,"newtonian-live":mountNewtonian,"angular-resolution-live":mountAngularResolution,"telescope-live":mountTelescope
 };
 window.OPTICS_VISUALS={
   mount(key,host,preset){if(!host||!key)return;if(live[key]){live[key](host);applyPreset(host,preset)}else mountStatic(key,host);installViewControl(host)}
