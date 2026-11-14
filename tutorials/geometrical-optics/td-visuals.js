@@ -661,7 +661,7 @@ function mountTwoLensImaging(host){
       xFinal=Number.isFinite(di2)?sep+di2:Infinity,
       m1=Number.isFinite(di1)?-di1/do1:Infinity,
       m2=Number.isFinite(di2)&&Number.isFinite(do2)?-di2/do2:0,
-      gamma=Number.isFinite(m1)&&Number.isFinite(m2)?m1*m2:(Math.abs(do1-a)<1e-7?-b/a:NaN),
+      gamma=Number.isFinite(di2)&&Number.isFinite(m1)&&Number.isFinite(m2)?m1*m2:(Math.abs(do1-a)<1e-7&&Number.isFinite(di2)?-b/a:NaN),
       power=1/a+1/b-sep/(a*b),feq=Math.abs(power)<eps?Infinity:1/power,
       A=1-sep/a,C=-power,Dm=1-sep/b,
       O1F=Math.abs(C)>eps?Dm/C:Infinity,O2Fp=Math.abs(C)>eps?-A/C:Infinity,
