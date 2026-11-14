@@ -178,6 +178,21 @@ assert(offAxisReadout.includes("-50.0")&&offAxisReadout.includes("-10.00°"),"Of
 const offAxisSvg=offAxisHost.parts[".visual-canvas"].children[0],offAxisOut=classEls(offAxisSvg,"emergent");
 const outSlopes=offAxisOut.map(l=>(Number(l.attrs.y2)-Number(l.attrs.y1))/(Number(l.attrs.x2)-Number(l.attrs.x1)));
 assert(outSlopes.length>=2&&Math.max(...outSlopes)-Math.min(...outSlopes)<1e-9&&Math.abs(outSlopes[0])>1e-4,"Off-axis afocal telescope must produce parallel but tilted output rays");
+assert(["s4q12","s4q13","s4q14"].every(id=>audit.visuals[id]==="goniometer-live"),"Goniometer source exercises should use the live measurement model");
+const gonio=presetHost("s4q13").parts[".visual-readout"].innerHTML;
+assert(gonio.includes("59°57′")&&gonio.includes("41°10′")&&gonio.includes("1.5457"),"Goniometer A/Dmin/index regression");
+const gonioUnc=presetHost("s4q14").parts[".visual-readout"].innerHTML;
+assert(gonioUnc.includes("0.000780")&&gonioUnc.includes("0.050%"),"Goniometer uncertainty regression");
+assert(["s6q9","s6q10","s6q11","s6q12","s6q16","s6q17","s6q24","s6q38","s6q39","s6q40","s6q41","s6q42","s6q43"].every(id=>audit.visuals[id]==="microscope-live"),"Microscope exercise family should use the live microscope model");
+const micro125=presetHost("s6q11").parts[".visual-readout"].innerHTML;
+assert(micro125.includes("-125.00×")&&micro125.includes("500.00 m⁻¹"),"Microscope design/intrinsic-power regression");
+const micro25=presetHost("s6q24").parts[".visual-readout"].innerHTML;
+assert(micro25.includes("-2.5000 cm")&&micro25.includes("-25.00×"),"14 cm microscope geometry regression");
+const micro320=presetHost("s6q38").parts[".visual-readout"].innerHTML;
+assert(micro320.includes("-0.5156 cm")&&micro320.includes("-320.00×")&&micro320.includes("-0.0781 cm"),"Touat optical-interval microscope regression");
+const microAngle=presetHost("s6q43").parts[".visual-readout"].innerHTML;
+assert(microAngle.includes("0.000200 rad")&&microAngle.includes("0.005000 rad"),"Microscope naked/image angular-size regression");
+
 
 
 
