@@ -135,6 +135,13 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s6q43:[["touat-2021-22","Instruments · Ex. 3 · printed-data-consistent image angle"]],
     s6q44:[["touat-2021-22","Instruments · Ex. 4 · relaxed-view magnification"]],
     s6q45:[["touat-2021-22","Instruments · Ex. 4 · resolution"]],
+    s6q46:[["touat-2021-22","Instruments · Ex. 8 · Q1 layout"]],
+    s6q47:[["touat-2021-22","Instruments · Ex. 8 · Q2 angular size"]],
+    s6q48:[["touat-2021-22","Instruments · Ex. 8 · Q3 image construction"]],
+    s6q49:[["touat-2021-22","Instruments · Ex. 8 · Q4 final angle"]],
+    s6q50:[["touat-2021-22","Instruments · Ex. 8 · Q4–5 magnification"]],
+    s6q51:[["touat-2021-22","Instruments · Ex. 8 · Q6 arbitrary ray"]],
+    s6q52:[["touat-2021-22","Instruments · Ex. 8 · Q7 secondary placement"]],
     s2q3:[["touat-2021-22","Series 2 · Ex. 1"]],
     s2q4:[["touat-2021-22","Series 2 · Ex. 2"]],
     s2q15:[["touat-2021-22","Series 2 · Ex. 5"]],
@@ -266,7 +273,7 @@ window.OPTICS_TUTORIAL_AUDIT = {
         {n:"5",status:"covered",q:["s6q26","s6q27","s6q28","s6q29"]},
         {n:"6",status:"source-inconsistency-audited",q:["s6q30","s6q31","s6q32","s6q33","s6q34"],note:"Statement uses 3×10^-4 rad while correction uses 4×10^-4 rad. The course exposes both and grades the statement value where stated."},
         {n:"7",status:"covered",q:["s6q35","s6q36","s6q37"]},
-        {n:"8",status:"partial",q:[],note:"Correction text for an additional telescope exercise is indexed, but the full original statement is not yet reliably recovered; it is not claimed as complete."}
+        {n:"8",status:"covered-with-authored-q7-derivation",q:["s6q46","s6q47","s6q48","s6q49","s6q50","s6q51","s6q52"],note:"All seven statement questions are recovered. The indexed correction exposes Q1–Q5; Q7's self-study derivation is authored transparently from the recovered geometry because the public correction ending is not exposed."}
       ]
     },
     {
@@ -289,10 +296,6 @@ window.OPTICS_TUTORIAL_AUDIT = {
     {
       label:"Touat Series 1 Exercises 4–5",
       reason:"Their original statements are not exposed reliably by the indexed public source text used in this audit."
-    },
-    {
-      label:"Touat Instruments Exercise 8",
-      reason:"A correction fragment is indexed, but the full original exercise statement is not yet reliably recovered."
     },
     {
       label:"2022–2023 final Geometrical Optics theory exam",
@@ -459,6 +462,13 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s6q42:"microscope",
     s6q43:"microscope",
     s6q44:"lens-live",
-    s6q45:"lens-live"
+    s6q45:"lens-live",
+    s6q46:"newtonian",
+    s6q47:"newtonian",
+    s6q48:"newtonian",
+    s6q49:"newtonian",
+    s6q50:"newtonian",
+    s6q51:"newtonian",
+    s6q52:"newtonian"
   }
 };
