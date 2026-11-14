@@ -56,13 +56,14 @@ function mountPlate(host){
   const s=svgBase("Interactive plane parallel plate ray diagram");ui.canvas.appendChild(s);
   const redraw=()=>{
     s.innerHTML="";const nn=+n.value,t=+th.value,i=+inc.value,r=rad(Math.asin(Math.sin(deg(i))/nn)),d=t*Math.sin(deg(i-r))/Math.cos(deg(r));
-    const y1=115,y2=205,cx=310,scale=110/4;
+    const px=18,y1=85,y2=y1+t*px,cx=300;
     s.appendChild(E("rect",{x:0,y:y1,width:720,height:y2-y1,class:"glass"}));line(s,0,y1,720,y1,"interface");line(s,0,y2,720,y2,"interface");
-    const L=150,x0=cx-L*Math.sin(deg(i)),yy0=y1-L*Math.cos(deg(i));line(s,x0,yy0,cx,y1,"ray incident");
-    const dy=y2-y1,dx=dy*Math.tan(deg(r));const x2=cx+dx;line(s,cx,y1,x2,y2,"ray refracted");
+    const L=120,x0=cx-L*Math.sin(deg(i)),yy0=y1-L*Math.cos(deg(i));line(s,x0,yy0,cx,y1,"ray incident");
+    const dy=y2-y1,dx=dy*Math.tan(deg(r)),x2=cx+dx;line(s,cx,y1,x2,y2,"ray refracted");
     const x3=x2+L*Math.sin(deg(i)),y3=y2+L*Math.cos(deg(i));line(s,x2,y2,x3,y3,"ray emergent");
-    line(s,cx,y1,cx+dy*Math.tan(deg(i))+L*Math.sin(deg(i)),y2+L*Math.cos(deg(i)),"construction");
-    text(s,25,105,"air");text(s,25,165,"glass n="+fmt(nn));text(s,25,225,"air");
+    const xu=cx+dy*Math.tan(deg(i)),x4=xu+L*Math.sin(deg(i)),y4=y2+L*Math.cos(deg(i));line(s,cx,y1,x4,y4,"construction");
+    line(s,cx,y1-28,cx,y1+28,"normal");line(s,x2,y2-28,x2,y2+28,"normal");
+    text(s,25,y1-10,"air");text(s,25,(y1+y2)/2,"glass n="+fmt(nn));text(s,25,y2+22,"air");
     setReadout(ui.readout,[["internal angle r",fmt(r,2)+"°"],["lateral shift",fmt(d,2)+" cm"],["emergent direction","parallel to incident"]]);
   };
   [n,th,inc].forEach(x=>x.addEventListener("input",redraw));redraw();
@@ -73,12 +74,15 @@ function mountLayers(host){
   const s=svgBase("Interactive two-layer escape cone");ui.canvas.appendChild(s);
   const redraw=()=>{
     s.innerHTML="";const a=+n1.value,b=+n2.value,H1=+h1.value,H2=+h2.value;
-    const i2=Math.asin(1/b),sin1=clamp(b*Math.sin(i2)/a,-1,1),i1=Math.asin(sin1),R=H1*Math.tan(i1)+H2*Math.tan(i2);
-    const yTop=60,yMid=155,yBot=280,cx=360; s.appendChild(E("rect",{x:0,y:yTop,width:720,height:yMid-yTop,class:"liquid upper"}));s.appendChild(E("rect",{x:0,y:yMid,width:720,height:yBot-yMid,class:"liquid lower"}));
-    line(s,0,yTop,720,yTop,"interface");line(s,0,yMid,720,yMid,"interface");circle(s,cx,yBot-5,6,"source");
-    const maxX=260,scale=maxX/Math.max(R,1),xMid=cx+H1*Math.tan(i1)*scale,xTop=cx+R*scale;
-    line(s,cx,yBot-5,xMid,yMid,"ray incident");line(s,xMid,yMid,xTop,yTop,"ray refracted");line(s,cx,yBot-5,2*cx-xMid,yMid,"ray incident");line(s,2*cx-xMid,yMid,2*cx-xTop,yTop,"ray refracted");
-    text(s,25,50,"air");text(s,25,105,"upper liquid n₂="+fmt(b));text(s,25,225,"lower liquid n₁="+fmt(a));text(s,cx-18,305,"source");
+    const i2=Math.asin(1/b),i1=Math.asin(clamp(1/a,-1,1)),R=H1*Math.tan(i1)+H2*Math.tan(i2);
+    const scale=Math.min(195/Math.max(H1+H2,1),250/Math.max(R,1)),yBot=285,yMid=yBot-H1*scale,yTop=yMid-H2*scale,cx=360;
+    s.appendChild(E("rect",{x:0,y:yTop,width:720,height:yMid-yTop,class:"liquid upper"}));s.appendChild(E("rect",{x:0,y:yMid,width:720,height:yBot-yMid,class:"liquid lower"}));
+    line(s,0,yTop,720,yTop,"interface");line(s,0,yMid,720,yMid,"interface");circle(s,cx,yBot,6,"source");
+    const xMid=cx+H1*scale*Math.tan(i1),xTop=cx+R*scale;
+    line(s,cx,yBot,xMid,yMid,"ray incident");line(s,xMid,yMid,xTop,yTop,"ray refracted");
+    line(s,cx,yBot,2*cx-xMid,yMid,"ray incident");line(s,2*cx-xMid,yMid,2*cx-xTop,yTop,"ray refracted");
+    line(s,xTop,yTop,xTop+80,yTop,"ray emergent");line(s,2*cx-xTop,yTop,2*cx-xTop-80,yTop,"ray emergent");
+    text(s,25,yTop-10,"air");text(s,25,(yTop+yMid)/2,"upper liquid n₂="+fmt(b));text(s,25,(yMid+yBot)/2,"lower liquid n₁="+fmt(a));text(s,cx-18,307,"source");
     setReadout(ui.readout,[["upper critical angle",fmt(rad(i2),2)+"°"],["lower-layer angle",fmt(rad(i1),2)+"°"],["escape radius",fmt(R,2)+" cm"]]);
   };
   [n1,n2,h1,h2].forEach(x=>x.addEventListener("input",redraw));redraw();
@@ -88,14 +92,24 @@ function mountFibre(host){
   const nc=addRange(ui.controls,"core nᶜ",1.3,1.7,0.005,1.48),ng=addRange(ui.controls,"cladding nᵍ",1.2,1.65,0.005,1.46),inc=addRange(ui.controls,"launch angle",0,35,0.5,10,"°");
   const s=svgBase("Interactive step-index fibre acceptance diagram");ui.canvas.appendChild(s);
   const redraw=()=>{
-    let c=+nc.value,g=Math.min(+ng.value,c-0.005); if(+ng.value>=c){ng.value=(c-0.005).toFixed(3);g=+ng.value}
-    const i=+inc.value,NA=Math.sqrt(Math.max(0,c*c-g*g)),imax=rad(Math.asin(clamp(NA,0,1))),theta=rad(Math.asin(clamp(Math.sin(deg(i))/c,-1,1))),ok=i<=imax+1e-9;
+    let cc=+nc.value,g=Math.min(+ng.value,cc-0.005);if(+ng.value>=cc){ng.value=(cc-0.005).toFixed(3);g=+ng.value}
+    const i=+inc.value,NA=Math.sqrt(Math.max(0,cc*cc-g*g)),imax=rad(Math.asin(clamp(NA,0,1))),theta=rad(Math.asin(clamp(Math.sin(deg(i))/cc,-1,1))),ok=i<=imax+1e-9;
     s.innerHTML="";s.appendChild(E("rect",{x:170,y:95,width:510,height:130,class:"cladding"}));s.appendChild(E("rect",{x:170,y:120,width:510,height:80,class:"core"}));line(s,35,160,170,160,"axis");
     line(s,35,160,170,160-(170-35)*Math.tan(deg(i)),"ray incident");
     let x=170,y=160,dir=1;const slope=Math.tan(deg(theta));
-    for(let k=0;k<6&&x<680;k++){let nx=Math.min(680,x+100),ny=y+dir*(nx-x)*slope;if(ny>198||ny<122){const bound=dir>0?198:122;nx=x+(bound-y)/(dir*slope||1e-6);ny=bound;line(s,x,y,nx,ny,ok?"ray guided":"ray rejected");if(!ok){line(s,nx,ny,Math.min(680,nx+90),ny+dir*70,"ray rejected");break}dir*=-1;x=nx;y=ny}else{line(s,x,y,nx,ny,ok?"ray guided":"ray rejected");x=nx;y=ny}}
+    for(let k=0;k<8&&x<680;k++){
+      let nx=Math.min(680,x+100),ny=y+dir*(nx-x)*slope;
+      if(ny>198||ny<122){
+        const bound=dir>0?198:122;nx=x+(bound-y)/(dir*slope||1e-6);ny=bound;line(s,x,y,nx,ny,ok?"ray guided":"ray rejected");
+        if(!ok){
+          const iwall=90-theta,tnorm=rad(Math.asin(clamp(cc*Math.sin(deg(iwall))/g,-1,1))),thetaClad=90-tnorm,run=Math.min(120,680-nx);
+          line(s,nx,ny,nx+run,ny+dir*run*Math.tan(deg(thetaClad)),"ray rejected");break;
+        }
+        dir*=-1;x=nx;y=ny;
+      }else{line(s,x,y,nx,ny,ok?"ray guided":"ray rejected");x=nx;y=ny}
+    }
     text(s,185,115,"cladding");text(s,185,155,"core");text(s,185,220,"cladding");
-    setReadout(ui.readout,[["NA",fmt(NA,4)],["max launch angle",fmt(imax,2)+"°"],["current ray",ok?"guided by TIR":"outside acceptance cone"]]);
+    setReadout(ui.readout,[["NA",fmt(NA,4)],["max launch angle",fmt(imax,2)+"°"],["current ray",ok?"guided by TIR":"refracts into cladding"]]);
   };
   [nc,ng,inc].forEach(x=>x.addEventListener("input",redraw));redraw();
 }
@@ -206,7 +220,11 @@ function mountTelescope(host){
     line(s,20,axis,700,axis,"axis");
     s.appendChild(E("path",{d:"M"+x1+" 45 Q"+(x1-35)+" 170 "+x1+" 295 Q"+(x1+35)+" 170 "+x1+" 45",class:"lens"}));
     s.appendChild(E("path",{d:"M"+x2+" 70 Q"+(x2-28)+" 170 "+x2+" 270 Q"+(x2+28)+" 170 "+x2+" 70",class:"lens"}));
-    [95,130].forEach(y=>{line(s,25,y,x1,y,"ray incident");line(s,x1,y,xf,axis,"ray refracted");const y2=axis+(axis-y)*(x2-xf)/Math.max(1,xf-x1);line(s,xf,axis,x2,y2,"ray refracted");const slope=(y2-axis)/Math.max(1,x2-xf);line(s,x2,y2,690,y2+slope*(690-x2),"ray emergent")});
+    [95,130].forEach(y=>{
+      line(s,25,y,x1,y,"ray incident");line(s,x1,y,xf,axis,"ray refracted");
+      const y2=axis+(axis-y)*(x2-xf)/Math.max(1,xf-x1);
+      line(s,xf,axis,x2,y2,"ray refracted");line(s,x2,y2,690,y2,"ray emergent");
+    });
     line(s,xf,55,xf,285,"construction");text(s,xf-25,300,"F₁′ = F₂");text(s,x1-35,35,"objective");text(s,x2-30,55,"eyepiece");
     setReadout(ui.readout,[["normal length",fmt(total,0)+" mm"],["|G|",fmt(G,1)+"x"],["shared focal plane",fmt(a,0)+" mm after objective"],["output","parallel / afocal"]]);
   };
