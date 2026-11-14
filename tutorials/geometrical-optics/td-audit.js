@@ -111,6 +111,14 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s2q25:[["touat-2021-22","Series 2 · Ex. 9"]],
     s3q21:[["touat-2021-22","Series 3 · Ex. 2 · SA=-100 cm"]],
     s3q22:[["touat-2021-22","Series 3 · Ex. 2 · SA=-3.20 m"]],
+    s3q23:[["touat-2021-22","Series 3 · Ex. 4 · power"]],
+    s3q24:[["touat-2021-22","Series 3 · Ex. 4 · image position"]],
+    s3q25:[["touat-2021-22","Series 3 · Ex. 4 · magnification"]],
+    s3q26:[["touat-2021-22","Series 3 · Ex. 5 · foci/power"]],
+    s3q27:[["touat-2021-22","Series 3 · Ex. 5 · image position"]],
+    s3q28:[["touat-2021-22","Series 3 · Ex. 5 · magnification"]],
+    s3q29:[["touat-2021-22","Series 3 · Ex. 5 correction-only additional case"]],
+    s3q30:[["touat-2021-22","Series 3 · Ex. 5 correction audit"]],
     s4q15:[["touat-2021-22","Series 1 · Ex. 3"]],
     s4q16:[["touat-2021-22","Series 1 · Ex. 6 · lower n' bound"]],
     s4q17:[["touat-2021-22","Series 1 · Ex. 6 · upper n' bound"]],
@@ -219,13 +227,13 @@ window.OPTICS_TUTORIAL_AUDIT = {
       ]
     },
     {
-      id:"touat-s3",sourceId:"touat-2021-22",label:"Touat Series 3 — Diopters",status:"partial",
+      id:"touat-s3",sourceId:"touat-2021-22",label:"Touat Series 3 — Diopters",status:"covered-with-audit-notes",
       exercises:[
         {n:"1",status:"covered",q:["s3q2","s3q5","s3q8"]},
         {n:"2",status:"covered",q:["s3q11","s3q12","s3q13","s3q21","s3q22"]},
         {n:"3",status:"covered",q:["s3q18","s3q19","s3q20"]},
-        {n:"4",status:"statement-not-recovered",q:[],note:"A correction fragment is indexed, but the original exercise statement/numbering is not reliably attributable."},
-        {n:"5",status:"statement-not-recovered",q:[],note:"A correction fragment is indexed, but the original exercise statement/numbering is not reliably attributable."},
+        {n:"4",status:"covered",q:["s3q23","s3q24","s3q25"]},
+        {n:"5",status:"source-inconsistency-audited",q:["s3q26","s3q27","s3q28","s3q29","s3q30"],note:"The correction includes an extra SA=-320 cm case and then prints a magnification substitution using -100 cm. The tutorial preserves the extra case and audits the arithmetic to gamma=-3."},
         {n:"6",status:"covered",q:["s3q16"]},
         {n:"7",status:"covered",q:["s3q17"]}
       ]
@@ -281,10 +289,6 @@ window.OPTICS_TUTORIAL_AUDIT = {
     {
       label:"Touat Series 1 Exercises 4–5",
       reason:"Their original statements are not exposed reliably by the indexed public source text used in this audit."
-    },
-    {
-      label:"Touat Series 3 Exercises 4–5",
-      reason:"Correction fragments exist, but the original statements and numbering cannot yet be attributed reliably enough to reproduce them."
     },
     {
       label:"Touat Instruments Exercise 8",
@@ -369,6 +373,14 @@ window.OPTICS_TUTORIAL_AUDIT = {
     s3q20:"diopter",
     s3q21:"diopter",
     s3q22:"diopter",
+    s3q23:"diopter",
+    s3q24:"diopter",
+    s3q25:"diopter",
+    s3q26:"diopter",
+    s3q27:"diopter",
+    s3q28:"diopter",
+    s3q29:"diopter",
+    s3q30:"diopter",
     s4q1:"prism",
     s4q2:"prism",
     s4q3:"prism-live",
