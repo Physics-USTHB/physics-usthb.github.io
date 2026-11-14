@@ -5,7 +5,8 @@ const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const deg=x=>x*Math.PI/180;
 const rad=x=>x*180/Math.PI;
 const fmt=(x,n=2)=>Number.isFinite(x)?Number(x).toFixed(n):"—";
-const E=(tag,attrs={})=>{const e=document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));return e};
+const svgTags=new Set(["svg","line","text","circle","ellipse","path","rect"]);
+const E=(tag,attrs={})=>{const e=svgTags.has(tag)?document.createElementNS(ns,tag):document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));return e};
 function svgBase(label){
   const s=E("svg",{viewBox:"0 0 720 320",role:"img","aria-label":label});
   s.classList.add("interactive-svg");return s;
