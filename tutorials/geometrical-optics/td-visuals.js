@@ -578,7 +578,7 @@ function mountTelescope(host){
     s.appendChild(E("path",{d:"M"+x1+" 45 Q"+(x1-35)+" 170 "+x1+" 295 Q"+(x1+35)+" 170 "+x1+" 45",class:"lens"}));
     s.appendChild(E("path",{d:"M"+x2+" 70 Q"+(x2-28)+" 170 "+x2+" 270 Q"+(x2+28)+" 170 "+x2+" 70",class:"lens"}));
     [95,130].forEach(y1=>{
-      const Y1=axis-y1,u1=u-Y1/fopx,Yf=Y1+fopx*u,Y2=Yf+fepx*u1,u2=u1-Y2/fepx,
+      const Y1=axis-y1,u1=u-Y1/fopx,Yf=Y1+fopx*u1,Y2=Yf+fepx*u1,u2=u1-Y2/fepx,
         yF=axis-Yf,y2=axis-Y2,x0=25,Y0=Y1-u*(x1-x0),y0=axis-Y0,yEnd=y2-u2*(690-x2);
       line(s,x0,y0,x1,y1,"ray incident");line(s,x1,y1,xf,yF,"ray refracted");
       line(s,xf,yF,x2,y2,"ray refracted");line(s,x2,y2,690,yEnd,"ray emergent");
