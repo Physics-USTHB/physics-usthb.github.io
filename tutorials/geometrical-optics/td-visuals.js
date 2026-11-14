@@ -5,18 +5,46 @@ const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const deg=x=>x*Math.PI/180;
 const rad=x=>x*180/Math.PI;
 const fmt=(x,n=2)=>Number.isFinite(x)?Number(x).toFixed(n):"—";
-const svgTags=new Set(["svg","line","text","circle","ellipse","path","rect"]);
+const svgTags=new Set(["svg","line","text","circle","ellipse","path","rect","defs","marker","title"]);
 const E=(tag,attrs={})=>{const e=svgTags.has(tag)?document.createElementNS(ns,tag):document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));return e};
+let markerSerial=0;
 function svgBase(label){
   const s=E("svg",{viewBox:"0 0 720 320",role:"img","aria-label":label});
-  s.classList.add("interactive-svg");return s;
+  s.classList.add("interactive-svg");
+  const title=E("title");title.textContent=label;s.appendChild(title);
+  const defs=E("defs"),base="ray-arrow-"+(++markerSerial),colors={blue:"#238da3",green:"#249a70",orange:"#d28d25",red:"#c35a65"};
+  s._rayMarkers={};
+  Object.entries(colors).forEach(([k,color])=>{
+    const id=base+"-"+k,m=E("marker",{id,viewBox:"0 0 8 7",refX:7,refY:3.5,markerWidth:7,markerHeight:7,orient:"auto",markerUnits:"strokeWidth"}),
+      p=E("path",{d:"M0 0 L8 3.5 L0 7 Z",fill:color});
+    m.appendChild(p);defs.appendChild(m);s._rayMarkers[k]=id;
+  });
+  s.appendChild(defs);return s;
 }
-function line(s,x1,y1,x2,y2,cls="ray"){const l=E("line",{x1,y1,x2,y2,class:cls});s.appendChild(l);return l}
+function line(s,x1,y1,x2,y2,cls="ray"){
+  const l=E("line",{x1,y1,x2,y2,class:cls}),tokens=String(cls).split(/\s+/);
+  let marker=null;
+  if(tokens.includes("reflected"))marker="orange";
+  else if(tokens.some(x=>["refracted","emergent","guided"].includes(x)))marker="green";
+  else if(tokens.some(x=>["rejected","wrong"].includes(x)))marker="red";
+  else if(tokens.some(x=>["ray","incident"].includes(x)))marker="blue";
+  if(marker&&s._rayMarkers?.[marker])l.setAttribute("marker-end","url(#"+s._rayMarkers[marker]+")");
+  s.appendChild(l);return l
+}
 function text(s,x,y,t,cls="vlabel"){const e=E("text",{x,y,class:cls});e.textContent=t;s.appendChild(e);return e}
 function circle(s,cx,cy,r,cls="point"){const e=E("circle",{cx,cy,r,class:cls});s.appendChild(e);return e}
 function hostShell(host,title){
-  host.innerHTML='<div class="visual-head"><div><span class="theory-label">VISUAL MODEL</span><h3>'+title+'</h3></div><span class="visual-note">Change the controls and watch the geometry update.</span></div><div class="visual-controls"></div><div class="visual-canvas"></div><div class="visual-readout"></div>';
+  host.innerHTML='<div class="visual-head"><div><span class="theory-label">VISUAL MODEL</span><h3>'+title+'</h3></div><span class="visual-note">Change the controls and watch the geometry update.</span></div><div class="visual-controls"></div><div class="visual-canvas"></div><div class="visual-legend" aria-label="Diagram key"><span><i class="legend-ray"></i>solid arrow = real light path</span><span><i class="legend-construction"></i>dashed = construction / backward extension</span></div><div class="visual-readout"></div>';
   return {controls:host.querySelector(".visual-controls"),canvas:host.querySelector(".visual-canvas"),readout:host.querySelector(".visual-readout")};
+}
+function installViewControl(host){
+  const head=host.querySelector(".visual-head");if(!head)return;
+  const btn=E("button",{type:"button",class:"visual-expand","aria-expanded":"false"});btn.textContent="Enlarge diagram";
+  btn.addEventListener("click",()=>{
+    const on=!host.classList.contains("visual-expanded");host.classList.toggle("visual-expanded",on);
+    btn.setAttribute("aria-expanded",String(on));btn.textContent=on?"Close enlarged view":"Enlarge diagram";
+  });
+  head.appendChild(btn);
 }
 function addRange(parent,label,min,max,step,value,unit=""){
   const wrap=E("label",{class:"visual-control"}), span=E("span");span.textContent=label;
@@ -758,7 +786,7 @@ function staticSvg(key){
   return s;
 }
 function mountStatic(key,host){
-  host.innerHTML='<div class="visual-head"><div><span class="theory-label">DIAGRAM</span><h3>'+key.replaceAll("-"," ")+'</h3></div><span class="visual-note">Conceptual schematic — use the exercise values; not to scale unless explicitly labelled.</span></div><div class="visual-canvas"></div>';
+  host.innerHTML='<div class="visual-head"><div><span class="theory-label">DIAGRAM</span><h3>'+key.replaceAll("-"," ")+'</h3></div><span class="visual-note">Conceptual schematic — use the exercise values; not to scale unless explicitly labelled.</span></div><div class="visual-canvas"></div><div class="visual-legend" aria-label="Diagram key"><span><i class="legend-ray"></i>solid arrow = real light path</span><span><i class="legend-construction"></i>dashed = construction / backward extension</span></div>';
   host.querySelector(".visual-canvas").appendChild(staticSvg(key));
 }
 const live={
@@ -766,6 +794,6 @@ const live={
   "mirror-live":mountMirror,"mirror-translation-live":mountMirrorTranslation,"diopter-live":mountDiopter,"plane-diopter-live":mountPlaneDiopter,"prism-live":mountPrism,"lens-live":mountLens,"lens-combination-live":mountLensCombination,"eye-live":mountEye,"accommodation-live":mountAccommodation,"magnifier-live":mountMagnifier,"angular-resolution-live":mountAngularResolution,"telescope-live":mountTelescope
 };
 window.OPTICS_VISUALS={
-  mount(key,host,preset){if(!host||!key)return;if(live[key]){live[key](host);applyPreset(host,preset)}else mountStatic(key,host)}
+  mount(key,host,preset){if(!host||!key)return;if(live[key]){live[key](host);applyPreset(host,preset)}else mountStatic(key,host);installViewControl(host)}
 };
 })();
