@@ -176,6 +176,73 @@ function mountMirror(host){
   };
   [kind,fmag,obj].forEach(x=>x.addEventListener("input",redraw));redraw();
 }
+function mountDiopter(host){
+  const ui=hostShell(host,"Spherical diopter — USTHB algebraic convention");
+  const n1=addRange(ui.controls,"incident n",1.00,2.00,0.01,1.00),
+    n2=addRange(ui.controls,"emergent n′",1.00,2.00,0.01,1.50),
+    surface=addSelect(ui.controls,"surface",[["R+","R > 0 · centre right"],["R-","R < 0 · centre left"]],"R+"),
+    rmag=addRange(ui.controls,"|R|",2,250,1,20," cm"),
+    objectNature=addSelect(ui.controls,"object",[["real","real object"],["virtual","virtual object"],["infinity","object at infinity"]],"real"),
+    obj=addRange(ui.controls,"|SA|",2,400,1,100," cm");
+  const s=svgBase("Interactive spherical diopter in the USTHB oriented-distance convention");ui.canvas.appendChild(s);
+  const redraw=()=>{
+    s.innerHTML="";
+    const a=+n1.value,b=+n2.value,R=(surface.value==="R+"?1:-1)*(+rmag.value),
+      SA=objectNature.value==="infinity"?-Infinity:(objectNature.value==="real"?-1:1)*(+obj.value),
+      power=(b-a)/(R/100),rhs=(b-a)/R+(Number.isFinite(SA)?a/SA:0),
+      SAp=Math.abs(rhs)<1e-10?Infinity:b/rhs,
+      gamma=Number.isFinite(SA)&&Number.isFinite(SAp)?a*SAp/(b*SA):0,
+      SF=Math.abs(b-a)<1e-10?Infinity:-a*R/(b-a),
+      SFp=Math.abs(b-a)<1e-10?Infinity:b*R/(b-a);
+    const sx=360,axis=170,finite=[R,SA,SAp,SF,SFp].filter(Number.isFinite).map(Math.abs),
+      maxD=Math.max(40,...finite),scale=Math.min(4.5,270/maxD),cx=sx+R*scale;
+    line(s,20,axis,700,axis,"axis");
+    s.appendChild(E("path",{d:R>0?"M390 45 Q330 170 390 295":"M330 45 Q390 170 330 295",class:"diopter"}));
+    circle(s,sx,axis,4,"point");text(s,sx-8,axis+24,"S");
+    if(cx>28&&cx<692){circle(s,cx,axis,4,"point");text(s,cx-8,axis+24,"C")}
+    const markF=(x,label)=>{if(Number.isFinite(x)&&x>25&&x<695){circle(s,x,axis,4,"focus");text(s,x-9,axis-12,label)}};
+    markF(sx+SF*scale,"F");markF(sx+SFp*scale,"F′");
+    const oh=55;
+    let ox=null,oTop=axis-oh;
+    if(Number.isFinite(SA)){
+      ox=sx+SA*scale;line(s,ox,axis,ox,oTop,objectNature.value==="virtual"?"virtual":"object");text(s,ox-24,oTop-8,objectNature.value==="virtual"?"virtual A":"A");
+    }else{text(s,35,95,"object at infinity: axial parallel bundle")}
+    let ix=null,iTop=null;
+    if(Number.isFinite(SAp)){
+      ix=sx+SAp*scale;
+      const signedH=(gamma===0?1:Math.sign(gamma))*Math.min(90,Math.max(18,Math.abs(gamma)*oh));
+      iTop=axis-signedH;line(s,ix,axis,ix,iTop,SAp<0?"virtual":"image");text(s,ix-22,iTop+(iTop>axis?22:-8),SAp<0?"virtual A′":"A′");
+    }
+    const hits=[128,145];
+    hits.forEach(yh=>{
+      if(objectNature.value==="infinity")line(s,35,yh,sx,yh,"ray incident");
+      else if(objectNature.value==="real")line(s,ox,oTop,sx,yh,"ray incident");
+      else{
+        const slope=(oTop-yh)/(ox-sx),yLeft=yh+slope*(35-sx);
+        line(s,35,yLeft,sx,yh,"ray incident");line(s,sx,yh,ox,oTop,"construction");
+      }
+      if(Number.isFinite(SAp)){
+        if(SAp>0)line(s,sx,yh,ix,iTop,"ray refracted");
+        else{
+          const slope=(yh-iTop)/(sx-ix),yEnd=yh+slope*(690-sx);
+          line(s,sx,yh,690,yEnd,"ray refracted");line(s,sx,yh,ix,iTop,"construction");
+        }
+      }else line(s,sx,yh,690,yh,"ray refracted");
+    });
+    if(cx>25&&cx<695)line(s,sx,hits[0],cx,axis,"normal");
+    text(s,35,42,"incident medium n="+fmt(a));text(s,515,42,"emergent medium n′="+fmt(b));
+    text(s,35,300,"Gauss/paraxial schematic · transverse curvature exaggerated");
+    setReadout(ui.readout,[
+      ["R",fmt(R,1)+" cm"],["surface power Φ",fmt(power,2)+" D"],
+      ["SA",Number.isFinite(SA)?fmt(SA,2)+" cm":"−∞"],
+      ["SA′",Number.isFinite(SAp)?fmt(SAp,2)+" cm":"∞"],
+      ["γ",Number.isFinite(gamma)?fmt(gamma,3):"—"],
+      ["image",!Number.isFinite(SAp)?"at infinity":SAp>0?"real":"virtual"],
+      ["SF",Number.isFinite(SF)?fmt(SF,2)+" cm":"∞"],["SF′",Number.isFinite(SFp)?fmt(SFp,2)+" cm":"∞"]
+    ]);
+  };
+  [n1,n2,surface,rmag,objectNature,obj].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
+}
 function mountPrism(host){
   const ui=hostShell(host,"Prism deviation");
   const A=addRange(ui.controls,"apex A",30,75,1,60,"°"),n=addRange(ui.controls,"index n",1.2,1.8,0.01,1.52),inc=addRange(ui.controls,"incidence i",0,75,1,30,"°");
@@ -507,7 +574,7 @@ function mountStatic(key,host){
 }
 const live={
   "refraction-live":mountRefraction,"plate-live":mountPlate,"layers-live":mountLayers,"fibre-live":mountFibre,
-  "mirror-live":mountMirror,"prism-live":mountPrism,"lens-live":mountLens,"eye-live":mountEye,"telescope-live":mountTelescope
+  "mirror-live":mountMirror,"diopter-live":mountDiopter,"prism-live":mountPrism,"lens-live":mountLens,"eye-live":mountEye,"telescope-live":mountTelescope
 };
 window.OPTICS_VISUALS={
   mount(key,host,preset){if(!host||!key)return;if(live[key]){live[key](host);applyPreset(host,preset)}else mountStatic(key,host)}

@@ -124,6 +124,13 @@ assert(String(presetValue("s4q7","incidence i"))==="0","Normal-incidence prism p
 assert(String(presetValue("s2q18","object distance"))==="500","Metre-scale mirror preset not applied");
 assert(String(presetValue("s5q25","object"))==="virtual","Virtual-object lens preset not applied");
 assert(String(presetValue("s1q34","cladding nᵍ"))==="1.08","Fibre limiting-condition preset not applied");
+assert(Object.values(audit.visuals||{}).filter(x=>x==="diopter-live").length===16,"All generic spherical-diopter exercises should use the live diopter model");
+assert(String(presetValue("s3q24","object"))==="virtual","Virtual-object diopter preset not applied");
+const diopterVirtual=presetHost("s3q24").parts[".visual-readout"].innerHTML;
+assert(diopterVirtual.includes("8.00 cm")&&diopterVirtual.includes("3.000"),"Virtual-object diopter conjugation/magnification regression");
+const diopterReal=presetHost("s3q19").parts[".visual-readout"].innerHTML;
+assert(diopterReal.includes("-66.30 cm"),"Concave-diopter image-position regression");
+
 
 const controlByLabel=(key,label)=>{const h=hostForTest(key);const wrap=h.parts[".visual-controls"].children.find(w=>w.children?.[0]?.textContent===label);return wrap?.children?.find(x=>x.tagName==="input"||x.tagName==="select")};
 assert(Number(controlByLabel("prism-live","incidence i")?.min)===0,"Prism visual must support normal incidence");
