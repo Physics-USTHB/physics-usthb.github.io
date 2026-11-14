@@ -330,6 +330,102 @@ function mountEye(host){
   };
   [power,obj].forEach(x=>x.addEventListener("input",redraw));redraw();
 }
+function mountPlaneDiopter(host){
+  const ui=hostShell(host,"Plane diopter / apparent depth");
+  const n1=addNumber(ui.controls,"incident n",1.00,2.50,0.01,1.33),
+    n2=addNumber(ui.controls,"emergent n′",1.00,2.50,0.01,1.00),
+    depth=addNumber(ui.controls,"|SA|",0.1,1000,0.1,30," cm");
+  const s=svgBase("Interactive plane-diopter apparent-depth model");ui.canvas.appendChild(s);
+  const redraw=()=>{
+    s.innerHTML="";
+    const a=+n1.value,b=+n2.value,d=Math.max(0.001,+depth.value),SA=-d,SAp=SA*b/a,app=Math.abs(SAp);
+    const yS=82,x0=360,yObj=yS+105,yImg=yS+105*(b/a);
+    line(s,30,yS,690,yS,"interface");text(s,35,yS-14,"emergent medium n′="+fmt(b));text(s,35,yS+24,"incident medium n="+fmt(a));
+    circle(s,x0,yObj,7,"source");text(s,x0+14,yObj+5,"object");
+    circle(s,x0,yImg,6,"virtual");text(s,x0+14,yImg+5,"apparent image");
+    [295,430].forEach(px=>{
+      line(s,x0,yObj,px,yS,"ray incident");
+      const slope=(px-x0)/(yS-yImg),xTop=px+slope*(20-yS);
+      line(s,px,yS,xTop,20,"ray refracted");line(s,px,yS,x0,yImg,"construction");
+    });
+    line(s,x0-18,yS,x0-18,yObj,"construction");line(s,x0-28,yS,x0-8,yS,"construction");line(s,x0-28,yObj,x0-8,yObj,"construction");
+    text(s,470,300,"paraxial model: SA′/SA = n′/n");
+    setReadout(ui.readout,[["SA",fmt(SA,2)+" cm"],["SA′",fmt(SAp,2)+" cm"],["apparent distance",fmt(app,2)+" cm"],["depth ratio",fmt(b/a,4)],["image","virtual"]]);
+  };
+  [n1,n2,depth].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
+}
+function mountMirrorTranslation(host){
+  const ui=hostShell(host,"Translation of a plane mirror");
+  const dist=addNumber(ui.controls,"object–mirror distance",10,220,0.5,100," cm"),
+    shift=addNumber(ui.controls,"mirror shift toward object",0,50,0.5,3," cm");
+  const s=svgBase("Interactive plane-mirror translation model");ui.canvas.appendChild(s);
+  const redraw=()=>{
+    s.innerHTML="";
+    const d=Math.max(1,+dist.value),raw=Math.max(0,+shift.value),dx=Math.min(raw,d-1),scale=1.3,ox=85,axis=200,
+      m0=ox+d*scale,m1=ox+(d-dx)*scale,i0=ox+2*d*scale,i1=ox+2*(d-dx)*scale;
+    line(s,20,axis,700,axis,"axis");line(s,ox,axis,ox,axis-75,"object");text(s,55,axis-88,"fixed object");
+    line(s,m0,55,m0,285,"construction");text(s,m0-30,45,"initial mirror");
+    line(s,m1,55,m1,285,"mirrorline");text(s,m1-25,305,"final mirror");
+    line(s,i0,axis,i0,axis-65,"construction");text(s,i0-34,axis-78,"initial image");
+    line(s,i1,axis,i1,axis-65,"virtual");text(s,i1-28,axis-78,"final image");
+    line(s,m1,275,m0,275,"construction");text(s,(m0+m1)/2-20,265,"Δm");
+    line(s,i1,105,i0,105,"construction");text(s,(i0+i1)/2-25,95,"Δimage");
+    setReadout(ui.readout,[["mirror shift",fmt(dx,2)+" cm"],["image shift",fmt(2*dx,2)+" cm"],["relation","Δx_image = 2 Δx_mirror"],["image remains","virtual and symmetric about the mirror"]]);
+  };
+  [dist,shift].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
+}
+function mountLensCombination(host){
+  const ui=hostShell(host,"Two thin lenses — equivalent power");
+  const f1=addNumber(ui.controls,"f₁′",-500,500,0.5,20," cm"),
+    f2=addNumber(ui.controls,"f₂′",-500,500,0.5,30," cm"),
+    sep=addNumber(ui.controls,"separation d",0,100,0.5,10," cm");
+  const s=svgBase("Interactive two-thin-lens equivalent-power model");ui.canvas.appendChild(s);
+  const drawLens=(x,f,label)=>{
+    const path=f>0?"M"+x+" 45 Q"+(x-28)+" 170 "+x+" 295 Q"+(x+28)+" 170 "+x+" 45":"M"+(x-20)+" 45 Q"+(x+20)+" 170 "+(x-20)+" 295 M"+(x+20)+" 45 Q"+(x-20)+" 170 "+(x+20)+" 295";
+    s.appendChild(E("path",{d:path,class:"lens"}));text(s,x-16,35,label);
+  };
+  const redraw=()=>{
+    s.innerHTML="";
+    const a=+f1.value,b=+f2.value,d=Math.max(0,+sep.value),valid=Math.abs(a)>1e-9&&Math.abs(b)>1e-9,
+      P1=valid?100/a:NaN,P2=valid?100/b:NaN,Peq=valid?P1+P2-(d/100)*P1*P2:NaN,
+      feq=Number.isFinite(Peq)&&Math.abs(Peq)>1e-9?100/Peq:Infinity,afocal=valid&&Math.abs(Peq)<1e-6;
+    const axis=170,x1=225,x2=x1+(d===0?14:clamp(d*8,55,250));line(s,20,axis,700,axis,"axis");drawLens(x1,a,"L₁");drawLens(x2,b,"L₂");
+    if(valid){
+      [1,-1].forEach(y0=>{
+        const th1=-y0/a,y2=y0+d*th1,th2=th1-y2/b,post=50,y3=y2+post*th2,
+          py0=axis-y0*50,py2=axis-clamp(y2*50,-115,115),py3=axis-clamp(y3*50,-125,125);
+        line(s,35,py0,x1,py0,"ray incident");line(s,x1,py0,x2,py2,"ray refracted");line(s,x2,py2,680,py3,"ray emergent");
+      });
+    }
+    line(s,x1,300,x2,300,"construction");text(s,(x1+x2)/2-25,292,"d="+fmt(d,1)+" cm");
+    text(s,35,55,afocal?"parallel in → parallel out (afocal)":Number.isFinite(feq)?"equivalent focal length f′eq="+fmt(feq,2)+" cm":"enter non-zero focal lengths");
+    setReadout(ui.readout,[["Φ₁",Number.isFinite(P1)?fmt(P1,3)+" D":"—"],["Φ₂",Number.isFinite(P2)?fmt(P2,3)+" D":"—"],["Φeq",Number.isFinite(Peq)?fmt(Peq,3)+" D":"—"],["f′eq",afocal?"∞":Number.isFinite(feq)?fmt(feq,2)+" cm":"—"],["system",!valid?"invalid":afocal?"afocal":Peq>0?"converging":"diverging"],["formula","Φeq = Φ₁ + Φ₂ − d Φ₁Φ₂"]]);
+  };
+  [f1,f2,sep].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
+}
+function mountAccommodation(host){
+  const ui=hostShell(host,"Eye accommodation");
+  const pp=addNumber(ui.controls,"near point PP",5,200,0.5,25," cm"),
+    farMode=addSelect(ui.controls,"far point",[["infinity","PR = ∞"],["finite","finite PR"]],"infinity"),
+    pr=addNumber(ui.controls,"far distance",0.1,100,0.1,5," m");
+  const s=svgBase("Interactive eye accommodation interval model");ui.canvas.appendChild(s);
+  const redraw=()=>{
+    s.innerHTML="";
+    const near=Math.max(0.1,+pp.value),finite=farMode.value==="finite",far=Math.max(0.01,+pr.value),
+      A=100/near-(finite?1/far:0),eyeX=625,axis=170,nearX=eyeX-clamp(near*5,70,350);
+    line(s,30,axis,700,axis,"axis");s.appendChild(E("ellipse",{cx:eyeX,cy:axis,rx:55,ry:43,class:"eye"}));text(s,eyeX-25,axis+65,"eye");
+    line(s,nearX,90,nearX,245,"focalplane");text(s,nearX-30,75,"PP");
+    if(finite){
+      const farX=80;line(s,farX,90,farX,245,"focalplane");text(s,farX-25,75,"PR");
+      line(s,farX,270,nearX,270,"construction");text(s,farX+15,295,"clear-vision interval");
+    }else{
+      [115,140].forEach(y=>line(s,35,y,eyeX-55,y,"ray incident"));text(s,35,95,"PR = ∞ · parallel rays");
+      line(s,nearX,270,eyeX-75,270,"construction");text(s,nearX+20,295,"accommodation from ∞ to PP");
+    }
+    setReadout(ui.readout,[["PP",fmt(near,1)+" cm"],["PR",finite?fmt(far,2)+" m":"∞"],["near vergence",fmt(100/near,2)+" D"],["far vergence",finite?fmt(1/far,2)+" D":"0.00 D"],["accommodation amplitude",fmt(A,2)+" D"]]);
+  };
+  [pp,farMode,pr].forEach(x=>{x.addEventListener("input",redraw);x.addEventListener("change",redraw)});redraw();
+}
 function mountMagnifier(host){
   const ui=hostShell(host,"Magnifier and angular vision");
   const mode=addSelect(ui.controls,"viewing",[["naked","naked eye"],["relaxed","magnifier · final image at ∞"],["near","magnifier · final image at near point"],["finite","finite object / image"]],"relaxed"),
@@ -667,7 +763,7 @@ function mountStatic(key,host){
 }
 const live={
   "refraction-live":mountRefraction,"plate-live":mountPlate,"layers-live":mountLayers,"fibre-live":mountFibre,
-  "mirror-live":mountMirror,"diopter-live":mountDiopter,"prism-live":mountPrism,"lens-live":mountLens,"eye-live":mountEye,"magnifier-live":mountMagnifier,"angular-resolution-live":mountAngularResolution,"telescope-live":mountTelescope
+  "mirror-live":mountMirror,"mirror-translation-live":mountMirrorTranslation,"diopter-live":mountDiopter,"plane-diopter-live":mountPlaneDiopter,"prism-live":mountPrism,"lens-live":mountLens,"lens-combination-live":mountLensCombination,"eye-live":mountEye,"accommodation-live":mountAccommodation,"magnifier-live":mountMagnifier,"angular-resolution-live":mountAngularResolution,"telescope-live":mountTelescope
 };
 window.OPTICS_VISUALS={
   mount(key,host,preset){if(!host||!key)return;if(live[key]){live[key](host);applyPreset(host,preset)}else mountStatic(key,host)}
