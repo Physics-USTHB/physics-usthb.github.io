@@ -130,6 +130,19 @@ const diopterVirtual=presetHost("s3q24").parts[".visual-readout"].innerHTML;
 assert(diopterVirtual.includes("8.00 cm")&&diopterVirtual.includes("3.000"),"Virtual-object diopter conjugation/magnification regression");
 const diopterReal=presetHost("s3q19").parts[".visual-readout"].innerHTML;
 assert(diopterReal.includes("-66.30 cm"),"Concave-diopter image-position regression");
+assert(audit.visuals.s6q7==="magnifier-live"&&audit.visuals.s6q8==="magnifier-live"&&audit.visuals.s6q15==="magnifier-live","Magnifier theory/numeric exercises should use the dedicated magnifier model");
+assert(["s6q30","s6q31","s6q32","s6q33","s6q34"].every(id=>audit.visuals[id]==="angular-resolution-live"),"Moon angular-size/resolution exercises must use the angular-resolution model");
+const loupe=presetHost("s6q45").parts[".visual-readout"].innerHTML;
+assert(loupe.includes("5.00×")&&loupe.includes("0.020 mm"),"Magnifier resolution regression");
+const naked=presetHost("s6q53").parts[".visual-readout"].innerHTML;
+assert(naked.includes("0.008000 rad")&&naked.includes("0.100 mm"),"Naked-eye angular-size/resolution regression");
+const moon=presetHost("s6q31").parts[".visual-readout"].innerHTML;
+assert(moon.includes("0.906250 rad")&&moon.includes("outside the strict small-angle/paraxial regime"),"Moon magnification warning regression");
+const moonLimit=presetHost("s6q32").parts[".visual-readout"].innerHTML;
+assert(moonLimit.includes("1.152 km")&&moonLimit.includes(">resolved<"),"Moon resolution-limit boundary regression");
+const station=presetHost("s6q34").parts[".visual-readout"].innerHTML;
+assert(station.includes("1.152 km")&&station.includes("not resolved"),"Moon station-resolution regression");
+
 
 
 const controlByLabel=(key,label)=>{const h=hostForTest(key);const wrap=h.parts[".visual-controls"].children.find(w=>w.children?.[0]?.textContent===label);return wrap?.children?.find(x=>x.tagName==="input"||x.tagName==="select")};
