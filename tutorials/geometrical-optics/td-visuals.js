@@ -298,17 +298,56 @@ function staticSvg(key){
     T(115,55,"collimator / incident direction");T(520,62,"telescope position 1");T(505,292,"telescope position 2");
     T(315,160,"prism");T(250,25,"angular readings on circular scale");
   }
-  else if(key==="prism"||key==="dispersion-prism"){s.appendChild(E("path",{d:"M360 35 L155 275 L565 275 Z",class:"prism"}));line(s,25,170,235,170,"ray incident");if(key==="dispersion-prism"){line(s,235,170,455,205,"ray red");line(s,235,170,455,220,"ray violet");line(s,455,205,690,150,"ray red");line(s,455,220,690,185,"ray violet");T(590,140,"red");T(590,205,"violet")}else{line(s,235,170,455,215,"ray refracted");line(s,455,215,690,150,"ray emergent")}T(345,65,"A")}
+  else if(key==="prism"||key==="dispersion-prism"){
+    const ap={x:360,y:35},L={x:155,y:275},R={x:565,y:275};s.appendChild(E("path",{d:"M"+ap.x+" "+ap.y+" L"+L.x+" "+L.y+" L"+R.x+" "+R.y+" Z",class:"prism"}));
+    const P={x:245,y:170};line(s,25,170,P.x,P.y,"ray incident");
+    if(key==="dispersion-prism"){
+      const Qr={x:492,y:190},Qv={x:502,y:202};
+      line(s,P.x,P.y,Qr.x,Qr.y,"ray red");line(s,P.x,P.y,Qv.x,Qv.y,"ray violet");
+      line(s,Qr.x,Qr.y,690,150,"ray red");line(s,Qv.x,Qv.y,690,190,"ray violet");T(610,140,"red: smaller deviation");T(590,208,"violet: larger deviation");
+    }else{
+      const Q={x:500,y:200};line(s,P.x,P.y,Q.x,Q.y,"ray refracted");line(s,Q.x,Q.y,690,150,"ray emergent");
+    }
+    T(345,65,"A");T(220,155,"face 1");T(500,180,"face 2");
+  }
   else if(key==="scale-comparison"){const rows=[["atom",2,"not ray-scale"],["λ = 600 nm",8,"reference"],["10 µm slit",45,"diffraction relevant"],["1 cm aperture",260,"ray optics safe"]];rows.forEach((r,i)=>{const y=45+i*62;s.appendChild(E("rect",{x:180,y,width:r[1],height:18,class:i<2?"wrong":"glass"}));T(35,y+14,r[0]);T(470,y+14,r[2])})}
   else if(key==="stigmatisme"){circle(s,135,110,5,"source");circle(s,565,110,5,"focus");line(s,360,30,360,300,"system");[65,105,150,205,245].forEach(y=>{line(s,135,110,360,y,"ray incident");line(s,360,y,565,110,"ray refracted")});T(65,90,"A");T(575,100,"A′");T(425,290,"stigmatic: all rays meet at A′")}
   else if(key==="fermat-reflection"){line(s,0,220,720,220,"mirrorline");circle(s,125,75,5,"source");circle(s,585,80,5,"eye");circle(s,585,360,5,"virtual");line(s,125,75,355,220,"ray incident");line(s,355,220,585,80,"ray reflected");line(s,355,220,585,360,"construction");T(105,60,"A");T(595,70,"B");T(590,300,"B*");T(260,290,"stationary path ↔ straight line to mirror image")}
   else if(key==="reversibility"){line(s,0,160,720,160,"interface");line(s,360,25,360,295,"normal");line(s,120,55,360,160,"ray incident");line(s,360,160,525,285,"ray refracted");T(55,45,"reverse ray arrows");T(440,300,"same geometrical path")}
-  else if(key==="mirror-derivation"){s.appendChild(E("path",{d:"M600 45 Q545 170 600 295",class:"mirror"}));circle(s,485,170,4,"point");circle(s,375,170,4,"focus");circle(s,150,170,4,"source");line(s,150,170,555,95,"ray incident");line(s,555,95,375,170,"ray reflected");line(s,555,95,485,170,"construction");T(130,195,"A");T(365,195,"F");T(475,195,"C");T(420,35,"small angles + i=r")}
-  else if(key==="mirror-centre"){s.appendChild(E("path",{d:"M590 45 Q535 170 590 295",class:"mirror"}));circle(s,370,170,4,"point");line(s,145,100,590,170,"ray incident");line(s,590,170,145,240,"ray reflected");T(355,195,"C");T(220,65,"ray through C is normal")}
-  else if(key==="diopter-derivation"){s.appendChild(E("path",{d:"M390 35 Q300 170 390 305",class:"diopter"}));circle(s,520,170,4,"point");line(s,120,115,350,100,"ray incident");line(s,350,100,590,145,"ray refracted");line(s,350,100,520,170,"normal");T(335,85,"I");T(510,195,"C");T(245,300,"Snell + paraxial angles → conjugation")}
-  else if(key==="diopter-centre"){s.appendChild(E("path",{d:"M390 35 Q300 170 390 305",class:"diopter"}));circle(s,520,170,4,"point");line(s,120,100,520,170,"ray incident");line(s,520,170,650,193,"ray refracted");T(500,195,"C");T(180,75,"normal ray through centre")}
-  else if(key==="right-angle-prism"){s.appendChild(E("path",{d:"M175 270 L175 70 L525 270 Z",class:"prism"}));line(s,25,170,175,170,"ray incident");line(s,175,170,350,270,"ray refracted");line(s,350,270,525,170,"ray reflected");T(240,305,"45° incidence > critical → TIR");T(70,150,"normal entry")}
-  else if(key==="immersed-prism"){s.appendChild(E("rect",{x:0,y:0,width:720,height:320,class:"liquid upper"}));s.appendChild(E("path",{d:"M360 35 L150 275 L570 275 Z",class:"prism"}));line(s,30,160,240,160,"ray incident");line(s,240,160,440,95,"ray refracted");line(s,440,95,515,250,"ray reflected");T(25,40,"outside liquid n′");T(445,80,"70°: keep TIR");T(510,270,"50°: force transmission");T(220,305,"exactly one TIR sets an interval for n′")}
+  else if(key==="mirror-derivation"){
+    s.appendChild(E("path",{d:"M600 45 Q545 170 600 295",class:"mirror"}));const S=600,C=460,F=530;
+    circle(s,S,170,4,"point");circle(s,C,170,4,"point");circle(s,F,170,4,"focus");
+    const I={x:570,y:95};line(s,120,95,I.x,I.y,"ray incident");line(s,I.x,I.y,F,170,"ray reflected");line(s,I.x,I.y,C,170,"construction");
+    T(S-8,195,"S");T(C-8,195,"C");T(F-8,195,"F");T(415,35,"F is midway between S and C; normal at I passes through C");
+  }
+  else if(key==="mirror-centre"){
+    s.appendChild(E("path",{d:"M600 45 Q545 170 600 295",class:"mirror"}));const C={x:400,y:170},I={x:594,y:121.5},A={x:140,y:235};
+    circle(s,C.x,C.y,4,"point");circle(s,I.x,I.y,4,"point");line(s,A.x,A.y,I.x,I.y,"ray incident");line(s,I.x,I.y,A.x,A.y,"ray reflected");
+    line(s,C.x,C.y,I.x,I.y,"construction");T(C.x-8,C.y+24,"C");T(520,92,"I");T(160,260,"a ray directed through C strikes normally and retraces its path");
+  }
+  else if(key==="diopter-derivation"){
+    s.appendChild(E("path",{d:"M390 35 Q300 170 390 305",class:"diopter"}));const C={x:520,y:170},I={x:350,y:105};
+    circle(s,C.x,C.y,4,"point");circle(s,390,170,4,"point");line(s,120,125,I.x,I.y,"ray incident");line(s,I.x,I.y,590,150,"ray refracted");line(s,I.x,I.y,C.x,C.y,"normal");
+    T(335,90,"I");T(510,195,"C");T(378,195,"S");T(210,300,"angles are measured from the normal IC; apply Snell then the Gauss approximation");
+  }
+  else if(key==="diopter-centre"){
+    s.appendChild(E("path",{d:"M390 35 Q300 170 390 305",class:"diopter"}));const C={x:520,y:170},I={x:350,y:135},A={x:120,y:88};
+    circle(s,C.x,C.y,4,"point");circle(s,I.x,I.y,4,"point");line(s,A.x,A.y,650,196,"ray incident");line(s,I.x,I.y,C.x,C.y,"construction");
+    T(510,195,"C");T(330,125,"I");T(150,70,"ray aimed through C is normal at the spherical surface and is undeviated");
+  }
+  else if(key==="right-angle-prism"){
+    T(40,35,"1) normal entry through a short face → one TIR → 90° deviation");
+    s.appendChild(E("path",{d:"M70 70 L70 250 L250 250 Z",class:"prism"}));line(s,20,160,70,160,"ray incident");line(s,70,160,160,160,"ray refracted");line(s,160,160,160,250,"ray reflected");line(s,160,250,160,310,"ray emergent");T(145,150,"45°");
+    T(365,35,"2) normal entry through hypotenuse → two TIRs → 180° deviation");
+    s.appendChild(E("path",{d:"M430 70 L430 250 L610 250 Z",class:"prism"}));
+    line(s,650,20,480,190,"ray incident");line(s,480,190,430,240,"ray refracted");line(s,430,240,440,250,"ray reflected");line(s,440,250,550,140,"ray reflected");line(s,550,140,680,10,"ray emergent");
+  }
+  else if(key==="immersed-prism"){
+    s.appendChild(E("rect",{x:0,y:0,width:720,height:320,class:"liquid upper"}));s.appendChild(E("path",{d:"M360 35 L150 275 L570 275 Z",class:"prism"}));
+    const I1={x:465,y:155},I2={x:360,y:275};line(s,230,190,I1.x,I1.y,"ray incident");line(s,I1.x,I1.y,I2.x,I2.y,"ray reflected");line(s,I2.x,I2.y,265,315,"ray emergent");
+    line(s,I1.x-40,I1.y-35,I1.x+40,I1.y+35,"normal");line(s,I2.x,I2.y-45,I2.x,I2.y+35,"normal");
+    T(25,40,"outside liquid n′");T(475,135,"I₁: 70° → must remain TIR");T(375,260,"I₂: 50° → must transmit");T(205,305,"source-supplied incidence angles set 1.15 ≤ n′ < 1.41");
+  }
   else if(key==="newton-lens"){line(s,205,35,205,300,"focalplane");line(s,520,35,520,300,"focalplane");s.appendChild(E("path",{d:"M360 45 Q322 170 360 295 Q398 170 360 45",class:"lens"}));circle(s,205,170,4,"focus");circle(s,520,170,4,"focus");T(170,25,"object focal plane");T(480,25,"image focal plane");T(275,305,"Newton distances x and x′")}
   else if(key==="bessel"){line(s,80,55,80,170,"object");line(s,640,45,640,295,"screen");s.appendChild(E("path",{d:"M270 60 Q235 170 270 280 Q305 170 270 60",class:"lens"}));s.appendChild(E("path",{d:"M450 60 Q415 170 450 280 Q485 170 450 60",class:"construction"}));T(230,40,"L position 1");T(415,40,"L position 2");T(265,305,"D fixed; two sharp positions separated by d")}
   else if(key==="two-diopters-lens"){s.appendChild(E("path",{d:"M320 45 Q270 170 320 295 Q390 170 385 45",class:"lens"}));line(s,90,105,320,115,"ray incident");line(s,320,115,385,135,"ray refracted");line(s,385,135,620,170,"ray emergent");T(220,35,"surface 1");T(410,35,"surface 2");T(225,305,"add the two diopter conjugation relations")}
