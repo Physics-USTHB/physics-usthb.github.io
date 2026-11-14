@@ -434,13 +434,13 @@ function staticSvg(key){
   else if(key==="myopia-correction"){
     s.appendChild(E("ellipse",{cx:555,cy:170,rx:80,ry:60,class:"eye"}));line(s,625,100,625,240,"retina");s.appendChild(E("path",{d:"M250 80 Q285 170 250 260 M300 80 Q265 170 300 260",class:"lens"}));
     const FR={x:155,y:170};circle(s,FR.x,FR.y,5,"focus");T(115,195,"far point PR");
-    [[120,70],[150,106]].forEach(([yl,ye])=>{line(s,30,yl,275,yl,"ray incident");line(s,275,yl,520,ye,"ray refracted");line(s,FR.x,FR.y,275,yl,"construction");line(s,520,ye,625,170,"ray refracted")});
+    [[145,94],[160,140]].forEach(([yl,ye])=>{line(s,30,yl,275,yl,"ray incident");line(s,275,yl,520,ye,"ray refracted");line(s,FR.x,FR.y,275,yl,"construction");line(s,520,ye,625,170,"ray refracted")});
     T(205,55,"negative spectacle lens");T(390,300,"parallel rays are made to diverge as if from PR, then the eye focuses them on the retina");
   }
   else if(key==="near-correction"){
     s.appendChild(E("ellipse",{cx:585,cy:170,rx:70,ry:55,class:"eye"}));s.appendChild(E("path",{d:"M300 80 Q265 170 300 260 Q335 170 300 80",class:"lens"}));line(s,110,125,110,170,"object");
-    const V={x:25,y:90};line(s,V.x,V.y,V.x,170,"virtual");T(35,75,"virtual image at unaided near point");
-    [[105,78],[205,225]].forEach(([yl,ye])=>{line(s,110,125,300,yl,"ray incident");line(s,300,yl,520,ye,"ray refracted");line(s,V.x,V.y,300,yl,"construction")});
+    const V={x:25,y:100};line(s,V.x,V.y,V.x,170,"virtual");T(35,85,"virtual image at unaided near point");
+    [[130,154],[170,226]].forEach(([yl,ye])=>{line(s,110,125,300,yl,"ray incident");line(s,300,yl,520,ye,"ray refracted");line(s,V.x,V.y,300,yl,"construction")});
     T(70,115,"reading object");T(245,55,"positive spectacle lens");T(345,300,"backward extensions meet at a farther virtual image that the eye can accommodate");
   }
   else if(key==="newtonian"){
