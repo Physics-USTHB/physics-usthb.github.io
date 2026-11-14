@@ -339,7 +339,7 @@ function staticSvg(key){
     s.appendChild(E("path",{d:"M70 70 L70 250 L250 250 Z",class:"prism"}));line(s,20,160,70,160,"ray incident");line(s,70,160,160,160,"ray refracted");line(s,160,160,160,250,"ray reflected");line(s,160,250,160,310,"ray emergent");T(145,150,"45°");
     T(365,35,"2) normal entry through hypotenuse → two TIRs → 180° deviation");
     s.appendChild(E("path",{d:"M430 70 L430 250 L610 250 Z",class:"prism"}));
-    line(s,650,20,480,190,"ray incident");line(s,480,190,430,240,"ray refracted");line(s,430,240,440,250,"ray reflected");line(s,440,250,550,140,"ray reflected");line(s,550,140,680,10,"ray emergent");
+    line(s,650,20,480,190,"ray incident");line(s,480,190,430,240,"ray refracted");line(s,430,240,440,250,"ray reflected");line(s,440,250,525,165,"ray reflected");line(s,525,165,650,40,"ray emergent");
   }
   else if(key==="immersed-prism"){
     s.appendChild(E("rect",{x:0,y:0,width:720,height:320,class:"liquid upper"}));s.appendChild(E("path",{d:"M360 35 L150 275 L570 275 Z",class:"prism"}));
@@ -371,7 +371,7 @@ function staticSvg(key){
   else if(key==="prism45"){
     s.appendChild(E("path",{d:"M180 280 L180 80 L380 80 Z",class:"prism"}));
     const P={x:180,y:200},Q={x:255,y:205},R={x:248,y:80};
-    line(s,25,186,P.x,P.y,"ray incident");line(s,P.x,P.y,Q.x,Q.y,"ray refracted");line(s,Q.x,Q.y,R.x,R.y,"ray reflected");line(s,R.x,R.y,225,15,"ray emergent");
+    line(s,25,186,P.x,P.y,"ray incident");line(s,P.x,P.y,Q.x,Q.y,"ray refracted");line(s,Q.x,Q.y,R.x,R.y,"ray reflected");line(s,R.x,R.y,242,10,"ray emergent");
     line(s,180,160,240,160,"normal");line(s,220,240,285,175,"normal");line(s,220,80,220,30,"normal");
     T(195,145,"i = 5°");T(265,220,"TIR on 45° face AB");T(300,55,"exit");T(410,155,"net deviation D = 90° + 2i = 100°");
   }
@@ -385,9 +385,9 @@ function staticSvg(key){
   }
   else if(key==="dove-prism"){
     s.appendChild(E("path",{d:"M260 70 L460 70 L640 250 L80 250 Z",class:"prism"}));
-    const P={x:200,y:130},Q={x:360,y:185},R={x:520,y:130};
-    line(s,25,130,P.x,P.y,"ray incident");line(s,P.x,P.y,Q.x,Q.y,"ray refracted");line(s,Q.x,Q.y,R.x,R.y,"ray reflected");line(s,R.x,R.y,700,130,"ray emergent");
-    line(s,Q.x,Q.y-55,Q.x,Q.y+55,"normal");T(295,55,"AB");T(295,278,"CD (TIR face)");T(95,115,"45° end face");T(535,115,"45° end face");T(375,205,"i_CD ≈ 71.2° > i_c");
+    const P={x:200,y:130},Q={x:553,y:250},R={x:618,y:228};
+    line(s,25,130,P.x,P.y,"ray incident");line(s,P.x,P.y,Q.x,Q.y,"ray refracted");line(s,Q.x,Q.y,R.x,R.y,"ray reflected");line(s,R.x,R.y,700,R.y,"ray emergent");
+    line(s,Q.x,Q.y-55,Q.x,Q.y+35,"normal");T(295,55,"AB");T(295,278,"CD (TIR face)");T(95,115,"45° end face");T(535,115,"45° end face");T(375,205,"i_CD ≈ 71.2° > i_c");
     T(470,300,"emergent ray is parallel to the incident ray");
   }
   else if(key==="cauchy-data"){
@@ -421,6 +421,25 @@ function staticSvg(key){
   else if(key==="two-lens"){s.appendChild(E("path",{d:"M250 55 Q215 170 250 285 Q285 170 250 55",class:"lens"}));s.appendChild(E("path",{d:"M500 55 Q465 170 500 285 Q535 170 500 55",class:"lens"}));line(s,40,95,250,95,"ray incident");line(s,250,95,420,170,"ray refracted");line(s,420,170,500,120,"ray refracted");line(s,500,120,690,120,"ray emergent");T(195,40,"lens 1");T(445,40,"lens 2")}
   else if(key==="microscope"){s.appendChild(E("path",{d:"M210 55 Q180 170 210 285 Q240 170 210 55",class:"lens"}));s.appendChild(E("path",{d:"M520 70 Q490 170 520 270 Q550 170 520 70",class:"lens"}));line(s,85,120,85,170,"object");line(s,410,170,410,245,"image");line(s,85,120,210,90,"ray incident");line(s,210,90,410,245,"ray refracted");line(s,410,245,520,120,"ray incident");line(s,520,120,690,80,"ray emergent");T(170,35,"objective");T(485,50,"eyepiece")}
   else if(key==="exit-pupil"){s.appendChild(E("path",{d:"M260 55 Q225 170 260 285 Q295 170 260 55",class:"lens"}));s.appendChild(E("path",{d:"M500 75 Q470 170 500 265 Q530 170 500 75",class:"lens"}));line(s,200,85,200,255,"aperture");line(s,200,85,500,135,"construction");line(s,200,255,500,205,"construction");line(s,500,135,620,155,"construction");line(s,500,205,620,185,"construction");line(s,620,155,620,185,"pupil");T(575,140,"exit pupil")}
+  else if(key==="curved-fibre"){
+    s.appendChild(E("path",{d:"M120 255 Q300 55 600 115",class:"core"}));s.appendChild(E("path",{d:"M125 280 Q305 85 605 145",class:"cladding"}));
+    const pts=[[150,245],[255,155],[375,112],[500,115],[585,132]];for(let i=0;i<pts.length-1;i++)line(s,pts[i][0],pts[i][1],pts[i+1][0],pts[i+1][1],"ray guided");
+    T(65,45,"curved guide: the outer-wall incidence decreases as the bend tightens");T(395,300,"limiting bend radius occurs when the most unfavorable outer-wall incidence reaches the critical angle");
+  }
+  else if(key==="optical-wedge"){
+    s.appendChild(E("path",{d:"M135 95 L590 120 L590 220 L135 260 Z",class:"glass"}));const P={x:250,y:102},Q={x:500,y:207};
+    line(s,40,55,P.x,P.y,"ray incident");line(s,P.x,P.y,Q.x,Q.y,"ray refracted");line(s,Q.x,Q.y,685,285,"ray emergent");
+    line(s,P.x,P.y-35,P.x,P.y+35,"normal");line(s,Q.x-8,Q.y-35,Q.x+8,Q.y+35,"normal");T(180,285,"non-parallel faces → emergent ray is generally not parallel to incident ray");
+  }
+  else if(key==="myopia-correction"){
+    s.appendChild(E("ellipse",{cx:555,cy:170,rx:80,ry:60,class:"eye"}));line(s,625,100,625,240,"retina");s.appendChild(E("path",{d:"M250 80 Q285 170 250 260 M300 80 Q265 170 300 260",class:"lens"}));
+    [110,145].forEach(y=>{line(s,30,y,275,y,"ray incident");line(s,275,y,555,170,"ray refracted")});T(205,55,"negative spectacle lens");T(430,300,"for infinity, choose spectacle power so the virtual image lies at the eye's far point");
+  }
+  else if(key==="near-correction"){
+    s.appendChild(E("ellipse",{cx:575,cy:170,rx:75,ry:55,class:"eye"}));s.appendChild(E("path",{d:"M290 80 Q255 170 290 260 Q325 170 290 80",class:"lens"}));line(s,90,120,90,170,"object");
+    line(s,90,120,290,105,"ray incident");line(s,290,105,500,145,"ray refracted");line(s,90,120,290,205,"ray incident");line(s,290,205,500,165,"ray refracted");
+    T(60,100,"reading object");T(235,55,"positive spectacle lens");T(340,300,"the lens forms a virtual object for the eye at or beyond the person's unaided near point");
+  }
   else if(key==="newtonian"){
     const F1={x:440,y:170},F2={x:520,y:90};s.appendChild(E("path",{d:"M620 40 Q520 170 620 300",class:"mirror"}));
     line(s,55,100,620,100,"ray incident");line(s,55,200,620,200,"ray incident");
@@ -433,7 +452,7 @@ function staticSvg(key){
   return s;
 }
 function mountStatic(key,host){
-  host.innerHTML='<div class="visual-head"><div><span class="theory-label">DIAGRAM</span><h3>'+key.replaceAll("-"," ")+'</h3></div></div><div class="visual-canvas"></div>';
+  host.innerHTML='<div class="visual-head"><div><span class="theory-label">DIAGRAM</span><h3>'+key.replaceAll("-"," ")+'</h3></div><span class="visual-note">Conceptual schematic — use the exercise values; not to scale unless explicitly labelled.</span></div><div class="visual-canvas"></div>';
   host.querySelector(".visual-canvas").appendChild(staticSvg(key));
 }
 const live={
